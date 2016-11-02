@@ -1,0 +1,22 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.mobgen.halo.android.social">
+
+    <application>
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/halo_social_facebook_client" />
+
+        <activity
+            android:name="com.facebook.FacebookActivity"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation" />
+
+        <activity
+            android:name=".google.HaloGoogleSignInActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
+        <activity
+            android:name=".facebook.HaloFacebookSignInActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+    </application>
+
+</manifest>

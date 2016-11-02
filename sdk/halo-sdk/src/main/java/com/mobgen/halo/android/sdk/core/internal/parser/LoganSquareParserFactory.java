@@ -4,12 +4,9 @@ import android.support.annotation.Keep;
 
 import com.bluelinelabs.logansquare.ConverterUtils;
 import com.bluelinelabs.logansquare.LoganSquare;
-import com.bluelinelabs.logansquare.typeconverters.TypeConverter;
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonParser;
+import com.bluelinelabs.logansquare.typeconverters.LongBasedTypeConverter;
 import com.mobgen.halo.android.framework.network.client.response.Parser;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.util.Date;
@@ -26,7 +23,17 @@ public class LoganSquareParserFactory extends Parser.Factory {
      * @return The logan square factory.
      */
     public static LoganSquareParserFactory create() {
-        LoganSquare.registerTypeConverter(Date.class, new DateConverterSerializer());
+        LoganSquare.registerTypeConverter(Date.class, new LongBasedTypeConverter<Date>() {
+            @Override
+            public Date getFromLong(long date) {
+                return new Date(date);
+            }
+
+            @Override
+            public long convertToLong(Date object) {
+                return object.getTime();
+            }
+        });
         return new LoganSquareParserFactory();
     }
 
@@ -46,26 +53,5 @@ public class LoganSquareParserFactory extends Parser.Factory {
             converter = new ToLoganJsonConverter(type);
         }
         return converter;
-    }
-
-    /**
-     * Date converter that makes sure the conversion between dates is done properly.
-     */
-    private static class DateConverterSerializer implements TypeConverter<Date> {
-
-        @Override
-        public Date parse(JsonParser jsonParser) throws IOException {
-            String nullableDate = jsonParser.getValueAsString();
-            return nullableDate == null ? null : new Date(Long.parseLong(nullableDate));
-        }
-
-        @Override
-        public void serialize(Date date, String fieldName, boolean writeFieldNameForObject, JsonGenerator jsonGenerator) throws IOException {
-            if (fieldName != null) {
-                jsonGenerator.writeNumberField(fieldName, date.getTime());
-            } else {
-                jsonGenerator.writeNumber(date.getTime());
-            }
-        }
     }
 }
