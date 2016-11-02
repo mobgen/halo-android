@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingRight="@dimen/default_padding"
+    android:paddingEnd="@dimen/default_padding"
+    android:paddingLeft="@dimen/default_padding"
+    android:paddingStart="@dimen/default_padding"
+    android:paddingTop="@dimen/default_padding_small"
+    android:background="?attr/selectableItemBackground"
+    android:paddingBottom="@dimen/default_padding_small">
+
+    <com.mobgen.halo.android.app.ui.views.HaloTextView
+        android:id="@+id/tv_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/text_size"
+        android:textStyle="bold"
+        android:textColor="@color/white" />
+
+    <com.mobgen.halo.android.app.ui.views.HaloTextView
+        android:id="@+id/tv_subtitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/text_size_small"
+        android:textColor="@color/white" />
+
+</LinearLayout>

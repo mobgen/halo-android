@@ -1,0 +1,2 @@
+-keepparameternames
+-keepattributes EnclosingMethod

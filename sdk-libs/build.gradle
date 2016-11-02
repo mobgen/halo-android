@@ -1,0 +1,8 @@
+buildscript {
+    apply from: "../common-buildscript.gradle", to: buildscript
+}
+
+ext {
+    topDir = "${projectDir}/../"
+}
+apply from: "../common.gradle"

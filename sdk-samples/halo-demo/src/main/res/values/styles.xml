@@ -1,0 +1,11 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light">
+        <item name="colorPrimary">@color/light_green</item>
+        <!--   darker variant for the status bar and contextual app bars -->
+        <item name="colorPrimaryDark">@color/medium_green</item>
+        <!--   theme UI controls like checkboxes and text fields -->
+        <item name="colorAccent">@color/orange_mobgen</item>
+    </style>
+</resources>

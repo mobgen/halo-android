@@ -1,0 +1,81 @@
+subprojects {
+    repositories {
+        jcenter()
+        mavenCentral()
+        mavenLocal()
+        maven {url "https://clojars.org/repo/"}
+    }
+}
+
+def getAppVersionForSonar() {
+    if (System.env.bamboo_buildNumber != null) {
+        return "BAMBOO-${System.env.bamboo_buildNumber}"
+    }
+    def cmd = "git rev-parse --short HEAD"
+    def proc = cmd.execute()
+    return "GIT-" + proc.text.trim()
+}
+
+ext {
+    haloVersion = rootProject.hasProperty("production") ? file("${topDir}/version.txt").text.trim().replace("-SNAPSHOT", "") : file("${topDir}/version.txt").text.trim()
+    haloGroup = "com.mobgen.halo.android"
+    ignoreTestFailures = rootProject.hasProperty("ignoreTestFailures")
+
+    //Android config
+    compileSdkVersion = 24
+    buildToolsVersion = '24.0.1'
+    minSdkVersion = 15
+    targetSdkVersion = 24
+
+    //Google
+    appcompatVersion = '24.2.1'
+    firebaseVersion = '9.6.1'
+
+    //Facebook
+    facebookSdkVersion = '4.13.1'
+
+    //Runtime
+    loganSquareVersion = '1.3.6'
+    okHttpVersion = '3.4.1'
+
+    //Testing
+    jUnitVersion = '4.12'
+    assertJVersion = '2.5.0'
+    mockWebServerVersion = '3.4.1'
+    openGLTestLibrary = 'gl1.1-android-2.1_r1'
+    mockitoLibrary = '1.10.19'
+    robolectricLibrary = '3.1.2'
+    intellijAnnotations = '5.1'
+
+    //Jacoco
+    jacocoVersion = "0.7.6.201602180812"
+
+    //Sonar
+    sonarVersion = getAppVersionForSonar()
+    sonarHost = System.getenv("HALO_SONAR_URL")
+    sonarDbHost = "${System.getenv('HALO_SONAR_DATABASE')}/sonar?useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true&useConfigs=maxPerformance"
+    sonarUser = System.getenv("HALO_SONAR_USER")
+    sonarPassword = System.getenv("HALO_SONAR_PASSWORD")
+
+    //Distribution
+    sonatypeUser = System.getenv("HALO_SONATYPE_USER")
+    sonatypePassword = System.getenv("HALO_SONATYPE_PASSWORD")
+    jcenterUser = System.getenv("HALO_BINTRAY_USER")
+    jcenterKey = System.getenv("HALO_BINTRAY_KEY")
+}
+
+configurations.all {
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+    resolutionStrategy.cacheDynamicVersionsFor 0, 'seconds'
+}
+
+//Load the gradle wrapper in the given version
+def props = new Properties()
+props.load(new FileInputStream("${topDir}/halo.properties"))
+props.each { key, val ->
+    project.set(key, val)
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = project.gradleVersion
+}

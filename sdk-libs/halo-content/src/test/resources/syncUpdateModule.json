@@ -1,0 +1,32 @@
+{
+  "syncTimestamp": 1473088966483,
+  "created": [],
+  "updated": [
+    {
+      "name": "Instance B",
+      "module": "fakeId",
+      "createdBy": "Sample user",
+      "customerId": 1,
+      "values": {
+        "foo": "bar updated"
+      },
+      "tags": [],
+      "pushSchedule": null,
+      "externalId": null,
+      "revision": 0,
+      "createdAt": 1473088771682,
+      "updatedAt": 1473088966483,
+      "publishedAt": null,
+      "archivedAt": null,
+      "removedAt": null,
+      "updatedBy": "Application sample",
+      "deletedBy": "Sample user",
+      "id": "2"
+    }
+  ],
+  "deleted": [
+    {
+      "id": "3"
+    }
+  ]
+}

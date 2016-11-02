@@ -1,0 +1,113 @@
+apply plugin: 'com.android.library'
+apply plugin: 'com.neenbedankt.android-apt'
+apply plugin: 'grill'
+apply plugin: 'com.getkeepsafe.dexcount'
+apply plugin: 'jacoco'
+
+//Known issue in jacoco: https://github.com/robolectric/robolectric/issues/2230
+jacoco {
+    toolVersion = "${rootProject.ext.jacocoVersion}"
+}
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode grill.CI.getCommitRevision()
+        versionName "${rootProject.ext.haloVersion}"
+        buildConfigField "String", "HALO_SDK_VERSION", "\"${rootProject.ext.haloVersion}\""
+        buildConfigField "String", "HALO_PLATFORM_NAME", "\"android\""
+    }
+
+    buildTypes {
+        debug {
+            minifyEnabled false
+        }
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    testOptions {
+        unitTests.all {
+            jvmArgs '-noverify'
+            jacoco {
+                includeNoLocationClasses = true
+            }
+            setIgnoreFailures(rootProject.ext.ignoreTestFailures)
+        }
+    }
+}
+
+dependencies {
+    compile project(":halo-framework")
+    compile "com.bluelinelabs:logansquare:${loganSquareVersion}"
+    apt "com.bluelinelabs:logansquare-compiler:${loganSquareVersion}"
+
+    //Testing dependencies
+    testCompile project(":halo-testing")
+    testCompile "com.squareup.okhttp3:mockwebserver:${mockWebServerVersion}"
+    testApt "com.bluelinelabs:logansquare-compiler:${loganSquareVersion}"
+}
+
+
+
+/**
+ * Distribution script
+ */
+group = rootProject.ext.haloGroup
+version = rootProject.ext.haloVersion
+description = 'Android SDK to execute requests and execute operations against the HALO backend framework.'
+
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+
+task javadoc(type: Javadoc) {
+    source = android.sourceSets.main.java.srcDirs
+}
+
+task javadocJar(type: Jar, dependsOn: "documentationRelease") {
+    from javadoc.destinationDir
+    classifier = 'javadoc'
+}
+
+grill {
+    distribute {
+        libName 'HALO SDK'
+        libDescription 'This library provides the developer with a huge power to access the HALO cloud platform to consume generic information, push notifications and many other services.'
+        libDevId "halo-mobgen"
+        libDevName "MOBGEN"
+        libDevEmail "halo@mobgen.com"
+        libSiteUrl "https://halo.mobgen.com"
+        libGitUrl "https://bitbucket.org/mobgen/halo-android/sdk/halo-sdk"
+        bintrayRepoName "HALO"
+        bintrayUser "${rootProject.ext.jcenterUser}"
+        bintrayKey "${rootProject.ext.jcenterKey}"
+        bintrayMavenCentralUser "${rootProject.ext.sonatypeUser}"
+        bintrayMavenCentralPassword "${rootProject.ext.sonatypePassword}"
+        bintrayArtifactJavadoc project.tasks.getByName("javadocJar")
+        bintrayArtifactSources project.tasks.getByName("sourcesJar")
+        bintrayMavenSync project.hasProperty("sync")
+    }
+    codeQuality {
+        host "${rootProject.ext.sonarHost}"
+        projectKey "halo:sdk"
+        projectName "Halo SDK"
+        projectVersion "${rootProject.ext.sonarVersion}"
+        dbHost "${rootProject.ext.sonarDbHost}"
+        dbUser "${rootProject.ext.sonarUser}"
+        dbPassword "${rootProject.ext.sonarPassword}"
+    }
+    documentation {
+        templateDir "/../docs/template"
+    }
+    coverage {
+        excludes(['**/*$JsonObjectMapper*.*'])
+    }
+}

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/default_padding"
+    android:background="?attr/selectableItemBackground">
+
+    <ImageView
+        android:id="@+id/iv_thumbnail"
+        android:contentDescription="@string/article_image_content_desc"
+        android:layout_width="@dimen/thumbnail_image"
+        android:layout_height="@dimen/thumbnail_image"
+        android:scaleType="fitXY"
+        tools:src="@drawable/myicon" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginLeft="@dimen/default_margin"
+        android:layout_marginStart="@dimen/default_margin"
+        android:layout_marginRight="@dimen/default_margin"
+        android:layout_marginEnd="@dimen/default_margin">
+
+        <com.mobgen.halo.android.app.ui.views.HaloTextView
+            android:id="@+id/tv_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:singleLine="false"
+            android:textSize="@dimen/text_size"
+            android:textColor="@color/black"
+            android:maxLines="2"
+            android:ellipsize="end"
+            tools:text="This is a long title with two lines, don' you think it is awesome" />
+
+        <com.mobgen.halo.android.app.ui.views.HaloTextView
+            android:id="@+id/tv_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:singleLine="false"
+            android:textSize="@dimen/text_size_small"
+            android:textColor="@color/medium_gray"
+            android:ellipsize="end"
+            tools:text="21/01/2015" />
+
+    </LinearLayout>
+
+</LinearLayout>

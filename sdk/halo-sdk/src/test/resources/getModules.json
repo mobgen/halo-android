@@ -1,0 +1,103 @@
+[
+  {
+    "isSingle": false,
+    "name": "Android Test module",
+    "tags": [
+      {
+        "id": "57ecda62b4ef8a00105b36c2",
+        "name": "Android Version",
+        "value": "6.0.1",
+        "tagType": "000000000000000000000001"
+      },
+      {
+        "id": "000000000000000000000100",
+        "name": "Afghanistan",
+        "value": "AF",
+        "tagType": "000000000000000000000003"
+      }
+    ],
+    "pushTemplates": [
+      "57f507341bebba1000c27fa2",
+      "57f62737e60d51110092a4ab",
+      "57f6273ee60d51110092a4ac",
+      "57f62744e60d51110092a4ad",
+      "57f6274bf2636210007f0fe6",
+      "57f62750e60d51110092a4ae",
+      "57f62757f2636210007f0fe7",
+      "57f6277ee60d51110092a4af",
+      "57f62786e60d51110092a4b0",
+      "57f63ab0f2636210007f0fe8"
+    ],
+    "customerId": 1,
+    "createdBy": "Name selfupdated Admin",
+    "updatedBy": "Admin Admin",
+    "deletedAt": null,
+    "deletedBy": null,
+    "createdAt": 1475744646504,
+    "updatedAt": 1475758983905,
+    "id": "57f613869935ad1100f612d7"
+  },
+  {
+    "isSingle": false,
+    "name": "QROffer",
+    "customerId": 1,
+    "createdBy": "Admin Admin",
+    "updatedBy": "Admin Admin",
+    "tags": [],
+    "pushTemplates": [],
+    "deletedAt": null,
+    "deletedBy": null,
+    "createdAt": 1475219852246,
+    "updatedAt": 1475219852246,
+    "id": "57ee118c1a08d410007d2854"
+  },
+  {
+    "isSingle": false,
+    "name": "Store Locator",
+    "customerId": 1,
+    "createdBy": "Admin Admin",
+    "updatedBy": "Admin Admin",
+    "tags": [],
+    "pushTemplates": [],
+    "deletedAt": null,
+    "deletedBy": null,
+    "createdAt": 1475163532500,
+    "updatedAt": 1475163532500,
+    "id": "57ed358c11aed70012440d28"
+  },
+  {
+    "isSingle": false,
+    "name": "Gallery",
+    "customerId": 1,
+    "createdBy": "Admin Admin",
+    "updatedBy": "Admin Admin",
+    "tags": [],
+    "pushTemplates": [],
+    "deletedAt": null,
+    "deletedBy": null,
+    "createdAt": 1475160824752,
+    "updatedAt": 1475160824752,
+    "id": "57ed2af811aed70012440d27"
+  },
+  {
+    "isSingle": false,
+    "name": "News Motorist",
+    "customerId": 1,
+    "createdBy": "Admin Admin",
+    "updatedBy": "Admin Admin",
+    "tags": [
+      {
+        "id": "57ecc02d6a604b00112cb626",
+        "name": "Android SDK Version",
+        "value": "2.0.0-SNAPSHOT",
+        "tagType": "000000000000000000000001"
+      }
+    ],
+    "pushTemplates": [],
+    "deletedAt": null,
+    "deletedBy": null,
+    "createdAt": 1475153661451,
+    "updatedAt": 1475153928079,
+    "id": "57ed0efd11aed70012440d13"
+  }
+]

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:padding="@dimen/default_padding">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:contentPadding="@dimen/default_padding"
+        app:cardElevation="8dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/transaction_analytic_title"
+                style="@style/TextAppearance.AppCompat.Title"
+                android:layout_marginBottom="@dimen/default_margin_small"/>
+
+            <android.support.v7.widget.AppCompatEditText
+                android:id="@+id/et_product_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textAutoComplete"
+                android:hint="@string/analytic_product_name_hint"/>
+
+            <android.support.v7.widget.AppCompatEditText
+                android:id="@+id/et_product_category"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textAutoComplete"
+                android:hint="@string/analytic_product_category_hint"/>
+
+            <android.support.v7.widget.AppCompatEditText
+                android:id="@+id/et_product_quantity"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="numberSigned"
+                android:hint="@string/analytic_product_quantity_hint"/>
+
+            <android.support.v7.widget.AppCompatEditText
+                android:id="@+id/et_product_price"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="numberSigned|numberDecimal"
+                android:hint="@string/analytic_product_price_hint"/>
+
+            <Button
+                android:id="@+id/bt_send"
+                android:layout_gravity="end"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/analytic_send_transaction"
+                android:layout_marginTop="@dimen/default_margin_small"
+                style="?attr/borderlessButtonStyle"/>
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+
+</ScrollView>

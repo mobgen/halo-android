@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <include layout="@layout/adapter_data_status" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/article_title_image">
+
+                <ImageView
+                    android:id="@+id/iv_offer"
+                    android:contentDescription="@string/article_image_content_desc"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    tools:src="@drawable/myicon" />
+
+                <ImageView
+                    android:id="@+id/iv_qr_image"
+                    android:contentDescription="@string/article_image_content_desc"
+                    android:layout_width="@dimen/qr_thumb"
+                    android:layout_height="@dimen/qr_thumb"
+                    android:scaleType="fitCenter"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_margin="@dimen/default_margin"
+                    tools:src="@drawable/myicon" />
+
+                <View
+                    android:id="@+id/fl_image_click"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="?attr/selectableItemBackground" />
+            </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_title_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/default_padding"
+                android:background="@color/light_gray">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <com.mobgen.halo.android.app.ui.views.HaloTextView
+                        android:id="@+id/tv_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:singleLine="false"
+                        android:textSize="@dimen/text_size_big"
+                        android:textColor="@color/black"
+                        android:ellipsize="end"
+                        android:layout_toLeftOf="@+id/bt_activate"
+                        android:layout_toStartOf="@+id/bt_activate"
+                        android:layout_alignWithParentIfMissing="true"
+                        tools:text="My custom title" />
+
+                    <Button
+                        android:id="@+id/bt_activate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:visibility="gone"
+                        android:text="@string/qr_activate" />
+                </RelativeLayout>
+
+                <com.mobgen.halo.android.app.ui.views.HaloTextView
+                    android:id="@+id/tv_date"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:singleLine="false"
+                    android:layout_marginTop="@dimen/default_margin_small"
+                    android:textSize="@dimen/text_size_small"
+                    android:textColor="@color/medium_gray"
+                    android:ellipsize="end"
+                    tools:text="21 June 2015" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/white"
+                android:padding="@dimen/default_padding">
+
+                <WebView
+                    android:id="@+id/wb_qr"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/default_padding"
+                    android:scrollbars="none"
+                    tools:text="This is an article" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+
+    <FrameLayout
+        android:id="@+id/fl_fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</RelativeLayout>

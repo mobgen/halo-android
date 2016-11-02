@@ -1,0 +1,26 @@
+{
+  "syncTimestamp": 100,
+  "created": [
+    {
+      "name": "Instance A",
+      "module": "fakeId",
+      "createdBy": "Sample user",
+      "customerId": 1,
+      "values": null,
+      "tags": [],
+      "pushSchedule": null,
+      "externalId": null,
+      "revision": 0,
+      "createdAt": 1473088771682,
+      "updatedAt": null,
+      "publishedAt": null,
+      "archivedAt": null,
+      "removedAt": null,
+      "updatedBy": null,
+      "deletedBy": null,
+      "id": "1"
+    },
+  ],
+  "updated": [],
+  "deleted": []
+}

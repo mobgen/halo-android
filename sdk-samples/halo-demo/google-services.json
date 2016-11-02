@@ -1,0 +1,89 @@
+{
+  "project_info": {
+    "project_number": "270833877774",
+    "firebase_url": "https://burnished-case-106413.firebaseio.com",
+    "project_id": "burnished-case-106413",
+    "storage_bucket": "burnished-case-106413.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:270833877774:android:5c2c6dfeca983a7b",
+        "android_client_info": {
+          "package_name": "asd"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "270833877774-o2e4nmcr4i3gu4e6nbf3a9bvnd92k5gk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCkjuSSJu33GZqEXVXW-jN1idLml96An2g"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:270833877774:android:ee328e8a7db06ce1",
+        "android_client_info": {
+          "package_name": "com.mobgen.halo.android.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "270833877774-umbs0aqcgh5ua7dou75t0hfolbog7ano.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mobgen.halo.android.app",
+            "certificate_hash": "0976D4E9E3E55866B7B042396BB402B9D73AC019"
+          }
+        },
+        {
+          "client_id": "270833877774-krntic6gjvqv4k5tar3hnoccol9nqr1a.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mobgen.halo.android.app",
+            "certificate_hash": "961D7A343BA5A5F3546EC4F50AB274AA84E151BC"
+          }
+        },
+        {
+          "client_id": "270833877774-o2e4nmcr4i3gu4e6nbf3a9bvnd92k5gk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCkjuSSJu33GZqEXVXW-jN1idLml96An2g"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

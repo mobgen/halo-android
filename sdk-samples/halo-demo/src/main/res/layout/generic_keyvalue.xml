@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:weightSum="2">
+
+    <TextView
+        android:id="@+id/tv_general_key"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/text_size_small"
+        android:padding="@dimen/default_padding"
+        android:textColor="@color/black"
+        android:layout_weight="1"
+        tools:text="This is the key" />
+
+    <TextView
+        android:id="@+id/tv_general_value"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/text_size_small"
+        android:padding="@dimen/default_padding"
+        android:layout_weight="1"
+        android:textColor="@color/medium_gray"
+        android:gravity="end"
+        tools:text="This is the value" />
+
+</LinearLayout>

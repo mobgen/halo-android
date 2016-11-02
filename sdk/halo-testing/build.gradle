@@ -1,0 +1,74 @@
+apply plugin: 'com.android.library'
+apply plugin: 'grill'
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode grill.CI.getCommitRevision()
+        versionName "${rootProject.ext.haloVersion}"
+    }
+}
+
+afterEvaluate {
+    // Remove lint tasks to avoid linting the testing project that gets stuck on build time
+    tasks.remove(tasks.lint)
+    tasks.remove(tasks.lintDebug)
+    tasks.remove(tasks.lintRelease)
+}
+
+dependencies {
+    compile "com.intellij:annotations:${rootProject.ext.intellijAnnotations}"
+    compile "junit:junit:${rootProject.ext.jUnitVersion}"
+    compile "org.robolectric:robolectric:${rootProject.ext.robolectricLibrary}"
+    compile "org.mockito:mockito-core:${rootProject.ext.mockitoLibrary}"
+    compile "org.assertj:assertj-core:${rootProject.ext.assertJVersion}"
+    compile "com.squareup.okhttp3:mockwebserver:${rootProject.ext.mockWebServerVersion}"
+}
+
+/**
+ * Distribution
+ */
+group = rootProject.ext.haloGroup
+version = rootProject.ext.haloVersion
+description = 'The HALO Testing provides the developer with some testing tools that may help him to test stuff that uses halo'
+
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+
+task javadoc(type: Javadoc) {
+    source = android.sourceSets.main.java.srcDirs
+}
+
+task javadocJar(type: Jar, dependsOn: "documentationRelease") {
+    from javadoc.destinationDir
+    classifier = 'javadoc'
+}
+
+grill {
+    distribute {
+        libName 'HALO Testing'
+        libDescription 'This library provides the developer with some testing tools that may help him to test stuff that uses halo'
+        libDevId "halo-mobgen"
+        libDevName "MOBGEN"
+        libDevEmail "halo@mobgen.com"
+        libSiteUrl "https://halo.mobgen.com"
+        libGitUrl "https://bitbucket.org/mobgen/halo-android/sdk/halo-testing"
+        bintrayRepoName "HALO"
+        bintrayUser "${rootProject.ext.jcenterUser}"
+        bintrayKey "${rootProject.ext.jcenterKey}"
+        bintrayMavenCentralUser "${rootProject.ext.sonatypeUser}"
+        bintrayMavenCentralPassword "${rootProject.ext.sonatypePassword}"
+        bintrayArtifactJavadoc project.tasks.getByName("javadocJar")
+        bintrayArtifactSources project.tasks.getByName("sourcesJar")
+        bintrayMavenSync project.hasProperty("sync")
+    }
+    documentation {
+        templateDir "/../docs/template"
+    }
+}

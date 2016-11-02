@@ -1,0 +1,12 @@
+{
+    "id": 5,
+    "server": "1000",
+    "serverChangeLog": "https://bitbucket.org/mobgen/halo-server-documentation/wiki/changelog/1000",
+    "minAndroid": "1000",
+    "androidChangeLog": "https://bitbucket.org/mobgen/halo-sdk-android/wiki/changelog/1000",
+    "minIOS": "1.2.0",
+    "iosChangeLog": "https://bitbucket.org/mobgen/halo-sdk-ios/wiki/changelog/1000",
+    "current": true,
+    "createdAt": 1476346833000,
+    "updatedAt": 1476346832000
+}

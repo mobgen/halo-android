@@ -1,0 +1,74 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.mobgen.halo.android.app"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application
+        android:allowBackup="false"
+        tools:replace="android:allowBackup"
+        android:fullBackupContent="false"
+        android:name=".ui.MobgenHaloApplication"
+        android:label="@string/app_name"
+        android:icon="@mipmap/logo"
+        android:theme="@style/AppTheme">
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyB8PnwH17Ck93ugokJPU4J6qV1jvvckpmM" />
+
+        <activity
+            android:name=".ui.modules.partial.ModulesActivity"
+            android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.mobgen.halo.android.sdk.notifications.OPEN" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".ui.generalcontent.GeneralContentModuleActivity" />
+
+        <activity android:name=".ui.generalcontent.GeneralContentItemActivity" />
+
+        <activity android:name=".ui.addons.SegmentationActivity" />
+
+        <activity android:name=".ui.storelocator.StoreLocatorActivity" />
+
+        <activity android:name=".ui.news.ArticlesListActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.modules.partial.ModulesActivity" />
+        </activity>
+
+        <activity android:name=".ui.news.ArticleActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.news.ArticlesListActivity" />
+        </activity>
+
+        <activity android:name=".ui.qr.QRActivity" />
+
+        <activity android:name=".ui.qr.QRListActivity" />
+
+        <activity android:name=".ui.settings.SettingsActivity" />
+
+        <activity android:name=".ui.gallery.GalleryActivity"/>
+
+        <activity android:name=".ui.translations.TranslationsActivity"/>
+
+        <activity android:name=".ui.loadtests.LoadTestsActivity"/>
+
+        <activity android:name=".ui.analytics.AnalyticsActivity"/>
+
+        <activity android:name=".ui.social.SocialLoginActivity"/>
+
+    </application>
+
+</manifest>

@@ -1,0 +1,124 @@
+<resources>
+    <string name="authenticator_label">Halo Demo Application</string>
+
+    <!-- Generic -->
+    <string name="confirm">Confirm</string>
+
+    <!-- Settings  -->
+    <string name="environment_title">Environment</string>
+    <string name="int_environment">Int</string>
+    <string name="qa_environment">QA</string>
+    <string name="stage_environment">Stage</string>
+    <string name="production_environment">Production</string>
+    <string name="uat_environment">UAT</string>
+    <string name="environment_select">Select the environment</string>
+    <string name="delete_database">Remove offline database</string>
+    <string name="settings_title">Settings</string>
+    <string name="settings_info">Application info</string>
+    <string name="application_version_info">Application version</string>
+    <string name="bamboo_build_info">Bamboo build</string>
+    <string name="gcm_token_info">Notification token</string>
+    <string name="client_id_info">Client id</string>
+    <string name="user_alias_info">User alias</string>
+
+    <!-- Modules -->
+    <string name="modules">Modules</string>
+    <string name="addons">Add-ons</string>
+    <string name="segmentation">Segmentation</string>
+    <string name="analytics_addon">Analytics</string>
+    <string name="social_login_addon">Social login</string>
+    <string name="app_name">Halo</string>
+    <string name="app_disclaimer">Welcome to the future!</string>
+
+    <!-- Segmentation -->
+    <string name="addons_tags_title">Segmentation tags</string>
+    <string name="add_tag_hint">Add the tag name</string>
+    <string name="add_tag_value">Add the tag value</string>
+    <string name="add_tag_error">You have to provide a name for the tag</string>
+    <string name="menu_add_segmentation_tag">Add tag</string>
+
+    <!-- Icons -->
+    <string name="icon_settings">{fa-cog}</string>
+    <string name="icon_remove">{fa-times}</string>
+
+    <!-- Store locator -->
+    <string name="store_locator_title">Store locator</string>
+    <string name="menu_map_refresh">Refresh map</string>
+    <string name="map_permissions">The application does not have enough permissions to show the store locator. Please enable localization and internal storage.</string>
+    <string name="map_permissions_enable">Open permissions</string>
+
+    <!-- News -->
+    <string name="news_title">News</string>
+    <string name="news_details">News details</string>
+    <string name="article_image_content_desc">Article image</string>
+    <string name="url_button_content_des">Url redirect</string>
+
+    <!-- QR Articles -->
+    <string name="qr_title">QR Offers</string>
+    <string name="qr_activate">Activate</string>
+    <string name="qr_redeemed">Redeemed</string>
+
+    <!-- Gallery -->
+    <string name="gallery_title">Gallery</string>
+
+    <!-- Translations -->
+    <string name="translations_title">Translations</string>
+    <string name="spanish_es">Spanish</string>
+    <string name="english_us">English</string>
+    <string name="resync_translations">Resync translations</string>
+    <string name="clear_translations">Clear local translations</string>
+
+    <!-- Errors -->
+    <string name="error_no_instance">Instance not available. Maybe it is archived</string>
+
+    <string name="status_message_offline">The data shown is cached.</string>
+    <string name="status_message_error">WAIT: We have found an error while performing this operation. Details: %1$s</string>
+    <string name="effect_hue">Hue</string>
+    <string name="effect_red">Red</string>
+    <string name="effect_green">Green</string>
+    <string name="effect_blue">Blue</string>
+    <string name="effect_negate">Negate</string>
+    <string name="effect_brightness">Brightness</string>
+    <string name="effect_sepia">Sepia</string>
+    <string name="effect_grayscale">GrayScale</string>
+    <string name="effect_black_and_white"><![CDATA[B & W]]></string>
+    <string name="effect_saturation">Saturation</string>
+    <string name="effect_contrast">Contrast</string>
+    <string name="effect_auto_contrast">Auto contrast</string>
+    <string name="effect_autoColor">Auto color</string>
+    <string name="effect_improve">Improve</string>
+    <string name="effect_auto_brightness">Auto brightness</string>
+    <string name="effect_vignette">Vignette</string>
+    <string name="effect_gradient_fade">Gradient fade</string>
+    <string name="effect_pixelate">Pixelate</string>
+    <string name="effect_blur">Blur</string>
+
+    <!-- Load tests -->
+    <string name="load_tests_title">Load tests tool</string>
+    <string name="load_resync">Resync module</string>
+    <string name="load_search">Do search</string>
+    <string name="load_sync">Fetch synced items</string>
+    <string name="load_full_sync_time">Full sync time: </string>
+    <string name="load_search_time">Search time: </string>
+    <string name="load_retrieve_time">Database fetch time: </string>
+    <string name="load_measuring">Measuring</string>
+    <string name="search_title">Search</string>
+    <string name="sync_title">Sync</string>
+
+    <!-- Analytics -->
+    <string name="analytics_fragment_firebase">Firebase provider</string>
+    <string name="analytics_fragment_halo">Halo provider</string>
+    <string name="transaction_analytic_title">Transaction analytic</string>
+    <string name="analytic_product_name_hint">Product name</string>
+    <string name="analytic_product_category_hint">Product category</string>
+    <string name="analytic_product_price_hint">Product price</string>
+    <string name="analytic_product_quantity_hint">Product quantity</string>
+    <string name="analytic_send_transaction">Send transaction</string>
+
+    <!-- Social login -->
+    <string name="social_login_title">Social login</string>
+    <string name="google_social_login">Google social login</string>
+    <string name="facebook_social_login">Facebook social login</string>
+    <string name="error_provider_not_available">Social provider not avaliable</string>
+    <string name="login_with_facebook">Login with facebook</string>
+</resources>

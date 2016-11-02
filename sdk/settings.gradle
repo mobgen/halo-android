@@ -1,0 +1,4 @@
+include ":halo-framework"
+include ":halo-sdk"
+include ":halo-plugin"
+include ":halo-testing"

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:id="@+id/gallery_effects" android:checkableBehavior="single">
+        <item android:id="@+id/effect_hue"
+            android:title="@string/effect_hue" />
+        <item android:id="@+id/effect_red"
+            android:title="@string/effect_red" />
+        <item android:id="@+id/effect_green"
+            android:title="@string/effect_green" />
+        <item android:id="@+id/effect_blue"
+            android:title="@string/effect_blue" />
+        <item android:id="@+id/effect_negate"
+            android:title="@string/effect_negate" />
+        <item android:id="@+id/effect_brightness"
+            android:title="@string/effect_brightness" />
+        <item android:id="@+id/effect_sepia"
+            android:title="@string/effect_sepia" />
+        <item android:id="@+id/effect_grayscale"
+            android:title="@string/effect_grayscale" />
+        <item android:id="@+id/effect_black_and_white"
+            android:title="@string/effect_black_and_white" />
+        <item android:id="@+id/effect_saturation"
+            android:title="@string/effect_saturation" />
+        <item android:id="@+id/effect_contrast"
+            android:title="@string/effect_contrast" />
+        <item android:id="@+id/effect_auto_contrast"
+            android:title="@string/effect_auto_contrast" />
+        <item android:id="@+id/effect_autoColor"
+            android:title="@string/effect_autoColor" />
+        <item android:id="@+id/effect_improve"
+            android:title="@string/effect_improve" />
+        <item android:id="@+id/effect_auto_brightness"
+            android:title="@string/effect_auto_brightness" />
+        <item android:id="@+id/effect_vignette"
+            android:title="@string/effect_vignette" />
+        <item android:id="@+id/effect_gradient_fade"
+            android:title="@string/effect_gradient_fade" />
+        <item android:id="@+id/effect_pixelate"
+            android:title="@string/effect_pixelate" />
+        <item android:id="@+id/effect_blur"
+            android:title="@string/effect_blur" />
+    </group>
+</menu>

@@ -1,0 +1,12 @@
+buildscript {
+    apply from: "../common-buildscript.gradle", to: buildscript
+    dependencies {
+        def pluginVersion = hasProperty("production") ? file("${projectDir}/../version.txt").text.trim().replace("-SNAPSHOT", "") : file("${projectDir}/../version.txt").text.trim()
+        classpath "com.mobgen.halo.android:halo-plugin:${pluginVersion}"
+    }
+}
+
+ext {
+    topDir = "${projectDir}/../"
+}
+apply from: "../common.gradle"

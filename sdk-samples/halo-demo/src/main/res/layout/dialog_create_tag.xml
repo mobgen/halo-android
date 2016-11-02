@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/default_padding">
+
+    <EditText
+        android:id="@+id/et_tag_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/add_tag_hint"
+        android:lines="1"
+        android:singleLine="true" />
+
+    <EditText
+        android:id="@+id/et_tag_value"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/add_tag_value"
+        android:lines="1"
+        android:singleLine="true" />
+
+    <TextView
+        android:id="@+id/tv_add_tag_error"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/add_tag_error"
+        android:visibility="gone"
+        android:textColor="@color/medium_green" />
+</LinearLayout>

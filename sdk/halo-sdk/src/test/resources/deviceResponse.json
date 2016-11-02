@@ -1,0 +1,26 @@
+{
+  "appId": 2,
+  "devices": [
+    {
+      "platform": "android",
+      "token": "mytoken"
+    }
+  ],
+  "tags": [
+    {
+      "id": "56deeb7e669aee2a00bc82ec",
+      "name": "Platform Name",
+      "value": "ios"
+    },
+    {
+      "id": "56e1b1c43e101b2e00224d0f",
+      "name": "female",
+      "value": "true"
+    }
+  ],
+  "customerId": 1,
+  "alias": "myTestUser",
+  "createdAt": 1476090159082,
+  "updatedAt": 1476090159082,
+  "id": "57fb592ff53f3f002aa99d78"
+}

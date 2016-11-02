@@ -1,0 +1,169 @@
+buildscript {
+    apply from: "common-buildscript.gradle", to: buildscript
+}
+ext {
+    topDir = projectDir
+}
+apply from: "common.gradle"
+
+/**
+ * Sdk
+ */
+ task cleanSdk(type: GradleBuild) {
+    group = "halo"
+    description = "Cleans the sdk"
+    buildFile = file('sdk/build.gradle')
+    tasks = ["clean"]
+    startParameter.projectProperties = gradle.startParameter.projectProperties
+}
+task installGradlePlugin(type: GradleBuild) {
+    group = "halo"
+    description = "Installs the Halo gradle plugin into the local repo"
+    buildFile = file('sdk/halo-plugin/build.gradle')
+    tasks = ['install']
+    startParameter.projectProperties = gradle.startParameter.projectProperties
+}
+task installSdk(type: GradleBuild) {
+	dependsOn cleanSdk
+    group = "halo"
+    description = "Installs the Halo sdk dependencies into the local repository"
+    buildFile = file('sdk/build.gradle')
+    tasks = ['install']
+    startParameter.projectProperties = gradle.startParameter.projectProperties
+}
+task distributeSdk(type: GradleBuild) {
+    dependsOn installGradlePlugin
+    group = "halo"
+    description = "Distributes the halo gradle plugin"
+    buildFile = file('sdk/build.gradle')
+    tasks = ["distribute"]
+    startParameter.projectProperties = gradle.startParameter.projectProperties
+}
+task testSdk(type: GradleBuild){
+    group = "halo"
+    description = "Passes all the tests available in the sdk projects"
+    buildFile = file('sdk/build.gradle')
+    tasks = ["createReleaseUnitTestCoverageReport"]
+    startParameter.projectProperties = gradle.startParameter.projectProperties
+}
+task documentSdk(type: GradleBuild){
+    group = "halo"
+    description = "Documents the sdk."
+    buildFile = file('sdk/build.gradle')
+    tasks = ["documentationRelease"]
+    startParameter.projectProperties = gradle.startParameter.projectProperties
+}
+task codeQualitySdk(type: GradleBuild) {
+    group = "halo"
+    description = "Evaluates the code quality of the sdk"
+    buildFile = file('sdk/build.gradle')
+    tasks = ["codeQualityRelease"]
+    startParameter.projectProperties = gradle.startParameter.projectProperties
+}
+task lintSdk(type: GradleBuild) {
+    group = "halo"
+    description = "Passes lint checks to the sdk"
+    buildFile = file('sdk/build.gradle')
+    tasks = ["lintRelease"]
+    startParameter.projectProperties = gradle.startParameter.projectProperties
+}
+task dexCountSdk(type: GradleBuild) {
+    group = "halo"
+    description = "Counts the number of methods in the sdk"
+    buildFile = file('sdk/build.gradle')
+    tasks = ["countReleaseDexMethods"]
+    startParameter.projectProperties = gradle.startParameter.projectProperties
+}
+
+/**
+ * SDK Libraries
+ */
+task cleanLibraries(type: GradleBuild) {
+    group = "halo"
+    description = "Cleans the sdk libraries"
+    buildFile = file('sdk-libs/build.gradle')
+    tasks = ["clean"]
+    startParameter.projectProperties = gradle.startParameter.projectProperties
+}
+task installLibraries(type: GradleBuild) {
+	dependsOn cleanLibraries
+    group = "halo"
+    description = "Installs all the sdk libraries"
+    buildFile = file('sdk-libs/build.gradle')
+    tasks = ['install']
+    startParameter.projectProperties = gradle.startParameter.projectProperties
+}
+task distributeLibraries(type: GradleBuild) {
+    dependsOn distributeSdk
+    group = "halo"
+    description = "Installs all the sdk libraries"
+    buildFile = file('sdk-libs/build.gradle')
+    tasks = ['distribute']
+    startParameter.projectProperties = gradle.startParameter.projectProperties
+}
+task testLibraries(type: GradleBuild){
+    group = "halo"
+    description = "Passes all the tests available in the sdk projects"
+    buildFile = file('sdk-libs/build.gradle')
+    tasks = ["createReleaseUnitTestCoverageReport"]
+    startParameter.projectProperties = gradle.startParameter.projectProperties   
+}
+task documentLibraries(type: GradleBuild){
+    group = "halo"
+    description = "Documents the sdk libraries"
+    buildFile = file('sdk-libs/build.gradle')
+    tasks = ["documentationRelease"]
+    startParameter.projectProperties = gradle.startParameter.projectProperties
+}
+task codeQualityLibraries(type: GradleBuild) {
+    group = "halo"
+    description = "Evaluates the code quality of the sdk libraries"
+    buildFile = file('sdk-libs/build.gradle')
+    tasks = ["codeQualityRelease"]
+    startParameter.projectProperties = gradle.startParameter.projectProperties
+}
+task lintLibraries(type: GradleBuild) {
+    group = "halo"
+    description = "Passes lint checks to the libraries"
+    buildFile = file('sdk-libs/build.gradle')
+    tasks = ["lintRelease"]
+    startParameter.projectProperties = gradle.startParameter.projectProperties
+}
+task dexCountLibraries(type: GradleBuild) {
+    group = "halo"
+    description = "Counts the number of methods in the sdk libraries"
+    buildFile = file('sdk-libs/build.gradle')
+    tasks = ["countReleaseDexMethods"]
+    startParameter.projectProperties = gradle.startParameter.projectProperties
+}
+
+/**
+ * Build Demo
+ */
+task buildDebugDemo(type: GradleBuild){
+    group = "halo"
+    description = "Builds the debug demo apk"
+    buildFile = file('sdk-samples/halo-demo/build.gradle')
+    tasks = ["assembleDebug"]
+    startParameter.projectProperties = gradle.startParameter.projectProperties   
+}
+task buildReleaseDemo(type: GradleBuild){
+    group = "halo"
+    description = "Builds the release demo apk"
+    buildFile = file('sdk-samples/halo-demo/build.gradle')
+    tasks = ["assembleRelease"]
+    startParameter.projectProperties = gradle.startParameter.projectProperties   
+}
+
+//Release script to create new releases of the sdk
+apply plugin: 'ch.netzwerg.release'
+task build(type: GradleBuild) {
+    dependsOn installGradlePlugin
+    dependsOn distributeSdk
+    dependsOn distributeLibraries
+}
+release {
+    push = false
+    versionSuffix = '-SNAPSHOT'
+    tagPrefix = ''
+}

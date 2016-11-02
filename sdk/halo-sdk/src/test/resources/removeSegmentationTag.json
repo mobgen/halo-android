@@ -1,0 +1,89 @@
+{
+  "tags": [
+    {
+      "id": "57ecc02d6a604b00112cb61c",
+      "name": "Platform Name",
+      "value": "android",
+      "tagType": "000000000000000000000001"
+    },
+    {
+      "id": "57ecc02d6a604b00112cb61d",
+      "name": "Android Version",
+      "value": "6.0",
+      "tagType": "000000000000000000000001"
+    },
+    {
+      "id": "57ecc02d6a604b00112cb61e",
+      "name": "Application Name",
+      "value": "Halo",
+      "tagType": "000000000000000000000001"
+    },
+    {
+      "id": "57ecc02d6a604b00112cb61f",
+      "name": "Application Version",
+      "value": "2.0.0-SNAPSHOT-demo",
+      "tagType": "000000000000000000000001"
+    },
+    {
+      "id": "57ecc02d6a604b00112cb620",
+      "name": "Device Manufacturer",
+      "value": "unknown",
+      "tagType": "000000000000000000000001"
+    },
+    {
+      "id": "57ecc02d6a604b00112cb621",
+      "name": "Device Model",
+      "value": "Android SDK built for x86_64",
+      "tagType": "000000000000000000000001"
+    },
+    {
+      "id": "57ecc02d6a604b00112cb622",
+      "name": "Device Type",
+      "value": "Phone",
+      "tagType": "000000000000000000000001"
+    },
+    {
+      "id": "57ecc02d6a604b00112cb623",
+      "name": "Bluetooth 4 Support",
+      "value": "false",
+      "tagType": "000000000000000000000001"
+    },
+    {
+      "id": "57ecc02d6a604b00112cb624",
+      "name": "NFC Support",
+      "value": "false",
+      "tagType": "000000000000000000000001"
+    },
+    {
+      "id": "57ecc02d6a604b00112cb625",
+      "name": "Screen Size",
+      "value": "1080x1794",
+      "tagType": "000000000000000000000001"
+    },
+    {
+      "id": "57ecc02d6a604b00112cb626",
+      "name": "Android SDK Version",
+      "value": "2.0.0-SNAPSHOT",
+      "tagType": "000000000000000000000001"
+    },
+    {
+      "id": "57ecc02d6a604b00112cb627",
+      "name": "Test Device",
+      "value": "true",
+      "tagType": "000000000000000000000001"
+    }
+  ],
+  "customerId": 1,
+  "appId": 2,
+  "deletedAt": null,
+  "alias": "anonymous-city9aodr02be0hrbwdcebt4q",
+  "createdAt": 1475753106162,
+  "updatedAt": 1475761416200,
+  "devices": [
+    {
+      "token": "cuPIPCMl5tQ:APA91bFt5JY2xDntg-dB2Hu_XarXooHwtIelNUGTnQPZRP-8n5TZQzps5g8nevHZ01nfh5X18MZg0jxfEl80tvbDvUkTJ_TDODqi7wYRl_M14KmxdJt5sLxOWpiXrpMwWFaWCKfZj6nA",
+      "platform": "android"
+    }
+  ],
+  "id": "57f63492df4b73110013feca"
+}

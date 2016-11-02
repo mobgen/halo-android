@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/selectableItemBackground">
+
+    <TextView
+        android:id="@+id/tv_general_key"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/text_size_small"
+        android:padding="@dimen/default_padding"
+        android:textColor="@color/black"
+        android:layout_centerVertical="true"
+        tools:text="This is the key" />
+
+    <ImageView
+        android:id="@+id/iv_preview"
+        android:contentDescription="@string/app_name"
+        android:layout_width="@dimen/thumbnail_image"
+        android:layout_height="@dimen/thumbnail_image"
+        android:layout_alignEnd="@id/tv_general_key"
+        android:layout_alignRight="@id/tv_general_key"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="@dimen/default_margin"
+        android:layout_marginEnd="@dimen/default_margin" />
+
+</RelativeLayout>

@@ -1,0 +1,7 @@
+{
+  "access_token": "LSD4fw4NLBTESfF18tTVEST6q9vsaLW8tMfEGLJa",
+  "refresh_token": "JpKug4STVzDsN4MAr8HUExhkCl5rP8dmosBdsFTo",
+  "expires_in": 86400000,
+  "scope": "app::module::62;app::module::103;app::module::74;app::module::80;app::module::61;app::module::115;app::module::67;app::module::116;app::module::155;app::module::156;app::module::157;app::module::68;",
+  "token_type": "Bearer"
+}

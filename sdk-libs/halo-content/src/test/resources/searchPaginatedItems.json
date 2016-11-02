@@ -1,0 +1,74 @@
+{
+  "pagination": {
+    "page": 1,
+    "limit": 3,
+    "offset": 0,
+    "totalItems": 360,
+    "totalPages": 120
+  },
+  "items": [
+    {
+      "name": "1",
+      "module": "571f38b9bb7f372900a14cbc",
+      "tags": [],
+      "archivedAt": null,
+      "removedAt": null,
+      "publishedAt": null,
+      "createdBy": "Name MOBGEN",
+      "customerId": 1,
+      "values": {
+        "foo": "bar"
+      },
+      "pushSchedule": null,
+      "externalId": null,
+      "revision": 0,
+      "createdAt": 1471436947211,
+      "updatedAt": null,
+      "updatedBy": null,
+      "deletedBy": null,
+      "id": "57b45893df01cd0027275feb"
+    },
+    {
+      "name": "2",
+      "module": "571f38b9bb7f372900a14cbc",
+      "tags": [],
+      "archivedAt": null,
+      "removedAt": null,
+      "publishedAt": null,
+      "createdBy": "Name MOBGEN",
+      "customerId": 1,
+      "values": {
+        "foo": "bar"
+      },
+      "pushSchedule": null,
+      "externalId": null,
+      "revision": 0,
+      "createdAt": 1471436947668,
+      "updatedAt": null,
+      "updatedBy": null,
+      "deletedBy": null,
+      "id": "57b45893eccc780021aa04cf"
+    },
+    {
+      "name": "3",
+      "module": "571f38b9bb7f372900a14cbc",
+      "tags": [],
+      "archivedAt": null,
+      "removedAt": null,
+      "publishedAt": null,
+      "createdBy": "Name MOBGEN",
+      "customerId": 1,
+      "values": {
+        "foo": "bar"
+      },
+      "pushSchedule": null,
+      "externalId": null,
+      "revision": 0,
+      "createdAt": 1471436948336,
+      "updatedAt": null,
+      "updatedBy": null,
+      "deletedBy": null,
+      "id": "57b458947dca3b003b83a995"
+    }
+  ]
+}
