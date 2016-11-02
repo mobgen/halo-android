@@ -526,7 +526,7 @@ public final class HaloSchedulerService extends Service {
     /**
      * The scheduler binder to perform the binding with the current service.
      */
-    protected class HaloSchedulerBinder extends Binder {
+    public class HaloSchedulerBinder extends Binder {
         /**
          * Schedule a new job into the service.
          *

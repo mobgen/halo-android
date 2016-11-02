@@ -1,0 +1,1 @@
+We need jobInfo directory to test file creation to persist jobs

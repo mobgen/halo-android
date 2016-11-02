@@ -1,5 +1,6 @@
 package com.mobgen.halo.android.framework.mock.instrumentation;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 
@@ -8,6 +9,8 @@ import com.mobgen.halo.android.framework.storage.database.HaloDatabaseErrorHandl
 import com.mobgen.halo.android.framework.storage.database.HaloDatabaseMigration;
 import com.mobgen.halo.android.framework.storage.database.HaloDatabaseVersionManager;
 import com.mobgen.halo.android.framework.storage.database.dsl.queries.Create;
+import com.mobgen.halo.android.framework.storage.database.dsl.queries.Delete;
+import com.mobgen.halo.android.framework.storage.database.dsl.queries.Select;
 import com.mobgen.halo.android.framework.storage.exceptions.HaloStorageException;
 import com.mobgen.halo.android.testing.CallbackFlag;
 
@@ -20,11 +23,19 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 public class HaloDatabaseInstrument {
 
     public static String givenADatabaseName(){
-        return UUID.randomUUID().toString();
+        return "halo-test-name";
+    }
+
+    public static String givenADatabaseName(String databaseName){
+        return databaseName;
     }
 
     public static String givenAAliasName(){
         return "halo-test-alias";
+    }
+
+    public static String givenAAliasName(String databseAlias){
+        return databseAlias;
     }
 
     public static HaloDataLite givenAHaloDataLite(){
@@ -32,6 +43,15 @@ public class HaloDatabaseInstrument {
                 .setErrorHandler(givenAErrorHandler())
                 .setDatabaseVersion(givenDatabaseMigrations().getDatabaseVersion())
                 .setDatabaseName(givenADatabaseName())
+                .setVersionManager(givenADatabaseVersionManager())
+                .build();
+    }
+
+    public static HaloDataLite givenAHaloDataLite(String databaseName){
+        return HaloDataLite.builder(RuntimeEnvironment.application)
+                .setErrorHandler(givenAErrorHandler())
+                .setDatabaseVersion(givenDatabaseMigrations().getDatabaseVersion())
+                .setDatabaseName(givenADatabaseName(databaseName))
                 .setVersionManager(givenADatabaseVersionManager())
                 .build();
     }
@@ -92,6 +112,51 @@ public class HaloDatabaseInstrument {
             @Override
             public void onTransaction(@NonNull SQLiteDatabase database) throws HaloStorageException{
                 haloDataLite.attachDatabase(givenADatabaseName(),givenAAliasName());
+            }
+        };
+    }
+
+    public static HaloDataLite.HaloDataLiteTransaction givenATransactionCallbackSelect(final CallbackFlag flag){
+        return new HaloDataLite.HaloDataLiteTransaction() {
+            @Override
+            public void onTransaction(@NonNull SQLiteDatabase database) throws HaloStorageException {
+                flag.flagExecuted();
+                Cursor cursor = Select.all().from(HaloManagerContractInstrument
+                        .HaloTableContentTest.class)
+                        .on(database,"Select query");
+                Cursor cursor2 = Select.columns(HaloManagerContractInstrument.HaloTableContentTest.halo)
+                        .from(HaloManagerContractInstrument.HaloTableContentTest.class)
+                        .where(HaloManagerContractInstrument.HaloTableContentTest.halo)
+                        .eq(0)
+                        .on(database,"Select query");
+                assertThat(cursor).isNotNull();
+                assertThat(cursor.getCount()).isEqualTo(0);
+                assertThat(cursor2).isNotNull();
+                assertThat(cursor2.getCount()).isEqualTo(0);
+            }
+        };
+    }
+
+    public static HaloDataLite.HaloDataLiteTransaction givenATransactionCallbackDelete(final CallbackFlag flag){
+        return new HaloDataLite.HaloDataLiteTransaction() {
+            @Override
+            public void onTransaction(@NonNull SQLiteDatabase database) throws HaloStorageException {
+                flag.flagExecuted();
+                database.execSQL("INSERT INTO halotable VALUES(1,'halo1',500,1,null)");
+                database.execSQL("INSERT INTO halotable VALUES(2,'halo2',501,2,null)");
+                Delete.from(HaloManagerContractInstrument
+                        .HaloTableContentTest.class)
+                        .where(HaloManagerContractInstrument.HaloTableContentTest.halo)
+                        .eq("halo2")
+                        .on(database,"");
+                Cursor cursor = Select.all().from(HaloManagerContractInstrument
+                        .HaloTableContentTest.class)
+                        .where(HaloManagerContractInstrument.HaloTableContentTest.halo)
+                        .eq("halo1")
+                        .on(database,"Select query");
+                cursor.moveToFirst();
+                assertThat(cursor).isNotNull();
+                assertThat(cursor.getString(0)).isEqualTo("1");
             }
         };
     }

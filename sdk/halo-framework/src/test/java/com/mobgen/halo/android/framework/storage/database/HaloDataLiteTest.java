@@ -1,12 +1,9 @@
 package com.mobgen.halo.android.framework.storage.database;
 
+import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.support.annotation.NonNull;
 
 import com.mobgen.halo.android.framework.common.exceptions.HaloConfigurationException;
-import com.mobgen.halo.android.framework.mock.instrumentation.HaloManagerContractInstrument;
-import com.mobgen.halo.android.framework.storage.database.dsl.queries.Create;
-import com.mobgen.halo.android.framework.storage.exceptions.HaloStorageException;
 import com.mobgen.halo.android.framework.storage.exceptions.HaloStorageGeneralException;
 import com.mobgen.halo.android.testing.CallbackFlag;
 import com.mobgen.halo.android.testing.HaloRobolectricTest;
@@ -24,12 +21,14 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
 
-public class HaloDatabaseTest extends HaloRobolectricTest {
+public class HaloDataLiteTest extends HaloRobolectricTest {
 
     private HaloDataLite mHaloDatabase;
     private CallbackFlag mCallbackFlag;
+    private Context mContext;
 
     @Before
     public void initialize() {
@@ -168,11 +167,20 @@ public class HaloDatabaseTest extends HaloRobolectricTest {
         assertThat(mHaloDatabase.getDatabase().getVersion()).isEqualTo(4);
     }
 
-   /* @Test This test is not working yet
+    @Test
     public void thatCanAttachADatabase(){
         SQLiteDatabase database = mHaloDatabase.getDatabase();
-        mHaloDatabase.attachDatabase(givenADatabaseName(),givenAAliasName());
+        HaloDataLite haloDataLite = givenAHaloDataLite("secondDatabase");
+        mHaloDatabase.attachDatabase(givenADatabaseName("secondDatabase"),givenAAliasName("databaseToAttach"));
         assertThat(database.getAttachedDbs().size()).isEqualTo(2);
-    } */
+    }
 
+    @Test
+    public void thatCanDettachADatabase(){
+        SQLiteDatabase database = mHaloDatabase.getDatabase();
+        HaloDataLite haloDataLite = givenAHaloDataLite("secondDatabase");
+        mHaloDatabase.attachDatabase(givenADatabaseName("secondDatabase"),givenAAliasName("databaseToAttach"));
+        mHaloDatabase.detachDatabase(givenAAliasName("databaseToAttach"));
+        assertThat(database.getAttachedDbs().size()).isEqualTo(1);
+    }
 }

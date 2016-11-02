@@ -35,7 +35,7 @@ public final class HaloManagerContractInstrument {
          * The id of the instance.
          */
         @Keep
-        @Column(type = Column.Type.INTEGER, isPrimaryKey = true)
+        @Column(type = Column.Type.INTEGER, isPrimaryKey = true )
         String id = "id";
         /**
          * The name of the instance.
@@ -43,6 +43,24 @@ public final class HaloManagerContractInstrument {
         @Keep
         @Column(type = Column.Type.TEXT)
         String halo = "halo";
+        /**
+         * The ref of the instance.
+         */
+        @Keep
+        @Column(type = Column.Type.REAL)
+        String halo_ref = "halo_ref";
+        /**
+         * The count of the instance.
+         */
+        @Keep
+        @Column(type = Column.Type.NUMERIC)
+        String halo_count = "halo_count";
+        /**
+         * The ref of the instance.
+         */
+        @Keep
+        @Column(type = Column.Type.BLOB)
+        String halo_data = "halo_data";
     }
 }
 
