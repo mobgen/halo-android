@@ -170,7 +170,8 @@ public class MobgenHaloApplication extends HaloApplication {
                 .keyValue("key", "value")
                 .moduleName("Demo translations")
                 .defaultText("No translation found")
-                .defaultLoadingText("Translating...")
+                .defaultLoadingText("" +
+                        "Translating...")
                 .provideDefaultOnAsync(true)
                 .build();
          mTranslationsApi.load();

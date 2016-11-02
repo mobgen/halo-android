@@ -44,8 +44,6 @@ public class HaloSocial {
      * @param dependencyVersion The dependency version of the plugin.
      */
     public void configureDependencies(Project project, String dependencyMode, String dependencyVersion) {
-        //TODO remove the exception once released
-        throw new GradleException("Social sdk is still not released.")
         project.dependencies.add(dependencyMode, "${HaloPlugin.GROUP_NAME}:halo-social:${dependencyVersion}")
 
         if(facebookClient){

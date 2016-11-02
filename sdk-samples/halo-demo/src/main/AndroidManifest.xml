@@ -2,6 +2,7 @@
     package="com.mobgen.halo.android.app"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -68,6 +69,10 @@
         <activity android:name=".ui.analytics.AnalyticsActivity"/>
 
         <activity android:name=".ui.social.SocialLoginActivity"/>
+
+        <activity android:name=".ui.social.SocialHaloSignIn"/>
+
+        <activity android:name=".ui.social.SocialHaloLogin"/>
 
     </application>
 

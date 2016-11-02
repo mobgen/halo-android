@@ -163,15 +163,4 @@ public class HaloManagerApiInstrument {
             }
         };
     }
-
-    public static CallbackV2<Device> givenCallbackWithSetNotificationToken(final CallbackFlag flag){
-        return new CallbackV2<Device>(){
-            @Override
-            public void onFinish(@NonNull HaloResultV2<Device> result) {
-                flag.flagExecuted();
-                assertThat(result.data()).isNotNull();
-                assertThat(result.data().getNotificationsToken()).isEqualTo("mytoken");
-            }
-        };
-    }
 }
