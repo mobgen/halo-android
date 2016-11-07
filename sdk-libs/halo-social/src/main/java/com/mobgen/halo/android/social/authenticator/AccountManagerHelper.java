@@ -13,6 +13,8 @@ import android.util.Log;
 
 import com.mobgen.halo.android.framework.common.utils.AssertionUtils;
 import com.mobgen.halo.android.sdk.api.Halo;
+import com.mobgen.halo.android.social.HaloSocialApi;
+import com.mobgen.halo.android.social.models.HaloAuthProfile;
 
 import java.util.Arrays;
 import java.util.List;
@@ -22,6 +24,10 @@ import java.util.List;
  * The helper to work with account manager
  */
 public class AccountManagerHelper {
+    /**
+     * The token type to store on account manager
+     */
+    private static String TOKEN_TYPE = "token_type";
 
     /**
      * The account manager.
@@ -79,10 +85,12 @@ public class AccountManagerHelper {
             if(checkAccountExist(account,accountType)){
                 mAccountManager.setPassword(account,password);
                 mAccountManager.setUserData(account,tokenType,authToken);
-                return setAuthToken(account,tokenType,authToken);
+                mAccountManager.setUserData(account,TOKEN_TYPE,tokenType);
+                return account;
             }else {
                 Bundle extraData = new Bundle();
                 extraData.putString(tokenType,authToken);
+                extraData.putString(TOKEN_TYPE,tokenType);
                 if (mAccountManager.addAccountExplicitly(setAuthToken(account, tokenType, authToken), password, extraData)) {
                     return account;
                 }
@@ -110,14 +118,101 @@ public class AccountManagerHelper {
             Account account = new Account(userName, accountType);
             if(checkAccountExist(account,accountType)){
                 mAccountManager.setUserData(account,tokenType,authToken);
+                mAccountManager.setUserData(account,TOKEN_TYPE,tokenType);
                 return setAuthToken(account,tokenType,authToken);
             }else {
                 Bundle extraData = new Bundle();
                 extraData.putString(tokenType,authToken);
+                extraData.putString(TOKEN_TYPE,tokenType);
                 if (mAccountManager.addAccountExplicitly(setAuthToken(account, tokenType, authToken), null, extraData)) {
                     return account;
                 }
             }
+        }
+        return null;
+    }
+
+    /**
+     * Gets the account stored based on email
+     *
+     * @param accountType The account type.
+     * @param accountName The account name.
+     *
+     * @return Return the account stored.
+     */
+    @Nullable
+    public Account recoverAccountByName(@NonNull String accountType, @NonNull String accountName) {
+        AssertionUtils.notNull(accountType, "accountType");
+        AssertionUtils.notNull(accountName, "accountName");
+        if (ActivityCompat.checkSelfPermission(Halo.instance().context(), Manifest.permission.GET_ACCOUNTS) != PackageManager.PERMISSION_GRANTED) {
+            List<Account> accounts = Arrays.asList(mAccountManager.getAccountsByType(accountType));
+            if(accounts.size()>0){
+                for(int i=0;i<accounts.size();i++) {
+                    if (accounts.get(i).name.equals(accountName) && mAccountManager.getPassword(accounts.get(i)) != null) {
+                        return accounts.get(i);
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Gets the account stored based on account type and token type.
+     *
+     * @param accountType The account type.
+     * @param tokenType The token type.
+     *
+     * @return Return the account stored.
+     */
+    @Nullable
+    public Account recoverAccount(@NonNull String accountType, @NonNull String tokenType) {
+        AssertionUtils.notNull(accountType, "accountType");
+        AssertionUtils.notNull(tokenType, "tokenType");
+        if (ActivityCompat.checkSelfPermission(Halo.instance().context(), Manifest.permission.GET_ACCOUNTS) != PackageManager.PERMISSION_GRANTED) {
+            List<Account> accounts = Arrays.asList(mAccountManager.getAccountsByType(accountType));
+            if(accounts.size()>0){
+                for(int i=0;i<accounts.size();i++) {
+                    if (tokenType.equals(mAccountManager.getUserData(accounts.get(i),TOKEN_TYPE))) {
+                        return accounts.get(i);
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Gets the HaloAuthProfile stored
+     *
+     * @param account The account.
+     * @param alias The alias of the device.
+     *
+     * @return Return the authorization profile to make a halo login.
+     */
+    @Nullable
+    public HaloAuthProfile getAuthProfile(@Nullable Account account, @NonNull String alias) {
+        AssertionUtils.notNull(alias, "alias");
+        if(account!=null && mAccountManager.getPassword(account)!=null) {
+            return new HaloAuthProfile(account.name, mAccountManager.getPassword(account), alias);
+        }else{
+            return null;
+        }
+    }
+
+    /**
+     * Gets the auth token stored
+     *
+     * @param account The account.
+     * @param tokenType The token type.
+     *
+     * @return Return the social token.
+     */
+    @Nullable
+    public String getAuthToken(@Nullable Account account,@NonNull String tokenType) {
+        AssertionUtils.notNull(tokenType, "tokenType");
+        if(account!=null) {
+            return mAccountManager.getUserData(account, tokenType);
         }
         return null;
     }

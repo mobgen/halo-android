@@ -66,7 +66,7 @@ public class LoginInteractor implements HaloInteractorExecutor.Interactor<Identi
             //store user credentials on account manager
             if(mAccountType!=null) {
                 AccountManagerHelper accountManagerHelper =  new AccountManagerHelper(Halo.instance().context());
-                accountManagerHelper.addAccountWithPassword(mAccountType, AuthTokenType.HALO_AUTH_TOKEN,mUserName,mPassword,identifiedUser.getToken().getAccessToken());
+                accountManagerHelper.addAccountWithPassword(mAccountType, AuthTokenType.HALO_AUTH_TOKEN, mUserName, mPassword, identifiedUser.getToken().getAccessToken());
             }
         } catch (HaloNetException e) {
             status.error(e);

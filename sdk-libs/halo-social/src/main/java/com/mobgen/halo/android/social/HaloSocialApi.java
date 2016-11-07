@@ -21,6 +21,7 @@ import com.mobgen.halo.android.sdk.core.management.device.DeviceRemoteDatasource
 import com.mobgen.halo.android.sdk.core.management.device.DeviceRepository;
 import com.mobgen.halo.android.sdk.core.management.models.Device;
 import com.mobgen.halo.android.sdk.core.threading.HaloInteractorExecutor;
+import com.mobgen.halo.android.social.authenticator.AccountManagerHelper;
 import com.mobgen.halo.android.social.models.HaloAuthProfile;
 import com.mobgen.halo.android.social.models.HaloSocialProfile;
 import com.mobgen.halo.android.social.models.HaloUserProfile;
@@ -83,12 +84,14 @@ public class HaloSocialApi extends HaloPluginApi {
      */
     @Nullable
     private Device mDevice;
-
     /**
      * The Device repository to fetch a device.
      */
     private DeviceRepository mDeviceRepository;
-
+    /**
+     * The Account manager helper
+     */
+    private AccountManagerHelper mAccountManagerHelper;
     /**
      * The account type on account manager
      */
@@ -108,6 +111,7 @@ public class HaloSocialApi extends HaloPluginApi {
     private HaloSocialApi(@NonNull Halo halo) {
         super(halo);
         mProviders = new SparseArray<>(3);
+        mAccountManagerHelper =  new AccountManagerHelper(context());
         mDeviceRepository = new DeviceRepository(framework().parser(), new DeviceRemoteDatasource(framework().network()), new DeviceLocalDatasource(framework().storage(HaloManagerContract.HALO_MANAGER_STORAGE)));
         mDevice =  mDeviceRepository.getCachedDevice();
     }
@@ -149,7 +153,25 @@ public class HaloSocialApi extends HaloPluginApi {
     }
 
     /**
-     * Tries to set auth profile on halo provider
+     * Tries to login with a social network based on the id of this social network.
+     *
+     * @param socialNetwork The social network to login with.
+     * @param callback      The callback.
+     * @throws SocialNotAvailableException Server not available.
+     */
+    @Api(2.0)
+    public void login(int socialNetwork, @NonNull String accountName, @NonNull CallbackV2<HaloSocialProfile> callback) throws SocialNotAvailableException {
+        AssertionUtils.notNull(callback, "callback");
+        AssertionUtils.notNull(accountName, "accountName");
+        if (!isSocialNetworkAvailable(socialNetwork)) {
+            throw new SocialNotAvailableException("The social network you are trying to log with is not available. Social network id: " + socialNetwork);
+        }
+        mProviders.get(socialNetwork).setAuthProfile(recoverHaloAuthProfile(accountName));
+        mProviders.get(socialNetwork).authenticate(halo(),mAccountType, callback);
+    }
+
+    /**
+     * Tries to login with a auth profile
      *
      * @param socialNetwork The social network to login with.
      * @param haloAuthProfile   The auth profile to login on Halo.
@@ -219,7 +241,37 @@ public class HaloSocialApi extends HaloPluginApi {
                 new LoginInteractor(mAccountType, new LoginRepository(new LoginRemoteDatasource(halo().framework().network())),
                         username, password, mDevice)
         );
+    }
 
+    /**
+     * Tries to recover a halo auth profile for a given account.
+     *
+     * @param accountName The user name stored to restore account.
+     *
+     * @return HaloAuthProfile The HaloAuthProfile.
+     */
+    @Nullable
+    private HaloAuthProfile recoverHaloAuthProfile(@NonNull String accountName){
+        if(mAccountType!=null) {
+            return mAccountManagerHelper.getAuthProfile(mAccountManagerHelper.recoverAccountByName(mAccountType, accountName), mDevice.getAlias());
+        }
+        return null;
+    }
+
+    /**
+     * Tries to recover a halo auth token for a given account.
+     *
+     *
+     * @return HaloAuthProfile The HaloAuthProfile.
+     */
+    @Api(2.0)
+    @Nullable
+    public String recoverAuthToken(@NonNull String tokenType){
+        AssertionUtils.notNull(tokenType, "tokenType");
+        if(mAccountType!=null) {
+            return mAccountManagerHelper.getAuthToken(mAccountManagerHelper.recoverAccount(mAccountType,tokenType), tokenType);
+        }
+        return null;
     }
 
     /**

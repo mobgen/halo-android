@@ -50,7 +50,7 @@ public class RegisterRemoteDatasource {
      * @return The user identity as IdentifiedUser
      */
     @NonNull
-    public IdentifiedUser register(@NonNull HaloAuthProfile haloAuthProfile, @NonNull HaloUserProfile haloUserProfile) throws HaloNetException {
+    public HaloUserProfile register(@NonNull HaloAuthProfile haloAuthProfile, @NonNull HaloUserProfile haloUserProfile) throws HaloNetException {
         JSONObject jsonObject = null;
         try {
             Register register = new Register(haloAuthProfile, haloUserProfile);
@@ -63,6 +63,6 @@ public class RegisterRemoteDatasource {
                 .url(HaloNetworkConstants.HALO_ENDPOINT_ID, URL_LOGIN)
                 .method(HaloRequestMethod.POST)
                 .body(HaloBodyFactory.jsonObjectBody(jsonObject))
-                .build().execute(IdentifiedUser.class);
+                .build().execute(HaloUserProfile.class);
     }
 }

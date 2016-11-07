@@ -200,7 +200,7 @@ public class HaloSocialProfile implements Parcelable {
     }
 
     /**
-     * Creates the builder given the token and the user id.
+     * Creates the builder given the token.
      *
      * @param socialToken The token.
      * @return The builder created.
@@ -209,6 +209,17 @@ public class HaloSocialProfile implements Parcelable {
     @NonNull
     public static Builder builder(@NonNull String socialToken) {
         return new Builder(socialToken);
+    }
+
+    /**
+     * Creates the builder.
+     *
+     * @return The builder created.
+     */
+    @Api(2.0)
+    @NonNull
+    public static Builder builder() {
+        return new Builder();
     }
 
     /**
@@ -256,13 +267,21 @@ public class HaloSocialProfile implements Parcelable {
         private String mSurname;
 
         /**
-         * Creates the builder with token and user id.
+         * Creates the builder with token.
          *
          * @param socialToken The token id.
          */
         private Builder(@NonNull String socialToken) {
             AssertionUtils.notNull(socialToken, "socialToken");
             mSocialToken = socialToken;
+        }
+
+        /**
+         * Creates the builder.
+         *
+         */
+        private Builder() {
+            mSocialToken = "";
         }
 
         /**

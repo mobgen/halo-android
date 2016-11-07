@@ -19,6 +19,7 @@ import com.mobgen.halo.android.framework.toolbox.data.HaloStatus;
 import com.mobgen.halo.android.framework.toolbox.threading.Threading;
 import com.mobgen.halo.android.sdk.api.Halo;
 import com.mobgen.halo.android.social.HaloSocialApi;
+import com.mobgen.halo.android.social.authenticator.AuthTokenType;
 import com.mobgen.halo.android.social.models.HaloAuthProfile;
 import com.mobgen.halo.android.social.models.HaloSocialProfile;
 import com.mobgen.halo.android.social.models.IdentifiedUser;
@@ -85,16 +86,47 @@ public class GoogleSocialProvider implements SocialProvider, Subscriber {
     }
 
     @Override
-    public void authenticate(@NonNull Halo halo, @NonNull String accountType, @NonNull CallbackV2<HaloSocialProfile> callback) {
-        //We must be login in just once
-        if (mAuthenticationSubscription == null) {
-            mCallback = callback;
-            mSocialApi = HaloSocialApi.with(Halo.instance())
-                    .storeCredentials(accountType)
-                    .withGoogle()
-                    .build();
-            mAuthenticationSubscription = halo.framework().subscribe(this, EventId.create(HaloGoogleSignInActivity.Result.EVENT_NAME_GOOGLE_SIGN_IN_FINISHED));
-            HaloGoogleSignInActivity.startActivity(halo.context(), mOptions);
+    public void authenticate(final @NonNull Halo halo, @NonNull String accountType, @NonNull CallbackV2<HaloSocialProfile> callback) {
+        final Subscriber subscriber = this;
+        mSocialApi = HaloSocialApi.with(Halo.instance())
+                .storeCredentials(accountType)
+                .withGoogle()
+                .build();
+        mCallback = callback;
+        final String authSocialToken =  mSocialApi.recoverAuthToken(AuthTokenType.GOOGLE_AUTH_TOKEN);
+        if(authSocialToken!=null){
+            //we login user with previous credentials
+            mSocialApi.loginWithANetwork(getSocialNetworkName(), authSocialToken)
+                    .threadPolicy(Threading.SINGLE_QUEUE_POLICY)
+                    .execute(new CallbackV2<IdentifiedUser>() {
+                        @Override
+                        public void onFinish(@NonNull HaloResultV2<IdentifiedUser> resultIdentified) {
+                            if(resultIdentified.status().isOk()) {
+                                HaloSocialProfile profile = HaloSocialProfile.builder(authSocialToken)
+                                        .socialName(getSocialNetworkName())
+                                        .socialId(resultIdentified.data().getUser().getIdentifiedId())
+                                        .name(resultIdentified.data().getUser().getName())
+                                        .surname(resultIdentified.data().getUser().getSurname())
+                                        .displayName(resultIdentified.data().getUser().getDisplayName())
+                                        .email(resultIdentified.data().getUser().getEmail())
+                                        .photo(resultIdentified.data().getUser().getPhoto())
+                                        .build();
+                                mCallback.onFinish(new HaloResultV2<>(resultIdentified.status(), profile));
+                                release();
+                            } else{ //We must revalidate token with google
+                                if (mAuthenticationSubscription == null) {
+                                    mAuthenticationSubscription = halo.framework().subscribe(subscriber, EventId.create(HaloGoogleSignInActivity.Result.EVENT_NAME_GOOGLE_SIGN_IN_FINISHED));
+                                    HaloGoogleSignInActivity.startActivity(halo.context(), mOptions);
+                                }
+                            }
+                        }
+                    });
+        }else {
+            //We must be login in just once
+            if (mAuthenticationSubscription == null) {
+                mAuthenticationSubscription = halo.framework().subscribe(this, EventId.create(HaloGoogleSignInActivity.Result.EVENT_NAME_GOOGLE_SIGN_IN_FINISHED));
+                HaloGoogleSignInActivity.startActivity(halo.context(), mOptions);
+            }
         }
     }
 

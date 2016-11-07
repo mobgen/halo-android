@@ -2,10 +2,13 @@ package com.mobgen.halo.android.social.providers.halo;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.mobgen.halo.android.framework.common.helpers.subscription.ISubscription;
+import com.mobgen.halo.android.framework.network.exceptions.HaloAuthenticationException;
 import com.mobgen.halo.android.framework.toolbox.data.CallbackV2;
 import com.mobgen.halo.android.framework.toolbox.data.HaloResultV2;
+import com.mobgen.halo.android.framework.toolbox.data.HaloStatus;
 import com.mobgen.halo.android.sdk.api.Halo;
 import com.mobgen.halo.android.social.HaloSocialApi;
 import com.mobgen.halo.android.social.models.HaloAuthProfile;
@@ -62,25 +65,39 @@ public class HaloSocialProvider implements SocialProvider {
     }
 
     @Override
-    public void setAuthProfile(@NonNull HaloAuthProfile haloAuthProfile){
+    public void setAuthProfile(@Nullable HaloAuthProfile haloAuthProfile){
         mHaloAuthProfile = haloAuthProfile;
     }
 
     @Override
     public void authenticate(@NonNull Halo halo, @NonNull String accountType, @NonNull CallbackV2<HaloSocialProfile> callback) {
-
-            mCallback = callback;
-            mSocialApi = HaloSocialApi.with(Halo.instance())
-                    .storeCredentials(accountType)
-                    .withHalo()
-                    .build();
+        mCallback = callback;
+        mSocialApi = HaloSocialApi.with(Halo.instance())
+                .storeCredentials(accountType)
+                .withHalo()
+                .build();
+        if(mHaloAuthProfile!=null) {
             mSocialApi.loginWithHalo(mHaloAuthProfile.getEmail(), mHaloAuthProfile.getPassword())
                     .execute(new CallbackV2<IdentifiedUser>() {
                         @Override
                         public void onFinish(@NonNull HaloResultV2<IdentifiedUser> result) {
-                            mCallback.onFinish(processResult(result));
+                            if(result.status().isOk()) {
+                                mCallback.onFinish(processResult(result));
+                            } else {
+                                mCallback.onFinish(error(result.status()));
+                            }
                         }
                     });
+        } else {
+            //we cannot request user because auth credentials are null
+            HaloStatus.Builder status = HaloStatus.builder();
+            status.error(new HaloAuthenticationException("Error"));
+            mCallback.onFinish(error(status.build()));
+        }
+    }
+
+    private HaloResultV2<HaloSocialProfile> error(HaloStatus status) {
+        return new HaloResultV2<HaloSocialProfile>(status, null);
     }
 
     private HaloResultV2<HaloSocialProfile> processResult(HaloResultV2<IdentifiedUser> result){

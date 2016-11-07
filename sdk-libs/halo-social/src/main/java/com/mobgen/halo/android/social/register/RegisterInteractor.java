@@ -52,35 +52,35 @@ public class RegisterInteractor implements HaloInteractorExecutor.Interactor<Hal
     @Override
     public HaloResultV2<HaloSocialProfile> executeInteractor() throws Exception {
         HaloStatus.Builder status = HaloStatus.builder();
-        IdentifiedUser identifiedUser = null;
+        HaloUserProfile haloUserProfile = null;
         try {
-            identifiedUser = mRegisterRepository.registerHalo(mHaloAuthProfile, mHaloUserProfile);
+            haloUserProfile = mRegisterRepository.registerHalo(mHaloAuthProfile, mHaloUserProfile);
         } catch (HaloNetException e) {
             status.error(e);
         }
-        return processResult(new HaloResultV2<>(status.build(), identifiedUser));
+        return processResult(new HaloResultV2<>(status.build(), haloUserProfile));
 
     }
 
     /**
-     * Convert identified user on HaloSocialProfile
+     * Convert HaloUserProfile to HaloSocialProfile
      *
      * @param identifiedUserResult The identified user result.
      *
      * @return The result created.
      */
-    private HaloResultV2<HaloSocialProfile> processResult(@Nullable HaloResultV2<IdentifiedUser> identifiedUserResult){
+    private HaloResultV2<HaloSocialProfile> processResult(@Nullable HaloResultV2<HaloUserProfile> identifiedUserResult){
         HaloSocialProfile profile=null;
         if(identifiedUserResult.status().isOk()) {
-            IdentifiedUser identifiedUser = identifiedUserResult.data();
-            profile = HaloSocialProfile.builder(identifiedUser.getToken().getRefreshToken())
+            HaloUserProfile haloUserProfile = identifiedUserResult.data();
+            profile = HaloSocialProfile.builder()
                     .socialName(HaloSocialProvider.SOCIAL_HALO_NAME)
-                    .socialId(identifiedUser.getUser().getIdentifiedId())
-                    .name(identifiedUser.getUser().getName())
-                    .surname(identifiedUser.getUser().getSurname())
-                    .displayName(identifiedUser.getUser().getDisplayName())
-                    .email(identifiedUser.getUser().getEmail())
-                    .photo(identifiedUser.getUser().getPhoto())
+                    .socialId(haloUserProfile.getIdentifiedId())
+                    .name(haloUserProfile.getName())
+                    .surname(haloUserProfile.getSurname())
+                    .displayName(haloUserProfile.getDisplayName())
+                    .email(haloUserProfile.getEmail())
+                    .photo(haloUserProfile.getPhoto())
                     .build();
         }
         return new HaloResultV2<>(identifiedUserResult.status(), profile);

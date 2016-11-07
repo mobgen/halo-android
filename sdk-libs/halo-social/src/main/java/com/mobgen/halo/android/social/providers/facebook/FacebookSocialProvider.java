@@ -17,6 +17,7 @@ import com.mobgen.halo.android.framework.toolbox.data.HaloStatus;
 import com.mobgen.halo.android.framework.toolbox.threading.Threading;
 import com.mobgen.halo.android.sdk.api.Halo;
 import com.mobgen.halo.android.social.HaloSocialApi;
+import com.mobgen.halo.android.social.authenticator.AuthTokenType;
 import com.mobgen.halo.android.social.models.HaloAuthProfile;
 import com.mobgen.halo.android.social.models.HaloSocialProfile;
 import com.mobgen.halo.android.social.models.IdentifiedUser;
@@ -68,14 +69,42 @@ public class FacebookSocialProvider implements SocialProvider, Subscriber {
     }
 
     @Override
-    public void authenticate(@NonNull Halo halo, @NonNull String accountType, @NonNull CallbackV2<HaloSocialProfile> callback) {
+    public void authenticate(final @NonNull Halo halo, @NonNull String accountType, @NonNull CallbackV2<HaloSocialProfile> callback) {
+        final Subscriber subscriber = this;
         initIfNeeded(halo.context());
-        if (mPendingCallbackResolution == null) {
-            mSocialApi = HaloSocialApi.with(Halo.instance())
-                    .storeCredentials(accountType)
-                    .withGoogle()
-                    .build();
-            mPendingCallbackResolution = callback;
+        mSocialApi = HaloSocialApi.with(Halo.instance())
+                .storeCredentials(accountType)
+                .withGoogle()
+                .build();
+        final String authSocialToken =  mSocialApi.recoverAuthToken(AuthTokenType.FACEBOOK_AUTH_TOKEN);
+        mPendingCallbackResolution = callback;
+        if(authSocialToken!=null) {
+            mSocialApi.loginWithANetwork(getSocialNetworkName() , authSocialToken)
+                    .threadPolicy(Threading.SINGLE_QUEUE_POLICY)
+                    .execute(new CallbackV2<IdentifiedUser>() {
+                        @Override
+                        public void onFinish(@NonNull HaloResultV2<IdentifiedUser> resultIdentified) {
+                            if(resultIdentified.status().isOk()) {
+                                HaloSocialProfile profile = HaloSocialProfile.builder(authSocialToken)
+                                        .socialName(getSocialNetworkName())
+                                        .socialId(resultIdentified.data().getUser().getIdentifiedId())
+                                        .name(resultIdentified.data().getUser().getName())
+                                        .surname(resultIdentified.data().getUser().getSurname())
+                                        .displayName(resultIdentified.data().getUser().getDisplayName())
+                                        .email(resultIdentified.data().getUser().getEmail())
+                                        .photo(resultIdentified.data().getUser().getPhoto())
+                                        .build();
+                                //Finish the callback
+                                mPendingCallbackResolution.onFinish(new HaloResultV2<>(resultIdentified.status(), profile));
+                                //Release the login resources
+                                release();
+                            } else {  //We must revalidate token with facebook
+                                mFacebookSubscription = halo.framework().subscribe(subscriber, EventId.create(HaloFacebookSignInActivity.Result.EVENT_NAME_FACEBOOK_SIGN_IN_FINISHED));
+                                HaloFacebookSignInActivity.startActivity(halo.context());
+                            }
+                        }
+                    });
+        } else {
             mFacebookSubscription = halo.framework().subscribe(this, EventId.create(HaloFacebookSignInActivity.Result.EVENT_NAME_FACEBOOK_SIGN_IN_FINISHED));
             HaloFacebookSignInActivity.startActivity(halo.context());
         }

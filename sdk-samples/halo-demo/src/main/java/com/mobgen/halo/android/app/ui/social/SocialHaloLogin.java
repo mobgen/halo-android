@@ -64,7 +64,6 @@ public class SocialHaloLogin extends MobgenHaloActivity implements View.OnClickL
         return getString(R.string.social_halo_login_title);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP_MR1)
     @Override
     public void onClick(View v) {
         if(v.getId() == R.id.halo_login) {
@@ -72,7 +71,11 @@ public class SocialHaloLogin extends MobgenHaloActivity implements View.OnClickL
             final EditText editPassword = (EditText) findViewById(R.id.edit_login_password);
             try {
                 final HaloAuthProfile authProfile = new HaloAuthProfile(editEmail.getText().toString().trim(),editPassword.getText().toString().trim(), mSocialApi.getCurrentAlias());
-                mSocialApi.login(HaloSocialApi.SOCIAL_HALO, authProfile,this);
+                if(editPassword.getText().toString().trim().equals("")){//auto login from account manager credentials
+                    mSocialApi.login(HaloSocialApi.SOCIAL_HALO,editEmail.getText().toString().trim(), this);
+                } else {
+                    mSocialApi.login(HaloSocialApi.SOCIAL_HALO, authProfile, this);
+                }
             } catch (SocialNotAvailableException e) {
                 Snackbar.make(getWindow().getDecorView(), getString(R.string.error_provider_not_available), Snackbar.LENGTH_LONG).show();
             }

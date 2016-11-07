@@ -37,7 +37,7 @@ public class RegisterRepository {
      * @throws HaloNetException Networking exception.
      */
     @NonNull
-    public synchronized IdentifiedUser registerHalo(@NonNull HaloAuthProfile haloAuthProfile, @NonNull HaloUserProfile haloUserProfile) throws HaloNetException {
+    public synchronized HaloUserProfile registerHalo(@NonNull HaloAuthProfile haloAuthProfile, @NonNull HaloUserProfile haloUserProfile) throws HaloNetException {
         return mRemoteDatasource.register(haloAuthProfile, haloUserProfile);
     }
 }
