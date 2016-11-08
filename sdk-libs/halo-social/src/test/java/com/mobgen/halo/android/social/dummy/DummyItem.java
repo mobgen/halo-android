@@ -1,4 +1,4 @@
-package com.mobgen.halo.android.content.mock.dummy;
+package com.mobgen.halo.android.social.dummy;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;

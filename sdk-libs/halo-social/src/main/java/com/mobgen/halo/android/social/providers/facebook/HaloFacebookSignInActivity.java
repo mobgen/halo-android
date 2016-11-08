@@ -45,7 +45,10 @@ public class HaloFacebookSignInActivity extends FragmentActivity implements Face
      * Tells that an event has been emitted.
      */
     private boolean mEmitted;
-
+    /**
+     * The access token.
+     */
+    private AccessToken mAccessToken;
     /**
      * The result that must be reported.
      */
@@ -139,7 +142,8 @@ public class HaloFacebookSignInActivity extends FragmentActivity implements Face
 
     @Override
     public void onSuccess(LoginResult loginResult) {
-        GraphRequest request = GraphRequest.newMeRequest(loginResult.getAccessToken(), this);
+        mAccessToken = loginResult.getAccessToken();
+        GraphRequest request = GraphRequest.newMeRequest(mAccessToken, this);
         Bundle parameters = new Bundle();
         parameters.putString("fields", "id,name,first_name,middle_name,last_name,link,email");
         request.setParameters(parameters);
@@ -174,7 +178,7 @@ public class HaloFacebookSignInActivity extends FragmentActivity implements Face
             try {
                 String id = object.getString("id");
                 Uri photo = new Uri.Builder().scheme("https").authority("graph.facebook.com").path(String.format(Locale.US, "%s/picture", new Object[]{id})).build();
-                emitProfile(HaloSocialProfile.builder(id)
+                emitProfile(HaloSocialProfile.builder(mAccessToken.getToken())
                         .socialId(id)
                         .displayName(object.getString("name"))
                         .name(object.getString("first_name"))

@@ -1,4 +1,4 @@
-package com.mobgen.halo.android.content.mock.fixtures;
+package com.mobgen.halo.android.social.fixtures;
 
 import com.mobgen.halo.android.testing.MockServer;
 
