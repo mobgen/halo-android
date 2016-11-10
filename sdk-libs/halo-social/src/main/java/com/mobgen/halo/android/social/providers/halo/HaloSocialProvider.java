@@ -29,10 +29,6 @@ public class HaloSocialProvider implements SocialProvider {
      */
     public static final String SOCIAL_HALO_NAME = "halo";
     /**
-     * Event subscription to listen for the login provider.
-     */
-    private ISubscription mAuthenticationSubscription;
-    /**
      * The callback to provide the result.
      */
     private CallbackV2<HaloSocialProfile> mCallback;
@@ -72,10 +68,7 @@ public class HaloSocialProvider implements SocialProvider {
     @Override
     public void authenticate(@NonNull Halo halo, @NonNull String accountType, @NonNull CallbackV2<HaloSocialProfile> callback) {
         mCallback = callback;
-        mSocialApi = HaloSocialApi.with(Halo.instance())
-                .storeCredentials(accountType)
-                .withHalo()
-                .build();
+        mSocialApi = (HaloSocialApi)halo.manager().haloSocial();
         if(mHaloAuthProfile!=null) {
             mSocialApi.loginWithHalo(mHaloAuthProfile.getEmail(), mHaloAuthProfile.getPassword())
                     .execute(new CallbackV2<IdentifiedUser>() {

@@ -43,12 +43,8 @@ public class SocialHaloSignIn extends MobgenHaloActivity implements View.OnClick
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_social_halo_sigin);
         mContext=this;
-        mSocialApi = HaloSocialApi.with(MobgenHaloApplication.halo())
-                .withHalo()
-                .build();
-
+        mSocialApi = MobgenHaloApplication.getHaloSocialApi();
         mSignInWithHalo = (Button)findViewById(R.id.halo_sign_in);
-
     }
 
     @Override
@@ -75,7 +71,7 @@ public class SocialHaloSignIn extends MobgenHaloActivity implements View.OnClick
             }
 
             final HaloAuthProfile authProfile = new HaloAuthProfile(editEmail.getText().toString().trim(),editPassword.getText().toString().trim(), Halo.instance().manager().getDevice().getAlias());
-            HaloUserProfile userProfile = new HaloUserProfile("",displayName,editName.getText().toString().trim(),editSurname.getText().toString().trim(),"",editEmail.getText().toString().trim());
+            HaloUserProfile userProfile = new HaloUserProfile(displayName,editName.getText().toString().trim(),editSurname.getText().toString().trim(),"http://yogasara.staff.gunadarma.ac.id/photo.jpg",editEmail.getText().toString().trim());
             mSocialApi.register(authProfile,userProfile)
                     .execute(new CallbackV2<HaloSocialProfile>() {
                         @Override
@@ -86,11 +82,5 @@ public class SocialHaloSignIn extends MobgenHaloActivity implements View.OnClick
                         }
                     });
         }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mSocialApi.release();
     }
 }

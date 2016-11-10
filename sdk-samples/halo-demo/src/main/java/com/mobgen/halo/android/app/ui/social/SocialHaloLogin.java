@@ -44,11 +44,7 @@ public class SocialHaloLogin extends MobgenHaloActivity implements View.OnClickL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_social_halo_login);
         mContext=this;
-        mSocialApi = HaloSocialApi.with(MobgenHaloApplication.halo())
-                .storeCredentials("halo.account.demoapp")
-                .withHalo()
-                .build();
-
+        mSocialApi = MobgenHaloApplication.getHaloSocialApi();
         mLoginWithHalo = (Button)findViewById(R.id.halo_login);
 
     }
@@ -71,11 +67,7 @@ public class SocialHaloLogin extends MobgenHaloActivity implements View.OnClickL
             final EditText editPassword = (EditText) findViewById(R.id.edit_login_password);
             try {
                 final HaloAuthProfile authProfile = new HaloAuthProfile(editEmail.getText().toString().trim(),editPassword.getText().toString().trim(), mSocialApi.getCurrentAlias());
-                if(editPassword.getText().toString().trim().equals("")){//auto login from account manager credentials
-                    mSocialApi.login(HaloSocialApi.SOCIAL_HALO,editEmail.getText().toString().trim(), this);
-                } else {
-                    mSocialApi.login(HaloSocialApi.SOCIAL_HALO, authProfile, this);
-                }
+                mSocialApi.login(HaloSocialApi.SOCIAL_HALO, authProfile, this);
             } catch (SocialNotAvailableException e) {
                 Snackbar.make(getWindow().getDecorView(), getString(R.string.error_provider_not_available), Snackbar.LENGTH_LONG).show();
             }
@@ -89,11 +81,5 @@ public class SocialHaloLogin extends MobgenHaloActivity implements View.OnClickL
         } else { // Error
             Halog.d(getClass(), result.status().exception().toString());
         }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mSocialApi.release();
     }
 }

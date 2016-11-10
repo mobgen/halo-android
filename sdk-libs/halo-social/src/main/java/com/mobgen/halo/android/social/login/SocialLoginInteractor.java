@@ -10,6 +10,7 @@ import com.mobgen.halo.android.sdk.api.Halo;
 import com.mobgen.halo.android.sdk.core.management.device.DeviceRepository;
 import com.mobgen.halo.android.sdk.core.management.models.Device;
 import com.mobgen.halo.android.sdk.core.threading.HaloInteractorExecutor;
+import com.mobgen.halo.android.social.HaloSocialApi;
 import com.mobgen.halo.android.social.authenticator.AccountManagerHelper;
 import com.mobgen.halo.android.social.authenticator.AuthTokenType;
 import com.mobgen.halo.android.social.models.IdentifiedUser;
@@ -42,7 +43,10 @@ public class SocialLoginInteractor implements HaloInteractorExecutor.Interactor<
      * The account type in account manager
      */
     private String mAccountType;
-
+    /**
+     * The recovery from account manager policy
+     */
+    private int mRecoveryPolicy;
 
     /**
      * Constructor for the interactor.
@@ -53,12 +57,13 @@ public class SocialLoginInteractor implements HaloInteractorExecutor.Interactor<
      * @param socialToken The social network token.
      * @param device The device.
      */
-    public SocialLoginInteractor(String accountType, LoginRepository loginRepository, String socialApiName, String socialToken, Device device) {
+    public SocialLoginInteractor(String accountType, LoginRepository loginRepository, String socialApiName, String socialToken, Device device, int recoveryPolicy) {
         mAccountType = accountType;
         mLoginRepository = loginRepository;
         mSocialProviderName = socialApiName;
         mSocialToken = socialToken;
         mDevice = device;
+        mRecoveryPolicy=recoveryPolicy;
     }
 
 
@@ -70,13 +75,14 @@ public class SocialLoginInteractor implements HaloInteractorExecutor.Interactor<
         try {
             identifiedUser = mLoginRepository.loginSocialProvider(mSocialProviderName, mSocialToken, mDevice);
             //store user credentials on account manager
-            if (mAccountType != null) {
-                Account account=null;
-                AccountManagerHelper accountManagerHelper =  new AccountManagerHelper(Halo.instance().context());
-                if(mSocialProviderName.equals(FacebookSocialProvider.SOCIAL_FACEBOOK_NAME)){
-                    account = accountManagerHelper.addAccountToken(mAccountType, AuthTokenType.FACEBOOK_AUTH_TOKEN,identifiedUser.getUser().getEmail(),mSocialToken);
-                }else  if(mSocialProviderName.equals(GoogleSocialProvider.SOCIAL_GOOGLE_PLUS_NAME)){
-                    account = accountManagerHelper.addAccountToken(mAccountType, AuthTokenType.GOOGLE_AUTH_TOKEN,identifiedUser.getUser().getEmail(),mSocialToken);
+            if(mRecoveryPolicy == HaloSocialApi.RECOVERY_ALWAYS) {
+                if (mAccountType != null) {
+                    AccountManagerHelper accountManagerHelper = new AccountManagerHelper(Halo.instance().context());
+                    if (mSocialProviderName.equals(FacebookSocialProvider.SOCIAL_FACEBOOK_NAME)) {
+                        accountManagerHelper.addAccountToken(mAccountType, AuthTokenType.FACEBOOK_AUTH_TOKEN, identifiedUser.getUser().getEmail(), mSocialToken,identifiedUser.getToken().getAccessToken());
+                    } else if (mSocialProviderName.equals(GoogleSocialProvider.SOCIAL_GOOGLE_PLUS_NAME)) {
+                        accountManagerHelper.addAccountToken(mAccountType, AuthTokenType.GOOGLE_AUTH_TOKEN, identifiedUser.getUser().getEmail(), mSocialToken,identifiedUser.getToken().getAccessToken());
+                    }
                 }
             }
         } catch (HaloNetException e) {

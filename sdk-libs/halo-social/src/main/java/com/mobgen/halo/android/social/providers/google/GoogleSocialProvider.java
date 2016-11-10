@@ -88,13 +88,10 @@ public class GoogleSocialProvider implements SocialProvider, Subscriber {
     @Override
     public void authenticate(final @NonNull Halo halo, @NonNull String accountType, @NonNull CallbackV2<HaloSocialProfile> callback) {
         final Subscriber subscriber = this;
-        mSocialApi = HaloSocialApi.with(Halo.instance())
-                .storeCredentials(accountType)
-                .withGoogle()
-                .build();
+        mSocialApi = (HaloSocialApi)halo.manager().haloSocial();
         mCallback = callback;
         final String authSocialToken =  mSocialApi.recoverAuthToken(AuthTokenType.GOOGLE_AUTH_TOKEN);
-        if(authSocialToken!=null){
+        if(authSocialToken!=null && mSocialApi.getRecoveryPolicy()!=HaloSocialApi.RECOVERY_ALWAYS){
             //we login user with previous credentials
             mSocialApi.loginWithANetwork(getSocialNetworkName(), authSocialToken)
                     .threadPolicy(Threading.SINGLE_QUEUE_POLICY)
@@ -222,6 +219,5 @@ public class GoogleSocialProvider implements SocialProvider, Subscriber {
             mAuthenticationSubscription.unsubscribe();
             mAuthenticationSubscription = null;
         }
-        mCallback = null;
     }
 }

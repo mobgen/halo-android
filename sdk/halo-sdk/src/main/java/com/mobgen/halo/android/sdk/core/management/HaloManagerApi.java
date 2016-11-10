@@ -11,7 +11,6 @@ import com.mobgen.halo.android.framework.api.HaloStorageApi;
 import com.mobgen.halo.android.framework.api.StorageConfig;
 import com.mobgen.halo.android.framework.common.annotations.Api;
 import com.mobgen.halo.android.framework.common.helpers.subscription.ISubscription;
-import com.mobgen.halo.android.framework.common.utils.AssertionUtils;
 import com.mobgen.halo.android.framework.toolbox.bus.Event;
 import com.mobgen.halo.android.framework.toolbox.bus.EventId;
 import com.mobgen.halo.android.framework.toolbox.bus.Subscriber;
@@ -24,6 +23,7 @@ import com.mobgen.halo.android.sdk.api.Halo;
 import com.mobgen.halo.android.sdk.api.HaloPluginApi;
 import com.mobgen.halo.android.sdk.core.internal.storage.HaloManagerContract;
 import com.mobgen.halo.android.sdk.core.internal.storage.HaloMigration2$0$0;
+import com.mobgen.halo.android.sdk.core.management.authentication.HaloSocialAuthenticator;
 import com.mobgen.halo.android.sdk.core.management.authentication.RequestTokenInteractor;
 import com.mobgen.halo.android.sdk.core.management.authentication.TokenRemoteDatasource;
 import com.mobgen.halo.android.sdk.core.management.authentication.TokenRepository;
@@ -54,7 +54,6 @@ import com.mobgen.halo.android.sdk.core.selectors.HaloSelectorFactory;
 import com.mobgen.halo.android.sdk.core.threading.HaloInteractorExecutor;
 import com.mobgen.halo.android.sdk.core.threading.HaloSchedule;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -90,6 +89,10 @@ public class HaloManagerApi extends HaloPluginApi {
      * Syncs the device information.
      */
     private DeviceRepository mDeviceRepository;
+    /**
+     * The halo social.
+     */
+    private HaloSocialAuthenticator mHaloSocialAuthenticator;
 
     /**
      * Constructor for the halo plugin.
@@ -189,6 +192,30 @@ public class HaloManagerApi extends HaloPluginApi {
                 "Request a new token",
                 new RequestTokenInteractor(mTokenRepository, credentials)
         );
+    }
+
+    /**
+     * Set the halo social api
+     *
+     * @param haloSocialAuthenticator The Halo Social
+     */
+    @Keep
+    @Api(2.0)
+    public void haloSocial(HaloSocialAuthenticator haloSocialAuthenticator){
+        mHaloSocialAuthenticator = haloSocialAuthenticator;
+    }
+
+    /**
+     *
+     * Get the halo social api.
+     *
+     * @return HaloSocialAuthenticator The Halo social.
+     */
+    @Nullable
+    @Keep
+    @Api(2.0)
+    public HaloSocialAuthenticator haloSocial(){
+        return mHaloSocialAuthenticator;
     }
 
     /**

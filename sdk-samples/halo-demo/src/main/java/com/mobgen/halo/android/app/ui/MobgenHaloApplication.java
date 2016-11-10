@@ -20,6 +20,7 @@ import com.mobgen.halo.android.sdk.api.Halo;
 import com.mobgen.halo.android.sdk.api.HaloApplication;
 import com.mobgen.halo.android.sdk.core.internal.storage.HaloManagerContract;
 import com.mobgen.halo.android.sdk.core.management.segmentation.HaloLocale;
+import com.mobgen.halo.android.social.HaloSocialApi;
 import com.mobgen.halo.android.translations.HaloTranslationsApi;
 import com.squareup.leakcanary.LeakCanary;
 
@@ -66,8 +67,14 @@ public class MobgenHaloApplication extends HaloApplication {
      * Translations api.
      */
     private static HaloTranslationsApi mTranslationsApi;
-
+    /**
+     * Notifications api.
+     */
     private static HaloNotificationsApi mNotificationsApi;
+    /**
+     * Social api.
+     */
+    private static HaloSocialApi mSocialApi;
 
     private static ISubscription mSilentHaloNotificationListener;
 
@@ -162,6 +169,7 @@ public class MobgenHaloApplication extends HaloApplication {
     @NonNull
     @Override
     public Halo onHaloCreated(@NonNull Halo halo) {
+        //translations
         if (mTranslationsApi != null) {
             mTranslationsApi.cancel();
         }
@@ -175,7 +183,19 @@ public class MobgenHaloApplication extends HaloApplication {
                 .provideDefaultOnAsync(true)
                 .build();
          mTranslationsApi.load();
-
+        //social
+        if(mSocialApi !=null){
+            mSocialApi.release();
+            mSocialApi =null;
+        }
+        mSocialApi = HaloSocialApi.with(halo)
+                .storeCredentials("halo.account.demoapp")
+                .recoveryPolicy(HaloSocialApi.RECOVERY_ALWAYS)
+                .withHalo()
+                .withFacebook()
+                .withGoogle()
+                .build();
+        //notifications
         if(mNotificationsApi != null){
             mNotificationsApi.release();
             mNotificationsApi = null;
@@ -190,5 +210,9 @@ public class MobgenHaloApplication extends HaloApplication {
 
     public static HaloTranslationsApi getTranslationsApi() {
         return mTranslationsApi;
+    }
+
+    public static HaloSocialApi getHaloSocialApi() {
+        return mSocialApi;
     }
 }

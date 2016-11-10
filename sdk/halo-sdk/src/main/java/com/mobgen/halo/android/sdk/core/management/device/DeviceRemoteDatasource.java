@@ -1,5 +1,6 @@
 package com.mobgen.halo.android.sdk.core.management.device;
 
+import android.support.annotation.Keep;
 import android.support.annotation.NonNull;
 
 import com.mobgen.halo.android.framework.api.HaloNetworkApi;
@@ -25,6 +26,7 @@ import java.util.Map;
 /**
  * Remote data source for the devices.
  */
+@Keep
 public class DeviceRemoteDatasource {
 
     /**

@@ -72,12 +72,7 @@ public class SocialLoginActivity extends MobgenHaloActivity implements View.OnCl
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_social_login);
         mContext=this;
-        mSocialApi = HaloSocialApi.with(MobgenHaloApplication.halo())
-                .storeCredentials("halo.account.demoapp")
-                .withHalo()
-                .withGoogle()
-                .withFacebook()
-                .build();
+        mSocialApi = MobgenHaloApplication.getHaloSocialApi();
         mSignInWithGoogle = (SignInButton) findViewById(R.id.google_sign_in);
         mSignInWithFacebook = (Button) findViewById(R.id.facebook_sign_in);
         mSignInWithHalo = (Button) findViewById(R.id.halo_sign_in);
@@ -134,12 +129,4 @@ public class SocialLoginActivity extends MobgenHaloActivity implements View.OnCl
             }
         }
     }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mSocialApi.release();
-    }
-
-
 }

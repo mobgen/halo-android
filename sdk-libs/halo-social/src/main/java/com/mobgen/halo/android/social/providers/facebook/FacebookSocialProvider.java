@@ -72,13 +72,10 @@ public class FacebookSocialProvider implements SocialProvider, Subscriber {
     public void authenticate(final @NonNull Halo halo, @NonNull String accountType, @NonNull CallbackV2<HaloSocialProfile> callback) {
         final Subscriber subscriber = this;
         initIfNeeded(halo.context());
-        mSocialApi = HaloSocialApi.with(Halo.instance())
-                .storeCredentials(accountType)
-                .withGoogle()
-                .build();
+        mSocialApi = (HaloSocialApi)halo.manager().haloSocial();
         final String authSocialToken =  mSocialApi.recoverAuthToken(AuthTokenType.FACEBOOK_AUTH_TOKEN);
         mPendingCallbackResolution = callback;
-        if(authSocialToken!=null) {
+        if(authSocialToken!=null && mSocialApi.getRecoveryPolicy()!=HaloSocialApi.RECOVERY_ALWAYS) {
             mSocialApi.loginWithANetwork(getSocialNetworkName() , authSocialToken)
                     .threadPolicy(Threading.SINGLE_QUEUE_POLICY)
                     .execute(new CallbackV2<IdentifiedUser>() {
@@ -121,7 +118,6 @@ public class FacebookSocialProvider implements SocialProvider, Subscriber {
             mFacebookSubscription.unsubscribe();
             mFacebookSubscription = null;
         }
-        mPendingCallbackResolution = null;
     }
 
     /**
