@@ -19,7 +19,6 @@ import com.mobgen.halo.android.framework.toolbox.data.HaloResultV2;
 import com.mobgen.halo.android.social.HaloSocialApi;
 import com.mobgen.halo.android.social.models.HaloSocialProfile;
 import com.mobgen.halo.android.social.providers.SocialNotAvailableException;
-import com.mobgen.halo.android.social.providers.a;
 
 /**
  * Social login activity to login with different accounts.
