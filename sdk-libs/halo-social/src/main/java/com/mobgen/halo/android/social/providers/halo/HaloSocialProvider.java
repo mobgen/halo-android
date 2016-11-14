@@ -66,7 +66,7 @@ public class HaloSocialProvider implements SocialProvider {
     }
 
     @Override
-    public void authenticate(@NonNull Halo halo, @NonNull String accountType, @NonNull CallbackV2<HaloSocialProfile> callback) {
+    public void authenticate(@NonNull Halo halo, @NonNull CallbackV2<HaloSocialProfile> callback) {
         mCallback = callback;
         mSocialApi = (HaloSocialApi)halo.manager().haloSocial();
         if(mHaloAuthProfile!=null) {

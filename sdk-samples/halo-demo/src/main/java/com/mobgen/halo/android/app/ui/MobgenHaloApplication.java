@@ -189,8 +189,8 @@ public class MobgenHaloApplication extends HaloApplication {
             mSocialApi =null;
         }
         mSocialApi = HaloSocialApi.with(halo)
-                .storeCredentials("halo.account.demoapp")
                 .recoveryPolicy(HaloSocialApi.RECOVERY_ALWAYS)
+                .storeCredentials("halo.account.demoapp")
                 .withHalo()
                 .withFacebook()
                 .withGoogle()

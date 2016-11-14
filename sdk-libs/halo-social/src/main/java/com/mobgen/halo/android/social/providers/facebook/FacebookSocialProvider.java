@@ -69,7 +69,7 @@ public class FacebookSocialProvider implements SocialProvider, Subscriber {
     }
 
     @Override
-    public void authenticate(final @NonNull Halo halo, @NonNull String accountType, @NonNull CallbackV2<HaloSocialProfile> callback) {
+    public void authenticate(final @NonNull Halo halo, @NonNull CallbackV2<HaloSocialProfile> callback) {
         final Subscriber subscriber = this;
         initIfNeeded(halo.context());
         mSocialApi = (HaloSocialApi)halo.manager().haloSocial();

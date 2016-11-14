@@ -39,10 +39,9 @@ public interface SocialProvider {
      * Authenticates using the halo instance and providing the result in the callback.
      *
      * @param halo The halo instance.
-     * @param accountType The account type on account manager.
      * @param callback The callback.
      */
-    void authenticate(@NonNull Halo halo, @Nullable String accountType, @NonNull CallbackV2<HaloSocialProfile> callback);
+    void authenticate(@NonNull Halo halo, @NonNull CallbackV2<HaloSocialProfile> callback);
 
     /**
      * Set the auth profile

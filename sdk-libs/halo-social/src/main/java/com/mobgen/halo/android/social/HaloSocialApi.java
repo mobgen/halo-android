@@ -164,7 +164,7 @@ public class HaloSocialApi extends HaloPluginApi implements HaloSocialAuthentica
                 if (mAccountManagerHelper.getAccountTokenType(account).equals(AuthTokenType.HALO_AUTH_TOKEN)) {
                     HaloAuthProfile haloAuthProfile = recoverHaloAuthProfile();
                     mProviders.get(SOCIAL_HALO).setAuthProfile(haloAuthProfile);
-                    mProviders.get(SOCIAL_HALO).authenticate(halo(), mAccountType, new CallbackV2<HaloSocialProfile>() {
+                    mProviders.get(SOCIAL_HALO).authenticate(halo(), new CallbackV2<HaloSocialProfile>() {
                         @Override
                         public void onFinish(@NonNull HaloResultV2<HaloSocialProfile> result) {
                             if(result.status().isOk()) {
@@ -173,7 +173,7 @@ public class HaloSocialApi extends HaloPluginApi implements HaloSocialAuthentica
                         }
                     });
                 } else if (mAccountManagerHelper.getAccountTokenType(account).equals(AuthTokenType.GOOGLE_AUTH_TOKEN)) {
-                    mProviders.get(SOCIAL_GOOGLE_PLUS).authenticate(halo(), mAccountType, new CallbackV2<HaloSocialProfile>() {
+                    mProviders.get(SOCIAL_GOOGLE_PLUS).authenticate(halo(), new CallbackV2<HaloSocialProfile>() {
                         @Override
                         public void onFinish(@NonNull HaloResultV2<HaloSocialProfile> result) {
                             if(result.status().isOk()) {
@@ -182,7 +182,7 @@ public class HaloSocialApi extends HaloPluginApi implements HaloSocialAuthentica
                         }
                     });
                 } else if (mAccountManagerHelper.getAccountTokenType(account).equals(AuthTokenType.FACEBOOK_AUTH_TOKEN)) {
-                    mProviders.get(SOCIAL_FACEBOOK).authenticate(halo(), mAccountType, new CallbackV2<HaloSocialProfile>() {
+                    mProviders.get(SOCIAL_FACEBOOK).authenticate(halo(), new CallbackV2<HaloSocialProfile>() {
                         @Override
                         public void onFinish(@NonNull HaloResultV2<HaloSocialProfile> result) {
                             if(result.status().isOk()) {
@@ -211,7 +211,7 @@ public class HaloSocialApi extends HaloPluginApi implements HaloSocialAuthentica
         if (!isSocialNetworkAvailable(socialNetwork)) {
             throw new SocialNotAvailableException("The social network you are trying to log with is not available. Social network id: " + socialNetwork);
         }
-        mProviders.get(socialNetwork).authenticate(halo(),mAccountType, callback);
+        mProviders.get(socialNetwork).authenticate(halo(), callback);
     }
 
     /**
@@ -232,7 +232,7 @@ public class HaloSocialApi extends HaloPluginApi implements HaloSocialAuthentica
             throw new SocialNotAvailableException("The social network you are trying to log with is not available. Social network id: " + socialNetwork);
         }
         mProviders.get(socialNetwork).setAuthProfile(haloAuthProfile);
-        mProviders.get(socialNetwork).authenticate(halo(), mAccountType, callback);
+        mProviders.get(socialNetwork).authenticate(halo(),callback);
     }
 
     /**
@@ -268,6 +268,9 @@ public class HaloSocialApi extends HaloPluginApi implements HaloSocialAuthentica
     @CheckResult(suggest = "You may want to call execute() to run the task")
     public HaloInteractorExecutor<IdentifiedUser> loginWithANetwork(@NonNull String socialNetworkName, @NonNull String socialToken) {
         AssertionUtils.notNull(socialToken, "socialToken");
+        if(mDevice==null || mDevice.getAlias()==null){
+            mDevice = halo().manager().getDevice();
+        }
         return new HaloInteractorExecutor<>(halo(),
                 "Login with a social provider",
                 new SocialLoginInteractor(mAccountType,new LoginRepository(new LoginRemoteDatasource(halo().framework().network())),
@@ -288,6 +291,9 @@ public class HaloSocialApi extends HaloPluginApi implements HaloSocialAuthentica
     public HaloInteractorExecutor<IdentifiedUser> loginWithHalo(@NonNull String username, @NonNull String password) {
         AssertionUtils.notNull(username, "username");
         AssertionUtils.notNull(password, "password");
+        if(mDevice==null || mDevice.getAlias()==null){
+            mDevice = halo().manager().getDevice();
+        }
         return new HaloInteractorExecutor<>(halo(),
                 "Login with halo",
                 new LoginInteractor(mAccountType, new LoginRepository(new LoginRemoteDatasource(halo().framework().network())),
@@ -304,7 +310,7 @@ public class HaloSocialApi extends HaloPluginApi implements HaloSocialAuthentica
     @Nullable
     private HaloAuthProfile recoverHaloAuthProfile(){
         if(mAccountType!=null) {
-            return mAccountManagerHelper.getAuthProfile(mAccountManagerHelper.recoverAccount(mAccountType), mDevice.getAlias());
+            return mAccountManagerHelper.getAuthProfile(mAccountManagerHelper.recoverAccount(mAccountType), getCurrentAlias());
         }
         return null;
     }

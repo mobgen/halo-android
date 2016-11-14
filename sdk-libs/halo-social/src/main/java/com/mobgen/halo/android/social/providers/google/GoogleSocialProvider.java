@@ -86,7 +86,7 @@ public class GoogleSocialProvider implements SocialProvider, Subscriber {
     }
 
     @Override
-    public void authenticate(final @NonNull Halo halo, @NonNull String accountType, @NonNull CallbackV2<HaloSocialProfile> callback) {
+    public void authenticate(final @NonNull Halo halo, @NonNull CallbackV2<HaloSocialProfile> callback) {
         final Subscriber subscriber = this;
         mSocialApi = (HaloSocialApi)halo.manager().haloSocial();
         mCallback = callback;
