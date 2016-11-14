@@ -2,10 +2,8 @@ package com.mobgen.halo.android.app.ui.social;
 
 
 import android.content.Context;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
 import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.widget.Button;
@@ -17,7 +15,6 @@ import com.mobgen.halo.android.app.ui.MobgenHaloApplication;
 import com.mobgen.halo.android.framework.common.helpers.logger.Halog;
 import com.mobgen.halo.android.framework.toolbox.data.CallbackV2;
 import com.mobgen.halo.android.framework.toolbox.data.HaloResultV2;
-import com.mobgen.halo.android.sdk.api.Halo;
 import com.mobgen.halo.android.social.HaloSocialApi;
 import com.mobgen.halo.android.social.models.HaloSocialProfile;
 import com.mobgen.halo.android.social.providers.SocialNotAvailableException;

@@ -58,16 +58,16 @@ public class Register implements Parcelable {
      * @param builder The builder.
      */
     private Register(@NonNull Builder builder) {
-        mHaloUserProfile = builder.mHaloUserProfile;
         mHaloAuthProfile = builder.mHaloAuthProfile;
+        mHaloUserProfile = builder.mHaloUserProfile;
     }
 
     /**
      * Builder class for register.
      */
     protected Register(Parcel in) {
-        mHaloUserProfile = in.readParcelable(HaloUserProfile.class.getClassLoader());
         mHaloAuthProfile = in.readParcelable(HaloAuthProfile.class.getClassLoader());
+        mHaloUserProfile = in.readParcelable(HaloUserProfile.class.getClassLoader());
     }
 
     /**
@@ -141,7 +141,7 @@ public class Register implements Parcelable {
          * @param haloUserProfile The user profile.
          */
         private Builder(@NonNull HaloAuthProfile haloAuthProfile, @NonNull HaloUserProfile haloUserProfile) {
-            AssertionUtils.notNull(haloAuthProfile, "token");
+            AssertionUtils.notNull(haloAuthProfile, "haloAuthProfile");
             AssertionUtils.notNull(haloUserProfile, "haloUserProfile");
             mHaloAuthProfile = haloAuthProfile;
             mHaloUserProfile = haloUserProfile;

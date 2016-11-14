@@ -1,4 +1,4 @@
-package com.mobgen.halo.android.social.instrumentation;
+package com.mobgen.halo.android.social.mock.instrumentation;
 
 import android.support.annotation.NonNull;
 

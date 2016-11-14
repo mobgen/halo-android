@@ -66,8 +66,8 @@ public class IdentifiedUser implements Parcelable {
      * Builder class for the identified user.
      */
     protected IdentifiedUser(Parcel in) {
-        mHaloUserProfile = in.readParcelable(HaloUserProfile.class.getClassLoader());
         mToken = in.readParcelable(Token.class.getClassLoader());
+        mHaloUserProfile = in.readParcelable(HaloUserProfile.class.getClassLoader());
     }
 
     /**

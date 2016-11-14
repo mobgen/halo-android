@@ -1,6 +1,19 @@
 {
-  "syncTimestamp": 1473088966483,
-  "created": [],
-  "updated": [],
-  "deleted": []
+  "user": {
+    "id": "identified-civ7vppyr1fee0isfzjlkbsk5",
+    "email": "account@mobgen.com",
+    "photoUrl": "",
+    "name": "username",
+    "surname": "surname",
+    "displayName": "username surname"
+  },
+  "token": {
+    "scope": "app",
+    "expires": 1478875644666,
+    "accessToken": "9aCH1pgfgnonimCE7pUxIPOecjw7k7kqvi67PyIG",
+    "refreshToken": "54kBFdhtSQhccyRp6ppZ2CpnCDTJfypWEDMaK5Ot",
+    "clientId": "halotestappclient",
+    "createdAt": 1478789244666,
+    "updatedAt": 1478694890314
+  }
 }

@@ -91,7 +91,7 @@ public class GoogleSocialProvider implements SocialProvider, Subscriber {
         mSocialApi = (HaloSocialApi)halo.manager().haloSocial();
         mCallback = callback;
         final String authSocialToken =  mSocialApi.recoverAuthToken(AuthTokenType.GOOGLE_AUTH_TOKEN);
-        if(authSocialToken!=null && mSocialApi.getRecoveryPolicy()!=HaloSocialApi.RECOVERY_ALWAYS){
+        if(authSocialToken!=null && mSocialApi.getRecoveryPolicy()==HaloSocialApi.RECOVERY_ALWAYS){
             //we login user with previous credentials
             mSocialApi.loginWithANetwork(getSocialNetworkName(), authSocialToken)
                     .threadPolicy(Threading.SINGLE_QUEUE_POLICY)
@@ -155,7 +155,7 @@ public class GoogleSocialProvider implements SocialProvider, Subscriber {
         }
 
         //login user into halo with social credentials or notified process ended if we cant obtain social provider social token
-        if(haloSocialProfileHaloResult.status().isOk() && haloSocialProfileHaloResult.data()!=null) {
+        if(mSocialApi!=null && haloSocialProfileHaloResult.status().isOk() && haloSocialProfileHaloResult.data()!=null) {
             mSocialApi.loginWithANetwork(haloSocialProfileHaloResult.data().socialName(), haloSocialProfileHaloResult.data().socialToken())
                     .threadPolicy(Threading.SINGLE_QUEUE_POLICY)
                     .execute(new CallbackV2<IdentifiedUser>() {
@@ -167,7 +167,7 @@ public class GoogleSocialProvider implements SocialProvider, Subscriber {
                             }
                         }
                     });
-        }else{
+        }else if(mCallback!=null){
             mCallback.onFinish(haloSocialProfileHaloResult);
             release();
         }

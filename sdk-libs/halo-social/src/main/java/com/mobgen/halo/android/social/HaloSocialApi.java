@@ -2,6 +2,7 @@ package com.mobgen.halo.android.social;
 
 import android.accounts.Account;
 import android.support.annotation.CheckResult;
+import android.support.annotation.Keep;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -47,6 +48,7 @@ import com.mobgen.halo.android.social.register.RegisterRepository;
  * Plugin for the social network handling and login with different profiles of app +.
  * It allows to use the halo login, facebook, google plus or another declared provider.
  */
+@Keep
 public class HaloSocialApi extends HaloPluginApi implements HaloSocialAuthenticator<HaloSocialProfile,HaloAuthProfile,HaloUserProfile,SocialNotAvailableException> {
     /**
      * Identifier for social login with halo.
@@ -104,7 +106,7 @@ public class HaloSocialApi extends HaloPluginApi implements HaloSocialAuthentica
     @Nullable
     private  String mAccountType;
     /**
-     * The recovery policy
+     * The recovery policy. By default recovery policy equals never store.
      */
     private int mRecoveryPolicy = HaloSocialApi.RECOVERY_NEVER;
 
@@ -133,6 +135,7 @@ public class HaloSocialApi extends HaloPluginApi implements HaloSocialAuthentica
      * @param halo The halo instance.
      * @return The social api instance.
      */
+    @Keep
     public static Builder with(@NonNull Halo halo) {
         return new Builder(halo);
     }
@@ -143,10 +146,16 @@ public class HaloSocialApi extends HaloPluginApi implements HaloSocialAuthentica
      * @return String The device alias.
      *
      */
+    @Keep
     public String getCurrentAlias() {
         return mDevice.getAlias();
     }
 
+    /**
+     * Recover an account from account manager with a social network provider. Default behaviour is using Halo account.
+     *
+     */
+    @Keep
     @Override
     public void recoverLogin() {
         if(mRecoveryPolicy == HaloSocialApi.RECOVERY_ALWAYS && mDevice!=null) {
@@ -186,6 +195,16 @@ public class HaloSocialApi extends HaloPluginApi implements HaloSocialAuthentica
         }
     }
 
+    /**
+     * Tries to login with a social network based on the id of this social network.
+     *
+     * @param socialNetwork The social network to login with.
+     * @param callback      The callback.
+     *
+     * @throws SocialNotAvailableException SocialNotAvailableException.
+     */
+    @Keep
+    @Api(2.0)
     @Override
     public void login(int socialNetwork, @NonNull CallbackV2<HaloSocialProfile> callback) throws SocialNotAvailableException {
         AssertionUtils.notNull(callback, "callback");
@@ -195,6 +214,17 @@ public class HaloSocialApi extends HaloPluginApi implements HaloSocialAuthentica
         mProviders.get(socialNetwork).authenticate(halo(),mAccountType, callback);
     }
 
+    /**
+     * Tries to login with a auth profile
+     *
+     * @param socialNetwork The social network to login with.
+     * @param haloAuthProfile   The auth profile to login on Halo.
+     * @param callback      The callback.
+     *
+     * @throws SocialNotAvailableException SocialNotAvailableException.
+     */
+    @Keep
+    @Api(2.0)
     @Override
     public void login(int socialNetwork, @NonNull HaloAuthProfile haloAuthProfile, @NonNull CallbackV2<HaloSocialProfile> callback) throws SocialNotAvailableException {
         AssertionUtils.notNull(haloAuthProfile, "haloAuthProfile");
@@ -205,7 +235,15 @@ public class HaloSocialApi extends HaloPluginApi implements HaloSocialAuthentica
         mProviders.get(socialNetwork).authenticate(halo(), mAccountType, callback);
     }
 
-
+    /**
+     * Tries to sign in with halo
+     *
+     * @param haloAuthProfile The auth profile to register.
+     * @param haloUserProfile The user profile.
+     *
+     */
+    @Api(2.0)
+    @Keep
     @Override
     @NonNull
     @CheckResult(suggest = "You may want to call execute() to run the task")
@@ -225,6 +263,7 @@ public class HaloSocialApi extends HaloPluginApi implements HaloSocialAuthentica
      * @param socialNetworkName The social network to login with.
      * @param socialToken The social token
      */
+    @Keep
     @NonNull
     @CheckResult(suggest = "You may want to call execute() to run the task")
     public HaloInteractorExecutor<IdentifiedUser> loginWithANetwork(@NonNull String socialNetworkName, @NonNull String socialToken) {
@@ -243,6 +282,7 @@ public class HaloSocialApi extends HaloPluginApi implements HaloSocialAuthentica
      * @param username The social network to login with.
      * @param password The social token
      */
+    @Keep
     @NonNull
     @CheckResult(suggest = "You may want to call execute() to run the task")
     public HaloInteractorExecutor<IdentifiedUser> loginWithHalo(@NonNull String username, @NonNull String password) {
@@ -275,6 +315,7 @@ public class HaloSocialApi extends HaloPluginApi implements HaloSocialAuthentica
      *
      * @return HaloAuthProfile The HaloAuthProfile.
      */
+    @Keep
     @Api(2.0)
     @Nullable
     public String recoverAuthToken(@NonNull String tokenType){
@@ -291,6 +332,7 @@ public class HaloSocialApi extends HaloPluginApi implements HaloSocialAuthentica
      * @param socialNetwork The social network.
      * @return True if it is available. False otherwise.
      */
+    @Keep
     @Api(2.0)
     public boolean isSocialNetworkAvailable(int socialNetwork) {
         return hasProvider(socialNetwork) && libraryAvailable(socialNetwork) && linkedAppAvailable(socialNetwork);
@@ -299,6 +341,7 @@ public class HaloSocialApi extends HaloPluginApi implements HaloSocialAuthentica
     /**
      * Releases all the reserved providers.
      */
+    @Keep
     @Api(2.0)
     public void release() {
         for (int i = 0; i < mProviders.size(); i++) {
@@ -335,6 +378,7 @@ public class HaloSocialApi extends HaloPluginApi implements HaloSocialAuthentica
      *
      * @return The recovery policyß
      */
+    @Keep
     @Api(2.0)
     public int getRecoveryPolicy() {
         return mRecoveryPolicy;
@@ -386,6 +430,7 @@ public class HaloSocialApi extends HaloPluginApi implements HaloSocialAuthentica
     /**
      * The builder for the social api.
      */
+    @Keep
     public static class Builder implements IBuilder<HaloSocialApi> {
 
         /**
@@ -411,6 +456,7 @@ public class HaloSocialApi extends HaloPluginApi implements HaloSocialAuthentica
          * @return The current builder
          */
         @Api(2.0)
+        @Keep
         @NonNull
         public Builder recoveryPolicy(@Nullable  int recoverPolicy) {
             mSocialApi.setRecoverPolicy(recoverPolicy);
@@ -422,6 +468,7 @@ public class HaloSocialApi extends HaloPluginApi implements HaloSocialAuthentica
          *
          * @return The current builder.
          */
+        @Keep
         @Api(2.0)
         @NonNull
         public Builder withGoogle() {
@@ -451,6 +498,7 @@ public class HaloSocialApi extends HaloPluginApi implements HaloSocialAuthentica
          *
          * @return The account type.
          */
+        @Keep
         @Api(2.0)
         @NonNull
         public Builder storeCredentials(@Nullable  String accountType) {
@@ -462,6 +510,7 @@ public class HaloSocialApi extends HaloPluginApi implements HaloSocialAuthentica
          *
          * @return The current builder.
          */
+        @Keep
         @Api(2.0)
         @NonNull
         public Builder withHalo() {
@@ -473,6 +522,7 @@ public class HaloSocialApi extends HaloPluginApi implements HaloSocialAuthentica
          *
          * @return The current builder.
          */
+        @Keep
         @Api(2.0)
         @NonNull
         public Builder withFacebook() {
@@ -486,6 +536,7 @@ public class HaloSocialApi extends HaloPluginApi implements HaloSocialAuthentica
          * @param provider The provider instance.
          * @return The current builder.
          */
+        @Keep
         @Api(2.0)
         @NonNull
         public Builder withProvider(int socialId, @Nullable SocialProvider provider) {

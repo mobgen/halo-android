@@ -156,12 +156,12 @@ public class HaloUserProfile implements Parcelable {
      * @param in The parcel where we will write the user profile
      */
     protected HaloUserProfile(Parcel in) {
-        this.mDisplayName = in.readString();
-        this.mEmail = in.readString();
-        this.mPhoto = in.readString();
         this.mIdentifiedId = in.readString();
-        this.mSurname =  in.readString();
+        this.mDisplayName = in.readString();
         this.mName = in.readString();
+        this.mSurname =  in.readString();
+        this.mPhoto = in.readString();
+        this.mEmail = in.readString();
     }
 
 
@@ -173,11 +173,11 @@ public class HaloUserProfile implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.mIdentifiedId);
-        dest.writeString(this.mEmail);
-        dest.writeString(this.mPhoto);
         dest.writeString(this.mDisplayName);
         dest.writeString(this.mName);
         dest.writeString(this.mSurname);
+        dest.writeString(this.mPhoto);
+        dest.writeString(this.mEmail);
     }
 
     @Override

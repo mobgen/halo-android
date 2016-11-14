@@ -20,6 +20,7 @@ public interface HaloSocialAuthenticator<T,S,U,E extends Exception> {
      *
      * @throws E SocialNotAvailableException.
      */
+    @Keep
     @Api(2.0)
     void login(int socialNetwork, @NonNull CallbackV2<T> callback) throws E;
 
@@ -32,6 +33,7 @@ public interface HaloSocialAuthenticator<T,S,U,E extends Exception> {
      *
      * @throws E SocialNotAvailableException.
      */
+    @Keep
     @Api(2.0)
     void login(int socialNetwork, @NonNull S haloAuthProfile, @NonNull CallbackV2<T> callback) throws E;
 
@@ -42,6 +44,7 @@ public interface HaloSocialAuthenticator<T,S,U,E extends Exception> {
      * @param haloUserProfile The user profile.
      *
      */
+    @Keep
     @Api(2.0)
     @NonNull
     @CheckResult(suggest = "You may want to call execute() to run the task")
@@ -51,6 +54,7 @@ public interface HaloSocialAuthenticator<T,S,U,E extends Exception> {
      * Recover an account from account manager with a social network provider. Default behaviour is using Halo account.
      *
      */
+    @Keep
     @Api(2.0)
     void recoverLogin();
 }
