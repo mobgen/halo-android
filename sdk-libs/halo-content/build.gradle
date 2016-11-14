@@ -81,7 +81,7 @@ grill {
         libDevName "MOBGEN"
         libDevEmail "halo@mobgen.com"
         libSiteUrl "https://halo.mobgen.com"
-        libGitUrl "https://bitbucket.org/mobgen/halo-android/sdk-libs/halo-content"
+        libGitUrl "https://github.com/mobgen/halo-android/halo-content"
         bintrayRepoName "HALO-Content"
         bintrayUser "${rootProject.ext.jcenterUser}"
         bintrayKey "${rootProject.ext.jcenterKey}"
