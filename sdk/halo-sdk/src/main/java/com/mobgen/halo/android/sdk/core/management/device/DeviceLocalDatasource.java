@@ -1,6 +1,5 @@
 package com.mobgen.halo.android.sdk.core.management.device;
 
-import android.support.annotation.Keep;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -17,7 +16,6 @@ import org.json.JSONObject;
 /**
  * Local storage for the halo device.
  */
-@Keep
 public class DeviceLocalDatasource {
 
     /**

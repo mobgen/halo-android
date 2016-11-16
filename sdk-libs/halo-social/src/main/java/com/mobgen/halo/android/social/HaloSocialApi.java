@@ -20,10 +20,6 @@ import com.mobgen.halo.android.sdk.api.Halo;
 import com.mobgen.halo.android.sdk.api.HaloPluginApi;
 import com.mobgen.halo.android.sdk.core.internal.storage.HaloManagerContract;
 import com.mobgen.halo.android.sdk.core.management.authentication.HaloSocialAuthenticator;
-import com.mobgen.halo.android.sdk.core.management.device.DeviceLocalDatasource;
-import com.mobgen.halo.android.sdk.core.management.device.DeviceRemoteDatasource;
-import com.mobgen.halo.android.sdk.core.management.device.DeviceRepository;
-import com.mobgen.halo.android.sdk.core.management.models.Device;
 import com.mobgen.halo.android.sdk.core.threading.HaloInteractorExecutor;
 import com.mobgen.halo.android.social.authenticator.AccountManagerHelper;
 import com.mobgen.halo.android.social.authenticator.AuthTokenType;
@@ -88,15 +84,6 @@ public class HaloSocialApi extends HaloPluginApi implements HaloSocialAuthentica
     }
 
     /**
-     * The device info.
-     */
-    @Nullable
-    private Device mDevice;
-    /**
-     * The Device repository to fetch a device.
-     */
-    private DeviceRepository mDeviceRepository;
-    /**
      * The Account manager helper
      */
     private AccountManagerHelper mAccountManagerHelper;
@@ -124,8 +111,6 @@ public class HaloSocialApi extends HaloPluginApi implements HaloSocialAuthentica
         super(halo);
         mProviders = new SparseArray<>(3);
         mAccountManagerHelper =  new AccountManagerHelper(context());
-        mDeviceRepository = new DeviceRepository(framework().parser(), new DeviceRemoteDatasource(framework().network()), new DeviceLocalDatasource(framework().storage(HaloManagerContract.HALO_MANAGER_STORAGE)));
-        mDevice =  mDeviceRepository.getCachedDevice();
         halo.manager().haloSocial(this);
     }
 
@@ -148,7 +133,11 @@ public class HaloSocialApi extends HaloPluginApi implements HaloSocialAuthentica
      */
     @Keep
     public String getCurrentAlias() {
-        return mDevice.getAlias();
+        if(halo().manager().getDevice()!=null) {
+            return halo().manager().getDevice().getAlias();
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -158,7 +147,7 @@ public class HaloSocialApi extends HaloPluginApi implements HaloSocialAuthentica
     @Keep
     @Override
     public void recoverLogin() {
-        if(mRecoveryPolicy == HaloSocialApi.RECOVERY_ALWAYS && mDevice!=null) {
+        if(mRecoveryPolicy == HaloSocialApi.RECOVERY_ALWAYS && halo().manager().getDevice()!=null) {
             Account account = mAccountManagerHelper.recoverAccount(mAccountType);
             if (account != null) {
                 if (mAccountManagerHelper.getAccountTokenType(account).equals(AuthTokenType.HALO_AUTH_TOKEN)) {
@@ -268,13 +257,10 @@ public class HaloSocialApi extends HaloPluginApi implements HaloSocialAuthentica
     @CheckResult(suggest = "You may want to call execute() to run the task")
     public HaloInteractorExecutor<IdentifiedUser> loginWithANetwork(@NonNull String socialNetworkName, @NonNull String socialToken) {
         AssertionUtils.notNull(socialToken, "socialToken");
-        if(mDevice==null || mDevice.getAlias()==null){
-            mDevice = halo().manager().getDevice();
-        }
         return new HaloInteractorExecutor<>(halo(),
                 "Login with a social provider",
                 new SocialLoginInteractor(mAccountType,new LoginRepository(new LoginRemoteDatasource(halo().framework().network())),
-                        socialNetworkName, socialToken, mDevice,mRecoveryPolicy)
+                        socialNetworkName, socialToken, halo().manager().getDevice().getAlias(),mRecoveryPolicy)
         );
 
     }
@@ -291,13 +277,10 @@ public class HaloSocialApi extends HaloPluginApi implements HaloSocialAuthentica
     public HaloInteractorExecutor<IdentifiedUser> loginWithHalo(@NonNull String username, @NonNull String password) {
         AssertionUtils.notNull(username, "username");
         AssertionUtils.notNull(password, "password");
-        if(mDevice==null || mDevice.getAlias()==null){
-            mDevice = halo().manager().getDevice();
-        }
         return new HaloInteractorExecutor<>(halo(),
                 "Login with halo",
                 new LoginInteractor(mAccountType, new LoginRepository(new LoginRemoteDatasource(halo().framework().network())),
-                        username, password, mDevice,mRecoveryPolicy)
+                        username, password, halo().manager().getDevice().getAlias(),mRecoveryPolicy)
         );
     }
 

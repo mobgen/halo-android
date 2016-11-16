@@ -4,8 +4,6 @@ package com.mobgen.halo.android.sdk.core.internal.startup.processes;
 import com.mobgen.halo.android.framework.toolbox.threading.Threading;
 import com.mobgen.halo.android.sdk.api.Halo;
 import com.mobgen.halo.android.sdk.core.management.models.Device;
-import com.mobgen.halo.android.sdk.core.management.segmentation.ApplicationNameCollector;
-import com.mobgen.halo.android.sdk.core.management.segmentation.HaloSegmentationTag;
 import com.mobgen.halo.android.sdk.core.management.segmentation.TagCollector;
 import com.mobgen.halo.android.sdk.core.management.segmentation.TestDeviceCollector;
 import com.mobgen.halo.android.sdk.mock.HaloMock;
@@ -55,27 +53,25 @@ public class DeviceSyncStartupProcessTest extends HaloRobolectricTest {
     public void thatCanSyncDevice() throws IOException {
         enqueueServerFile(mMockServer, SYNC_DEVICE);
         final Device device = new Device();
-        mHalo.getCore().device(device);
         SyncDeviceStartupProcess syncDeviceStartupProcess = new SyncDeviceStartupProcess();
         syncDeviceStartupProcess.setProcessListener(givenAProcessListener(mCallbackFlag));
         StartupRunnableAdapter startupRunnableAdapter = new StartupRunnableAdapter(mHalo,syncDeviceStartupProcess);
         startupRunnableAdapter.run();
         assertThat(mCallbackFlag.isFlagged()).isTrue();
-        assertThat(mHalo.getCore().device()).isNotEqualTo(device);
-        assertThat(mHalo.getCore().device().getTags().size()).isEqualTo(2);
+        assertThat(mHalo.manager().getDevice()).isNotEqualTo(device);
+        assertThat(mHalo.manager().getDevice().getTags().size()).isEqualTo(2);
     }
 
     @Test
     public void thatCanSyncDeviceError() throws IOException {
         enqueueServerFile(mMockServer, SYNC_DEVICE);
-        final Device device = new Device();
-        mHalo.getCore().device(device);
+        final Device device = null;
         SyncDeviceStartupProcess syncDeviceStartupProcess = new SyncDeviceStartupProcess();
         syncDeviceStartupProcess.setProcessListener(givenAProcessListener(mCallbackFlag));
         StartupRunnableAdapter startupRunnableAdapter = new StartupRunnableAdapter(null,syncDeviceStartupProcess);
         startupRunnableAdapter.run();
         assertThat(mCallbackFlag.isFlagged()).isTrue();
-        assertThat(mHalo.getCore().device()).isEqualTo(device);
+        assertThat(mHalo.manager().getDevice()).isEqualTo(device);
     }
 
     @Test

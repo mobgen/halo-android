@@ -5,7 +5,6 @@ import android.support.annotation.NonNull;
 
 import com.mobgen.halo.android.framework.common.utils.AssertionUtils;
 import com.mobgen.halo.android.framework.network.exceptions.HaloNetException;
-import com.mobgen.halo.android.sdk.core.management.models.Device;
 import com.mobgen.halo.android.social.models.IdentifiedUser;
 
 /**
@@ -30,26 +29,26 @@ public class LoginRepository {
     /**
      * Provides the user identity with a social token.
      *
-     * @param socialApiName The remote data source.
-     * @param socialToken The remote data source.
-     * @param device The remote data source.
+     * @param socialApiName The social api name
+     * @param socialToken The social token
+     * @param deviceAlias The device alias
      * @return The user identified
      */
     @NonNull
-    public synchronized IdentifiedUser loginSocialProvider(@NonNull String socialApiName, @NonNull String socialToken, @NonNull Device device) throws HaloNetException {
-        return mRemoteDatasource.loginSocial(socialApiName,socialToken,device.getAlias());
+    public synchronized IdentifiedUser loginSocialProvider(@NonNull String socialApiName, @NonNull String socialToken, @NonNull String deviceAlias) throws HaloNetException {
+        return mRemoteDatasource.loginSocial(socialApiName,socialToken,deviceAlias);
     }
 
     /**
      * Provides the user identity.
      *
-     * @param username The remote data source.
-     * @param password The remote data source.
-     * @param device The remote data source.
+     * @param username The username.
+     * @param password The password.
+     * @param deviceAlias The device alias.
      * @return The user identified
      */
     @NonNull
-    public synchronized IdentifiedUser loginHalo(@NonNull String username, @NonNull String password,@NonNull Device device) throws HaloNetException {
-        return mRemoteDatasource.login(username,password,device.getAlias());
+    public synchronized IdentifiedUser loginHalo(@NonNull String username, @NonNull String password,@NonNull String deviceAlias) throws HaloNetException {
+        return mRemoteDatasource.login(username,password,deviceAlias);
     }
 }

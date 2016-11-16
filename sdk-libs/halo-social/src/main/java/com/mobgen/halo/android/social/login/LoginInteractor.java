@@ -6,7 +6,6 @@ import com.mobgen.halo.android.framework.network.exceptions.HaloNetException;
 import com.mobgen.halo.android.framework.toolbox.data.HaloResultV2;
 import com.mobgen.halo.android.framework.toolbox.data.HaloStatus;
 import com.mobgen.halo.android.sdk.api.Halo;
-import com.mobgen.halo.android.sdk.core.management.models.Device;
 import com.mobgen.halo.android.sdk.core.threading.HaloInteractorExecutor;
 import com.mobgen.halo.android.social.HaloSocialApi;
 import com.mobgen.halo.android.social.authenticator.AccountManagerHelper;
@@ -31,9 +30,9 @@ public class LoginInteractor implements HaloInteractorExecutor.Interactor<Identi
      */
     private String mPassword;
     /**
-     * Device.
+     * The device alias.
      */
-    private Device mDevice;
+    private String mDeviceAlias;
     /**
      * The account type in account manager
      */
@@ -50,14 +49,14 @@ public class LoginInteractor implements HaloInteractorExecutor.Interactor<Identi
      * @param loginRepository The login repository.
      * @param username The user email.
      * @param password The password.
-     * @param device The device.
+     * @param deviceAlias The device alias.
      */
-    public LoginInteractor(String accountType, LoginRepository loginRepository, String username, String password, Device device, int recoveryPolicy) {
+    public LoginInteractor(String accountType, LoginRepository loginRepository, String username, String password, String deviceAlias, int recoveryPolicy) {
         mAccountType=accountType;
         mLoginRepository = loginRepository;
         mUserName = username;
         mPassword = password;
-        mDevice = device;
+        mDeviceAlias = deviceAlias;
         mRecoveryPolicy=recoveryPolicy;
     }
 
@@ -68,7 +67,7 @@ public class LoginInteractor implements HaloInteractorExecutor.Interactor<Identi
         HaloStatus.Builder status = HaloStatus.builder();
         IdentifiedUser identifiedUser = null;
         try {
-            identifiedUser = mLoginRepository.loginHalo(mUserName,mPassword,mDevice);
+            identifiedUser = mLoginRepository.loginHalo(mUserName,mPassword,mDeviceAlias);
             //store user credentials on account manager
             if(mRecoveryPolicy == HaloSocialApi.RECOVERY_ALWAYS) {
                 if (mAccountType != null) {

@@ -50,7 +50,6 @@ dependencies {
     //Testing dependencies
     testApt "com.bluelinelabs:logansquare-compiler:${rootProject.ext.loganSquareVersion}"
     testCompile "com.mobgen.halo.android:halo-testing:${rootProject.ext.haloVersion}"
-    testCompile "com.squareup.okhttp3:mockwebserver:${mockWebServerVersion}"
 }
 
 /**

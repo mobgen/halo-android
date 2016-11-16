@@ -1,6 +1,5 @@
 package com.mobgen.halo.android.sdk.core.management.device;
 
-import android.support.annotation.Keep;
 import android.support.annotation.NonNull;
 
 import com.mobgen.halo.android.framework.api.HaloNetworkApi;
@@ -26,7 +25,6 @@ import java.util.Map;
 /**
  * Remote data source for the devices.
  */
-@Keep
 public class DeviceRemoteDatasource {
 
     /**
@@ -110,11 +108,7 @@ public class DeviceRemoteDatasource {
                     .method(HaloRequestMethod.PUT)
                     .body(HaloBodyFactory.jsonObjectBody(new JSONObject(Device.serialize(device, mClientApi.framework().parser()))))
                     .build().execute(Device.class);
-        } catch (HaloNotFoundException e) {
-            Halog.e(getClass(), "Something weird happened with the previous user. Create a new one.", e);
-            device.makeAnonymous();
-            return createDevice(device);
-        } catch (JSONException | IOException | HaloParsingException e) {
+        } catch (JSONException | HaloParsingException e) {
             throw new HaloNetParseException("The device object is not serializable to a JSONObject format.", e);
         }
     }

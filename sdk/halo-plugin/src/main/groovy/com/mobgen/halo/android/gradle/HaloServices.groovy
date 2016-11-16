@@ -55,7 +55,7 @@ public class HaloServices {
      */
     public void social(Closure closure) {
         if (social == null) {
-            social = new HaloSocial()
+            social = new HaloSocial(configuration)
         }
         ConfigureUtil.configure(closure, social)
     }

@@ -20,6 +20,7 @@ import com.mobgen.halo.android.sdk.R;
 import com.mobgen.halo.android.sdk.core.management.HaloManagerApi;
 import com.mobgen.halo.android.sdk.core.management.authentication.HaloAuthenticator;
 import com.mobgen.halo.android.sdk.core.management.models.Credentials;
+import com.mobgen.halo.android.sdk.core.management.models.Device;
 import com.mobgen.halo.android.sdk.core.management.models.HaloServerVersion;
 import com.mobgen.halo.android.sdk.core.management.segmentation.HaloSegmentationTag;
 import com.mobgen.halo.android.sdk.core.management.segmentation.TagCollector;

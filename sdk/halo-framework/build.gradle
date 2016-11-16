@@ -25,6 +25,10 @@ android {
 
     testOptions {
         unitTests.all {
+            jvmArgs '-noverify'
+            jacoco {
+                includeNoLocationClasses = true
+            }
             setIgnoreFailures(rootProject.ext.ignoreTestFailures)
         }
     }
