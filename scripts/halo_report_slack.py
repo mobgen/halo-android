@@ -59,7 +59,7 @@ def buildTestsAttachment(testFile):
 def parseTestFile(file):
   with open(file, "r") as openedFile:
     line = openedFile.readline().split(" ")
-    return {"total": int(line[0]), "failed": int(line[1]), "passed": int(line[2])}
+    return {"passed": int(line[0]), "failed": int(line[1]), "total": int(line[2])}
 
 # Coverage
 def buildCoverageAttachment(file):
@@ -71,7 +71,7 @@ def buildCoverageAttachment(file):
     fields.append(getFieldResult(coverageTuple["name"], str(coverage) + "%"))
     if color == "good" and (coverage < 65 and coverage > 25):
       color = "warning"
-    elif color == "good" or color == "warning" and (coverage <= 25):
+    elif (color == "good" or color == "warning") and (coverage <= 25):
       color = "danger"
 
   return {
