@@ -4,26 +4,25 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.mobgen.halo.android.framework.common.helpers.subscription.ISubscription;
+import com.mobgen.halo.android.framework.common.utils.AssertionUtils;
 import com.mobgen.halo.android.framework.network.exceptions.HaloAuthenticationException;
 import com.mobgen.halo.android.framework.toolbox.data.CallbackV2;
 import com.mobgen.halo.android.framework.toolbox.data.HaloResultV2;
 import com.mobgen.halo.android.framework.toolbox.data.HaloStatus;
 import com.mobgen.halo.android.sdk.api.Halo;
+import com.mobgen.halo.android.sdk.core.threading.HaloInteractorExecutor;
 import com.mobgen.halo.android.social.HaloSocialApi;
+import com.mobgen.halo.android.social.login.LoginInteractor;
+import com.mobgen.halo.android.social.login.LoginRemoteDatasource;
+import com.mobgen.halo.android.social.login.LoginRepository;
 import com.mobgen.halo.android.social.models.HaloAuthProfile;
-import com.mobgen.halo.android.social.models.HaloSocialProfile;
-import com.mobgen.halo.android.social.providers.SocialProvider;
 import com.mobgen.halo.android.social.models.IdentifiedUser;
+import com.mobgen.halo.android.social.providers.SocialProvider;
 
 /**
  * The social provider for halo.
  */
 public class HaloSocialProvider implements SocialProvider {
-    /**
-     * Social api
-     */
-    private HaloSocialApi mSocialApi;
     /**
      * Name for social login with halo.
      */
@@ -31,7 +30,7 @@ public class HaloSocialProvider implements SocialProvider {
     /**
      * The callback to provide the result.
      */
-    private CallbackV2<HaloSocialProfile> mCallback;
+    private CallbackV2<IdentifiedUser> userRequestCallbak;
     /**
      * The auth profile
      */
@@ -39,7 +38,6 @@ public class HaloSocialProvider implements SocialProvider {
 
     /**
      * Constructor for the social provider for halo
-     *
      */
     public HaloSocialProvider() {
 
@@ -61,58 +59,62 @@ public class HaloSocialProvider implements SocialProvider {
     }
 
     @Override
-    public void setAuthProfile(@Nullable HaloAuthProfile haloAuthProfile){
+    public void setAuthProfile(@Nullable HaloAuthProfile haloAuthProfile) {
         mHaloAuthProfile = haloAuthProfile;
     }
 
     @Override
-    public void authenticate(@NonNull Halo halo, @NonNull CallbackV2<HaloSocialProfile> callback) {
-        mCallback = callback;
-        mSocialApi = (HaloSocialApi)halo.manager().haloSocial();
-        if(mHaloAuthProfile!=null) {
-            mSocialApi.loginWithHalo(mHaloAuthProfile.getEmail(), mHaloAuthProfile.getPassword())
-                    .execute(new CallbackV2<IdentifiedUser>() {
-                        @Override
-                        public void onFinish(@NonNull HaloResultV2<IdentifiedUser> result) {
-                            if(result.status().isOk()) {
-                                mCallback.onFinish(processResult(result));
-                            } else {
-                                mCallback.onFinish(error(result.status()));
-                            }
-                        }
-                    });
-        } else {
-            //we cannot request user because auth credentials are null
-            HaloStatus.Builder status = HaloStatus.builder();
-            status.error(new HaloAuthenticationException("Error"));
-            mCallback.onFinish(error(status.build()));
-        }
-    }
-
-    private HaloResultV2<HaloSocialProfile> error(HaloStatus status) {
-        return new HaloResultV2<HaloSocialProfile>(status, null);
-    }
-
-    private HaloResultV2<HaloSocialProfile> processResult(HaloResultV2<IdentifiedUser> result){
-        HaloSocialProfile profile=null;
-        if(result.status().isOk()) {
-            IdentifiedUser identifiedUser = result.data();
-            profile = HaloSocialProfile.builder(identifiedUser.getToken().getRefreshToken())
-                    .socialName(getSocialNetworkName())
-                    .socialId(identifiedUser.getUser().getIdentifiedId())
-                    .name(identifiedUser.getUser().getName())
-                    .surname(identifiedUser.getUser().getSurname())
-                    .displayName(identifiedUser.getUser().getDisplayName())
-                    .email(identifiedUser.getUser().getEmail())
-                    .photo(identifiedUser.getUser().getPhoto())
-                    .build();
-        }
-        return new HaloResultV2<>(result.status(), profile);
-
+    public void setSocialToken(@NonNull String socialToken) {
+        return;
     }
 
     @Override
     public void release() {
+        return;
     }
 
+    @Override
+    public void authenticate(@NonNull Halo halo, @NonNull CallbackV2<IdentifiedUser> callback) {
+        userRequestCallbak = callback;
+        if (mHaloAuthProfile != null) {
+            loginWithHalo(mHaloAuthProfile.getEmail(), mHaloAuthProfile.getPassword())
+                    .execute(new CallbackV2<IdentifiedUser>() {
+                        @Override
+                        public void onFinish(@NonNull HaloResultV2<IdentifiedUser> result) {
+                            if (result.status().isOk()) {
+                                userRequestCallbak.onFinish(result);
+                            } else {
+                                userRequestCallbak.onFinish(error(result.status()));
+                            }
+                        }
+                    });
+        } else {
+            //we dont have user credential to login
+            HaloStatus.Builder status = HaloStatus.builder();
+            status.error(new HaloAuthenticationException("Error"));
+            userRequestCallbak.onFinish(error(status.build()));
+        }
+    }
+
+    private HaloResultV2<IdentifiedUser> error(HaloStatus status) {
+        return new HaloResultV2<IdentifiedUser>(status, null);
+    }
+
+    /**
+     * Tries to login with halo
+     *
+     * @param username The social network to login with.
+     * @param password The social token
+     */
+    @NonNull
+    public HaloInteractorExecutor<IdentifiedUser> loginWithHalo(@NonNull String username, @NonNull String password) {
+        AssertionUtils.notNull(username, "username");
+        AssertionUtils.notNull(password, "password");
+        HaloSocialApi socialApi = (HaloSocialApi) Halo.instance().manager().haloSocial();
+        return new HaloInteractorExecutor<>(Halo.instance(),
+                "Login with halo",
+                new LoginInteractor(socialApi.accountType(), new LoginRepository(new LoginRemoteDatasource(Halo.instance().framework().network())),
+                        username, password, Halo.instance().manager().getDevice().getAlias(), socialApi.recoveryPolicy())
+        );
+    }
 }

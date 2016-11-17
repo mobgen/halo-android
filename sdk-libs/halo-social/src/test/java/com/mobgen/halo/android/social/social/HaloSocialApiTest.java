@@ -9,14 +9,10 @@ import com.mobgen.halo.android.framework.common.exceptions.HaloParsingException;
 import com.mobgen.halo.android.framework.toolbox.data.CallbackV2;
 import com.mobgen.halo.android.framework.toolbox.threading.Threading;
 import com.mobgen.halo.android.sdk.api.Halo;
-import com.mobgen.halo.android.sdk.core.management.device.DeviceLocalDatasource;
-import com.mobgen.halo.android.sdk.core.management.models.Device;
 import com.mobgen.halo.android.social.HaloSocialApi;
 import com.mobgen.halo.android.social.authenticator.AccountManagerHelper;
-import com.mobgen.halo.android.social.authenticator.AuthTokenType;
 import com.mobgen.halo.android.social.mock.instrumentation.StringShadowResources;
 import com.mobgen.halo.android.social.models.HaloAuthProfile;
-import com.mobgen.halo.android.social.models.HaloSocialProfile;
 import com.mobgen.halo.android.social.models.HaloUserProfile;
 import com.mobgen.halo.android.social.models.IdentifiedUser;
 import com.mobgen.halo.android.social.providers.SocialNotAvailableException;
@@ -36,6 +32,7 @@ import static com.mobgen.halo.android.social.mock.instrumentation.HaloMock.given
 import static com.mobgen.halo.android.social.mock.instrumentation.HaloSocialApiMock.givenASocialApiWithAllNetworksAvailable;
 import static com.mobgen.halo.android.social.mock.fixtures.ServerFixtures.enqueueServerFile;
 import static com.mobgen.halo.android.social.mock.instrumentation.HaloSocialApiInstrument.givenAHaloSocialProfileCallback;
+import static com.mobgen.halo.android.social.mock.instrumentation.HaloSocialApiInstrument.givenAHaloSocialProfileIdentifiedCallback;
 import static com.mobgen.halo.android.social.mock.instrumentation.HaloSocialApiInstrument.givenAHaloSocialProfileRegisteredCallback;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
@@ -59,7 +56,7 @@ public class HaloSocialApiTest extends HaloRobolectricTest {
     public void onStart() throws IOException, HaloParsingException {
         mMockServer = MockServer.create();
         mHalo = givenADefaultHalo(mMockServer.start());
-        givenAValidDevice();
+      //  givenAValidDevice();
         mHaloSocialApi = givenASocialApiWithAllNetworksAvailable(mHalo);
         mCallbackFlag = newCallbackFlag();
         mContext = mHalo.context();
@@ -102,21 +99,11 @@ public class HaloSocialApiTest extends HaloRobolectricTest {
     }
 
     @Test
-    public void thatAuthenticateWithHaloProvider() throws SocialNotAvailableException, IOException {
-        enqueueServerFile(mMockServer,LOGIN_SUCESS);
-        CallbackV2<IdentifiedUser> callback = givenAHaloSocialProfileCallback(mCallbackFlag,"account@mobgen.com");
-        mHaloSocialApi.loginWithHalo("account@mobgen.com", "mypass")
-                .threadPolicy(Threading.SAME_THREAD_POLICY)
-                .execute(callback);
-        assertThat(mCallbackFlag.isFlagged()).isTrue();
-    }
-
-    @Test
     public void thatLoginWithHaloProvider() throws SocialNotAvailableException, IOException {
         enqueueServerFile(mMockServer,LOGIN_SUCESS);
-        CallbackV2<HaloSocialProfile> callback = givenAHaloSocialProfileRegisteredCallback(mCallbackFlag,"account@mobgen.com");
+        CallbackV2<IdentifiedUser> callback = givenAHaloSocialProfileIdentifiedCallback(mCallbackFlag,"account@mobgen.com");
         HaloAuthProfile authProfile = new HaloAuthProfile("account@mobgen.com", "securepass", "myalias");
-        mHaloSocialApi.login(HaloSocialApi.SOCIAL_HALO,authProfile,callback);
+        mHaloSocialApi.loginWithHalo(HaloSocialApi.SOCIAL_HALO,authProfile,callback);
         assertThat(mCallbackFlag.isFlagged()).isTrue();
     }
 
@@ -125,8 +112,8 @@ public class HaloSocialApiTest extends HaloRobolectricTest {
     public void thatLoginWithFacebookProvider() throws SocialNotAvailableException, IOException {
         enqueueServerFile(mMockServer,LOGIN_SUCESS);
         givenAFacebookAccount();
-        CallbackV2<HaloSocialProfile> callback = givenAHaloSocialProfileRegisteredCallback(mCallbackFlag,"account@mobgen.com");
-        mHaloSocialApi.login(HaloSocialApi.SOCIAL_FACEBOOK,callback);
+        CallbackV2<IdentifiedUser> callback = givenAHaloSocialProfileIdentifiedCallback(mCallbackFlag,"account@mobgen.com");
+        mHaloSocialApi.loginWithSocial(HaloSocialApi.SOCIAL_FACEBOOK,callback);
         assertThat(mCallbackFlag.isFlagged()).isTrue();
     }
 
@@ -135,25 +122,15 @@ public class HaloSocialApiTest extends HaloRobolectricTest {
     public void thatLoginWithGoogleProvider() throws SocialNotAvailableException, IOException {
         enqueueServerFile(mMockServer,LOGIN_SUCESS);
         givenAGoogleAccount();
-        CallbackV2<HaloSocialProfile> callback = givenAHaloSocialProfileRegisteredCallback(mCallbackFlag,"account@mobgen.com");
-        mHaloSocialApi.login(HaloSocialApi.SOCIAL_GOOGLE_PLUS,callback);
-        assertThat(mCallbackFlag.isFlagged()).isTrue();
-    }
-
-    @Test
-    public void thatAuthenticateWithSocialProvider() throws SocialNotAvailableException, IOException {
-        enqueueServerFile(mMockServer,LOGIN_SUCESS);
-        CallbackV2<IdentifiedUser> callback = givenAHaloSocialProfileCallback(mCallbackFlag,"account@mobgen.com");
-        mHaloSocialApi.loginWithANetwork("facebook","mytoke")
-                .threadPolicy(Threading.SAME_THREAD_POLICY)
-                .execute(callback);
+        CallbackV2<IdentifiedUser> callback = givenAHaloSocialProfileIdentifiedCallback(mCallbackFlag,"account@mobgen.com");
+        mHaloSocialApi.loginWithSocial(HaloSocialApi.SOCIAL_GOOGLE_PLUS,callback);
         assertThat(mCallbackFlag.isFlagged()).isTrue();
     }
 
     @Test
     public void thatRegisterWithHaloProvider() throws SocialNotAvailableException, IOException {
         enqueueServerFile(mMockServer,REGISTER_SUCESS);
-        CallbackV2<HaloSocialProfile> callback = givenAHaloSocialProfileRegisteredCallback(mCallbackFlag,"account@mobgen.com");
+        CallbackV2<HaloUserProfile> callback = givenAHaloSocialProfileRegisteredCallback(mCallbackFlag,"account@mobgen.com");
         HaloAuthProfile authProfile = new HaloAuthProfile("account@mobgen.com", "securepass", "myalias");
         HaloUserProfile userProfile = new HaloUserProfile(null, "name surname","name","surname","","account@mobgen.com");
         mHaloSocialApi.register(authProfile,userProfile)
@@ -164,7 +141,7 @@ public class HaloSocialApiTest extends HaloRobolectricTest {
 
     @Test
     public void thatRecoverProfilePolicy(){
-        assertThat(mHaloSocialApi.getRecoveryPolicy()).isEqualTo(HaloSocialApi.RECOVERY_ALWAYS);
+        assertThat(mHaloSocialApi.recoveryPolicy()).isEqualTo(HaloSocialApi.RECOVERY_ALWAYS);
     }
 
     @Test
@@ -179,13 +156,8 @@ public class HaloSocialApiTest extends HaloRobolectricTest {
     }
 
     @Test
-    public void thatGetCurrentDeviceAlias(){
-        assertThat(mHaloSocialApi.getCurrentAlias()).isEqualTo("myTestUser");
-    }
-
-    @Test
     public void thatCanGetHaloAccessToken(){
-        AccountManagerHelper accountManagerHelper = new AccountManagerHelper(mContext);
+        AccountManagerHelper accountManagerHelper = new AccountManagerHelper(mContext,"accountType");
         String haloAccessToken = accountManagerHelper.getHaloAccessToken(givenAHaloAccount());
         assertThat(haloAccessToken).isNotNull();
     }
@@ -196,8 +168,8 @@ public class HaloSocialApiTest extends HaloRobolectricTest {
         AccountManager accountManager = AccountManager.get(mHalo.context());
         shadowOf(accountManager).addAccount(account);
         accountManager.setPassword(account,"thisisaveryissecurepass");
-        accountManager.setUserData(account,AuthTokenType.HALO_AUTH_TOKEN,"thisisaverylongtoken");
-        accountManager.setUserData(account,"token_type", AuthTokenType.HALO_AUTH_TOKEN);
+        accountManager.setUserData(account, AccountManagerHelper.HALO_AUTH_PROVIDER,"thisisaverylongtoken");
+        accountManager.setUserData(account,"token_type", AccountManagerHelper.HALO_AUTH_PROVIDER);
         return account;
     }
 
@@ -206,9 +178,9 @@ public class HaloSocialApiTest extends HaloRobolectricTest {
         Account account = new Account("account@mobgen.com", ACCOUNT_TYPE);
         AccountManager accountManager = AccountManager.get(mHalo.context());
         shadowOf(accountManager).addAccount(account);
-        accountManager.setAuthToken(account,AuthTokenType.GOOGLE_AUTH_TOKEN,"thisisthetoken");
-        accountManager.setUserData(account,AuthTokenType.GOOGLE_AUTH_TOKEN,"thisisaverylongtoken");
-        accountManager.setUserData(account,"token_type", AuthTokenType.GOOGLE_AUTH_TOKEN);
+        accountManager.setAuthToken(account, AccountManagerHelper.GOOGLE_AUTH_PROVIDER,"thisisthetoken");
+        accountManager.setUserData(account, AccountManagerHelper.GOOGLE_AUTH_PROVIDER,"thisisaverylongtoken");
+        accountManager.setUserData(account,"token_type", AccountManagerHelper.GOOGLE_AUTH_PROVIDER);
     }
 
     private void givenAFacebookAccount() {
@@ -216,16 +188,9 @@ public class HaloSocialApiTest extends HaloRobolectricTest {
         Account account = new Account("account@mobgen.com", ACCOUNT_TYPE);
         AccountManager accountManager = AccountManager.get(mHalo.context());
         shadowOf(accountManager).addAccount(account);
-        accountManager.setAuthToken(account,AuthTokenType.FACEBOOK_AUTH_TOKEN,"thisisthetoken");
-        accountManager.setUserData(account,AuthTokenType.FACEBOOK_AUTH_TOKEN,"thisisaverylongtoken");
-        accountManager.setUserData(account,"token_type", AuthTokenType.FACEBOOK_AUTH_TOKEN);
-    }
-
-    private void givenAValidDevice() throws HaloParsingException {
-        Device device = new Device("myTestUser","57fb592ff53f3f002aa99d78",null,null);
-        DeviceLocalDatasource deviceLocalDatasource = new DeviceLocalDatasource(mHalo.getCore().manager().storage());
-        deviceLocalDatasource.clearCurrentDevice();
-        deviceLocalDatasource.cacheDevice(Device.serialize(device, mHalo.getCore().framework().parser()));
+        accountManager.setAuthToken(account, AccountManagerHelper.FACEBOOK_AUTH_PROVIDER,"thisisthetoken");
+        accountManager.setUserData(account, AccountManagerHelper.FACEBOOK_AUTH_PROVIDER,"thisisaverylongtoken");
+        accountManager.setUserData(account,"token_type", AccountManagerHelper.FACEBOOK_AUTH_PROVIDER);
     }
 
     public void givenPermissions(){
@@ -235,8 +200,6 @@ public class HaloSocialApiTest extends HaloRobolectricTest {
         when(mContext.checkPermission(eq("GET_ACCOUNTS"),anyInt(),anyInt()))
                 .thenReturn(PackageManager.PERMISSION_GRANTED);
         when(mContext.checkPermission(eq("MANAGE_ACCOUNTS"),anyInt(),anyInt()))
-                .thenReturn(PackageManager.PERMISSION_GRANTED);
-        when(mContext.checkPermission(eq("WRITE_SYNC_SETTINGS"),anyInt(),anyInt()))
                 .thenReturn(PackageManager.PERMISSION_GRANTED);
     }
 }

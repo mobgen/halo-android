@@ -7,7 +7,6 @@ import android.support.annotation.NonNull;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.mobgen.halo.android.framework.common.exceptions.HaloIntegrationException;
-import com.mobgen.halo.android.framework.common.helpers.logger.Halog;
 import com.mobgen.halo.android.framework.common.helpers.subscription.ISubscription;
 import com.mobgen.halo.android.framework.common.utils.AssertionUtils;
 import com.mobgen.halo.android.framework.toolbox.bus.Event;
@@ -16,12 +15,13 @@ import com.mobgen.halo.android.framework.toolbox.bus.Subscriber;
 import com.mobgen.halo.android.framework.toolbox.data.CallbackV2;
 import com.mobgen.halo.android.framework.toolbox.data.HaloResultV2;
 import com.mobgen.halo.android.framework.toolbox.data.HaloStatus;
-import com.mobgen.halo.android.framework.toolbox.threading.Threading;
 import com.mobgen.halo.android.sdk.api.Halo;
+import com.mobgen.halo.android.sdk.core.threading.HaloInteractorExecutor;
 import com.mobgen.halo.android.social.HaloSocialApi;
-import com.mobgen.halo.android.social.authenticator.AuthTokenType;
+import com.mobgen.halo.android.social.login.LoginRemoteDatasource;
+import com.mobgen.halo.android.social.login.LoginRepository;
+import com.mobgen.halo.android.social.login.SocialLoginInteractor;
 import com.mobgen.halo.android.social.models.HaloAuthProfile;
-import com.mobgen.halo.android.social.models.HaloSocialProfile;
 import com.mobgen.halo.android.social.models.IdentifiedUser;
 import com.mobgen.halo.android.social.providers.SocialProvider;
 
@@ -30,13 +30,9 @@ import com.mobgen.halo.android.social.providers.SocialProvider;
  */
 public class GoogleSocialProvider implements SocialProvider, Subscriber {
     /**
-     * Social api
-     */
-    private HaloSocialApi mSocialApi;
-    /**
      * Name for social login with google plus.
      */
-    public static final String SOCIAL_GOOGLE_PLUS_NAME = "google";
+    public static final String SOCIAL_GOOGLE_NAME = "google";
     /**
      * Sign in options for google plus.
      */
@@ -48,12 +44,15 @@ public class GoogleSocialProvider implements SocialProvider, Subscriber {
     /**
      * The callback to provide the result.
      */
-    private CallbackV2<HaloSocialProfile> mCallback;
-
+    private CallbackV2<IdentifiedUser> userRequestCallbak;
     /**
      * The halo result profile.
      */
-    private HaloResultV2<HaloSocialProfile> haloSocialProfileHaloResult;
+    private HaloResultV2<IdentifiedUser> haloSocialProfileHaloResult;
+    /**
+     * The google token
+     */
+    private String mGoogleToken;
 
     /**
      * Constructor for the social provider for google plus.
@@ -77,7 +76,7 @@ public class GoogleSocialProvider implements SocialProvider, Subscriber {
 
     @Override
     public String getSocialNetworkName() {
-        return SOCIAL_GOOGLE_PLUS_NAME;
+        return SOCIAL_GOOGLE_NAME;
     }
 
     @Override
@@ -86,50 +85,43 @@ public class GoogleSocialProvider implements SocialProvider, Subscriber {
     }
 
     @Override
-    public void authenticate(final @NonNull Halo halo, @NonNull CallbackV2<HaloSocialProfile> callback) {
+    public void authenticate(final @NonNull Halo halo, @NonNull CallbackV2<IdentifiedUser> callback) {
         final Subscriber subscriber = this;
-        mSocialApi = (HaloSocialApi)halo.manager().haloSocial();
-        mCallback = callback;
-        final String authSocialToken =  mSocialApi.recoverAuthToken(AuthTokenType.GOOGLE_AUTH_TOKEN);
-        if(authSocialToken!=null && mSocialApi.getRecoveryPolicy()==HaloSocialApi.RECOVERY_ALWAYS){
+        userRequestCallbak = callback;
+        if (mGoogleToken != null) {
             //we login user with previous credentials
-            mSocialApi.loginWithANetwork(getSocialNetworkName(), authSocialToken)
-                    .threadPolicy(Threading.SINGLE_QUEUE_POLICY)
-                    .execute(new CallbackV2<IdentifiedUser>() {
-                        @Override
-                        public void onFinish(@NonNull HaloResultV2<IdentifiedUser> resultIdentified) {
-                            if(resultIdentified.status().isOk()) {
-                                HaloSocialProfile profile = HaloSocialProfile.builder(authSocialToken)
-                                        .socialName(getSocialNetworkName())
-                                        .socialId(resultIdentified.data().getUser().getIdentifiedId())
-                                        .name(resultIdentified.data().getUser().getName())
-                                        .surname(resultIdentified.data().getUser().getSurname())
-                                        .displayName(resultIdentified.data().getUser().getDisplayName())
-                                        .email(resultIdentified.data().getUser().getEmail())
-                                        .photo(resultIdentified.data().getUser().getPhoto())
-                                        .build();
-                                mCallback.onFinish(new HaloResultV2<>(resultIdentified.status(), profile));
-                                release();
-                            } else{ //We must revalidate token with google
-                                if (mAuthenticationSubscription == null) {
-                                    mAuthenticationSubscription = halo.framework().subscribe(subscriber, EventId.create(HaloGoogleSignInActivity.Result.EVENT_NAME_GOOGLE_SIGN_IN_FINISHED));
-                                    HaloGoogleSignInActivity.startActivity(halo.context(), mOptions);
-                                }
-                            }
-                        }
-                    });
-        }else {
-            //We must be login in just once
-            if (mAuthenticationSubscription == null) {
-                mAuthenticationSubscription = halo.framework().subscribe(this, EventId.create(HaloGoogleSignInActivity.Result.EVENT_NAME_GOOGLE_SIGN_IN_FINISHED));
-                HaloGoogleSignInActivity.startActivity(halo.context(), mOptions);
-            }
+            loginWithANetwork().execute(new CallbackV2<IdentifiedUser>() {
+                @Override
+                public void onFinish(@NonNull HaloResultV2<IdentifiedUser> result) {
+                    if (result.status().isOk()) {
+                        userRequestCallbak.onFinish(result);
+                        release();
+                    } else { //We must revalidate token with google
+                        launchGoogleActivity(halo, subscriber);
+                    }
+                }
+            });
+        } else {
+            launchGoogleActivity(halo, subscriber);
         }
     }
 
     @Override
-    public void setAuthProfile(@NonNull HaloAuthProfile haloAuthProfile) {
+    public void setSocialToken(@NonNull String socialToken) {
+        mGoogleToken = socialToken;
+    }
 
+    @Override
+    public void setAuthProfile(@NonNull HaloAuthProfile haloAuthProfile) {
+        return;
+    }
+
+    @Override
+    public void release() {
+        if (mAuthenticationSubscription != null) {
+            mAuthenticationSubscription.unsubscribe();
+            mAuthenticationSubscription = null;
+        }
     }
 
     @Override
@@ -141,37 +133,61 @@ public class GoogleSocialProvider implements SocialProvider, Subscriber {
         int loginResult = resultData.getInt(HaloGoogleSignInActivity.Result.GOOGLE_SIGN_IN_RESULT);
         haloSocialProfileHaloResult = null;
         if (loginResult == HaloGoogleSignInActivity.Result.GOOGLE_SUCCESS_CODE) { // Handle success
-            haloSocialProfileHaloResult = success(resultData);
+            success(resultData);
         } else if (loginResult == HaloGoogleSignInActivity.Result.GOOGLE_CANCELED_CODE) { // Handle cancel
             haloSocialProfileHaloResult = new HaloResultV2<>(HaloStatus.builder().cancel().build(), null);
         } else if (loginResult == HaloGoogleSignInActivity.Result.GOOGLE_ERROR_CODE) { //Handle error
             haloSocialProfileHaloResult = error(resultData);
         }
-        //Result must not be null, some error in configuration
-        if (haloSocialProfileHaloResult == null) {
-            String msg = "This should never happen. An event must have a GOOGLE_SIGN_IN_RESULT. Contact the halo support.";
-            Halog.wtf(getClass(), msg);
-            throw new IllegalStateException(msg);
-        }
+        emitResult();
+    }
 
-        //login user into halo with social credentials or notified process ended if we cant obtain social provider social token
-        if(mSocialApi!=null && haloSocialProfileHaloResult.status().isOk() && haloSocialProfileHaloResult.data()!=null) {
-            mSocialApi.loginWithANetwork(haloSocialProfileHaloResult.data().socialName(), haloSocialProfileHaloResult.data().socialToken())
-                    .threadPolicy(Threading.SINGLE_QUEUE_POLICY)
-                    .execute(new CallbackV2<IdentifiedUser>() {
-                        @Override
-                        public void onFinish(@NonNull HaloResultV2<IdentifiedUser> resultIdentified) {
-                            if(resultIdentified.status().isOk()) {
-                                mCallback.onFinish(haloSocialProfileHaloResult);
-                                release();
-                            }
-                        }
-                    });
-        }else if(mCallback!=null){
-            mCallback.onFinish(haloSocialProfileHaloResult);
+    /**
+     * Launch Google Acitivity to request a token
+     *
+     * @param halo
+     * @param subscriber
+     */
+    private void launchGoogleActivity(@NonNull Halo halo, @NonNull Subscriber subscriber) {
+        //We must be login in just once
+        if (mAuthenticationSubscription == null) {
+            mAuthenticationSubscription = halo.framework().subscribe(subscriber, EventId.create(HaloGoogleSignInActivity.Result.EVENT_NAME_GOOGLE_SIGN_IN_FINISHED));
+            HaloGoogleSignInActivity.startActivity(halo.context(), mOptions);
+        }
+    }
+
+    /**
+     * Tries to login with halo based on the social network token, network type and device alias
+     */
+    @NonNull
+    private HaloInteractorExecutor<IdentifiedUser> loginWithANetwork() {
+        HaloSocialApi socialApi = (HaloSocialApi) Halo.instance().manager().haloSocial();
+        return new HaloInteractorExecutor<>(Halo.instance(),
+                "Login with a social provider",
+                new SocialLoginInteractor(socialApi.accountType(), new LoginRepository(new LoginRemoteDatasource(Halo.instance().framework().network())),
+                        getSocialNetworkName(), mGoogleToken, Halo.instance().manager().getDevice().getAlias(), socialApi.recoveryPolicy())
+        );
+
+    }
+
+    /**
+     * Login user into halo with social credentials or notify process ended.
+     */
+    public void emitResult() {
+        if (haloSocialProfileHaloResult == null) {
+            loginWithANetwork().execute(new CallbackV2<IdentifiedUser>() {
+                @Override
+                public void onFinish(@NonNull HaloResultV2<IdentifiedUser> result) {
+                    if (result.status().isOk()) {
+                        userRequestCallbak.onFinish(result);
+                        release();
+                    }
+                }
+            });
+        } else if (userRequestCallbak != null) {
+            userRequestCallbak.onFinish(haloSocialProfileHaloResult);
             release();
         }
-
     }
 
     /**
@@ -181,23 +197,10 @@ public class GoogleSocialProvider implements SocialProvider, Subscriber {
      * @return The result created.
      */
     @NonNull
-    @SuppressWarnings("all")
-    private HaloResultV2<HaloSocialProfile> success(@NonNull Bundle bundle) {
+    private void success(@NonNull Bundle bundle) {
         GoogleSignInAccount account = bundle.getParcelable(HaloGoogleSignInActivity.Result.GOOGLE_SIGN_IN_ACCOUNT);
         AssertionUtils.notNull(account, "account");
-        String socialToken = account.getIdToken();
-        AssertionUtils.notNull(socialToken, "socialToken");
-
-        HaloSocialProfile profile = HaloSocialProfile.builder(socialToken)
-                .socialName(getSocialNetworkName())
-                .socialId(account.getId())
-                .name(account.getGivenName())
-                .surname(account.getFamilyName())
-                .displayName(account.getDisplayName())
-                .email(account.getEmail())
-                .photo(account.getPhotoUrl().toString())
-                .build();
-        return new HaloResultV2<>(HaloStatus.builder().build(), profile);
+        mGoogleToken = account.getIdToken();
     }
 
     /**
@@ -207,17 +210,9 @@ public class GoogleSocialProvider implements SocialProvider, Subscriber {
      * @return The result.
      */
     @NonNull
-    private HaloResultV2<HaloSocialProfile> error(@NonNull Bundle bundle) {
+    private HaloResultV2<IdentifiedUser> error(@NonNull Bundle bundle) {
         HaloIntegrationException error = (HaloIntegrationException) bundle.getSerializable(HaloGoogleSignInActivity.Result.GOOGLE_SIGN_IN_ERROR);
         HaloStatus status = HaloStatus.builder().error(error).build();
         return new HaloResultV2<>(status, null);
-    }
-
-    @Override
-    public void release() {
-        if (mAuthenticationSubscription != null) {
-            mAuthenticationSubscription.unsubscribe();
-            mAuthenticationSubscription = null;
-        }
     }
 }

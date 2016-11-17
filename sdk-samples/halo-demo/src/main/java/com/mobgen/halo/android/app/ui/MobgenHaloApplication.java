@@ -182,11 +182,11 @@ public class MobgenHaloApplication extends HaloApplication {
                         "Translating...")
                 .provideDefaultOnAsync(true)
                 .build();
-         mTranslationsApi.load();
+        mTranslationsApi.load();
         //social
-        if(mSocialApi !=null){
+        if (mSocialApi != null) {
             mSocialApi.release();
-            mSocialApi =null;
+            mSocialApi = null;
         }
         mSocialApi = HaloSocialApi.with(halo)
                 .recoveryPolicy(HaloSocialApi.RECOVERY_ALWAYS)
@@ -196,7 +196,7 @@ public class MobgenHaloApplication extends HaloApplication {
                 .withGoogle()
                 .build();
         //notifications
-        if(mNotificationsApi != null){
+        if (mNotificationsApi != null) {
             mNotificationsApi.release();
             mNotificationsApi = null;
             mSilentHaloNotificationListener.unsubscribe();

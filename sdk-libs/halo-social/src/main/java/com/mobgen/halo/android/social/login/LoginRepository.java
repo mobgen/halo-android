@@ -5,6 +5,8 @@ import android.support.annotation.NonNull;
 
 import com.mobgen.halo.android.framework.common.utils.AssertionUtils;
 import com.mobgen.halo.android.framework.network.exceptions.HaloNetException;
+import com.mobgen.halo.android.framework.toolbox.data.HaloResultV2;
+import com.mobgen.halo.android.framework.toolbox.data.HaloStatus;
 import com.mobgen.halo.android.social.models.IdentifiedUser;
 
 /**
@@ -19,6 +21,7 @@ public class LoginRepository {
 
     /**
      * Constructor for the repository.
+     *
      * @param loginRemoteDatasource The remote data source.
      */
     public LoginRepository(@NonNull LoginRemoteDatasource loginRemoteDatasource) {
@@ -30,25 +33,40 @@ public class LoginRepository {
      * Provides the user identity with a social token.
      *
      * @param socialApiName The social api name
-     * @param socialToken The social token
-     * @param deviceAlias The device alias
+     * @param socialToken   The social token
+     * @param deviceAlias   The device alias
      * @return The user identified
      */
     @NonNull
-    public synchronized IdentifiedUser loginSocialProvider(@NonNull String socialApiName, @NonNull String socialToken, @NonNull String deviceAlias) throws HaloNetException {
-        return mRemoteDatasource.loginSocial(socialApiName,socialToken,deviceAlias);
+    public HaloResultV2<IdentifiedUser> loginSocialProvider(@NonNull String socialApiName, @NonNull String socialToken, @NonNull String deviceAlias) throws HaloNetException {
+        HaloStatus.Builder status = HaloStatus.builder();
+        IdentifiedUser identifiedUser = null;
+        try {
+            identifiedUser = mRemoteDatasource.loginSocial(socialApiName, socialToken, deviceAlias);
+        } catch (HaloNetException e) {
+            status.error(e);
+        }
+        return new HaloResultV2<>(status.build(), identifiedUser);
+
     }
 
     /**
      * Provides the user identity.
      *
-     * @param username The username.
-     * @param password The password.
+     * @param username    The username.
+     * @param password    The password.
      * @param deviceAlias The device alias.
      * @return The user identified
      */
     @NonNull
-    public synchronized IdentifiedUser loginHalo(@NonNull String username, @NonNull String password,@NonNull String deviceAlias) throws HaloNetException {
-        return mRemoteDatasource.login(username,password,deviceAlias);
+    public HaloResultV2<IdentifiedUser> loginHalo(@NonNull String username, @NonNull String password, @NonNull String deviceAlias) throws HaloNetException {
+        HaloStatus.Builder status = HaloStatus.builder();
+        IdentifiedUser identifiedUser = null;
+        try {
+            identifiedUser = mRemoteDatasource.loginHalo(username, password, deviceAlias);
+        } catch (HaloNetException e) {
+            status.error(e);
+        }
+        return new HaloResultV2<>(status.build(), identifiedUser);
     }
 }

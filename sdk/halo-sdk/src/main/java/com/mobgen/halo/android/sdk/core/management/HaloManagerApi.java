@@ -11,7 +11,6 @@ import com.mobgen.halo.android.framework.api.HaloStorageApi;
 import com.mobgen.halo.android.framework.api.StorageConfig;
 import com.mobgen.halo.android.framework.common.annotations.Api;
 import com.mobgen.halo.android.framework.common.helpers.subscription.ISubscription;
-import com.mobgen.halo.android.framework.common.utils.AssertionUtils;
 import com.mobgen.halo.android.framework.toolbox.bus.Event;
 import com.mobgen.halo.android.framework.toolbox.bus.EventId;
 import com.mobgen.halo.android.framework.toolbox.bus.Subscriber;
@@ -55,7 +54,6 @@ import com.mobgen.halo.android.sdk.core.selectors.HaloSelectorFactory;
 import com.mobgen.halo.android.sdk.core.threading.HaloInteractorExecutor;
 import com.mobgen.halo.android.sdk.core.threading.HaloSchedule;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -92,7 +90,7 @@ public class HaloManagerApi extends HaloPluginApi {
      */
     private DeviceRepository mDeviceRepository;
     /**
-     * The halo social.
+     * The social api
      */
     private HaloSocialAuthenticator mHaloSocialAuthenticator;
 
@@ -203,12 +201,11 @@ public class HaloManagerApi extends HaloPluginApi {
      */
     @Keep
     @Api(2.0)
-    public void haloSocial(HaloSocialAuthenticator haloSocialAuthenticator){
+    public void haloSocial(HaloSocialAuthenticator haloSocialAuthenticator) {
         mHaloSocialAuthenticator = haloSocialAuthenticator;
     }
 
     /**
-     *
      * Get the halo social api.
      *
      * @return HaloSocialAuthenticator The Halo social.
@@ -216,7 +213,7 @@ public class HaloManagerApi extends HaloPluginApi {
     @Nullable
     @Keep
     @Api(2.0)
-    public HaloSocialAuthenticator haloSocial(){
+    public HaloSocialAuthenticator haloSocial() {
         return mHaloSocialAuthenticator;
     }
 
@@ -312,13 +309,14 @@ public class HaloManagerApi extends HaloPluginApi {
 
     /**
      * Sets the notification token into the device.
+     *
      * @return The notification token to be set.
      */
     @Keep
     @Api(2.0)
     @NonNull
     @CheckResult(suggest = "You may want to call execute() to run the task")
-    public HaloInteractorExecutor<Device> setNotificationsToken(@Nullable String notificationToken){
+    public HaloInteractorExecutor<Device> setNotificationsToken(@Nullable String notificationToken) {
         return new HaloInteractorExecutor<>(
                 halo(),
                 "Set notification token and send device. Token: " + notificationToken,
@@ -328,6 +326,7 @@ public class HaloManagerApi extends HaloPluginApi {
 
     /**
      * Provides the current cached device.
+     *
      * @return The current device.
      */
     @Keep
@@ -346,7 +345,7 @@ public class HaloManagerApi extends HaloPluginApi {
      * Adds a segmentation tag to the current device or replaces the current one if there is another with the same
      * name.
      *
-     * @param tag The tag that will be added.
+     * @param tag              The tag that will be added.
      * @param shouldSendDevice Provides if the device should be sent.
      * @return The action generated.
      */
@@ -379,7 +378,7 @@ public class HaloManagerApi extends HaloPluginApi {
     /**
      * Removes the segmentation tag and updates the values.
      *
-     * @param tagName The tag name to remove.
+     * @param tagName          The tag name to remove.
      * @param shouldSendDevice Provides if the device should be sent.
      * @return The action generated.
      */
@@ -394,7 +393,7 @@ public class HaloManagerApi extends HaloPluginApi {
     /**
      * Removes the segmentation tag and updates the values.
      *
-     * @param tagNames The tag name to remove.
+     * @param tagNames         The tag name to remove.
      * @param shouldSendDevice Provides if the device should be sent.
      * @return The executor to sync the user.
      */
@@ -413,12 +412,13 @@ public class HaloManagerApi extends HaloPluginApi {
     /**
      * Provides the current device. This can be null if the device object is not initialized. The device object is considered as initialized once
      * HALO is ready.
+     *
      * @return The device.
      */
     @Keep
     @Api(2.0)
     @Nullable
-    public Device getDevice(){
+    public Device getDevice() {
         return mDeviceRepository.getDeviceInMemory();
     }
 

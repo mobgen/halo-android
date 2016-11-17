@@ -11,6 +11,7 @@ import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.mobgen.halo.android.framework.common.annotations.Api;
 import com.mobgen.halo.android.framework.common.helpers.builder.IBuilder;
 import com.mobgen.halo.android.framework.common.utils.AssertionUtils;
+import com.mobgen.halo.android.sdk.core.management.models.Token;
 
 /**
  * Identified user with some network

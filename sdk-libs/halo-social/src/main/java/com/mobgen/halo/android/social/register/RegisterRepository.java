@@ -2,12 +2,14 @@ package com.mobgen.halo.android.social.register;
 
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.mobgen.halo.android.framework.common.utils.AssertionUtils;
 import com.mobgen.halo.android.framework.network.exceptions.HaloNetException;
+import com.mobgen.halo.android.framework.toolbox.data.HaloResultV2;
+import com.mobgen.halo.android.framework.toolbox.data.HaloStatus;
 import com.mobgen.halo.android.social.models.HaloAuthProfile;
 import com.mobgen.halo.android.social.models.HaloUserProfile;
-import com.mobgen.halo.android.social.models.IdentifiedUser;
 
 /**
  * The sign in repository to provide.
@@ -21,6 +23,7 @@ public class RegisterRepository {
 
     /**
      * Constructor for the repository.
+     *
      * @param registerRemoteDatasource The remote data source.
      */
     public RegisterRepository(@NonNull RegisterRemoteDatasource registerRemoteDatasource) {
@@ -37,7 +40,14 @@ public class RegisterRepository {
      * @throws HaloNetException Networking exception.
      */
     @NonNull
-    public synchronized HaloUserProfile registerHalo(@NonNull HaloAuthProfile haloAuthProfile, @NonNull HaloUserProfile haloUserProfile) throws HaloNetException {
-        return mRemoteDatasource.register(haloAuthProfile, haloUserProfile);
+    public HaloResultV2<HaloUserProfile> registerHalo(@NonNull HaloAuthProfile haloAuthProfile, @NonNull HaloUserProfile haloUserProfile) throws HaloNetException {
+        HaloStatus.Builder status = HaloStatus.builder();
+        HaloUserProfile haloUserProfileResponse = null;
+        try {
+            haloUserProfileResponse = mRemoteDatasource.register(haloAuthProfile, haloUserProfile);
+        } catch (HaloNetException e) {
+            status.error(e);
+        }
+        return new HaloResultV2<>(status.build(), haloUserProfileResponse);
     }
 }

@@ -1,9 +1,8 @@
 package com.mobgen.halo.android.social.social.models;
 
-import com.mobgen.halo.android.social.models.HaloSocialProfile;
+import com.mobgen.halo.android.sdk.core.management.models.Token;
 import com.mobgen.halo.android.social.models.HaloUserProfile;
 import com.mobgen.halo.android.social.models.IdentifiedUser;
-import com.mobgen.halo.android.social.models.Token;
 import com.mobgen.halo.android.testing.HaloRobolectricTest;
 import com.mobgen.halo.android.testing.TestUtils;
 

@@ -51,6 +51,16 @@ public class HaloAuthProfile implements Parcelable {
         }
     };
 
+
+    /**
+     * The auth profile
+     *
+     */
+    public HaloAuthProfile(String email, String password) {
+        this.mEmail = email;
+        this.mPassword = password;
+    }
+
     /**
      * The auth profile
      *

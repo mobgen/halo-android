@@ -15,18 +15,14 @@ import com.mobgen.halo.android.app.ui.MobgenHaloActivity;
 import com.mobgen.halo.android.app.ui.MobgenHaloApplication;
 import com.mobgen.halo.android.framework.toolbox.data.CallbackV2;
 import com.mobgen.halo.android.framework.toolbox.data.HaloResultV2;
-import com.mobgen.halo.android.sdk.api.Halo;
 import com.mobgen.halo.android.social.HaloSocialApi;
 import com.mobgen.halo.android.social.models.HaloAuthProfile;
-import com.mobgen.halo.android.social.models.HaloSocialProfile;
-import com.mobgen.halo.android.social.models.IdentifiedUser;
 import com.mobgen.halo.android.social.models.HaloUserProfile;
 
 public class SocialHaloSignIn extends MobgenHaloActivity implements View.OnClickListener {
 
     /**
      * The context
-     *
      */
     private Context mContext;
     /**
@@ -42,9 +38,9 @@ public class SocialHaloSignIn extends MobgenHaloActivity implements View.OnClick
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_social_halo_sigin);
-        mContext=this;
+        mContext = this;
         mSocialApi = MobgenHaloApplication.getHaloSocialApi();
-        mSignInWithHalo = (Button)findViewById(R.id.halo_sign_in);
+        mSignInWithHalo = (Button) findViewById(R.id.halo_sign_in);
     }
 
     @Override
@@ -60,24 +56,24 @@ public class SocialHaloSignIn extends MobgenHaloActivity implements View.OnClick
 
     @Override
     public void onClick(View v) {
-        if(v.getId() == R.id.halo_sign_in) {
+        if (v.getId() == R.id.halo_sign_in) {
             EditText editName = (EditText) findViewById(R.id.edit_signin_name);
             EditText editSurname = (EditText) findViewById(R.id.edit_signin_surname);
             EditText editEmail = (EditText) findViewById(R.id.edit_signin_email);
             EditText editPassword = (EditText) findViewById(R.id.edit_signin_password);
             String displayName = "";
-            if(!TextUtils.isEmpty(editName.getText().toString()) && !TextUtils.isEmpty(editSurname.getText().toString())){
-                displayName =  editName.getText().toString() +" "+editSurname.getText().toString();
+            if (!TextUtils.isEmpty(editName.getText().toString()) && !TextUtils.isEmpty(editSurname.getText().toString())) {
+                displayName = editName.getText().toString() + " " + editSurname.getText().toString();
             }
 
-            final HaloAuthProfile authProfile = new HaloAuthProfile(editEmail.getText().toString().trim(),editPassword.getText().toString().trim(), Halo.instance().manager().getDevice().getAlias());
-            HaloUserProfile userProfile = new HaloUserProfile(null,displayName,editName.getText().toString().trim(),editSurname.getText().toString().trim(),"http://yogasara.staff.gunadarma.ac.id/photo.jpg",editEmail.getText().toString().trim());
-            mSocialApi.register(authProfile,userProfile)
-                    .execute(new CallbackV2<HaloSocialProfile>() {
+            HaloAuthProfile authProfile = new HaloAuthProfile(editEmail.getText().toString().trim(), editPassword.getText().toString().trim());
+            HaloUserProfile userProfile = new HaloUserProfile(null, displayName, editName.getText().toString().trim(), editSurname.getText().toString().trim(), "http://yogasara.staff.gunadarma.ac.id/photo.jpg", editEmail.getText().toString().trim());
+            mSocialApi.register(authProfile, userProfile)
+                    .execute(new CallbackV2<HaloUserProfile>() {
                         @Override
-                        public void onFinish(@NonNull HaloResultV2<HaloSocialProfile> result) {
+                        public void onFinish(@NonNull HaloResultV2<HaloUserProfile> result) {
                             if (result.status().isOk()) { // Ok
-                                Snackbar.make(getWindow().getDecorView(), result.data().email(), Snackbar.LENGTH_LONG).show();
+                                Snackbar.make(getWindow().getDecorView(), result.data().getEmail(), Snackbar.LENGTH_LONG).show();
                             }
                         }
                     });

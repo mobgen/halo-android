@@ -2,7 +2,6 @@ package com.mobgen.halo.android.social.providers.facebook;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -24,13 +23,10 @@ import com.mobgen.halo.android.framework.toolbox.bus.Event;
 import com.mobgen.halo.android.framework.toolbox.bus.EventId;
 import com.mobgen.halo.android.sdk.api.Halo;
 import com.mobgen.halo.android.social.HaloSocialApi;
-import com.mobgen.halo.android.social.models.HaloSocialProfile;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Arrays;
-import java.util.Locale;
 
 /**
  * Sign in shadow activity to handle the sign in process.
@@ -49,6 +45,7 @@ public class HaloFacebookSignInActivity extends FragmentActivity implements Face
      * The access token.
      */
     private AccessToken mAccessToken;
+
     /**
      * The result that must be reported.
      */
@@ -175,20 +172,7 @@ public class HaloFacebookSignInActivity extends FragmentActivity implements Face
         if (response.getError() != null) {
             onError(response.getError().getException());
         } else if (object != null) { //Process the data
-            try {
-                String id = object.getString("id");
-                Uri photo = new Uri.Builder().scheme("https").authority("graph.facebook.com").path(String.format(Locale.US, "%s/picture", new Object[]{id})).build();
-                emitProfile(HaloSocialProfile.builder(mAccessToken.getToken())
-                        .socialId(id)
-                        .displayName(object.getString("name"))
-                        .name(object.getString("first_name"))
-                        .surname(object.getString("last_name"))
-                        .email(object.getString("email"))
-                        .photo(photo.toString())
-                        .build());
-            } catch (JSONException e) {
-                onError(e, HaloSocialApi.Error.CODE_NO_INTERNET);
-            }
+            emitProfile(mAccessToken.getToken());
         } else {
             onError(new IllegalStateException("Something wrong happened with the facebook request. No data available"), HaloSocialApi.Error.CODE_NO_INTERNET);
         }
@@ -225,17 +209,18 @@ public class HaloFacebookSignInActivity extends FragmentActivity implements Face
     /**
      * Emits the facebook profile.
      *
-     * @param profile The facebook profile.
+     * @param facebookToken The facebook profile.
      */
-    private void emitProfile(@NonNull HaloSocialProfile profile) {
+    private void emitProfile(@NonNull String facebookToken) {
         Bundle params = new Bundle();
         params.putInt(Result.FACEBOOK_SIGN_IN_RESULT, Result.FACEBOOK_SUCCESS_CODE);
-        params.putParcelable(Result.FACEBOOK_SIGN_IN_ACCOUNT, profile);
+        params.putString(Result.FACEBOOK_SIGN_IN_ACCOUNT, facebookToken);
         finishAndEmit(new Event(EventId.create(Result.EVENT_NAME_FACEBOOK_SIGN_IN_FINISHED), params));
     }
 
     /**
      * Finishes this activity and emits the event provided.
+     *
      * @param event The event to emit.
      */
     private void finishAndEmit(@NonNull Event event) {

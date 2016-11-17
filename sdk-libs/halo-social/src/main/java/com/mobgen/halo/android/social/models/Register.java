@@ -9,12 +9,18 @@ import android.support.annotation.Nullable;
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.mobgen.halo.android.framework.common.annotations.Api;
+import com.mobgen.halo.android.framework.common.exceptions.HaloParsingException;
 import com.mobgen.halo.android.framework.common.helpers.builder.IBuilder;
 import com.mobgen.halo.android.framework.common.utils.AssertionUtils;
+import com.mobgen.halo.android.framework.network.client.response.Parser;
+import com.mobgen.halo.android.sdk.core.management.models.Device;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Identified user with some network
- *
  */
 @Keep
 @JsonObject
@@ -152,6 +158,43 @@ public class Register implements Parcelable {
         public Register build() {
             return new Register(this);
         }
+    }
+
+    /**
+     * Provides the serializer given the factory.
+     *
+     * @param register The object to serialize.
+     * @param parser   The parser factory.
+     * @return The parser obtained.
+     */
+    public static String serialize(@NonNull Register register, @NonNull Parser.Factory parser) throws HaloParsingException {
+        AssertionUtils.notNull(register, "register");
+        AssertionUtils.notNull(parser, "parser");
+        try {
+            return ((Parser<Register, String>) parser.serialize(Register.class)).convert(register);
+        } catch (IOException e) {
+            throw new HaloParsingException("Error while serializing the device", e);
+        }
+    }
+
+    /**
+     * Parses the device stored in the preferences.
+     *
+     * @param register   The register as string.
+     * @param parser The parser.
+     * @return The register parsed or an empty register if the string passed is null.
+     * @throws HaloParsingException Error parsing the item.
+     */
+    @Nullable
+    public static Register deserialize(@Nullable String register, @NonNull Parser.Factory parser) throws HaloParsingException {
+        if (register != null) {
+            try {
+                return ((Parser<InputStream, Register>) parser.deserialize(Register.class)).convert(new ByteArrayInputStream(register.getBytes()));
+            } catch (IOException e) {
+                throw new HaloParsingException("Error while deserializing the register", e);
+            }
+        }
+        return null;
     }
 
     @Override
