@@ -6,6 +6,9 @@
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.mobgen.halo.android/halo-sdk/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.mobgen.halo.android/halo-sdk/badge.svg)
 ![Build Status](https://supermercado.mobgen.com:8443/plugins/servlet/wittified/build-status/HALO-AS2)
 
+## Contributing ##
+To contribute to this repository please follow the rule specs you can find in our [documentation](https://mobgen.github.io/halo-documenation/android_contributions.html).
+
 ## Publish a new release ##
 Make sure you have setup the correct environment variables in your machine for the bintray username, the
 bintray api key, the sonatype user and the sonatype password:
