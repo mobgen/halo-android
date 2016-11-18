@@ -6,19 +6,20 @@ import android.support.annotation.NonNull;
 
 import com.mobgen.halo.android.framework.common.annotations.Api;
 import com.mobgen.halo.android.framework.toolbox.data.CallbackV2;
-import com.mobgen.halo.android.sdk.core.management.models.Token;
 import com.mobgen.halo.android.sdk.core.threading.HaloInteractorExecutor;
 
+/**
+ * Halo social api to login and register with social providers.
+ */
 @Keep
-public interface HaloSocialAuthenticator<T,S,U,E extends Exception> {
+public interface HaloSocial<T, S, U, E extends Exception> {
 
     /**
      * Tries to login with a social network based on the id of this social network, and auth profile
      *
-     * @param socialNetwork The social network to login with.
-     * @param haloAuthProfile   The auth profile to login on Halo.
-     * @param callback      The callback.
-     *
+     * @param socialNetwork   The social network to login with.
+     * @param haloAuthProfile The auth profile to login on Halo.
+     * @param callback        The callback.
      * @throws E SocialNotAvailableException.
      */
     @Keep
@@ -30,7 +31,6 @@ public interface HaloSocialAuthenticator<T,S,U,E extends Exception> {
      *
      * @param socialNetwork The social network to login with.
      * @param callback      The callback.
-     *
      * @throws E SocialNotAvailableException.
      */
     @Keep
@@ -42,7 +42,6 @@ public interface HaloSocialAuthenticator<T,S,U,E extends Exception> {
      *
      * @param haloAuthProfile The auth profile to register.
      * @param haloUserProfile The user profile.
-     *
      */
     @Keep
     @Api(2.1)
@@ -51,10 +50,21 @@ public interface HaloSocialAuthenticator<T,S,U,E extends Exception> {
     HaloInteractorExecutor<U> register(@NonNull S haloAuthProfile, @NonNull U haloUserProfile);
 
     /**
-     * Recover an account from account manager with a social network provider. Default behaviour is using Halo account.
+     * Get the recovery policy.
      *
+     * @return The recovery policy
      */
     @Keep
     @Api(2.1)
-    void recoverLogin();
+    int recoveryPolicy();
+
+    /**
+     * Get the account type.
+     *
+     * @return The recovery policyß
+     */
+    @Keep
+    @Api(2.1)
+    String accountType();
+
 }

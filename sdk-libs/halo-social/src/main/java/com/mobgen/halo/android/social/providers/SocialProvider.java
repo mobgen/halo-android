@@ -42,7 +42,7 @@ public interface SocialProvider {
      * @param halo     The halo instance.
      * @param callback The callback.
      */
-    void authenticate(@NonNull Halo halo, @NonNull CallbackV2<IdentifiedUser> callback);
+    void authenticate(@NonNull Halo halo, @Nullable CallbackV2<IdentifiedUser> callback);
 
     /**
      * Set the auth profile

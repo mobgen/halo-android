@@ -3,6 +3,7 @@ package com.mobgen.halo.android.social.providers.facebook;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.facebook.FacebookSdk;
 import com.mobgen.halo.android.framework.common.exceptions.HaloIntegrationException;
@@ -14,14 +15,10 @@ import com.mobgen.halo.android.framework.toolbox.data.CallbackV2;
 import com.mobgen.halo.android.framework.toolbox.data.HaloResultV2;
 import com.mobgen.halo.android.framework.toolbox.data.HaloStatus;
 import com.mobgen.halo.android.sdk.api.Halo;
-import com.mobgen.halo.android.sdk.core.threading.HaloInteractorExecutor;
-import com.mobgen.halo.android.social.HaloSocialApi;
-import com.mobgen.halo.android.social.login.LoginRemoteDatasource;
-import com.mobgen.halo.android.social.login.LoginRepository;
-import com.mobgen.halo.android.social.login.SocialLoginInteractor;
 import com.mobgen.halo.android.social.models.HaloAuthProfile;
 import com.mobgen.halo.android.social.models.IdentifiedUser;
 import com.mobgen.halo.android.social.providers.SocialProvider;
+import com.mobgen.halo.android.social.providers.SocialProviderApi;
 
 /**
  * The social provider for facebook authentication.
@@ -47,6 +44,10 @@ public class FacebookSocialProvider implements SocialProvider, Subscriber {
      * The facebook token
      */
     private String mFacebookToken;
+    /**
+     * The social provider api.
+     */
+    private SocialProviderApi mSocialProviderApi;
 
     @Override
     public boolean isLibraryAvailable(@NonNull Context context) {
@@ -69,20 +70,23 @@ public class FacebookSocialProvider implements SocialProvider, Subscriber {
     }
 
     @Override
-    public void authenticate(final @NonNull Halo halo, @NonNull CallbackV2<IdentifiedUser> callback) {
+    public void authenticate(final @NonNull Halo halo, @Nullable CallbackV2<IdentifiedUser> callback) {
         final Subscriber subscriber = this;
         initIfNeeded(halo.context());
+        mSocialProviderApi = SocialProviderApi.with(halo).build();
         userRequestCallbak = callback;
         if (mFacebookToken != null) {
-            loginWithANetwork().execute(new CallbackV2<IdentifiedUser>() {
+            mSocialProviderApi.loginWithANetwork(getSocialNetworkName(), mFacebookToken).execute(new CallbackV2<IdentifiedUser>() {
                 @Override
                 public void onFinish(@NonNull HaloResultV2<IdentifiedUser> result) {
                     if (result.status().isOk()) {
                         //Finish the callback
-                        userRequestCallbak.onFinish(result);
+                        if (userRequestCallbak != null) {
+                            userRequestCallbak.onFinish(result);
+                        }
                         //Release the login resources
                         release();
-                    } else {//We must revalidate token with facebook
+                    } else {//We must revalidate token with facebook so we restart authentication proccess
                         launchFacebookActivity(halo, subscriber);
                     }
                 }
@@ -155,38 +159,27 @@ public class FacebookSocialProvider implements SocialProvider, Subscriber {
      * Login with halo and submit result to
      */
     private void emitResult() {
-        if (haloSocialProfileHaloResult == null) {
-            loginWithANetwork().execute(new CallbackV2<IdentifiedUser>() {
-                @Override
-                public void onFinish(@NonNull HaloResultV2<IdentifiedUser> result) {
-                    if (result.status().isOk()) {
-                        //Finish the callback
-                        userRequestCallbak.onFinish(result);
-                        //Release the login resources
-                        release();
-                    }
-                }
-            });
+        if (haloSocialProfileHaloResult == null && mSocialProviderApi != null) {
+            mSocialProviderApi.loginWithANetwork(getSocialNetworkName(), mFacebookToken)
+                    .execute(new CallbackV2<IdentifiedUser>() {
+                        @Override
+                        public void onFinish(@NonNull HaloResultV2<IdentifiedUser> result) {
+                            if (result.status().isOk()) {
+                                //Finish the callback
+                                if (userRequestCallbak != null) {
+                                    userRequestCallbak.onFinish(result);
+                                }
+                                //Release the login resources
+                                release();
+                            }
+                        }
+                    });
         } else if (userRequestCallbak != null) {
             //Finish the callback
             userRequestCallbak.onFinish(haloSocialProfileHaloResult);
-            //Release the login resources
-            release();
         }
-    }
-
-    /**
-     * Tries to login with halo based on the social network token, network type and device alias
-     */
-    @NonNull
-    private HaloInteractorExecutor<IdentifiedUser> loginWithANetwork() {
-        HaloSocialApi socialApi = (HaloSocialApi) Halo.instance().manager().haloSocial();
-        return new HaloInteractorExecutor<>(Halo.instance(),
-                "Login with a social provider",
-                new SocialLoginInteractor(socialApi.accountType(), new LoginRepository(new LoginRemoteDatasource(Halo.instance().framework().network())),
-                        getSocialNetworkName(), mFacebookToken, Halo.instance().manager().getDevice().getAlias(), socialApi.recoveryPolicy())
-        );
-
+        //Release the login resources
+        release();
     }
 
     /**

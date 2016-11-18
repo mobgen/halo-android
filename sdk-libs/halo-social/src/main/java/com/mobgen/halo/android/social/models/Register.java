@@ -83,7 +83,7 @@ public class Register implements Parcelable {
      * @param haloUserProfile The user profile.
      * @return The builder created.
      */
-    @Api(2.0)
+    @Api(2.1)
     public Register(@NonNull HaloAuthProfile haloAuthProfile, @NonNull HaloUserProfile haloUserProfile) {
         mHaloAuthProfile = haloAuthProfile;
         mHaloUserProfile = haloUserProfile;
@@ -94,7 +94,7 @@ public class Register implements Parcelable {
      *
      * @return The user profile.
      */
-    @Api(2.0)
+    @Api(2.1)
     @NonNull
     public HaloUserProfile getUserProfile() {
         return mHaloUserProfile;
@@ -105,7 +105,7 @@ public class Register implements Parcelable {
      *
      * @return The auth profile.
      */
-    @Api(2.0)
+    @Api(2.1)
     @Nullable
     public HaloAuthProfile getHaloAuthProfile() {
         return mHaloAuthProfile;
@@ -118,7 +118,7 @@ public class Register implements Parcelable {
      * @param haloUserProfile The user profile.
      * @return The builder created.
      */
-    @Api(2.0)
+    @Api(2.1)
     @NonNull
     public static Builder builder(@NonNull HaloAuthProfile haloAuthProfile, @NonNull HaloUserProfile haloUserProfile) {
         return new Builder(haloAuthProfile, haloUserProfile);

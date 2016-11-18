@@ -76,7 +76,7 @@ public class SocialLoginInteractor implements HaloInteractorExecutor.Interactor<
                 }
             }
         }
-        return mLoginRepository.loginSocialProvider(mSocialProviderName, mSocialToken, mDeviceAlias);
+        return response;
 
     }
 }

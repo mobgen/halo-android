@@ -12,8 +12,7 @@ import com.mobgen.halo.android.framework.common.annotations.Api;
 
 
 /**
- *  User profile identified
- *
+ * User profile identified
  */
 @Keep
 @JsonObject
@@ -23,48 +22,52 @@ public class HaloUserProfile implements Parcelable {
      * The user id.
      */
     @Nullable
-    @JsonIgnore(ignorePolicy = JsonIgnore.IgnorePolicy.SERIALIZE_ONLY)
     @JsonField(name = "id")
     String mIdentifiedId;
     /**
      * The email.
      */
     @Nullable
-    @JsonIgnore(ignorePolicy = JsonIgnore.IgnorePolicy.SERIALIZE_ONLY)
-    @JsonField(name= "email")
+    @JsonField(name = "email")
     String mEmail;
     /**
      * The photo.
      */
     @Nullable
-    @JsonField(name= "photoUrl")
+    @JsonField(name = "photoUrl")
     String mPhoto;
     /**
      * Display name with the name and surname all together.
      */
     @Nullable
-    @JsonField(name= "displayName")
+    @JsonField(name = "displayName")
     String mDisplayName;
     /**
      * The name.
      */
     @Nullable
-    @JsonField(name= "name")
-      String mName;
+    @JsonField(name = "name")
+    String mName;
     /**
      * The surname.
      */
     @Nullable
-    @JsonField(name= "surname")
-     String mSurname;
+    @JsonField(name = "surname")
+    String mSurname;
 
-    public HaloUserProfile(){}
+    /**
+     * Parsing empty constructor.
+     */
+    protected HaloUserProfile() {
+        //Empty constructor for parsing
+    }
 
     public static final Creator<HaloUserProfile> CREATOR = new Creator<HaloUserProfile>() {
         @Override
         public HaloUserProfile createFromParcel(Parcel source) {
             return new HaloUserProfile(source);
         }
+
         @Override
         public HaloUserProfile[] newArray(int size) {
             return new HaloUserProfile[size];
@@ -73,7 +76,6 @@ public class HaloUserProfile implements Parcelable {
 
     /**
      * The social profile constructor
-     *
      */
     public HaloUserProfile(String identifiedId, String displayName, String name, String surname, String photo, String email) {
         this.mIdentifiedId = identifiedId;
@@ -89,7 +91,7 @@ public class HaloUserProfile implements Parcelable {
      *
      * @return The the identified id.
      */
-    @Api(2.0)
+    @Api(2.1)
     @Nullable
     public String getIdentifiedId() {
         return mIdentifiedId;
@@ -100,7 +102,7 @@ public class HaloUserProfile implements Parcelable {
      *
      * @return The the email
      */
-    @Api(2.0)
+    @Api(2.1)
     @Nullable
     public String getEmail() {
         return mEmail;
@@ -111,7 +113,7 @@ public class HaloUserProfile implements Parcelable {
      *
      * @return The the photo uri
      */
-    @Api(2.0)
+    @Api(2.1)
     @Nullable
     public String getPhoto() {
         return mPhoto;
@@ -122,7 +124,7 @@ public class HaloUserProfile implements Parcelable {
      *
      * @return The the name and surname together
      */
-    @Api(2.0)
+    @Api(2.1)
     @Nullable
     public String getDisplayName() {
         return mDisplayName;
@@ -133,7 +135,7 @@ public class HaloUserProfile implements Parcelable {
      *
      * @return The name.
      */
-    @Api(2.0)
+    @Api(2.1)
     @Nullable
     public String getName() {
         return mName;
@@ -144,7 +146,7 @@ public class HaloUserProfile implements Parcelable {
      *
      * @return The surname.
      */
-    @Api(2.0)
+    @Api(2.1)
     @Nullable
     public String getSurname() {
         return mSurname;
@@ -159,7 +161,7 @@ public class HaloUserProfile implements Parcelable {
         this.mIdentifiedId = in.readString();
         this.mDisplayName = in.readString();
         this.mName = in.readString();
-        this.mSurname =  in.readString();
+        this.mSurname = in.readString();
         this.mPhoto = in.readString();
         this.mEmail = in.readString();
     }

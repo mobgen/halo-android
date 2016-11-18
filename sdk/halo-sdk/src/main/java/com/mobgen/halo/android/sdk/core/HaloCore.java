@@ -19,8 +19,9 @@ import com.mobgen.halo.android.sdk.BuildConfig;
 import com.mobgen.halo.android.sdk.R;
 import com.mobgen.halo.android.sdk.core.management.HaloManagerApi;
 import com.mobgen.halo.android.sdk.core.management.authentication.HaloAuthenticator;
+import com.mobgen.halo.android.sdk.core.management.authentication.HaloSocial;
+import com.mobgen.halo.android.sdk.core.management.authentication.AuthenticationRecover;
 import com.mobgen.halo.android.sdk.core.management.models.Credentials;
-import com.mobgen.halo.android.sdk.core.management.models.Device;
 import com.mobgen.halo.android.sdk.core.management.models.HaloServerVersion;
 import com.mobgen.halo.android.sdk.core.management.segmentation.HaloSegmentationTag;
 import com.mobgen.halo.android.sdk.core.management.segmentation.TagCollector;
@@ -46,11 +47,21 @@ public class HaloCore {
      * The manager api.
      */
     private HaloManagerApi mManagerApi;
+    /**
+     * The social api
+     */
+    private HaloSocial mHaloSocial;
 
     /**
      * The oauth authenticator.
      */
     private HaloAuthenticator mAuthenticator;
+
+
+    /**
+     * The oauth authenticator.
+     */
+    private AuthenticationRecover mAuthenticationRecover;
 
     /**
      * The library version of the sdk.
@@ -258,6 +269,52 @@ public class HaloCore {
     }
 
     /**
+     * Set the halo social api
+     *
+     * @param haloSocial The Halo Social
+     */
+    @Keep
+    @Api(2.1)
+    public void haloSocial(HaloSocial haloSocial) {
+        mHaloSocial = haloSocial;
+    }
+
+    /**
+     * Get the halo social api.
+     *
+     * @return HaloSocial The Halo social.
+     */
+    @Nullable
+    @Keep
+    @Api(2.1)
+    public AuthenticationRecover haloSocialRecover() {
+        return mAuthenticationRecover;
+    }
+
+    /**
+     * Set the halo social recover
+     *
+     * @param authenticationRecover The HALO social recover.
+     */
+    @Keep
+    @Api(2.1)
+    public void haloSocialRecover(AuthenticationRecover authenticationRecover) {
+        mAuthenticationRecover = authenticationRecover;
+    }
+
+    /**
+     * Get the halo social recover.
+     *
+     * @return HaloSocial The Halo social recover.
+     */
+    @Nullable
+    @Keep
+    @Api(2.1)
+    public HaloSocial haloSocial() {
+        return mHaloSocial;
+    }
+
+    /**
      * Provides the list of tag collectors that collect tags on application startup.
      *
      * @return The list of tag collectors.
@@ -335,9 +392,10 @@ public class HaloCore {
 
     /**
      * Prints the server version invalid message.
+     *
      * @param version The version.
      */
-    private void printVersionInvalidMessage(@NonNull HaloServerVersion version){
+    private void printVersionInvalidMessage(@NonNull HaloServerVersion version) {
         String versionMessage = "The version of the Halo SDK you are using is outdated. Please update to ensure there are no breaking changes. " +
                 "Minimum version:" + version.getHaloVersion() +
                 ". Version changelog: " + version.getChangeLogUrl();

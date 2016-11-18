@@ -16,8 +16,8 @@ public class FacebookSocialProviderInstrument {
         Event event = mock(Event.class);
         Bundle bundle = new Bundle();
         bundle.putInt(HaloFacebookSignInActivity.Result.FACEBOOK_SIGN_IN_RESULT,HaloFacebookSignInActivity.Result.FACEBOOK_SUCCESS_CODE);
-        IdentifiedUser identifiedUser = mock(IdentifiedUser.class);
-        bundle.putParcelable(HaloFacebookSignInActivity.Result.FACEBOOK_SIGN_IN_ACCOUNT,identifiedUser);
+        String token = "thisisamockedtokenfromfacebook";
+        bundle.putString(HaloFacebookSignInActivity.Result.FACEBOOK_SIGN_IN_ACCOUNT,token);
         when(event.getData()).thenReturn(bundle);
         return event;
     }

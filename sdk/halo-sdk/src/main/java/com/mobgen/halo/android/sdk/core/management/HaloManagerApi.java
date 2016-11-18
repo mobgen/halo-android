@@ -23,7 +23,7 @@ import com.mobgen.halo.android.sdk.api.Halo;
 import com.mobgen.halo.android.sdk.api.HaloPluginApi;
 import com.mobgen.halo.android.sdk.core.internal.storage.HaloManagerContract;
 import com.mobgen.halo.android.sdk.core.internal.storage.HaloMigration2$0$0;
-import com.mobgen.halo.android.sdk.core.management.authentication.HaloSocialAuthenticator;
+import com.mobgen.halo.android.sdk.core.management.authentication.HaloSocial;
 import com.mobgen.halo.android.sdk.core.management.authentication.RequestTokenInteractor;
 import com.mobgen.halo.android.sdk.core.management.authentication.TokenRemoteDatasource;
 import com.mobgen.halo.android.sdk.core.management.authentication.TokenRepository;
@@ -92,7 +92,7 @@ public class HaloManagerApi extends HaloPluginApi {
     /**
      * The social api
      */
-    private HaloSocialAuthenticator mHaloSocialAuthenticator;
+    private HaloSocial mHaloSocial;
 
     /**
      * Constructor for the halo plugin.
@@ -197,24 +197,24 @@ public class HaloManagerApi extends HaloPluginApi {
     /**
      * Set the halo social api
      *
-     * @param haloSocialAuthenticator The Halo Social
+     * @param haloSocial The Halo Social
      */
     @Keep
     @Api(2.0)
-    public void haloSocial(HaloSocialAuthenticator haloSocialAuthenticator) {
-        mHaloSocialAuthenticator = haloSocialAuthenticator;
+    public void haloSocial(HaloSocial haloSocial) {
+        mHaloSocial = haloSocial;
     }
 
     /**
      * Get the halo social api.
      *
-     * @return HaloSocialAuthenticator The Halo social.
+     * @return HaloSocial The Halo social.
      */
     @Nullable
     @Keep
     @Api(2.0)
-    public HaloSocialAuthenticator haloSocial() {
-        return mHaloSocialAuthenticator;
+    public HaloSocial haloSocial() {
+        return mHaloSocial;
     }
 
     /**

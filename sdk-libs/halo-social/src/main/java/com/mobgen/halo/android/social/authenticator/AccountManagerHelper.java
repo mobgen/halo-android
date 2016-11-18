@@ -145,21 +145,6 @@ public class AccountManagerHelper {
     }
 
     /**
-     * Gets the halo auth token.
-     *
-     * @param account The account.
-     * @return Return the halo access token.
-     */
-    @Nullable
-    public String getHaloAccessToken(@NonNull Account account) {
-        AssertionUtils.notNull(account, "account");
-        if (account != null) {
-            return mAccountManager.getUserData(account, HALO_AUTH_PROVIDER);
-        }
-        return null;
-    }
-
-    /**
      * Gets the account manager token type stored for this account
      *
      * @param account The account.

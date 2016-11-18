@@ -9,11 +9,9 @@
   },
   "token": {
     "scope": "app",
-    "expires": 1478875644666,
-    "accessToken": "9aCH1pgfgnonimCE7pUxIPOecjw7k7kqvi67PyIG",
-    "refreshToken": "54kBFdhtSQhccyRp6ppZ2CpnCDTJfypWEDMaK5Ot",
-    "clientId": "halotestappclient",
-    "createdAt": 1478789244666,
-    "updatedAt": 1478694890314
+    "expires_in": 1478875644666,
+    "access_token": "9aCH1pgfgnonimCE7pUxIPOecjw7k7kqvi67PyIG",
+    "refresh_token": "54kBFdhtSQhccyRp6ppZ2CpnCDTJfypWEDMaK5Ot",
+    "token_type": "Bearer"
   }
 }

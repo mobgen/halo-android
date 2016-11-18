@@ -3,6 +3,7 @@ package com.mobgen.halo.android.social.providers.google;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -16,14 +17,10 @@ import com.mobgen.halo.android.framework.toolbox.data.CallbackV2;
 import com.mobgen.halo.android.framework.toolbox.data.HaloResultV2;
 import com.mobgen.halo.android.framework.toolbox.data.HaloStatus;
 import com.mobgen.halo.android.sdk.api.Halo;
-import com.mobgen.halo.android.sdk.core.threading.HaloInteractorExecutor;
-import com.mobgen.halo.android.social.HaloSocialApi;
-import com.mobgen.halo.android.social.login.LoginRemoteDatasource;
-import com.mobgen.halo.android.social.login.LoginRepository;
-import com.mobgen.halo.android.social.login.SocialLoginInteractor;
 import com.mobgen.halo.android.social.models.HaloAuthProfile;
 import com.mobgen.halo.android.social.models.IdentifiedUser;
 import com.mobgen.halo.android.social.providers.SocialProvider;
+import com.mobgen.halo.android.social.providers.SocialProviderApi;
 
 /**
  * The social provider for google plus.
@@ -53,6 +50,10 @@ public class GoogleSocialProvider implements SocialProvider, Subscriber {
      * The google token
      */
     private String mGoogleToken;
+    /**
+     * The social provider api.
+     */
+    private SocialProviderApi mSocialProviderApi;
 
     /**
      * Constructor for the social provider for google plus.
@@ -85,18 +86,21 @@ public class GoogleSocialProvider implements SocialProvider, Subscriber {
     }
 
     @Override
-    public void authenticate(final @NonNull Halo halo, @NonNull CallbackV2<IdentifiedUser> callback) {
+    public void authenticate(final @NonNull Halo halo, @Nullable CallbackV2<IdentifiedUser> callback) {
         final Subscriber subscriber = this;
+        mSocialProviderApi = SocialProviderApi.with(halo).build();
         userRequestCallbak = callback;
         if (mGoogleToken != null) {
-            //we login user with previous credentials
-            loginWithANetwork().execute(new CallbackV2<IdentifiedUser>() {
+            //we login user with previous credentials stored
+            mSocialProviderApi.loginWithANetwork(getSocialNetworkName(), mGoogleToken).execute(new CallbackV2<IdentifiedUser>() {
                 @Override
                 public void onFinish(@NonNull HaloResultV2<IdentifiedUser> result) {
                     if (result.status().isOk()) {
-                        userRequestCallbak.onFinish(result);
+                        if (userRequestCallbak != null) {
+                            userRequestCallbak.onFinish(result);
+                        }
                         release();
-                    } else { //We must revalidate token with google
+                    } else { //We must revalidate token with google so we restart authentication proccess
                         launchGoogleActivity(halo, subscriber);
                     }
                 }
@@ -157,37 +161,25 @@ public class GoogleSocialProvider implements SocialProvider, Subscriber {
     }
 
     /**
-     * Tries to login with halo based on the social network token, network type and device alias
-     */
-    @NonNull
-    private HaloInteractorExecutor<IdentifiedUser> loginWithANetwork() {
-        HaloSocialApi socialApi = (HaloSocialApi) Halo.instance().manager().haloSocial();
-        return new HaloInteractorExecutor<>(Halo.instance(),
-                "Login with a social provider",
-                new SocialLoginInteractor(socialApi.accountType(), new LoginRepository(new LoginRemoteDatasource(Halo.instance().framework().network())),
-                        getSocialNetworkName(), mGoogleToken, Halo.instance().manager().getDevice().getAlias(), socialApi.recoveryPolicy())
-        );
-
-    }
-
-    /**
      * Login user into halo with social credentials or notify process ended.
      */
     public void emitResult() {
-        if (haloSocialProfileHaloResult == null) {
-            loginWithANetwork().execute(new CallbackV2<IdentifiedUser>() {
+        if (haloSocialProfileHaloResult == null && mSocialProviderApi != null) {
+            mSocialProviderApi.loginWithANetwork(getSocialNetworkName(), mGoogleToken).execute(new CallbackV2<IdentifiedUser>() {
                 @Override
                 public void onFinish(@NonNull HaloResultV2<IdentifiedUser> result) {
                     if (result.status().isOk()) {
-                        userRequestCallbak.onFinish(result);
+                        if (userRequestCallbak != null) {
+                            userRequestCallbak.onFinish(result);
+                        }
                         release();
                     }
                 }
             });
         } else if (userRequestCallbak != null) {
             userRequestCallbak.onFinish(haloSocialProfileHaloResult);
-            release();
         }
+        release();
     }
 
     /**

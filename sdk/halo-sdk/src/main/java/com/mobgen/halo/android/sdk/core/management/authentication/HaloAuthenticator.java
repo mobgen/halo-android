@@ -108,9 +108,10 @@ public class HaloAuthenticator implements Authenticator {
                     token = requestToken();
                     if (token != null) {
                         session = new Session(token);
-                        //recover login if necesary
-                        if(Halo.instance().manager().haloSocial()!=null) {
-                            Halo.instance().manager().haloSocial().recoverLogin();
+                        //recover login if there is a halo social api
+                        if(Halo.instance().getCore().haloSocial()!=null) {
+                            //recover account if exist
+                            Halo.instance().getCore().haloSocialRecover().recoverAccount();
                         }
                     }
                 }
