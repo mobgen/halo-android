@@ -11,6 +11,10 @@ android {
         versionCode grill.CI.getCommitRevision()
         versionName "${rootProject.ext.haloVersion}"
     }
+
+    lintOptions {
+        disable 'InvalidPackage' //For okio https://github.com/square/okio/issues/58
+    }
 }
 
 dependencies {

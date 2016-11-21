@@ -39,6 +39,10 @@ android {
             setIgnoreFailures(rootProject.ext.ignoreTestFailures)
         }
     }
+
+    lintOptions {
+        disable 'InvalidPackage' //For okio https://github.com/square/okio/issues/58
+    }
 }
 
 dependencies {
