@@ -15,6 +15,9 @@ HALO is an MBaaS (Mobile Backend as a Service) that was developed to increase de
 
 To find out the documentation please enter the [documentation page](mobgen.github.io/halo-android).
 
+## Contributing ##
+To contribute to this repository please follow the rule specs you can find in our [documentation](https://mobgen.github.io/halo-documenation/android_contributions.html).
+
 ## Publish a new release ##
 Make sure you have setup the correct environment variables in your machine for the bintray username, the
 bintray api key, the sonatype user and the sonatype password:

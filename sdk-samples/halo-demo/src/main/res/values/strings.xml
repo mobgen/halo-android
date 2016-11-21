@@ -117,8 +117,18 @@
 
     <!-- Social login -->
     <string name="social_login_title">Social login</string>
+    <string name="social_halo_signin_title">Halo sign in</string>
+    <string name="social_halo_login_title">Halo login</string>
     <string name="google_social_login">Google social login</string>
     <string name="facebook_social_login">Facebook social login</string>
+    <string name="halo_social_login">Halo login</string>
+    <string name="halo_social_signin">Halo sign in</string>
     <string name="error_provider_not_available">Social provider not avaliable</string>
     <string name="login_with_facebook">Login with facebook</string>
+    <string name="login_with_halo">Login with halo</string>
+    <string name="signin_with_halo">Sign in with halo</string>
+    <string name="hint_name">Name</string>
+    <string name="hint_surname">Surname</string>
+    <string name="hint_email">Email</string>
+    <string name="hint_password">Password</string>
 </resources>

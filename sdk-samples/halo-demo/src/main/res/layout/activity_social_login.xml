@@ -33,5 +33,33 @@
         android:text="@string/login_with_facebook"
         android:layout_marginTop="@dimen/default_margin_small"/>
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/text_size"
+        android:text="@string/halo_social_login"
+        android:layout_marginTop="@dimen/default_margin_small"/>
+
+    <Button
+        android:id="@+id/halo_login"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/login_with_halo"
+        android:layout_marginTop="@dimen/default_margin_small"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/text_size"
+        android:text="@string/halo_social_signin"
+        android:layout_marginTop="@dimen/default_margin_small"/>
+
+    <Button
+        android:id="@+id/halo_sign_in"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/signin_with_halo"
+        android:layout_marginTop="@dimen/default_margin_small"/>
+
 
 </LinearLayout>

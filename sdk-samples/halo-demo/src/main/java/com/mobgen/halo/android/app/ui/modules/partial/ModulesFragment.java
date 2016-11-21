@@ -139,9 +139,9 @@ public class ModulesFragment extends MobgenHaloFragment implements SwipeRefreshL
         //Add the addons
         List<Addon> addons = new ArrayList<>();
         addons.addAll(Arrays.asList(
-                new Addon(Addon.AddonType.SEGMENTATION)
-//                new Addon(Addon.AddonType.ANALYTICS),
-//                new Addon(Addon.AddonType.SOCIAL_LOGIN)
+                new Addon(Addon.AddonType.SEGMENTATION),
+                new Addon(Addon.AddonType.ANALYTICS),
+                new Addon(Addon.AddonType.SOCIAL_LOGIN)
         ));
         mAdapter.setAddons(addons);
         mAdapter.notifyDataSetChanged();
@@ -249,10 +249,10 @@ public class ModulesFragment extends MobgenHaloFragment implements SwipeRefreshL
     public void onAddonSelected(Addon addon) {
         if (addon.getType() == Addon.AddonType.SEGMENTATION) {
             SegmentationActivity.start(getContext());
-//        } else if (addon.getType() == Addon.AddonType.ANALYTICS) {
-//            AnalyticsActivity.startActivity(getContext());
-//        } else if (addon.getType() == Addon.AddonType.SOCIAL_LOGIN) {
-//            SocialLoginActivity.startActivity(getContext());
+        } else if (addon.getType() == Addon.AddonType.ANALYTICS) {
+            AnalyticsActivity.startActivity(getContext());
+        } else if (addon.getType() == Addon.AddonType.SOCIAL_LOGIN) {
+            SocialLoginActivity.startActivity(getContext());
         }
     }
 

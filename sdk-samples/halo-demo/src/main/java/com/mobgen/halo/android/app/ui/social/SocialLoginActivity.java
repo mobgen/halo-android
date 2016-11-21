@@ -15,16 +15,34 @@ import com.mobgen.halo.android.app.ui.MobgenHaloApplication;
 import com.mobgen.halo.android.framework.common.helpers.logger.Halog;
 import com.mobgen.halo.android.framework.toolbox.data.CallbackV2;
 import com.mobgen.halo.android.framework.toolbox.data.HaloResultV2;
+import com.mobgen.halo.android.sdk.api.Halo;
+import com.mobgen.halo.android.social.HaloSocialApi;
+import com.mobgen.halo.android.social.models.IdentifiedUser;
+import com.mobgen.halo.android.social.providers.SocialNotAvailableException;
 
 /**
  * Social login activity to login with different accounts.
  */
-public class SocialLoginActivity extends MobgenHaloActivity implements View.OnClickListener{//, Callback<HaloSocialProfile, Void> {
+public class SocialLoginActivity extends MobgenHaloActivity implements View.OnClickListener, CallbackV2<IdentifiedUser> {
+
+    /**
+     * The context.
+     */
+    private Context mContext;
 
     /**
      * The social api instance.
      */
-   // private HaloSocialApi mSocialApi;
+    private HaloSocialApi mSocialApi;
+
+    /**
+     * Halo sign in.
+     */
+    private Button mLoginWithHalo;
+    /**
+     * Halo sign in.
+     */
+    private Button mSignInWithHalo;
 
     /**
      * Google sign in.
@@ -49,12 +67,12 @@ public class SocialLoginActivity extends MobgenHaloActivity implements View.OnCl
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_social_login);
-       /* mSocialApi = HaloSocialApi.with(MobgenHaloApplication.halo())
-                .withGoogle()
-                .withFacebook()
-                .build();*/
+        mContext = this;
+        mSocialApi = MobgenHaloApplication.getHaloSocialApi();
         mSignInWithGoogle = (SignInButton) findViewById(R.id.google_sign_in);
         mSignInWithFacebook = (Button) findViewById(R.id.facebook_sign_in);
+        mSignInWithHalo = (Button) findViewById(R.id.halo_sign_in);
+        mLoginWithHalo = (Button) findViewById(R.id.halo_login);
     }
 
     @Override
@@ -62,6 +80,8 @@ public class SocialLoginActivity extends MobgenHaloActivity implements View.OnCl
         super.onPostCreate(savedInstanceState);
         mSignInWithGoogle.setOnClickListener(this);
         mSignInWithFacebook.setOnClickListener(this);
+        mLoginWithHalo.setOnClickListener(this);
+        mSignInWithHalo.setOnClickListener(this);
     }
 
     @Override
@@ -71,37 +91,36 @@ public class SocialLoginActivity extends MobgenHaloActivity implements View.OnCl
 
     @Override
     public void onClick(View v) {
-        /*if (v.getId() == R.id.google_sign_in) {
+        if (v.getId() == R.id.google_sign_in) {
             try {
-                mSocialApi.login(HaloSocialApi.SOCIAL_GOOGLE_PLUS, this);
+                mSocialApi.loginWithSocial(HaloSocialApi.SOCIAL_GOOGLE_PLUS, this);
             } catch (SocialNotAvailableException e) {
                 Snackbar.make(getWindow().getDecorView(), getString(R.string.error_provider_not_available), Snackbar.LENGTH_LONG).show();
             }
-        } else if(v.getId() == R.id.facebook_sign_in){
+        } else if (v.getId() == R.id.facebook_sign_in) {
             try {
-                mSocialApi.login(HaloSocialApi.SOCIAL_FACEBOOK, this);
+                mSocialApi.loginWithSocial(HaloSocialApi.SOCIAL_FACEBOOK, this);
             } catch (SocialNotAvailableException e) {
                 Snackbar.make(getWindow().getDecorView(), getString(R.string.error_provider_not_available), Snackbar.LENGTH_LONG).show();
             }
-        }*/
+        } else if (v.getId() == R.id.halo_login) {
+            Intent intent = new Intent(mContext, SocialHaloLogin.class);
+            mContext.startActivity(intent);
+        } else if (v.getId() == R.id.halo_sign_in) {
+            Intent intent = new Intent(mContext, SocialHaloSignIn.class);
+            mContext.startActivity(intent);
+        }
     }
-/*
+
     @Override
-    public void onFinish(@NonNull HaloResult<HaloSocialProfile, Void> result) {
-        if(!result.status().isCanceled()) {
-            if (result.status().isSuccess()) { // Success
+    public void onFinish(@NonNull HaloResultV2<IdentifiedUser> result) {
+        if (!result.status().isCanceled()) {
+            if (result.status().isOk()) { // Ok
                 Halog.d(getClass(), result.data().toString());
+                Snackbar.make(getWindow().getDecorView(), result.data().getUser().getName(), Snackbar.LENGTH_LONG).show();
             } else { // Error
                 Halog.d(getClass(), result.status().exception().toString());
             }
         }
     }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mSocialApi.release();
-    }
-
-    */
 }
