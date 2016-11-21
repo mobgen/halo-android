@@ -3,6 +3,7 @@ package com.mobgen.halo.android.social.register;
 import android.support.annotation.NonNull;
 
 import com.mobgen.halo.android.framework.toolbox.data.HaloResultV2;
+import com.mobgen.halo.android.sdk.api.Halo;
 import com.mobgen.halo.android.sdk.core.threading.HaloInteractorExecutor;
 import com.mobgen.halo.android.social.models.HaloAuthProfile;
 import com.mobgen.halo.android.social.models.HaloUserProfile;
@@ -42,6 +43,7 @@ public class RegisterInteractor implements HaloInteractorExecutor.Interactor<Hal
     @NonNull
     @Override
     public HaloResultV2<HaloUserProfile> executeInteractor() throws Exception {
+        mHaloAuthProfile.setAlias(Halo.instance().manager().getDevice().getAlias());
         return mRegisterRepository.registerHalo(mHaloAuthProfile, mHaloUserProfile);
     }
 }

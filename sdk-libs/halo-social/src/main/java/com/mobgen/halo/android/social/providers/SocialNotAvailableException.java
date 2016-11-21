@@ -15,7 +15,7 @@ public class SocialNotAvailableException extends Exception {
      *
      * @param detailMessage A detailed message.
      */
-    @Api(2.0)
+    @Api(2.1)
     public SocialNotAvailableException(String detailMessage) {
         super(detailMessage);
     }
@@ -26,7 +26,7 @@ public class SocialNotAvailableException extends Exception {
      * @param detailMessage Detailed message.
      * @param throwable     The error that was a cause.
      */
-    @Api(2.0)
+    @Api(2.1)
     public SocialNotAvailableException(String detailMessage, Throwable throwable) {
         super(detailMessage, throwable);
     }

@@ -80,7 +80,7 @@ grill {
         libDevName "MOBGEN"
         libDevEmail "halo@mobgen.com"
         libSiteUrl "https://halo.mobgen.com"
-        libGitUrl "https://github.com/mobgen/halo-android/tree/master/sdk-libs"
+        libGitUrl "https://github.com/mobgen/halo-android/tree/master/sdk-libs/halo-social"
         bintrayRepoName "HALO-Social"
         bintrayUser System.getenv("HALO_BINTRAY_USER")
         bintrayKey System.getenv("HALO_BINTRAY_KEY")
@@ -95,5 +95,14 @@ grill {
     }
     coverage {
         excludes(['**/*$JsonObjectMapper*.*'])
+    }
+    codeQuality {
+        host "${rootProject.ext.sonarHost}"
+        projectKey "halo:social"
+        projectName "Halo Social SDK"
+        projectVersion "${rootProject.ext.sonarVersion}"
+        dbHost "${rootProject.ext.sonarDbHost}"
+        dbUser "${rootProject.ext.sonarUser}"
+        dbPassword "${rootProject.ext.sonarPassword}"
     }
 }

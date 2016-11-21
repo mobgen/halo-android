@@ -86,7 +86,7 @@ public class GoogleSocialProvider implements SocialProvider, Subscriber {
     }
 
     @Override
-    public void authenticate(final @NonNull Halo halo, @Nullable CallbackV2<IdentifiedUser> callback) {
+    public void authenticate(final @NonNull Halo halo, @Nullable HaloAuthProfile haloAuthProfile, @Nullable CallbackV2<IdentifiedUser> callback) {
         final Subscriber subscriber = this;
         mSocialProviderApi = SocialProviderApi.with(halo).build();
         userRequestCallbak = callback;
@@ -113,11 +113,6 @@ public class GoogleSocialProvider implements SocialProvider, Subscriber {
     @Override
     public void setSocialToken(@NonNull String socialToken) {
         mGoogleToken = socialToken;
-    }
-
-    @Override
-    public void setAuthProfile(@NonNull HaloAuthProfile haloAuthProfile) {
-        return;
     }
 
     @Override

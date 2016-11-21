@@ -3,16 +3,14 @@ package com.mobgen.halo.android.social.register;
 
 import android.support.annotation.NonNull;
 
-import com.bluelinelabs.logansquare.LoganSquare;
 import com.mobgen.halo.android.framework.api.HaloNetworkApi;
+import com.mobgen.halo.android.framework.common.exceptions.HaloParsingException;
 import com.mobgen.halo.android.framework.network.client.body.HaloBodyFactory;
 import com.mobgen.halo.android.framework.network.client.request.HaloRequest;
 import com.mobgen.halo.android.framework.network.client.request.HaloRequestMethod;
-import com.mobgen.halo.android.framework.network.client.response.Parser;
 import com.mobgen.halo.android.framework.network.exceptions.HaloNetException;
 import com.mobgen.halo.android.sdk.api.Halo;
 import com.mobgen.halo.android.sdk.core.internal.network.HaloNetworkConstants;
-import com.mobgen.halo.android.sdk.core.management.models.Device;
 import com.mobgen.halo.android.social.models.HaloAuthProfile;
 import com.mobgen.halo.android.social.models.HaloUserProfile;
 import com.mobgen.halo.android.social.models.Register;
@@ -51,16 +49,17 @@ public class RegisterRemoteDatasource {
      * @param haloUserProfile The user profile.
      * @return The user identity as IdentifiedUser
      * @throws HaloNetException Networking exception.
+     * @throws HaloParsingException Parsing exception.
      */
     @NonNull
-    public HaloUserProfile register(@NonNull HaloAuthProfile haloAuthProfile, @NonNull HaloUserProfile haloUserProfile) throws HaloNetException {
+    public HaloUserProfile register(@NonNull HaloAuthProfile haloAuthProfile, @NonNull HaloUserProfile haloUserProfile) throws HaloNetException, HaloParsingException {
         JSONObject jsonObject = null;
         try {
             Register register = new Register(haloAuthProfile, haloUserProfile);
-            String registerSerialized = register.serialize(register,Halo.instance().framework().parser());
+            String registerSerialized = register.serialize(register, Halo.instance().framework().parser());
             jsonObject = new JSONObject(registerSerialized);
         } catch (Exception e) {
-            jsonObject = new JSONObject();
+            throw new HaloParsingException(e.toString(), e);
         }
         return HaloRequest.builder(mClientApi)
                 .url(HaloNetworkConstants.HALO_ENDPOINT_ID, URL_LOGIN)

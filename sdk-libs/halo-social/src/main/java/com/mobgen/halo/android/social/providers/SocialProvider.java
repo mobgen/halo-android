@@ -40,16 +40,10 @@ public interface SocialProvider {
      * Authenticates using the halo instance and providing the result in the callback.
      *
      * @param halo     The halo instance.
+     * @param haloAuthProfile The halo authentication profile.
      * @param callback The callback.
      */
-    void authenticate(@NonNull Halo halo, @Nullable CallbackV2<IdentifiedUser> callback);
-
-    /**
-     * Set the auth profile
-     *
-     * @param haloAuthProfile The auth profile of the user
-     */
-    void setAuthProfile(@Nullable HaloAuthProfile haloAuthProfile);
+    void authenticate(@NonNull Halo halo, @Nullable HaloAuthProfile haloAuthProfile, @Nullable CallbackV2<IdentifiedUser> callback);
 
     /**
      * Set the social token

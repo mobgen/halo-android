@@ -4,7 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.mobgen.halo.android.framework.network.exceptions.HaloAuthenticationException;
+import com.mobgen.halo.android.framework.common.utils.AssertionUtils;
 import com.mobgen.halo.android.framework.toolbox.data.CallbackV2;
 import com.mobgen.halo.android.framework.toolbox.data.HaloResultV2;
 import com.mobgen.halo.android.framework.toolbox.data.HaloStatus;
@@ -26,10 +26,6 @@ public class HaloSocialProvider implements SocialProvider {
      * The callback to provide the result.
      */
     private CallbackV2<IdentifiedUser> userRequestCallbak;
-    /**
-     * The auth profile
-     */
-    private HaloAuthProfile mHaloAuthProfile;
     /**
      * The social providera api.
      */
@@ -58,11 +54,6 @@ public class HaloSocialProvider implements SocialProvider {
     }
 
     @Override
-    public void setAuthProfile(@Nullable HaloAuthProfile haloAuthProfile) {
-        mHaloAuthProfile = haloAuthProfile;
-    }
-
-    @Override
     public void setSocialToken(@NonNull String socialToken) {
         return;
     }
@@ -73,28 +64,20 @@ public class HaloSocialProvider implements SocialProvider {
     }
 
     @Override
-    public void authenticate(@NonNull Halo halo, @Nullable CallbackV2<IdentifiedUser> callback) {
+    public void authenticate(@NonNull Halo halo, @Nullable HaloAuthProfile haloAuthProfile, @Nullable CallbackV2<IdentifiedUser> callback) {
+        AssertionUtils.notNull(haloAuthProfile, "haloAuthProfile");
         userRequestCallbak = callback;
         mSocialProviderApi = SocialProviderApi.with(halo)
                 .build();
-        if (mHaloAuthProfile != null) {
-            mSocialProviderApi.loginWithHalo(mHaloAuthProfile.getEmail(), mHaloAuthProfile.getPassword())
-                    .execute(new CallbackV2<IdentifiedUser>() {
-                        @Override
-                        public void onFinish(@NonNull HaloResultV2<IdentifiedUser> result) {
-                            if (userRequestCallbak != null) {
-                                userRequestCallbak.onFinish(result);
-                            }
+        mSocialProviderApi.loginWithHalo(haloAuthProfile.getEmail(), haloAuthProfile.getPassword())
+                .execute(new CallbackV2<IdentifiedUser>() {
+                    @Override
+                    public void onFinish(@NonNull HaloResultV2<IdentifiedUser> result) {
+                        if (userRequestCallbak != null) {
+                            userRequestCallbak.onFinish(result);
                         }
-                    });
-        } else {
-            //we dont have user credential to login
-            HaloStatus.Builder status = HaloStatus.builder();
-            status.error(new HaloAuthenticationException("Error"));
-            if (userRequestCallbak != null) {
-                userRequestCallbak.onFinish(error(status.build()));
-            }
-        }
+                    }
+                });
     }
 
     private HaloResultV2<IdentifiedUser> error(HaloStatus status) {

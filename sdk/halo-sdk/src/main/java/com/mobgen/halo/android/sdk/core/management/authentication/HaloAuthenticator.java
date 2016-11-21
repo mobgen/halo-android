@@ -13,18 +13,14 @@ import com.mobgen.halo.android.framework.network.sessions.HaloSessionManager;
 import com.mobgen.halo.android.framework.toolbox.data.CallbackV2;
 import com.mobgen.halo.android.framework.toolbox.data.HaloResultV2;
 import com.mobgen.halo.android.framework.toolbox.threading.Threading;
-import com.mobgen.halo.android.sdk.api.Halo;
-import com.mobgen.halo.android.sdk.core.internal.network.HaloNetworkConstants;
 import com.mobgen.halo.android.sdk.core.management.HaloManagerApi;
 import com.mobgen.halo.android.sdk.core.management.models.Credentials;
 import com.mobgen.halo.android.sdk.core.management.models.Session;
 import com.mobgen.halo.android.sdk.core.management.models.Token;
 
 import java.io.IOException;
-import java.util.List;
 
 import okhttp3.Authenticator;
-import okhttp3.Challenge;
 import okhttp3.Connection;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -73,6 +69,11 @@ public class HaloAuthenticator implements Authenticator {
     private HaloManagerApi mManagementApi;
 
     /**
+     * The authenticator recovery.
+     */
+    private AuthenticationRecover mAuthenticationRecover;
+
+    /**
      * Creates the oauth provider given a client id and a client secret.
      *
      * @param framework      The framework.
@@ -103,15 +104,15 @@ public class HaloAuthenticator implements Authenticator {
                 flushSession();
                 //Do auth
                 Token token = null;
-                if(!response.request().url().toString().endsWith(TokenRemoteDatasource.URL_GET_CLIENT_TOKEN) &&
+                if (!response.request().url().toString().endsWith(TokenRemoteDatasource.URL_GET_CLIENT_TOKEN) &&
                         !response.request().url().toString().endsWith(TokenRemoteDatasource.URL_GET_USER_TOKEN)) {
                     token = requestToken();
                     if (token != null) {
                         session = new Session(token);
                         //recover login if there is a halo social api
-                        if(Halo.instance().getCore().haloSocial()!=null) {
+                        if (mAuthenticationRecover != null) {
                             //recover account if exist
-                            Halo.instance().getCore().haloSocial().recoverAccount();
+                            mAuthenticationRecover.recoverAccount();
                         }
                     }
                 }
@@ -132,6 +133,26 @@ public class HaloAuthenticator implements Authenticator {
         }
         //Do not reconnect, we can not authenticate with the current token
         return null;
+    }
+
+    /**
+     * Set the halo authenticationr recover.
+     *
+     * @param authenticationRecover The Auth Recover
+     */
+    public void setAuthenticationRecover(@NonNull AuthenticationRecover authenticationRecover) {
+        AssertionUtils.notNull(authenticationRecover, "authenticationRecover");
+        mAuthenticationRecover = authenticationRecover;
+    }
+
+    /**
+     * Get the halo authentication recover.
+     *
+     * @return AuthenticationRecover The Auth Recover.
+     */
+    @Nullable
+    public AuthenticationRecover getAuthenticationRecover() {
+        return mAuthenticationRecover;
     }
 
     /**

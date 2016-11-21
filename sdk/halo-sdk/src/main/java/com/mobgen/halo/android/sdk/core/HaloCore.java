@@ -18,8 +18,8 @@ import com.mobgen.halo.android.framework.network.sessions.HaloSessionManager;
 import com.mobgen.halo.android.sdk.BuildConfig;
 import com.mobgen.halo.android.sdk.R;
 import com.mobgen.halo.android.sdk.core.management.HaloManagerApi;
-import com.mobgen.halo.android.sdk.core.management.authentication.HaloAuthenticator;
 import com.mobgen.halo.android.sdk.core.management.authentication.AuthenticationRecover;
+import com.mobgen.halo.android.sdk.core.management.authentication.HaloAuthenticator;
 import com.mobgen.halo.android.sdk.core.management.models.Credentials;
 import com.mobgen.halo.android.sdk.core.management.models.HaloServerVersion;
 import com.mobgen.halo.android.sdk.core.management.segmentation.HaloSegmentationTag;
@@ -51,12 +51,6 @@ public class HaloCore {
      * The oauth authenticator.
      */
     private HaloAuthenticator mAuthenticator;
-
-
-    /**
-     * The oauth authenticator.
-     */
-    private AuthenticationRecover mAuthenticationRecover;
 
     /**
      * The library version of the sdk.
@@ -240,6 +234,30 @@ public class HaloCore {
     }
 
     /**
+     * Set the halo authentication recover.
+     *
+     * @param authenticationRecover The Auth Recover
+     */
+    @Keep
+    @Api(2.1)
+    public void haloAuthRecover(@NonNull AuthenticationRecover authenticationRecover) {
+        AssertionUtils.notNull(authenticationRecover, "authenticationRecover");
+        mAuthenticator.setAuthenticationRecover(authenticationRecover);
+    }
+
+    /**
+     * Get the halo authentication recover.
+     *
+     * @return AuthenticationRecover The Auth Recover
+     */
+    @Nullable
+    @Keep
+    @Api(2.1)
+    public AuthenticationRecover haloAuthRecover() {
+        return mAuthenticator.getAuthenticationRecover();
+    }
+
+    /**
      * Provides the current framework instance.
      *
      * @return The framework instance.
@@ -261,29 +279,6 @@ public class HaloCore {
     @NonNull
     public HaloManagerApi manager() {
         return mManagerApi;
-    }
-
-    /**
-     * Set the halo social api
-     *
-     * @param authenticationRecover The Halo Social
-     */
-    @Keep
-    @Api(2.1)
-    public void haloSocial(AuthenticationRecover authenticationRecover) {
-        mAuthenticationRecover = authenticationRecover;
-    }
-
-    /**
-     * Get the halo social recover.
-     *
-     * @return HaloSocial The Halo social recover.
-     */
-    @Nullable
-    @Keep
-    @Api(2.1)
-    public AuthenticationRecover haloSocial() {
-        return mAuthenticationRecover;
     }
 
     /**

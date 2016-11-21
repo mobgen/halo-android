@@ -70,7 +70,7 @@ public class FacebookSocialProvider implements SocialProvider, Subscriber {
     }
 
     @Override
-    public void authenticate(final @NonNull Halo halo, @Nullable CallbackV2<IdentifiedUser> callback) {
+    public void authenticate(final @NonNull Halo halo, @Nullable HaloAuthProfile haloAuthProfile, @Nullable CallbackV2<IdentifiedUser> callback) {
         final Subscriber subscriber = this;
         initIfNeeded(halo.context());
         mSocialProviderApi = SocialProviderApi.with(halo).build();
@@ -94,11 +94,6 @@ public class FacebookSocialProvider implements SocialProvider, Subscriber {
         } else {
             launchFacebookActivity(halo, subscriber);
         }
-    }
-
-    @Override
-    public void setAuthProfile(@NonNull HaloAuthProfile haloAuthProfile) {
-        return;
     }
 
     @Override

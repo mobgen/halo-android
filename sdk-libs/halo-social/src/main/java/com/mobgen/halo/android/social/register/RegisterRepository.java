@@ -2,8 +2,8 @@ package com.mobgen.halo.android.social.register;
 
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
+import com.mobgen.halo.android.framework.common.exceptions.HaloParsingException;
 import com.mobgen.halo.android.framework.common.utils.AssertionUtils;
 import com.mobgen.halo.android.framework.network.exceptions.HaloNetException;
 import com.mobgen.halo.android.framework.toolbox.data.HaloResultV2;
@@ -38,15 +38,18 @@ public class RegisterRepository {
      * @param haloUserProfile The user profile
      * @return The user identified
      * @throws HaloNetException Networking exception.
+     * @throws HaloParsingException Parsing exception.
      */
     @NonNull
-    public HaloResultV2<HaloUserProfile> registerHalo(@NonNull HaloAuthProfile haloAuthProfile, @NonNull HaloUserProfile haloUserProfile) throws HaloNetException {
+    public HaloResultV2<HaloUserProfile> registerHalo(@NonNull HaloAuthProfile haloAuthProfile, @NonNull HaloUserProfile haloUserProfile) throws HaloNetException, HaloParsingException {
         HaloStatus.Builder status = HaloStatus.builder();
         HaloUserProfile haloUserProfileResponse = null;
         try {
             haloUserProfileResponse = mRemoteDatasource.register(haloAuthProfile, haloUserProfile);
-        } catch (HaloNetException e) {
-            status.error(e);
+        } catch (HaloNetException haloNetException) {
+            status.error(haloNetException);
+        } catch (HaloParsingException haloParsingException) {
+            status.error(haloParsingException);
         }
         return new HaloResultV2<>(status.build(), haloUserProfileResponse);
     }

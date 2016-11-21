@@ -17,7 +17,6 @@ import com.mobgen.halo.android.social.models.IdentifiedUser;
 /**
  * It allows to use the halo login, facebook, google plus or another declared provider.
  */
-@Keep
 public class SocialProviderApi {
 
     /**
@@ -27,7 +26,7 @@ public class SocialProviderApi {
     /**
      * The recovery policy. By default recovery policy equals never store.
      */
-    private int mRecoveryPolicy;
+    private int mRecoveryPolicy = 0;
 
     /**
      * Constructor that accepts halo.
@@ -35,8 +34,10 @@ public class SocialProviderApi {
      * @param halo The halo instance.
      */
     private SocialProviderApi(@NonNull Halo halo) {
-        mAccountType = halo.getCore().haloSocial().accountType();
-        mRecoveryPolicy = halo.getCore().haloSocial().recoveryPolicy();
+        if (halo.getCore().haloAuthRecover() != null) {
+            mAccountType = halo.getCore().haloAuthRecover().accountType();
+            mRecoveryPolicy = halo.getCore().haloAuthRecover().recoveryPolicy();
+        }
     }
 
     /**

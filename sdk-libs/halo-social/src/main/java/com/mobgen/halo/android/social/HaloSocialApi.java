@@ -44,8 +44,9 @@ import java.lang.annotation.RetentionPolicy;
 public class HaloSocialApi extends HaloPluginApi {
 
     /**
-     * Determines the
+     * Determines the social provider type.
      */
+    @Keep
     @IntDef({SOCIAL_HALO, SOCIAL_GOOGLE_PLUS, SOCIAL_FACEBOOK})
     @Retention(RetentionPolicy.SOURCE)
     public @interface SocialType {
@@ -68,8 +69,9 @@ public class HaloSocialApi extends HaloPluginApi {
     public static final int SOCIAL_FACEBOOK = 2;
 
     /**
-     * Determines the
+     * Determines the recovery policy.
      */
+    @Keep
     @IntDef({RECOVERY_NEVER, RECOVERY_ALWAYS})
     @Retention(RetentionPolicy.SOURCE)
     public @interface RecoveryPolicy {
@@ -181,7 +183,6 @@ public class HaloSocialApi extends HaloPluginApi {
     public HaloInteractorExecutor<HaloUserProfile> register(@NonNull HaloAuthProfile haloAuthProfile, @NonNull HaloUserProfile haloUserProfile) {
         AssertionUtils.notNull(haloAuthProfile, "haloAuthProfile");
         AssertionUtils.notNull(haloUserProfile, "haloUserProfile");
-        haloAuthProfile.setAlias(halo().manager().getDevice().getAlias());
         return new HaloInteractorExecutor<>(halo(),
                 "Sign in with halo",
                 new RegisterInteractor(new RegisterRepository(new RegisterRemoteDatasource(halo().framework().network())),
@@ -229,10 +230,7 @@ public class HaloSocialApi extends HaloPluginApi {
         if (!isSocialNetworkAvailable(socialNetwork)) {
             throw new SocialNotAvailableException("The social network you are trying to log with is not available. Social network id: " + socialNetwork);
         }
-        if (haloAuthProfile != null) {
-            mProviders.get(socialNetwork).setAuthProfile(haloAuthProfile);
-        }
-        mProviders.get(socialNetwork).authenticate(halo(), callback);
+        mProviders.get(socialNetwork).authenticate(halo(), haloAuthProfile, callback);
     }
 
     /**
@@ -245,14 +243,13 @@ public class HaloSocialApi extends HaloPluginApi {
             if (account != null) {
                 if (mAccountManagerHelper.getTokenProvider(account).equals(AccountManagerHelper.HALO_AUTH_PROVIDER)) {
                     HaloAuthProfile haloAuthProfile = recoverHaloAuthProfile();
-                    mProviders.get(SOCIAL_HALO).setAuthProfile(haloAuthProfile);
-                    mProviders.get(SOCIAL_HALO).authenticate(halo(), null);
+                    mProviders.get(SOCIAL_HALO).authenticate(halo(), haloAuthProfile, null);
                 } else if (mAccountManagerHelper.getTokenProvider(account).equals(AccountManagerHelper.GOOGLE_AUTH_PROVIDER)) {
                     mProviders.get(SOCIAL_GOOGLE_PLUS).setSocialToken(recoverAuthToken(AccountManagerHelper.GOOGLE_AUTH_PROVIDER));
-                    mProviders.get(SOCIAL_GOOGLE_PLUS).authenticate(halo(), null);
+                    mProviders.get(SOCIAL_GOOGLE_PLUS).authenticate(halo(), null, null);
                 } else if (mAccountManagerHelper.getTokenProvider(account).equals(AccountManagerHelper.FACEBOOK_AUTH_PROVIDER)) {
                     mProviders.get(SOCIAL_FACEBOOK).setSocialToken(recoverAuthToken(AccountManagerHelper.FACEBOOK_AUTH_PROVIDER));
-                    mProviders.get(SOCIAL_FACEBOOK).authenticate(halo(), null);
+                    mProviders.get(SOCIAL_FACEBOOK).authenticate(halo(), null, null);
                 }
             }
         }
@@ -306,7 +303,7 @@ public class HaloSocialApi extends HaloPluginApi {
                     return mAccountType;
                 }
             };
-            Halo.instance().getCore().haloSocial(haloSocialRecover);
+            Halo.instance().getCore().haloAuthRecover(haloSocialRecover);
             mAccountManagerHelper = new AccountManagerHelper(context(), mAccountType);
         }
     }

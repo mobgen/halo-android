@@ -82,7 +82,7 @@ public class HaloSocialApiTest extends HaloRobolectricTest {
     public void thatRecoverySessionWithHaloProvider() throws SecurityException, IOException {
         enqueueServerFile(mMockServer, LOGIN_SUCESS);
         givenAHaloAccount();
-        mHalo.getCore().haloSocial().recoverAccount();
+        mHalo.getCore().haloAuthRecover().recoverAccount();
         assertThat(mHaloSocialApi.isSocialNetworkAvailable(HaloSocialApi.SOCIAL_HALO)).isTrue();
     }
 
@@ -90,7 +90,7 @@ public class HaloSocialApiTest extends HaloRobolectricTest {
     public void thatRecoverySessionWithFacebookProvider() throws SecurityException, IOException {
         enqueueServerFile(mMockServer, LOGIN_SUCESS);
         givenAFacebookAccount();
-        mHalo.getCore().haloSocial().recoverAccount();
+        mHalo.getCore().haloAuthRecover().recoverAccount();
         assertThat(mHaloSocialApi.isSocialNetworkAvailable(HaloSocialApi.SOCIAL_FACEBOOK)).isTrue();
     }
 
@@ -98,7 +98,7 @@ public class HaloSocialApiTest extends HaloRobolectricTest {
     public void thatRecoverySessionWithGoogleProvider() throws SecurityException, IOException {
         enqueueServerFile(mMockServer, LOGIN_SUCESS);
         givenAGoogleAccount();
-        mHalo.getCore().haloSocial().recoverAccount();
+        mHalo.getCore().haloAuthRecover().recoverAccount();
         assertThat(mHaloSocialApi.isSocialNetworkAvailable(HaloSocialApi.SOCIAL_GOOGLE_PLUS)).isTrue();
     }
 
