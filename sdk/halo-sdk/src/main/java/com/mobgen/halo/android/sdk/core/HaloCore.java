@@ -19,7 +19,6 @@ import com.mobgen.halo.android.sdk.BuildConfig;
 import com.mobgen.halo.android.sdk.R;
 import com.mobgen.halo.android.sdk.core.management.HaloManagerApi;
 import com.mobgen.halo.android.sdk.core.management.authentication.HaloAuthenticator;
-import com.mobgen.halo.android.sdk.core.management.authentication.HaloSocial;
 import com.mobgen.halo.android.sdk.core.management.authentication.AuthenticationRecover;
 import com.mobgen.halo.android.sdk.core.management.models.Credentials;
 import com.mobgen.halo.android.sdk.core.management.models.HaloServerVersion;
@@ -47,10 +46,6 @@ public class HaloCore {
      * The manager api.
      */
     private HaloManagerApi mManagerApi;
-    /**
-     * The social api
-     */
-    private HaloSocial mHaloSocial;
 
     /**
      * The oauth authenticator.
@@ -271,34 +266,11 @@ public class HaloCore {
     /**
      * Set the halo social api
      *
-     * @param haloSocial The Halo Social
+     * @param authenticationRecover The Halo Social
      */
     @Keep
     @Api(2.1)
-    public void haloSocial(HaloSocial haloSocial) {
-        mHaloSocial = haloSocial;
-    }
-
-    /**
-     * Get the halo social api.
-     *
-     * @return HaloSocial The Halo social.
-     */
-    @Nullable
-    @Keep
-    @Api(2.1)
-    public AuthenticationRecover haloSocialRecover() {
-        return mAuthenticationRecover;
-    }
-
-    /**
-     * Set the halo social recover
-     *
-     * @param authenticationRecover The HALO social recover.
-     */
-    @Keep
-    @Api(2.1)
-    public void haloSocialRecover(AuthenticationRecover authenticationRecover) {
+    public void haloSocial(AuthenticationRecover authenticationRecover) {
         mAuthenticationRecover = authenticationRecover;
     }
 
@@ -310,8 +282,8 @@ public class HaloCore {
     @Nullable
     @Keep
     @Api(2.1)
-    public HaloSocial haloSocial() {
-        return mHaloSocial;
+    public AuthenticationRecover haloSocial() {
+        return mAuthenticationRecover;
     }
 
     /**

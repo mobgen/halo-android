@@ -23,7 +23,6 @@ import com.mobgen.halo.android.sdk.api.Halo;
 import com.mobgen.halo.android.sdk.api.HaloPluginApi;
 import com.mobgen.halo.android.sdk.core.internal.storage.HaloManagerContract;
 import com.mobgen.halo.android.sdk.core.internal.storage.HaloMigration2$0$0;
-import com.mobgen.halo.android.sdk.core.management.authentication.HaloSocial;
 import com.mobgen.halo.android.sdk.core.management.authentication.RequestTokenInteractor;
 import com.mobgen.halo.android.sdk.core.management.authentication.TokenRemoteDatasource;
 import com.mobgen.halo.android.sdk.core.management.authentication.TokenRepository;
@@ -89,10 +88,6 @@ public class HaloManagerApi extends HaloPluginApi {
      * Syncs the device information.
      */
     private DeviceRepository mDeviceRepository;
-    /**
-     * The social api
-     */
-    private HaloSocial mHaloSocial;
 
     /**
      * Constructor for the halo plugin.
@@ -192,29 +187,6 @@ public class HaloManagerApi extends HaloPluginApi {
                 "Request a new token",
                 new RequestTokenInteractor(mTokenRepository, credentials)
         );
-    }
-
-    /**
-     * Set the halo social api
-     *
-     * @param haloSocial The Halo Social
-     */
-    @Keep
-    @Api(2.0)
-    public void haloSocial(HaloSocial haloSocial) {
-        mHaloSocial = haloSocial;
-    }
-
-    /**
-     * Get the halo social api.
-     *
-     * @return HaloSocial The Halo social.
-     */
-    @Nullable
-    @Keep
-    @Api(2.0)
-    public HaloSocial haloSocial() {
-        return mHaloSocial;
     }
 
     /**

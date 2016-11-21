@@ -111,7 +111,7 @@ public class HaloAuthenticator implements Authenticator {
                         //recover login if there is a halo social api
                         if(Halo.instance().getCore().haloSocial()!=null) {
                             //recover account if exist
-                            Halo.instance().getCore().haloSocialRecover().recoverAccount();
+                            Halo.instance().getCore().haloSocial().recoverAccount();
                         }
                     }
                 }

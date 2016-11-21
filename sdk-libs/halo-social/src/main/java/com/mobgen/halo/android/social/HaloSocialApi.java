@@ -19,7 +19,6 @@ import com.mobgen.halo.android.framework.toolbox.data.CallbackV2;
 import com.mobgen.halo.android.sdk.api.Halo;
 import com.mobgen.halo.android.sdk.api.HaloPluginApi;
 import com.mobgen.halo.android.sdk.core.management.authentication.AuthenticationRecover;
-import com.mobgen.halo.android.sdk.core.management.authentication.HaloSocial;
 import com.mobgen.halo.android.sdk.core.threading.HaloInteractorExecutor;
 import com.mobgen.halo.android.social.authenticator.AccountManagerHelper;
 import com.mobgen.halo.android.social.models.HaloAuthProfile;
@@ -42,7 +41,7 @@ import java.lang.annotation.RetentionPolicy;
  * It allows to use the halo login, facebook, google plus or another declared provider.
  */
 @Keep
-public class HaloSocialApi extends HaloPluginApi implements HaloSocial<IdentifiedUser, HaloAuthProfile, HaloUserProfile, SocialNotAvailableException> {
+public class HaloSocialApi extends HaloPluginApi {
 
     /**
      * Determines the
@@ -129,14 +128,6 @@ public class HaloSocialApi extends HaloPluginApi implements HaloSocial<Identifie
     private HaloSocialApi(@NonNull Halo halo) {
         super(halo);
         mProviders = new SparseArray<>(3);
-        AuthenticationRecover haloSocialRecover = new AuthenticationRecover() {
-            @Override
-            public void recoverAccount() {
-                recoverSocialProviderAccount();
-            }
-        };
-        halo.getCore().haloSocialRecover(haloSocialRecover);
-        halo.getCore().haloSocial(this);
     }
 
     /**
@@ -160,7 +151,6 @@ public class HaloSocialApi extends HaloPluginApi implements HaloSocial<Identifie
      */
     @Keep
     @Api(2.1)
-    @Override
     public void loginWithHalo(@SocialType int socialNetwork, @Nullable HaloAuthProfile haloAuthProfile, @NonNull CallbackV2<IdentifiedUser> callback) throws SocialNotAvailableException {
         login(socialNetwork, haloAuthProfile, callback);
     }
@@ -174,7 +164,6 @@ public class HaloSocialApi extends HaloPluginApi implements HaloSocial<Identifie
      */
     @Keep
     @Api(2.1)
-    @Override
     public void loginWithSocial(@SocialType int socialNetwork, @NonNull CallbackV2<IdentifiedUser> callback) throws SocialNotAvailableException {
         login(socialNetwork, null, callback);
     }
@@ -187,7 +176,6 @@ public class HaloSocialApi extends HaloPluginApi implements HaloSocial<Identifie
      */
     @Api(2.1)
     @Keep
-    @Override
     @NonNull
     @CheckResult(suggest = "You may want to call execute() to run the task")
     public HaloInteractorExecutor<HaloUserProfile> register(@NonNull HaloAuthProfile haloAuthProfile, @NonNull HaloUserProfile haloUserProfile) {
@@ -199,32 +187,6 @@ public class HaloSocialApi extends HaloPluginApi implements HaloSocial<Identifie
                 new RegisterInteractor(new RegisterRepository(new RegisterRemoteDatasource(halo().framework().network())),
                         haloAuthProfile, haloUserProfile)
         );
-    }
-
-    /**
-     * Get the recovery policy.
-     *
-     * @return The recovery policyß
-     */
-    @Keep
-    @Api(2.1)
-    @RecoveryPolicy
-    @Override
-    public int recoveryPolicy() {
-        return mRecoveryPolicy;
-    }
-
-    /**
-     * Get the account type.
-     *
-     * @return The recovery policyß
-     */
-    @Keep
-    @Api(2.1)
-    @RecoveryPolicy
-    @Override
-    public String accountType() {
-        return mAccountType;
     }
 
     /**
@@ -319,15 +281,32 @@ public class HaloSocialApi extends HaloPluginApi implements HaloSocial<Identifie
     }
 
     /**
-     * Set the account manager helper to manager accounts with android.
+     * Setup the account manager and the authenticator recovery.
      *
      * @param accountType   The account type to store.
      * @param recoverPolicy The recovery policy.
      */
-    private void setAccounManager(@Nullable String accountType, @RecoveryPolicy int recoverPolicy) {
-        if (recoverPolicy == RECOVERY_ALWAYS) {
-            mRecoveryPolicy = recoverPolicy;
-            mAccountType = accountType;
+    private void setup(@Nullable String accountType, @RecoveryPolicy int recoverPolicy) {
+        mRecoveryPolicy = recoverPolicy;
+        mAccountType = accountType;
+        if (recoverPolicy == RECOVERY_ALWAYS && mAccountType != null) {
+            AuthenticationRecover haloSocialRecover = new AuthenticationRecover() {
+                @Override
+                public void recoverAccount() {
+                    recoverSocialProviderAccount();
+                }
+
+                @Override
+                public int recoveryPolicy() {
+                    return mRecoveryPolicy;
+                }
+
+                @Override
+                public String accountType() {
+                    return mAccountType;
+                }
+            };
+            Halo.instance().getCore().haloSocial(haloSocialRecover);
             mAccountManagerHelper = new AccountManagerHelper(context(), mAccountType);
         }
     }
@@ -504,7 +483,7 @@ public class HaloSocialApi extends HaloPluginApi implements HaloSocial<Identifie
         @NonNull
         @Override
         public HaloSocialApi build() {
-            mSocialApi.setAccounManager(mAccountType, mRecoveryPolicy);
+            mSocialApi.setup(mAccountType, mRecoveryPolicy);
             return mSocialApi;
         }
     }

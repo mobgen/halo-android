@@ -33,12 +33,12 @@ import static com.mobgen.halo.android.social.mock.fixtures.ServerFixtures.LOGIN_
 import static com.mobgen.halo.android.social.mock.fixtures.ServerFixtures.REGISTER_SUCESS;
 import static com.mobgen.halo.android.social.mock.fixtures.ServerFixtures.enqueueServerFile;
 import static com.mobgen.halo.android.social.mock.instrumentation.HaloMock.givenADefaultHalo;
+import static com.mobgen.halo.android.social.mock.instrumentation.HaloSocialApiInstrument.getSocialProvider;
 import static com.mobgen.halo.android.social.mock.instrumentation.HaloSocialApiInstrument.givenAHaloSocialProfileIdentifiedCallback;
 import static com.mobgen.halo.android.social.mock.instrumentation.HaloSocialApiInstrument.givenAHaloSocialProfileRegisteredCallback;
-import static com.mobgen.halo.android.social.mock.instrumentation.HaloSocialApiMock.givenASocialApiWithAllNetworksAvailable;
-import static com.mobgen.halo.android.social.mock.instrumentation.HaloSocialApiInstrument.getSocialProvider;
 import static com.mobgen.halo.android.social.mock.instrumentation.HaloSocialApiInstrument.setFacebookSocialProviderToken;
 import static com.mobgen.halo.android.social.mock.instrumentation.HaloSocialApiInstrument.setGooglesSocialProviderToken;
+import static com.mobgen.halo.android.social.mock.instrumentation.HaloSocialApiMock.givenASocialApiWithAllNetworksAvailable;
 import static com.mobgen.halo.android.testing.CallbackFlag.newCallbackFlag;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Matchers.anyInt;
@@ -82,7 +82,7 @@ public class HaloSocialApiTest extends HaloRobolectricTest {
     public void thatRecoverySessionWithHaloProvider() throws SecurityException, IOException {
         enqueueServerFile(mMockServer, LOGIN_SUCESS);
         givenAHaloAccount();
-        mHalo.getCore().haloSocialRecover().recoverAccount();
+        mHalo.getCore().haloSocial().recoverAccount();
         assertThat(mHaloSocialApi.isSocialNetworkAvailable(HaloSocialApi.SOCIAL_HALO)).isTrue();
     }
 
@@ -90,7 +90,7 @@ public class HaloSocialApiTest extends HaloRobolectricTest {
     public void thatRecoverySessionWithFacebookProvider() throws SecurityException, IOException {
         enqueueServerFile(mMockServer, LOGIN_SUCESS);
         givenAFacebookAccount();
-        mHalo.getCore().haloSocialRecover().recoverAccount();
+        mHalo.getCore().haloSocial().recoverAccount();
         assertThat(mHaloSocialApi.isSocialNetworkAvailable(HaloSocialApi.SOCIAL_FACEBOOK)).isTrue();
     }
 
@@ -98,7 +98,7 @@ public class HaloSocialApiTest extends HaloRobolectricTest {
     public void thatRecoverySessionWithGoogleProvider() throws SecurityException, IOException {
         enqueueServerFile(mMockServer, LOGIN_SUCESS);
         givenAGoogleAccount();
-        mHalo.getCore().haloSocialRecover().recoverAccount();
+        mHalo.getCore().haloSocial().recoverAccount();
         assertThat(mHaloSocialApi.isSocialNetworkAvailable(HaloSocialApi.SOCIAL_GOOGLE_PLUS)).isTrue();
     }
 
@@ -164,11 +164,6 @@ public class HaloSocialApiTest extends HaloRobolectricTest {
                 .threadPolicy(Threading.SAME_THREAD_POLICY)
                 .execute(callback);
         assertThat(mCallbackFlag.isFlagged()).isTrue();
-    }
-
-    @Test
-    public void thatRecoverProfilePolicy() {
-        assertThat(mHaloSocialApi.recoveryPolicy()).isEqualTo(HaloSocialApi.RECOVERY_ALWAYS);
     }
 
     @Test

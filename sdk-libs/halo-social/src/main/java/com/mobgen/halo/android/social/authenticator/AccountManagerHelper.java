@@ -31,7 +31,6 @@ public class AccountManagerHelper {
      * Facebook type token
      */
     public static final String FACEBOOK_AUTH_PROVIDER = "facebook";
-
     /**
      * Google token type
      */
@@ -62,9 +61,9 @@ public class AccountManagerHelper {
     /**
      * Set the token to an account
      *
-     * @param account   The account to store on account manager.
+     * @param account       The account to store on account manager.
      * @param tokenProvider The token provider type.
-     * @param token The token generated.
+     * @param token         The token generated.
      * @return The account  with the token.
      */
     @NonNull
@@ -213,7 +212,6 @@ public class AccountManagerHelper {
      * @param account The account.
      * @return True if account is already authenticated, false otherwise.
      */
-    @NonNull
     private boolean checkAccountExist(@NonNull Account account) {
         AssertionUtils.notNull(account, "account");
         if (ActivityCompat.checkSelfPermission(Halo.instance().context(), Manifest.permission.GET_ACCOUNTS) != PackageManager.PERMISSION_GRANTED) {
