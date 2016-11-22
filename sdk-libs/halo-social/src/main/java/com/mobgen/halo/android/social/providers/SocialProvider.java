@@ -6,8 +6,8 @@ import android.support.annotation.Nullable;
 
 import com.mobgen.halo.android.framework.toolbox.data.CallbackV2;
 import com.mobgen.halo.android.sdk.api.Halo;
-import com.mobgen.halo.android.social.models.HaloSocialProfile;
 import com.mobgen.halo.android.social.models.HaloAuthProfile;
+import com.mobgen.halo.android.social.models.IdentifiedUser;
 
 /**
  * Common interface for the social providers.
@@ -20,6 +20,7 @@ public interface SocialProvider {
      * @return The name of the provider selected
      */
     String getSocialNetworkName();
+
     /**
      * Checks if the library is available.
      *
@@ -38,18 +39,18 @@ public interface SocialProvider {
     /**
      * Authenticates using the halo instance and providing the result in the callback.
      *
-     * @param halo The halo instance.
-     * @param accountType The account type on account manager.
+     * @param halo     The halo instance.
+     * @param haloAuthProfile The halo authentication profile.
      * @param callback The callback.
      */
-    void authenticate(@NonNull Halo halo, @Nullable String accountType, @NonNull CallbackV2<HaloSocialProfile> callback);
+    void authenticate(@NonNull Halo halo, @Nullable HaloAuthProfile haloAuthProfile, @Nullable CallbackV2<IdentifiedUser> callback);
 
     /**
-     * Set the auth profile
+     * Set the social token
      *
-     * @param haloAuthProfile The authorization profile of the user.
+     * @param socialToken The social token of the social provider.
      */
-    void setAuthProfile(@NonNull HaloAuthProfile haloAuthProfile);
+    void setSocialToken(@Nullable String socialToken);
 
     /**
      * Releases all the resources reserved by this provider.

@@ -28,6 +28,7 @@ public class LoginRemoteDatasource {
 
     /**
      * Constructor datasource to login with a social network.
+     *
      * @param clientApi The client api.
      */
     public LoginRemoteDatasource(@NonNull HaloNetworkApi clientApi) {
@@ -38,14 +39,13 @@ public class LoginRemoteDatasource {
      * Fetches the user identity
      *
      * @param socialApiName The social name.
-     * @param socialToken The social network token.
-     * @param alias The device alias.
-     * @throws HaloNetException Networking exception.
+     * @param socialToken   The social network token.
+     * @param alias         The device alias.
      * @return The user identity as IdentifiedUser
+     * @throws HaloNetException Networking exception.
      */
     @NonNull
-    public IdentifiedUser loginSocial( @NonNull String socialApiName, @NonNull String socialToken, @NonNull String alias) throws HaloNetException {
-
+    public IdentifiedUser loginSocial(@NonNull String socialApiName, @NonNull String socialToken, @NonNull String alias) throws HaloNetException {
         return HaloRequest.builder(mClientApi)
                 .url(HaloNetworkConstants.HALO_ENDPOINT_ID, URL_LOGIN)
                 .method(HaloRequestMethod.POST)
@@ -62,18 +62,17 @@ public class LoginRemoteDatasource {
      *
      * @param username The user email.
      * @param password The password.
-     * @param alias The device alias.
-     * @throws HaloNetException Networking exception.
+     * @param alias    The device alias.
      * @return The user identity as IdentifiedUser
+     * @throws HaloNetException Networking exception.
      */
     @NonNull
-    public IdentifiedUser login(String username, String password, @NonNull String alias) throws HaloNetException {
-
+    public IdentifiedUser loginHalo(String username, String password, @NonNull String alias) throws HaloNetException {
         return HaloRequest.builder(mClientApi)
                 .url(HaloNetworkConstants.HALO_ENDPOINT_ID, URL_LOGIN)
                 .method(HaloRequestMethod.POST)
                 .body(HaloBodyFactory.formBody()
-                        .add("network","halo")
+                        .add("network", "halo")
                         .add("email", username)
                         .add("password", password)
                         .add("deviceId", alias)

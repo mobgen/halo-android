@@ -1,6 +1,5 @@
 package com.mobgen.halo.android.sdk.core.management.device;
 
-import android.support.annotation.Keep;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -9,6 +8,7 @@ import com.mobgen.halo.android.framework.common.helpers.logger.Halog;
 import com.mobgen.halo.android.framework.common.utils.AssertionUtils;
 import com.mobgen.halo.android.framework.network.client.response.Parser;
 import com.mobgen.halo.android.framework.network.exceptions.HaloNetException;
+import com.mobgen.halo.android.framework.network.exceptions.HaloNotFoundException;
 import com.mobgen.halo.android.sdk.core.management.models.Device;
 import com.mobgen.halo.android.sdk.core.management.segmentation.HaloSegmentationTag;
 
@@ -17,7 +17,6 @@ import java.util.List;
 /**
  * The device repository that interacts with all the device elements.
  */
-@Keep
 public class DeviceRepository {
 
     /**
@@ -65,7 +64,14 @@ public class DeviceRepository {
         AssertionUtils.notNull(tags, "tags");
         mCachedDevice = getCachedDevice();
         if (!mCachedDevice.isAnonymous()) {
-            mCachedDevice = mDeviceRemoteDatasource.getDevice(mCachedDevice);
+            try {
+                mCachedDevice = mDeviceRemoteDatasource.getDevice(mCachedDevice);
+            }catch (HaloNotFoundException e) {
+                Halog.w(getClass(), "There is a cached device that is not present in the server. Creating a new one");
+                Halog.e(getClass(), "Creating new device", e);
+                clearCachedDevice();
+                return syncDevice(tags);
+            }
         }
         mCachedDevice.addTags(tags);
         return sendDevice();
@@ -80,7 +86,15 @@ public class DeviceRepository {
      */
     @NonNull
     public synchronized Device sendDevice() throws HaloParsingException, HaloNetException {
-        mCachedDevice = mDeviceRemoteDatasource.updateDevice(mCachedDevice);
+        mCachedDevice = getCachedDevice();
+        try {
+            mCachedDevice = mDeviceRemoteDatasource.updateDevice(mCachedDevice);
+        }catch (HaloNotFoundException e){
+            Halog.w(getClass(), "There is a cached device that is not present in the server. Creating a new one");
+            Halog.e(getClass(), "Making the device anonymous", e);
+            mCachedDevice.makeAnonymous();
+            return sendDevice();
+        }
         mDeviceLocalDatasource.cacheDevice(Device.serialize(mCachedDevice, mParser));
         return mCachedDevice;
     }
@@ -116,7 +130,7 @@ public class DeviceRepository {
      */
     public synchronized boolean pushNotificationToken(@Nullable String notificationToken) {
         mCachedDevice = getCachedDevice();
-        boolean changed = mCachedDevice.getNotificationsToken() == null ? notificationToken == null : mCachedDevice.getNotificationsToken().equals(notificationToken);
+        boolean changed = mCachedDevice.getNotificationsToken() == null ? notificationToken != null : !mCachedDevice.getNotificationsToken().equals(notificationToken);
         mCachedDevice.setNotificationsToken(notificationToken);
         return changed;
     }
@@ -171,5 +185,13 @@ public class DeviceRepository {
             resultingDevice = new Device();
         }
         return resultingDevice;
+    }
+
+    /**
+     * Clears the cached device.
+     */
+    private void clearCachedDevice(){
+        mCachedDevice = null;
+        mDeviceLocalDatasource.clearCurrentDevice();
     }
 }

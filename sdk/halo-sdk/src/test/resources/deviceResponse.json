@@ -2,8 +2,8 @@
   "appId": 2,
   "devices": [
     {
-      "platform": "ios",
-      "token": "c123"
+      "platform": "android",
+      "token": "mytoken"
     }
   ],
   "tags": [

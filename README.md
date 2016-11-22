@@ -1,10 +1,22 @@
-# HALO Android
+![mobgen_logo_top_black.png](./docs/halo_readme.png)
+
+# HALO Android SDK
 ------------------
+![Build Status](https://supermercado.mobgen.com:8443/plugins/servlet/wittified/build-status/HALO-AS2)
+
 ![Android >= 4.0.3](https://img.shields.io/badge/Android-%3E=%204.0.3-blue.svg)
 ![Gradle](https://img.shields.io/badge/Gradle-compatible-brightgreen.svg)
+
 [![Download](https://api.bintray.com/packages/halo-mobgen/maven/HALO/images/download.svg) ](https://bintray.com/halo-mobgen/maven/HALO/_latestVersion)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.mobgen.halo.android/halo-sdk/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.mobgen.halo.android/halo-sdk/badge.svg)
-![Build Status](https://supermercado.mobgen.com:8443/plugins/servlet/wittified/build-status/HALO-AS2)
+
+## What is HALO? ##
+HALO is an MBaaS (Mobile Backend as a Service) that was developed to increase developer productivity and decrease an application's time-to-market by creating a highly modular CMS. A native development team will be able to hook up with HALO in a matter of minutes via the SDK which uses an open API.
+
+To find out the documentation please enter the [documentation page](mobgen.github.io/halo-android).
+
+## Contributing ##
+To contribute to this repository please follow the rule specs you can find in our [documentation](https://mobgen.github.io/halo-documenation/android_contributions.html).
 
 ## Publish a new release ##
 Make sure you have setup the correct environment variables in your machine for the bintray username, the
@@ -24,7 +36,7 @@ To publish a release you have to execute the following commands:
 ```
 Make sure to update the version of the plugin or/and the sdk in the gradle.properties file to publish the correct version before uploading.
 
-# LICENSE #
+## LICENSE ##
 ---------------
 ```
 Copyright 2016 MOBGEN

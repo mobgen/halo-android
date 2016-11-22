@@ -24,10 +24,24 @@ android {
         debug {
             minifyEnabled false
         }
-        /*release {
+        release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }*/
+        }
+    }
+
+    testOptions {
+        unitTests.all {
+            jvmArgs '-noverify'
+            jacoco {
+                includeNoLocationClasses = true
+            }
+            setIgnoreFailures(rootProject.ext.ignoreTestFailures)
+        }
+    }
+
+    lintOptions {
+        disable 'InvalidPackage' //For okio https://github.com/square/okio/issues/58
     }
 }
 
@@ -37,6 +51,7 @@ dependencies {
     provided "com.facebook.android:facebook-android-sdk:4.13.1"
     apt "com.bluelinelabs:logansquare-compiler:${rootProject.ext.loganSquareVersion}"
 
+    //Testing dependencies
     testApt "com.bluelinelabs:logansquare-compiler:${rootProject.ext.loganSquareVersion}"
     testCompile "com.mobgen.halo.android:halo-testing:${rootProject.ext.haloVersion}"
 }
@@ -84,5 +99,14 @@ grill {
     }
     coverage {
         excludes(['**/*$JsonObjectMapper*.*'])
+    }
+    codeQuality {
+        host "${rootProject.ext.sonarHost}"
+        projectKey "halo:social"
+        projectName "Halo Social SDK"
+        projectVersion "${rootProject.ext.sonarVersion}"
+        dbHost "${rootProject.ext.sonarDbHost}"
+        dbUser "${rootProject.ext.sonarUser}"
+        dbPassword "${rootProject.ext.sonarPassword}"
     }
 }

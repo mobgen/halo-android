@@ -202,6 +202,7 @@ public class HaloGoogleSignInActivity extends FragmentActivity implements Google
 
     /**
      * Finishes this activity and emits the event provided.
+     *
      * @param event The event to emit.
      */
     private void finishAndEmit(@NonNull Event event) {

@@ -3,5 +3,5 @@
     android:accountType="halo.account.manager"
     android:icon="@drawable/myicon"
     android:smallIcon="@drawable/myicon"
-    android:label="Halo Social APIß"
+    android:label="Halo Social API"
     />

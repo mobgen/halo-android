@@ -1,3 +1,4 @@
+-keepattributes Exceptions
 -keepparameternames
 -keepattributes EnclosingMethod
 

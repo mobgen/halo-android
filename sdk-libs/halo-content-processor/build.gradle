@@ -9,7 +9,7 @@ jacoco {
 
 dependencies {
     compile "com.mobgen.halo.android:halo-sdk:${rootProject.ext.haloVersion}"
-    compile "com.mobgen.halo.android:halo-content:${rootProject.ext.haloVersion}"
+    //compile "com.mobgen.halo.android:halo-content:${rootProject.ext.haloVersion}"
     compile "com.squareup:javapoet:${rootProject.ext.javapoetVersion}"
     compile "com.google.auto.service:auto-service:${rootProject.ext.autoServiceVersion}"
 }
@@ -19,7 +19,7 @@ dependencies {
  */
 group = "${rootProject.ext.haloGroup}"
 version = "${rootProject.ext.haloVersion}"
-
+/*
 task sourcesJar(type: Jar) {
     from sourceSets.main.java.srcDirs
     classifier = 'sources'
@@ -55,16 +55,16 @@ grill {
     documentation {
         templateDir "/../docs/template"
     }
-    coverage {
-        excludes(['**/*$JsonObjectMapper*.*'])
-    }
-    codeQuality {
-        host "${rootProject.ext.sonarHost}"
-        projectKey "halo:content-processor"
-        projectName "Halo Content Processor"
-        projectVersion "${rootProject.ext.sonarVersion}"
-        dbHost "${rootProject.ext.sonarDbHost}"
-        dbUser "${rootProject.ext.sonarUser}"
-        dbPassword "${rootProject.ext.sonarPassword}"
-    }
-}
+    coverage {*/
+//        excludes(['**/*$JsonObjectMapper*.*'])
+//    }
+//    codeQuality {
+//        host "${rootProject.ext.sonarHost}"
+//        projectKey "halo:content-processor"
+//        projectName "Halo Content Processor"
+//        projectVersion "${rootProject.ext.sonarVersion}"
+//        dbHost "${rootProject.ext.sonarDbHost}"
+//        dbUser "${rootProject.ext.sonarUser}"
+//        dbPassword "${rootProject.ext.sonarPassword}"
+//    }
+//}

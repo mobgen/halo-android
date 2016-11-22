@@ -11,6 +11,7 @@ import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.mobgen.halo.android.framework.common.annotations.Api;
 import com.mobgen.halo.android.framework.common.helpers.builder.IBuilder;
 import com.mobgen.halo.android.framework.common.utils.AssertionUtils;
+import com.mobgen.halo.android.sdk.core.management.models.Token;
 
 /**
  * Identified user with some network
@@ -66,8 +67,8 @@ public class IdentifiedUser implements Parcelable {
      * Builder class for the identified user.
      */
     protected IdentifiedUser(Parcel in) {
-        mHaloUserProfile = in.readParcelable(HaloUserProfile.class.getClassLoader());
         mToken = in.readParcelable(Token.class.getClassLoader());
+        mHaloUserProfile = in.readParcelable(HaloUserProfile.class.getClassLoader());
     }
 
     /**
@@ -77,7 +78,7 @@ public class IdentifiedUser implements Parcelable {
      * @param haloUserProfile The user.
      * @return The builder created.
      */
-    @Api(2.0)
+    @Api(2.1)
     public IdentifiedUser(@NonNull Token token,@NonNull HaloUserProfile haloUserProfile) {
         mToken=token;
         mHaloUserProfile = haloUserProfile;
@@ -88,7 +89,7 @@ public class IdentifiedUser implements Parcelable {
      *
      * @return The user profile.
      */
-    @Api(2.0)
+    @Api(2.1)
     @NonNull
     public HaloUserProfile getUser() {
         return mHaloUserProfile;
@@ -99,7 +100,7 @@ public class IdentifiedUser implements Parcelable {
      *
      * @return The token.
      */
-    @Api(2.0)
+    @Api(2.1)
     @Nullable
     public Token getToken() {
         return mToken;
@@ -112,7 +113,7 @@ public class IdentifiedUser implements Parcelable {
      * @param haloUserProfile The user.
      * @return The builder created.
      */
-    @Api(2.0)
+    @Api(2.1)
     @NonNull
     public static Builder builder(@NonNull Token token,@NonNull HaloUserProfile haloUserProfile) {
         return new Builder(token, haloUserProfile);

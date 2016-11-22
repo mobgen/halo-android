@@ -11,8 +11,7 @@ import com.mobgen.halo.android.framework.common.annotations.Api;
 
 
 /**
- *  Authorization profile
- *
+ * Authorization profile
  */
 @Keep
 @JsonObject
@@ -22,29 +21,34 @@ public class HaloAuthProfile implements Parcelable {
      * The email.
      */
     @Nullable
-    @JsonField(name= "email")
+    @JsonField(name = "email")
     String mEmail;
     /**
      * The password.
      */
     @Nullable
-    @JsonField(name= "password")
+    @JsonField(name = "password")
     String mPassword;
     /**
      * The device alias.
      */
     @Nullable
-    @JsonField(name= "deviceId")
+    @JsonField(name = "deviceId")
     String mAlias;
 
-
-    public HaloAuthProfile(){}
+    /**
+     * Parsing empty constructor.
+     */
+    protected HaloAuthProfile() {
+        //Empty constructor for parsing
+    }
 
     public static final Creator<HaloAuthProfile> CREATOR = new Creator<HaloAuthProfile>() {
         @Override
         public HaloAuthProfile createFromParcel(Parcel source) {
             return new HaloAuthProfile(source);
         }
+
         @Override
         public HaloAuthProfile[] newArray(int size) {
             return new HaloAuthProfile[size];
@@ -53,7 +57,14 @@ public class HaloAuthProfile implements Parcelable {
 
     /**
      * The auth profile
-     *
+     */
+    public HaloAuthProfile(String email, String password) {
+        this.mEmail = email;
+        this.mPassword = password;
+    }
+
+    /**
+     * The auth profile
      */
     public HaloAuthProfile(String email, String password, String alias) {
         this.mEmail = email;
@@ -61,13 +72,12 @@ public class HaloAuthProfile implements Parcelable {
         this.mAlias = alias;
     }
 
-
     /**
      * Provides the email
      *
      * @return The the email.
      */
-    @Api(2.0)
+    @Api(2.1)
     @Nullable
     public String getEmail() {
         return mEmail;
@@ -78,7 +88,7 @@ public class HaloAuthProfile implements Parcelable {
      *
      * @return The the password.
      */
-    @Api(2.0)
+    @Api(2.1)
     @Nullable
     public String getPassword() {
         return mPassword;
@@ -89,10 +99,21 @@ public class HaloAuthProfile implements Parcelable {
      *
      * @return The the alias.
      */
-    @Api(2.0)
+    @Api(2.1)
     @Nullable
     public String getAlias() {
         return mAlias;
+    }
+
+    /**
+     * Set the alias of the device
+     *
+     * @return The the alias.
+     */
+    @Api(2.1)
+    @Nullable
+    public String setAlias(String alias) {
+        return mAlias = alias;
     }
 
 
@@ -104,7 +125,7 @@ public class HaloAuthProfile implements Parcelable {
     protected HaloAuthProfile(Parcel in) {
         this.mEmail = in.readString();
         this.mPassword = in.readString();
-        this.mAlias =  in.readString();
+        this.mAlias = in.readString();
     }
 
 

@@ -46,12 +46,19 @@ android {
 }
 
 dependencies {
+    compile files('libs/processor.jar')
     compile "com.mobgen.halo.android:halo-sdk:${rootProject.ext.haloVersion}"
     apt "com.bluelinelabs:logansquare-compiler:${rootProject.ext.loganSquareVersion}"
 
     testApt "com.bluelinelabs:logansquare-compiler:${rootProject.ext.loganSquareVersion}"
     testCompile "com.mobgen.halo.android:halo-testing:${rootProject.ext.haloVersion}"
 }
+
+task processorTask(type: Exec) {
+    commandLine 'cp', '../processor/build/libs/processor.jar', 'libs/'
+}
+processorTask.dependsOn(":halo-content:preBuild")
+//preBuild.dependsOn(processorTask)
 
 /**
  * Distribution

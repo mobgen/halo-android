@@ -1,0 +1,17 @@
+{
+  "user": {
+    "id": "identified-civ7vppyr1fee0isfzjlkbsk5",
+    "email": "account@mobgen.com",
+    "photoUrl": "",
+    "name": "username",
+    "surname": "surname",
+    "displayName": "username surname"
+  },
+  "token": {
+    "scope": "app",
+    "expires_in": 1478875644666,
+    "access_token": "9aCH1pgfgnonimCE7pUxIPOecjw7k7kqvi67PyIG",
+    "refresh_token": "54kBFdhtSQhccyRp6ppZ2CpnCDTJfypWEDMaK5Ot",
+    "token_type": "Bearer"
+  }
+}

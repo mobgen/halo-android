@@ -18,9 +18,9 @@ import com.mobgen.halo.android.framework.network.sessions.HaloSessionManager;
 import com.mobgen.halo.android.sdk.BuildConfig;
 import com.mobgen.halo.android.sdk.R;
 import com.mobgen.halo.android.sdk.core.management.HaloManagerApi;
+import com.mobgen.halo.android.sdk.core.management.authentication.AuthenticationRecover;
 import com.mobgen.halo.android.sdk.core.management.authentication.HaloAuthenticator;
 import com.mobgen.halo.android.sdk.core.management.models.Credentials;
-import com.mobgen.halo.android.sdk.core.management.models.Device;
 import com.mobgen.halo.android.sdk.core.management.models.HaloServerVersion;
 import com.mobgen.halo.android.sdk.core.management.segmentation.HaloSegmentationTag;
 import com.mobgen.halo.android.sdk.core.management.segmentation.TagCollector;
@@ -234,6 +234,30 @@ public class HaloCore {
     }
 
     /**
+     * Set the halo authentication recover.
+     *
+     * @param authenticationRecover The Auth Recover
+     */
+    @Keep
+    @Api(2.1)
+    public void haloAuthRecover(@NonNull AuthenticationRecover authenticationRecover) {
+        AssertionUtils.notNull(authenticationRecover, "authenticationRecover");
+        mAuthenticator.setAuthenticationRecover(authenticationRecover);
+    }
+
+    /**
+     * Get the halo authentication recover.
+     *
+     * @return AuthenticationRecover The Auth Recover
+     */
+    @Nullable
+    @Keep
+    @Api(2.1)
+    public AuthenticationRecover haloAuthRecover() {
+        return mAuthenticator.getAuthenticationRecover();
+    }
+
+    /**
      * Provides the current framework instance.
      *
      * @return The framework instance.
@@ -335,9 +359,10 @@ public class HaloCore {
 
     /**
      * Prints the server version invalid message.
+     *
      * @param version The version.
      */
-    private void printVersionInvalidMessage(@NonNull HaloServerVersion version){
+    private void printVersionInvalidMessage(@NonNull HaloServerVersion version) {
         String versionMessage = "The version of the Halo SDK you are using is outdated. Please update to ensure there are no breaking changes. " +
                 "Minimum version:" + version.getHaloVersion() +
                 ". Version changelog: " + version.getChangeLogUrl();
