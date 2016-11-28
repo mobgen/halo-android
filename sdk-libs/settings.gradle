@@ -1,3 +1,4 @@
+include ':halo-content-annotations'
 include ":halo-content-processor"
 include ":halo-content"
 include ":halo-notifications"

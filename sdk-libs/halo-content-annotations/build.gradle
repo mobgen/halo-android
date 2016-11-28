@@ -4,17 +4,9 @@ apply plugin: 'jacoco'
 sourceCompatibility = JavaVersion.VERSION_1_7
 targetCompatibility = JavaVersion.VERSION_1_7
 
-//Known issue in jacoco: https://github.com/robolectric/robolectric/issues/2230
-jacoco {
-    toolVersion = "${rootProject.ext.jacocoVersion}"
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
 }
-
-dependencies{
-    compile "com.squareup:javapoet:${rootProject.ext.javapoetVersion}"
-    compile "com.google.auto.service:auto-service:${rootProject.ext.autoServiceVersion}"
-    compile project(path: ':halo-content-annotations')
-}
-
 /**
  * Distribution
  */
@@ -38,8 +30,8 @@ task javadocJar(type: Jar) {
 
 grill {
     distribute {
-        libName 'HALO Content processor'
-        libDescription 'Processor to generate compile time information that allows us to perform queries on sync'
+        libName 'HALO Content annotations'
+        libDescription 'Annotations to generate the code'
         libDevId "halo-mobgen"
         libDevName "MOBGEN"
         libDevEmail "halo@mobgen.com"
@@ -62,8 +54,8 @@ grill {
     }
     codeQuality {
         host "${rootProject.ext.sonarHost}"
-        projectKey "halo:content-processor"
-        projectName "Halo Content Processor"
+        projectKey "halo:content-annotations"
+        projectName "Halo Content Annotations"
         projectVersion "${rootProject.ext.sonarVersion}"
         dbHost "${rootProject.ext.sonarDbHost}"
         dbUser "${rootProject.ext.sonarUser}"

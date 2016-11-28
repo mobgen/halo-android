@@ -6,6 +6,7 @@ import android.support.annotation.Keep;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.mobgen.halo.android.content.annotations.HaloTable;
 import com.mobgen.halo.android.framework.common.annotations.Api;
 import com.mobgen.halo.android.framework.toolbox.threading.Threading;
 import com.mobgen.halo.android.sdk.core.management.segmentation.HaloLocale;
@@ -14,6 +15,7 @@ import com.mobgen.halo.android.sdk.core.management.segmentation.HaloLocale;
  * Synchronization options for the sync web services.
  */
 @Keep
+@HaloTable(name="customName",query="select * from table")
 public class SyncQuery implements Parcelable {
 
     /**

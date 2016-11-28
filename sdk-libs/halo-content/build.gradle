@@ -3,7 +3,6 @@ apply plugin: 'com.neenbedankt.android-apt'
 apply plugin: 'com.getkeepsafe.dexcount'
 apply plugin: 'grill'
 apply plugin: 'jacoco'
-
 //Known issue in jacoco: https://github.com/robolectric/robolectric/issues/2230
 jacoco {
     toolVersion = "${rootProject.ext.jacocoVersion}"
@@ -46,7 +45,8 @@ android {
 }
 
 dependencies {
-    compile files('libs/processor.jar')
+    provided project(':halo-content-annotations')
+    apt project(':halo-content-processor')
     compile "com.mobgen.halo.android:halo-sdk:${rootProject.ext.haloVersion}"
     apt "com.bluelinelabs:logansquare-compiler:${rootProject.ext.loganSquareVersion}"
 
@@ -54,11 +54,22 @@ dependencies {
     testCompile "com.mobgen.halo.android:halo-testing:${rootProject.ext.haloVersion}"
 }
 
-task processorTask(type: Exec) {
-    commandLine 'cp', '../processor/build/libs/processor.jar', 'libs/'
+/*
+//run on halo content not neccesary
+task copyTask(type: Copy) {
+    from "../halo-content-processor/build/libs/halo-content-processor-${rootProject.ext.haloVersion}.jar"
+    into "../halo-content/libs/"
 }
-processorTask.dependsOn(":halo-content:preBuild")
-//preBuild.dependsOn(processorTask)
+copyTask.dependsOn(":halo-content-processor:build")
+preBuild.dependsOn(copyTask)
+
+task copyTaskAnnotations(type: Copy) {
+    from "../halo-content-annotations/build/libs/halo-content-annotations-${rootProject.ext.haloVersion}.jar"
+    into "../halo-content/libs/"
+}
+copyTaskAnnotations.dependsOn(":halo-content-annotations:build")
+preBuild.dependsOn(copyTaskAnnotations)*/
+
 
 /**
  * Distribution
