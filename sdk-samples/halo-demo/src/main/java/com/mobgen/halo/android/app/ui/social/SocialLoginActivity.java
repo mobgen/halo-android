@@ -43,7 +43,10 @@ public class SocialLoginActivity extends MobgenHaloActivity implements View.OnCl
      * Halo sign in.
      */
     private Button mSignInWithHalo;
-
+    /**
+     * Token information button
+     */
+    private Button mTokenInformation;
     /**
      * Google sign in.
      */
@@ -73,6 +76,7 @@ public class SocialLoginActivity extends MobgenHaloActivity implements View.OnCl
         mSignInWithFacebook = (Button) findViewById(R.id.facebook_sign_in);
         mSignInWithHalo = (Button) findViewById(R.id.halo_sign_in);
         mLoginWithHalo = (Button) findViewById(R.id.halo_login);
+        mTokenInformation = (Button) findViewById(R.id.halo_token_information);
     }
 
     @Override
@@ -82,6 +86,7 @@ public class SocialLoginActivity extends MobgenHaloActivity implements View.OnCl
         mSignInWithFacebook.setOnClickListener(this);
         mLoginWithHalo.setOnClickListener(this);
         mSignInWithHalo.setOnClickListener(this);
+        mTokenInformation.setOnClickListener(this);
     }
 
     @Override
@@ -108,6 +113,9 @@ public class SocialLoginActivity extends MobgenHaloActivity implements View.OnCl
             mContext.startActivity(intent);
         } else if (v.getId() == R.id.halo_sign_in) {
             Intent intent = new Intent(mContext, SocialHaloSignIn.class);
+            mContext.startActivity(intent);
+        } else if (v.getId() == R.id.halo_token_information) {
+            Intent intent = new Intent(mContext, SocialTokenInformation.class);
             mContext.startActivity(intent);
         }
     }

@@ -123,6 +123,8 @@
     <string name="facebook_social_login">Facebook social login</string>
     <string name="halo_social_login">Halo login</string>
     <string name="halo_social_signin">Halo sign in</string>
+    <string name="halo_social_token">Token information</string>
+    <string name="token_information">View token info</string>
     <string name="error_provider_not_available">Social provider not avaliable</string>
     <string name="login_with_facebook">Login with facebook</string>
     <string name="login_with_halo">Login with halo</string>
@@ -131,4 +133,11 @@
     <string name="hint_surname">Surname</string>
     <string name="hint_email">Email</string>
     <string name="hint_password">Password</string>
+
+    <!-- Social token-->
+    <string name="social_halo_token_title">Token information</string>
+    <string name="social_halo_token_empty">Empty</string>
+    <string name="social_halo_token">Socail Halo Token</string>
+    <string name="social_google_token">Social Google Token</string>
+    <string name="social_facebook_token">Social Facebook Token</string>
 </resources>
