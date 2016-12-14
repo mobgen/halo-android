@@ -164,13 +164,16 @@ public class AccountManagerHelper {
      */
     @Nullable
     public Account recoverAccount() {
-        if (ActivityCompat.checkSelfPermission(Halo.instance().context(), Manifest.permission.GET_ACCOUNTS) != PackageManager.PERMISSION_GRANTED) {
+        try {
             List<Account> accounts = Arrays.asList(mAccountManager.getAccountsByType(mAccountType));
             if (accounts.size() > 0) {
                 return accounts.get(0);
+            } else {
+                return null;
             }
+        }  catch (SecurityException securityException){
+            return null;
         }
-        return null;
     }
 
     /**
@@ -214,11 +217,12 @@ public class AccountManagerHelper {
      */
     private boolean checkAccountExist(@NonNull Account account) {
         AssertionUtils.notNull(account, "account");
-        if (ActivityCompat.checkSelfPermission(Halo.instance().context(), Manifest.permission.GET_ACCOUNTS) != PackageManager.PERMISSION_GRANTED) {
+        try {
             List<Account> accountList = Arrays.asList(mAccountManager.getAccountsByType(mAccountType));
             return accountList.contains(account);
+        } catch(SecurityException securityException){
+            return false;
         }
-        return false;
     }
 
     /**
@@ -230,7 +234,7 @@ public class AccountManagerHelper {
     @NonNull
     private void deleteOtherAccounts(@NonNull Account account) {
         AssertionUtils.notNull(account, "account");
-        if (ActivityCompat.checkSelfPermission(Halo.instance().context(), Manifest.permission.GET_ACCOUNTS) != PackageManager.PERMISSION_GRANTED) {
+        try {
             List<Account> accountList = Arrays.asList(mAccountManager.getAccountsByType(mAccountType));
             for (int i = 0; i < accountList.size(); i++) {
                 if (accountList.get(i).name != account.name) {
@@ -241,6 +245,6 @@ public class AccountManagerHelper {
                     }
                 }
             }
-        }
+        } catch(SecurityException securityException){}
     }
 }
