@@ -54,23 +54,6 @@ dependencies {
     testCompile "com.mobgen.halo.android:halo-testing:${rootProject.ext.haloVersion}"
 }
 
-/*
-//run on halo content not neccesary
-task copyTask(type: Copy) {
-    from "../halo-content-processor/build/libs/halo-content-processor-${rootProject.ext.haloVersion}.jar"
-    into "../halo-content/libs/"
-}
-copyTask.dependsOn(":halo-content-processor:build")
-preBuild.dependsOn(copyTask)
-
-task copyTaskAnnotations(type: Copy) {
-    from "../halo-content-annotations/build/libs/halo-content-annotations-${rootProject.ext.haloVersion}.jar"
-    into "../halo-content/libs/"
-}
-copyTaskAnnotations.dependsOn(":halo-content-annotations:build")
-preBuild.dependsOn(copyTaskAnnotations)*/
-
-
 /**
  * Distribution
  */
