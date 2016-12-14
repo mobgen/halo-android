@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+
+    <LinearLayout
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/default_padding_small">
+
+            <com.mobgen.halo.android.app.ui.views.HaloTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_size_big"
+                android:layout_gravity="center_vertical"
+                android:text="@string/social_halo_token" />
+
+            <TextView
+                android:id="@+id/tv_sht"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_size_small"
+                android:textIsSelectable="true"
+                android:selectAllOnFocus="true"
+                android:textColor="@color/medium_gray"
+                android:text="@string/social_halo_token_empty"
+                tools:text="@string/social_halo_token_empty" />
+        </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/list_line_divider"
+            android:background="@color/black" />
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/default_padding_small">
+
+            <com.mobgen.halo.android.app.ui.views.HaloTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_size_big"
+                android:layout_gravity="center_vertical"
+                android:text="@string/social_google_token" />
+
+            <TextView
+                android:id="@+id/tv_sgt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_size_small"
+                android:textIsSelectable="true"
+                android:selectAllOnFocus="true"
+                android:textColor="@color/medium_gray"
+                android:text="@string/social_halo_token_empty"
+                tools:text="@string/social_halo_token_empty" />
+        </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/list_line_divider"
+            android:background="@color/black" />
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/default_padding_small">
+
+            <com.mobgen.halo.android.app.ui.views.HaloTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_size_big"
+                android:layout_gravity="center_vertical"
+                android:text="@string/social_facebook_token" />
+
+            <TextView
+                android:id="@+id/tv_sft"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_size_small"
+                android:textIsSelectable="true"
+                android:selectAllOnFocus="true"
+                android:textColor="@color/medium_gray"
+                android:text="@string/social_halo_token_empty"
+                tools:text="@string/social_halo_token_empty" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>
