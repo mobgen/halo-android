@@ -14,13 +14,13 @@ import com.mobgen.halo.android.app.module.ConfigurationModule;
 import com.mobgen.halo.android.app.notifications.DeeplinkDecorator;
 import com.mobgen.halo.android.app.notifications.SilentNotificationDispatcher;
 import com.mobgen.halo.android.app.ui.settings.SettingsActivity;
+import com.mobgen.halo.android.auth.HaloAuthApi;
 import com.mobgen.halo.android.framework.common.helpers.subscription.ISubscription;
 import com.mobgen.halo.android.notifications.HaloNotificationsApi;
 import com.mobgen.halo.android.sdk.api.Halo;
 import com.mobgen.halo.android.sdk.api.HaloApplication;
 import com.mobgen.halo.android.sdk.core.internal.storage.HaloManagerContract;
 import com.mobgen.halo.android.sdk.core.management.segmentation.HaloLocale;
-import com.mobgen.halo.android.social.HaloSocialApi;
 import com.mobgen.halo.android.translations.HaloTranslationsApi;
 import com.squareup.leakcanary.LeakCanary;
 
@@ -74,7 +74,7 @@ public class MobgenHaloApplication extends HaloApplication {
     /**
      * Social api.
      */
-    private static HaloSocialApi mSocialApi;
+    private static HaloAuthApi mAuthApi;
 
     private static ISubscription mSilentHaloNotificationListener;
 
@@ -184,12 +184,12 @@ public class MobgenHaloApplication extends HaloApplication {
                 .build();
         mTranslationsApi.load();
         //social
-        if (mSocialApi != null) {
-            mSocialApi.release();
-            mSocialApi = null;
+        if (mAuthApi != null) {
+            mAuthApi.release();
+            mAuthApi = null;
         }
-        mSocialApi = HaloSocialApi.with(halo)
-                .recoveryPolicy(HaloSocialApi.RECOVERY_ALWAYS)
+        mAuthApi = HaloAuthApi.with(halo)
+                .recoveryPolicy(HaloAuthApi.RECOVERY_ALWAYS)
                 .storeCredentials("halo.account.demoapp")
                 .withHalo()
                 .withFacebook()
@@ -212,7 +212,7 @@ public class MobgenHaloApplication extends HaloApplication {
         return mTranslationsApi;
     }
 
-    public static HaloSocialApi getHaloSocialApi() {
-        return mSocialApi;
+    public static HaloAuthApi getHaloSocialApi() {
+        return mAuthApi;
     }
 }

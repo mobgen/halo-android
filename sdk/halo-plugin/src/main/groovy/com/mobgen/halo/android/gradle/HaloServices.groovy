@@ -1,7 +1,5 @@
 package com.mobgen.halo.android.gradle
 
-import com.google.gms.googleservices.GoogleServicesPlugin
-import com.neenbedankt.gradle.androidapt.AndroidAptPlugin
 import org.gradle.api.Project
 import org.gradle.util.ConfigureUtil
 
@@ -15,7 +13,7 @@ public class HaloServices {
     boolean translationsEnabled
     boolean contentEnabled
     boolean presenterEnabled
-    HaloSocial social
+    HaloAuth auth
 
     /**
      * Enables the analytics services.
@@ -50,14 +48,14 @@ public class HaloServices {
     }
 
     /**
-     * The social closure.
+     * The auth closure.
      * @param closure The closure.
      */
-    public void social(Closure closure) {
-        if (social == null) {
-            social = new HaloSocial()
+    public void auth(Closure closure) {
+        if (auth == null) {
+            auth = new HaloAuth()
         }
-        ConfigureUtil.configure(closure, social)
+        ConfigureUtil.configure(closure, auth)
     }
 
     /**
@@ -92,8 +90,8 @@ public class HaloServices {
             project.dependencies.add(dependencyMode, "${HaloPlugin.GROUP_NAME}:halo-notifications:${dependencyVersion}")
         }
 
-        if (social) {
-            social.configureDependencies(project, dependencyMode, dependencyVersion)
+        if (auth) {
+            auth.configureDependencies(project, dependencyMode, dependencyVersion)
         }
 
         if (contentEnabled) {

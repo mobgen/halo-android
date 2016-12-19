@@ -15,9 +15,9 @@ import com.mobgen.halo.android.app.ui.MobgenHaloActivity;
 import com.mobgen.halo.android.app.ui.MobgenHaloApplication;
 import com.mobgen.halo.android.framework.toolbox.data.CallbackV2;
 import com.mobgen.halo.android.framework.toolbox.data.HaloResultV2;
-import com.mobgen.halo.android.social.HaloSocialApi;
-import com.mobgen.halo.android.social.models.HaloAuthProfile;
-import com.mobgen.halo.android.social.models.HaloUserProfile;
+import com.mobgen.halo.android.auth.HaloAuthApi;
+import com.mobgen.halo.android.auth.models.HaloAuthProfile;
+import com.mobgen.halo.android.auth.models.HaloUserProfile;
 
 public class SocialHaloSignIn extends MobgenHaloActivity implements View.OnClickListener {
 
@@ -26,9 +26,9 @@ public class SocialHaloSignIn extends MobgenHaloActivity implements View.OnClick
      */
     private Context mContext;
     /**
-     * The social api instance.
+     * The auth api instance.
      */
-    private HaloSocialApi mSocialApi;
+    private HaloAuthApi mAuthApi;
     /**
      * Halo sign in.
      */
@@ -39,7 +39,7 @@ public class SocialHaloSignIn extends MobgenHaloActivity implements View.OnClick
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_social_halo_sigin);
         mContext = this;
-        mSocialApi = MobgenHaloApplication.getHaloSocialApi();
+        mAuthApi = MobgenHaloApplication.getHaloSocialApi();
         mSignInWithHalo = (Button) findViewById(R.id.halo_sign_in);
     }
 
@@ -68,7 +68,7 @@ public class SocialHaloSignIn extends MobgenHaloActivity implements View.OnClick
 
             HaloAuthProfile authProfile = new HaloAuthProfile(editEmail.getText().toString().trim(), editPassword.getText().toString().trim());
             HaloUserProfile userProfile = new HaloUserProfile(null, displayName, editName.getText().toString().trim(), editSurname.getText().toString().trim(), "http://yogasara.staff.gunadarma.ac.id/photo.jpg", editEmail.getText().toString().trim());
-            mSocialApi.register(authProfile, userProfile)
+            mAuthApi.register(authProfile, userProfile)
                     .execute(new CallbackV2<HaloUserProfile>() {
                         @Override
                         public void onFinish(@NonNull HaloResultV2<HaloUserProfile> result) {

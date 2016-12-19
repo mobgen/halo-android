@@ -1,32 +1,16 @@
 package com.mobgen.halo.android.app.ui.social;
 
-
-import android.Manifest;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.ClipboardManager;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
-import android.text.TextUtils;
-import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mobgen.halo.android.app.R;
 import com.mobgen.halo.android.app.ui.MobgenHaloActivity;
-import com.mobgen.halo.android.app.ui.MobgenHaloApplication;
-import com.mobgen.halo.android.framework.toolbox.data.CallbackV2;
-import com.mobgen.halo.android.framework.toolbox.data.HaloResultV2;
-import com.mobgen.halo.android.social.HaloSocialApi;
-import com.mobgen.halo.android.social.models.HaloAuthProfile;
-import com.mobgen.halo.android.social.models.HaloUserProfile;
 
 import java.util.Arrays;
 import java.util.List;
