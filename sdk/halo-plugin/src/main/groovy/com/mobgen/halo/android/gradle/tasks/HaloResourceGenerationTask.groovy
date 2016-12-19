@@ -54,9 +54,9 @@ public class HaloResourceGenerationTask extends DefaultTask {
             data.put("halo_presenter_enabled", String.valueOf(config.haloServices.presenterEnabled))
             data.put("halo_translations_enabled", String.valueOf(config.haloServices.translationsEnabled))
             data.put("halo_content_enabled", String.valueOf(config.haloServices.contentEnabled))
-            if(config.haloServices.social){
-                data.put("halo_social_google_client", config.haloServices.social.googleClient)
-                data.put("halo_social_facebook_client", config.haloServices.social.facebookClient)
+            if(config.haloServices.auth){
+                data.put("halo_social_google_client", config.haloServices.auth.googleClient)
+                data.put("halo_social_facebook_client", config.haloServices.auth.facebookClient)
             }
         }
     }

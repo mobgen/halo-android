@@ -12,13 +12,14 @@ import android.widget.EditText;
 import com.mobgen.halo.android.app.R;
 import com.mobgen.halo.android.app.ui.MobgenHaloActivity;
 import com.mobgen.halo.android.app.ui.MobgenHaloApplication;
+import com.mobgen.halo.android.auth.HaloAuthApi;
 import com.mobgen.halo.android.framework.common.helpers.logger.Halog;
 import com.mobgen.halo.android.framework.toolbox.data.CallbackV2;
 import com.mobgen.halo.android.framework.toolbox.data.HaloResultV2;
-import com.mobgen.halo.android.social.HaloSocialApi;
-import com.mobgen.halo.android.social.models.HaloAuthProfile;
-import com.mobgen.halo.android.social.models.IdentifiedUser;
-import com.mobgen.halo.android.social.providers.SocialNotAvailableException;
+import com.mobgen.halo.android.auth.HaloAuthApi;
+import com.mobgen.halo.android.auth.models.HaloAuthProfile;
+import com.mobgen.halo.android.auth.models.IdentifiedUser;
+import com.mobgen.halo.android.auth.providers.SocialNotAvailableException;
 
 public class SocialHaloLogin extends MobgenHaloActivity implements View.OnClickListener, CallbackV2<IdentifiedUser> {
 
@@ -27,9 +28,9 @@ public class SocialHaloLogin extends MobgenHaloActivity implements View.OnClickL
      */
     private Context mContext;
     /**
-     * The social api instance.
+     * The auth api instance.
      */
-    private HaloSocialApi mSocialApi;
+    private HaloAuthApi mAuthApi;
     /**
      * Halo sign in.
      */
@@ -40,7 +41,7 @@ public class SocialHaloLogin extends MobgenHaloActivity implements View.OnClickL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_social_halo_login);
         mContext = this;
-        mSocialApi = MobgenHaloApplication.getHaloSocialApi();
+        mAuthApi = MobgenHaloApplication.getHaloSocialApi();
         mLoginWithHalo = (Button) findViewById(R.id.halo_login);
 
     }
@@ -63,7 +64,7 @@ public class SocialHaloLogin extends MobgenHaloActivity implements View.OnClickL
             final EditText editPassword = (EditText) findViewById(R.id.edit_login_password);
             try {
                 final HaloAuthProfile authProfile = new HaloAuthProfile(editEmail.getText().toString().trim(), editPassword.getText().toString().trim());
-                mSocialApi.loginWithHalo(HaloSocialApi.SOCIAL_HALO, authProfile, this);
+                mAuthApi.loginWithHalo(HaloAuthApi.SOCIAL_HALO, authProfile, this);
             } catch (SocialNotAvailableException e) {
                 Snackbar.make(getWindow().getDecorView(), getString(R.string.error_provider_not_available), Snackbar.LENGTH_LONG).show();
             }

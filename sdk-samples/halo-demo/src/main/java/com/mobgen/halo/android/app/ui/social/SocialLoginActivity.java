@@ -16,9 +16,9 @@ import com.mobgen.halo.android.framework.common.helpers.logger.Halog;
 import com.mobgen.halo.android.framework.toolbox.data.CallbackV2;
 import com.mobgen.halo.android.framework.toolbox.data.HaloResultV2;
 import com.mobgen.halo.android.sdk.api.Halo;
-import com.mobgen.halo.android.social.HaloSocialApi;
-import com.mobgen.halo.android.social.models.IdentifiedUser;
-import com.mobgen.halo.android.social.providers.SocialNotAvailableException;
+import com.mobgen.halo.android.auth.HaloAuthApi;
+import com.mobgen.halo.android.auth.models.IdentifiedUser;
+import com.mobgen.halo.android.auth.providers.SocialNotAvailableException;
 
 /**
  * Social login activity to login with different accounts.
@@ -31,9 +31,9 @@ public class SocialLoginActivity extends MobgenHaloActivity implements View.OnCl
     private Context mContext;
 
     /**
-     * The social api instance.
+     * The auth api instance.
      */
-    private HaloSocialApi mSocialApi;
+    private HaloAuthApi mAuthApi;
 
     /**
      * Halo sign in.
@@ -71,7 +71,7 @@ public class SocialLoginActivity extends MobgenHaloActivity implements View.OnCl
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_social_login);
         mContext = this;
-        mSocialApi = MobgenHaloApplication.getHaloSocialApi();
+        mAuthApi = MobgenHaloApplication.getHaloSocialApi();
         mSignInWithGoogle = (SignInButton) findViewById(R.id.google_sign_in);
         mSignInWithFacebook = (Button) findViewById(R.id.facebook_sign_in);
         mSignInWithHalo = (Button) findViewById(R.id.halo_sign_in);
@@ -98,13 +98,13 @@ public class SocialLoginActivity extends MobgenHaloActivity implements View.OnCl
     public void onClick(View v) {
         if (v.getId() == R.id.google_sign_in) {
             try {
-                mSocialApi.loginWithSocial(HaloSocialApi.SOCIAL_GOOGLE_PLUS, this);
+                mAuthApi.loginWithSocial(HaloAuthApi.SOCIAL_GOOGLE_PLUS, this);
             } catch (SocialNotAvailableException e) {
                 Snackbar.make(getWindow().getDecorView(), getString(R.string.error_provider_not_available), Snackbar.LENGTH_LONG).show();
             }
         } else if (v.getId() == R.id.facebook_sign_in) {
             try {
-                mSocialApi.loginWithSocial(HaloSocialApi.SOCIAL_FACEBOOK, this);
+                mAuthApi.loginWithSocial(HaloAuthApi.SOCIAL_FACEBOOK, this);
             } catch (SocialNotAvailableException e) {
                 Snackbar.make(getWindow().getDecorView(), getString(R.string.error_provider_not_available), Snackbar.LENGTH_LONG).show();
             }

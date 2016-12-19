@@ -115,7 +115,7 @@ public class HaloConfiguration {
      * @param project The project.
      */
     public void plugIn(Project project) {
-        if(haloServices && (haloServices.analyticsEnabled || haloServices.notificationsEnabled || haloServices.social)){
+        if(haloServices && (haloServices.analyticsEnabled || haloServices.notificationsEnabled || haloServices.auth)){
             if (!project.plugins.hasPlugin(GoogleServicesPlugin)) {
                 project.apply(plugin: GoogleServicesPlugin)
             }
