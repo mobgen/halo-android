@@ -63,7 +63,7 @@ public class HaloEndpointCluster {
         boolean hasPinning = false;
         for (Map.Entry<String, HaloEndpoint> endpointEntry : mCluster.entrySet()) {
             HaloEndpoint endpoint = endpointEntry.getValue();
-            if (endpoint.getCertificatePinningSHA() != null) {
+            if (endpoint.isSslPinningEnabled()) {
                 certificatePinner.add(endpoint.getEndpoint(), endpoint.getCertificatePinningSHA());
                 hasPinning = true;
             }

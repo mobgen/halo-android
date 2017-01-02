@@ -23,7 +23,12 @@ public class HaloEndpoint {
     /**
      * The certificate for pinning in sha.
      */
-    private final String mCertificatePinningSHA;
+    private final String[] mCertificatePinningSHA;
+
+    /**
+     * Tells if the ssl pinning is enabled.
+     */
+    private boolean mIsPinningEnabled;
 
     /**
      * The current endpoint supporting certificate pinning for HALO.
@@ -33,10 +38,11 @@ public class HaloEndpoint {
      * @param certificatePinningSHA The certificate pinning.
      */
     @Api(2.0)
-    public HaloEndpoint(@NonNull String endpointId, @NonNull String endpoint, @Nullable String certificatePinningSHA) {
+    public HaloEndpoint(@NonNull String endpointId, @NonNull String endpoint, @Nullable String... certificatePinningSHA) {
         mEndpointId = endpointId;
         mEndpoint = endpoint;
         mCertificatePinningSHA = certificatePinningSHA;
+        mIsPinningEnabled = true;
     }
 
     /**
@@ -47,7 +53,7 @@ public class HaloEndpoint {
      */
     @Api(2.0)
     public HaloEndpoint(@NonNull String endpointId, @NonNull String endpoint) {
-        this(endpointId, endpoint, null);
+        this(endpointId, endpoint, new String[]{});
     }
 
     /**
@@ -66,8 +72,8 @@ public class HaloEndpoint {
      * @return The pinning value.
      */
     @Api(2.0)
-    @Nullable
-    public String getCertificatePinningSHA() {
+    @NonNull
+    public String[] getCertificatePinningSHA() {
         return mCertificatePinningSHA;
     }
 
@@ -80,6 +86,22 @@ public class HaloEndpoint {
     @NonNull
     public String getEndpointId() {
         return mEndpointId;
+    }
+
+    /**
+     * True if the ssl pinning is enabled, false otherwise.
+     * @return True if the pinning is enabled. False otherwise.
+     */
+    @Api(2.0)
+    public boolean isSslPinningEnabled(){
+        return mIsPinningEnabled && mCertificatePinningSHA != null && mCertificatePinningSHA.length > 0;
+    }
+
+    /**
+     * Disables the ssl pinning for this endpoint instance.
+     */
+    public void disablePinning() {
+        mIsPinningEnabled = false;
     }
 
     /**
