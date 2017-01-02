@@ -32,16 +32,16 @@ public class DeeplinkDecorator extends HaloNotificationDecorator {
 
     @Override
     public NotificationCompat.Builder decorate(@NonNull NotificationCompat.Builder builder, @NonNull Bundle bundle) {
-        Bundle extras = bundle.getBundle("extra");
+        String extras = bundle.getString("extra");
         if (extras != null) {
-            String moduleId = extras.getString("moduleId");
+            String moduleId = bundle.getString("moduleId");
             if (moduleId != null) {
                 PendingIntent pendingIntent = null;
                 //In case of the news item
                 if (moduleId.equals(NEWS_ID_INT) || moduleId.equals(NEWS_ID_STAGE)) {
-                    pendingIntent = ArticleActivity.getDeeplink(mContext, extras, moduleId);
+                    pendingIntent = ArticleActivity.getDeeplink(mContext, bundle, moduleId);
                 } else if (!moduleId.equals(STORE_LOCATOR_INT) && !moduleId.equals(STORE_LOCATOR_STAGE)) { // It is not the station locator
-                    pendingIntent = GeneralContentItemActivity.getDeeplink(mContext, extras, moduleId);
+                    pendingIntent = GeneralContentItemActivity.getDeeplink(mContext, bundle, moduleId);
                 }
 
                 if (pendingIntent != null) {

@@ -22,6 +22,10 @@ import com.mobgen.halo.android.notifications.decorator.NotificationMessageDecora
 import com.mobgen.halo.android.notifications.decorator.NotificationSoundDecorator;
 import com.mobgen.halo.android.notifications.decorator.NotificationTitleDecorator;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -61,9 +65,40 @@ public class NotificationService extends FirebaseMessagingService {
         Bundle bundle = new Bundle();
 
         for (String key : data.keySet()) {
-            bundle.putString(key, data.get(key));
+            if(!key.equals("extra")) {
+                bundle.putString(key, data.get(key));
+            } else{
+                if(data.get(key)!=null) {
+                    bundle.putString(key, data.get(key));
+                    extraJSONToBundle(bundle, data.get(key));
+                }
+            }
         }
         return bundle;
+    }
+
+    /**
+     *
+     * Parse extra json to bundle.
+     *
+     * @param bundle Bundle
+     * @param extraData String  with json extra data
+     * @throws JSONException
+     */
+    private void extraJSONToBundle(@NonNull Bundle bundle , @NonNull String extraData) {
+        JSONObject jsonObject = null;
+        try{
+            jsonObject = new JSONObject(extraData);
+            if(jsonObject!=null) {
+                Iterator iter = jsonObject.keys();
+                while (iter.hasNext()) {
+                    String key = (String) iter.next();
+                    String value = jsonObject.getString(key);
+                    bundle.putString(key, value);
+                }
+            }
+        } catch (JSONException jsonException){
+        }
     }
 
     @Override

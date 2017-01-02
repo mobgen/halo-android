@@ -43,4 +43,28 @@ public class NotificationInstruments {
         map.put("foo", "bar");
         return map;
     }
+
+    @NonNull
+    public static Map<String, String> withExtraDataJSON() {
+        Map<String, String> map = new HashMap<>();
+        map.put("from", NOTIFICATION_FROM);
+        map.put("extra", "{\"instanceId\":\"58594e203bb27211009ccc58\",\"module\":\"generalcontent\",\"moduleId\":\"000000000000000000000004\"}");
+        return map;
+    }
+
+    @NonNull
+    public static Map<String, String> withExtraData() {
+        Map<String, String> map = new HashMap<>();
+        map.put("from", NOTIFICATION_FROM);
+        map.put("extra", "myextradata");
+        return map;
+    }
+
+    @NonNull
+    public static Map<String, String> withNullExtraData() {
+        Map<String, String> map = new HashMap<>();
+        map.put("from", NOTIFICATION_FROM);
+        map.put("extra", null);
+        return map;
+    }
 }

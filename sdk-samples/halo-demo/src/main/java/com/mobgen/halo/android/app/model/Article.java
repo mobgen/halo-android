@@ -5,6 +5,9 @@ import android.os.Parcelable;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
+import com.mobgen.halo.android.content.annotations.HaloField;
+import com.mobgen.halo.android.content.annotations.HaloQuery;
+import com.mobgen.halo.android.content.annotations.HaloSearchable;
 
 import java.util.Date;
 
@@ -12,11 +15,11 @@ import java.util.Date;
  * Created by javierdepedrolopez on 9/11/15.
  */
 @JsonObject
+@HaloSearchable(version = 10)
 public class Article implements Parcelable {
-
+    @HaloField(index = true)
     @JsonField(name = "Title")
     String mTitle;
-
     @JsonField(name = "Date")
     Date mDate;
 
@@ -44,10 +47,11 @@ public class Article implements Parcelable {
         mImage = image;
     }
 
+    @HaloQuery(name="selectTitle",query="select * HALO_GC_ARTICLE where GC_MTITLE = ?mTitle:String orderBy id DESCENDANT")
     public String getTitle() {
         return mTitle;
     }
-
+    @HaloQuery(name="insertArticle",query="insert into HALO_GC_ARTICLE where GC_MTITLE = ?mTitle:String ")
     public Date getDate() {
         return mDate;
     }

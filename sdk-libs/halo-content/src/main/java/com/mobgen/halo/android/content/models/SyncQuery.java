@@ -6,7 +6,6 @@ import android.support.annotation.Keep;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.mobgen.halo.android.content.annotations.HaloQuery;
 import com.mobgen.halo.android.framework.common.annotations.Api;
 import com.mobgen.halo.android.framework.toolbox.threading.Threading;
 import com.mobgen.halo.android.sdk.core.management.segmentation.HaloLocale;
@@ -77,7 +76,7 @@ public class SyncQuery implements Parcelable {
     @Keep
     @Api(2.0)
     @NonNull
-    @HaloQuery(name="selectAll",query="select * from MY_TABLE where id = ?id:Integer orderBy id DESCENDANT")
+
     public static SyncQuery create(@NonNull String moduleName, @Threading.Policy int threadingMode) {
         return create(moduleName, null, threadingMode);
     }
@@ -94,7 +93,6 @@ public class SyncQuery implements Parcelable {
     @Keep
     @Api(2.0)
     @NonNull
-    @HaloQuery(name="insert",query="insert MY_TABLE where id = ?id:Integer and name = ?name:String orderBy id DESCENDANT")
     public static SyncQuery create(@NonNull String moduleName, @Nullable @HaloLocale.LocaleDefinition String locale, @Threading.Policy int threadingMode) {
         return new SyncQuery(moduleName, locale, threadingMode);
     }
