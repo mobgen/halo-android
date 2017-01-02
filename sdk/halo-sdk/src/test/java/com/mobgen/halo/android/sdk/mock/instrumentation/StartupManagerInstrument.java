@@ -9,14 +9,13 @@ import com.mobgen.halo.android.sdk.core.internal.startup.callbacks.HaloInstallat
 import com.mobgen.halo.android.sdk.core.internal.startup.callbacks.HaloReadyListener;
 import com.mobgen.halo.android.sdk.core.internal.startup.callbacks.ProcessListener;
 import com.mobgen.halo.android.sdk.core.internal.startup.processes.StartupProcess;
-import com.mobgen.halo.android.sdk.core.management.models.HaloServerVersion;
 import com.mobgen.halo.android.testing.CallbackFlag;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
 public class StartupManagerInstrument {
 
-    public static StartupProcess givenAProcess(final CallbackFlag flag){
+    public static StartupProcess givenAProcess(final CallbackFlag flag) {
         return new StartupProcess() {
             @Override
             public int getThreadPolicy() {
@@ -30,7 +29,7 @@ public class StartupManagerInstrument {
         };
     }
 
-    public static ProcessListener givenAProcessListener(final CallbackFlag flag){
+    public static ProcessListener givenAProcessListener(final CallbackFlag flag) {
         return new ProcessListener() {
             @Override
             public void onProcessFinished() {
@@ -43,17 +42,16 @@ public class StartupManagerInstrument {
         return new HaloInstallationListener() {
             @Override
             public void onFinishedInstallation() {
-                if(isEmptyTask){
+                if (isEmptyTask) {
                     assertThat(flag.timesExecuted()).isEqualTo(0);
-                }
-                else {
+                } else {
                     assertThat(flag.timesExecuted()).isGreaterThan(0);
                 }
             }
         };
     }
 
-    public static HaloReadyListener givenAReadyListener(final CallbackFlag flag){
+    public static HaloReadyListener givenAReadyListener(final CallbackFlag flag) {
         return new HaloReadyListener() {
             @Override
             public void onHaloReady() {
@@ -62,7 +60,7 @@ public class StartupManagerInstrument {
         };
     }
 
-    public static HaloReadyListener givenAReadyListenerFlagged(final CallbackFlag flag){
+    public static HaloReadyListener givenAReadyListenerFlagged(final CallbackFlag flag) {
         return new HaloReadyListener() {
             @Override
             public void onHaloReady() {

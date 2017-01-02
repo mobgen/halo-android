@@ -33,7 +33,7 @@ public class CredentialsTest extends HaloRobolectricTest {
     }
 
     @Test
-    public void thatLoginUserType(){
+    public void thatLoginUserType() {
         assertThat(Credentials.createUser("username", "password").getLoginType()).isEqualTo(Credentials.USER_BASED_LOGIN);
     }
 }

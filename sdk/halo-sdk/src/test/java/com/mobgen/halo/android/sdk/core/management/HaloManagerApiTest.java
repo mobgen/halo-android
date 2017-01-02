@@ -5,18 +5,13 @@ import android.support.annotation.NonNull;
 
 import com.mobgen.halo.android.framework.common.exceptions.HaloParsingException;
 import com.mobgen.halo.android.framework.common.helpers.subscription.ISubscription;
-import com.mobgen.halo.android.framework.network.client.response.Parser;
 import com.mobgen.halo.android.framework.toolbox.bus.Event;
 import com.mobgen.halo.android.framework.toolbox.bus.Subscriber;
 import com.mobgen.halo.android.framework.toolbox.data.CallbackV2;
 import com.mobgen.halo.android.framework.toolbox.data.Data;
-import com.mobgen.halo.android.framework.toolbox.data.HaloResultV2;
 import com.mobgen.halo.android.framework.toolbox.threading.Threading;
 import com.mobgen.halo.android.sdk.api.Halo;
-import com.mobgen.halo.android.sdk.core.internal.parser.LoganSquareParserFactory;
 import com.mobgen.halo.android.sdk.core.management.device.DeviceLocalDatasource;
-import com.mobgen.halo.android.sdk.core.management.device.DeviceRemoteDatasource;
-import com.mobgen.halo.android.sdk.core.management.device.DeviceRepository;
 import com.mobgen.halo.android.sdk.core.management.models.Credentials;
 import com.mobgen.halo.android.sdk.core.management.models.Device;
 import com.mobgen.halo.android.sdk.core.management.models.HaloModule;
@@ -28,27 +23,6 @@ import com.mobgen.halo.android.sdk.mock.HaloMock;
 import com.mobgen.halo.android.testing.CallbackFlag;
 import com.mobgen.halo.android.testing.HaloRobolectricTest;
 import com.mobgen.halo.android.testing.MockServer;
-import static com.mobgen.halo.android.sdk.mock.fixtures.ServerFixtures.ADD_SEGMENTATION_TAG;
-import static com.mobgen.halo.android.sdk.mock.fixtures.ServerFixtures.REMOVE_SEGMENTATION_TAG;
-import static com.mobgen.halo.android.sdk.mock.fixtures.ServerFixtures.GET_MODULES;
-import static com.mobgen.halo.android.sdk.mock.fixtures.ServerFixtures.SYNC_DEVICE;
-import static com.mobgen.halo.android.sdk.mock.fixtures.ServerFixtures.GET_DEVICE;
-import static com.mobgen.halo.android.sdk.mock.fixtures.ServerFixtures.TEST_SERVER_VERSION;
-import static com.mobgen.halo.android.sdk.mock.fixtures.ServerFixtures.REQUEST_TOKEN;
-import static com.mobgen.halo.android.sdk.mock.fixtures.ServerFixtures.enqueueServerFile;
-import static com.mobgen.halo.android.sdk.mock.instrumentation.HaloManagerApiInstrument.givenCallbackWithDeviceSegmentationTagAdd;
-import static com.mobgen.halo.android.sdk.mock.instrumentation.HaloManagerApiInstrument.givenCallbackWithDeviceSegmentationTagAddList;
-import static com.mobgen.halo.android.sdk.mock.instrumentation.HaloManagerApiInstrument.givenCallbackWithDeviceSegmentationTagRemoved;
-import static com.mobgen.halo.android.sdk.mock.instrumentation.HaloManagerApiInstrument.givenCallbackWithDeviceSegmentationTagRemovedList;
-import static com.mobgen.halo.android.sdk.mock.instrumentation.HaloManagerApiInstrument.givenCallbackWithGetModules;
-import static com.mobgen.halo.android.sdk.mock.instrumentation.HaloManagerApiInstrument.givenCallbackWithGetModulesAsRaw;
-import static com.mobgen.halo.android.sdk.mock.instrumentation.HaloManagerApiInstrument.givenCallbackWithSyncDevice;
-import static com.mobgen.halo.android.sdk.mock.instrumentation.HaloManagerApiInstrument.givenCallbackWithGetDevice;
-import static com.mobgen.halo.android.sdk.mock.instrumentation.HaloManagerApiInstrument.givenCallbackWithSendDevice;
-import static com.mobgen.halo.android.sdk.mock.instrumentation.HaloManagerApiInstrument.givenCallbackWithGetDeviceAnonymous;
-import static com.mobgen.halo.android.sdk.mock.instrumentation.HaloManagerApiInstrument.givenCallbackServerVersion;
-import static com.mobgen.halo.android.sdk.mock.instrumentation.HaloManagerApiInstrument.givenCallbackWithRequestToken;
-import static com.mobgen.halo.android.sdk.mock.instrumentation.HaloManagerApiInstrument.givenCallbackWithSetNotificationToken;
 
 import org.junit.After;
 import org.junit.Before;
@@ -59,6 +33,27 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.mobgen.halo.android.sdk.mock.fixtures.ServerFixtures.ADD_SEGMENTATION_TAG;
+import static com.mobgen.halo.android.sdk.mock.fixtures.ServerFixtures.GET_DEVICE;
+import static com.mobgen.halo.android.sdk.mock.fixtures.ServerFixtures.GET_MODULES;
+import static com.mobgen.halo.android.sdk.mock.fixtures.ServerFixtures.REMOVE_SEGMENTATION_TAG;
+import static com.mobgen.halo.android.sdk.mock.fixtures.ServerFixtures.REQUEST_TOKEN;
+import static com.mobgen.halo.android.sdk.mock.fixtures.ServerFixtures.SYNC_DEVICE;
+import static com.mobgen.halo.android.sdk.mock.fixtures.ServerFixtures.TEST_SERVER_VERSION;
+import static com.mobgen.halo.android.sdk.mock.fixtures.ServerFixtures.enqueueServerFile;
+import static com.mobgen.halo.android.sdk.mock.instrumentation.HaloManagerApiInstrument.givenCallbackServerVersion;
+import static com.mobgen.halo.android.sdk.mock.instrumentation.HaloManagerApiInstrument.givenCallbackWithDeviceSegmentationTagAdd;
+import static com.mobgen.halo.android.sdk.mock.instrumentation.HaloManagerApiInstrument.givenCallbackWithDeviceSegmentationTagAddList;
+import static com.mobgen.halo.android.sdk.mock.instrumentation.HaloManagerApiInstrument.givenCallbackWithDeviceSegmentationTagRemoved;
+import static com.mobgen.halo.android.sdk.mock.instrumentation.HaloManagerApiInstrument.givenCallbackWithDeviceSegmentationTagRemovedList;
+import static com.mobgen.halo.android.sdk.mock.instrumentation.HaloManagerApiInstrument.givenCallbackWithGetDevice;
+import static com.mobgen.halo.android.sdk.mock.instrumentation.HaloManagerApiInstrument.givenCallbackWithGetDeviceAnonymous;
+import static com.mobgen.halo.android.sdk.mock.instrumentation.HaloManagerApiInstrument.givenCallbackWithGetModules;
+import static com.mobgen.halo.android.sdk.mock.instrumentation.HaloManagerApiInstrument.givenCallbackWithGetModulesAsRaw;
+import static com.mobgen.halo.android.sdk.mock.instrumentation.HaloManagerApiInstrument.givenCallbackWithRequestToken;
+import static com.mobgen.halo.android.sdk.mock.instrumentation.HaloManagerApiInstrument.givenCallbackWithSendDevice;
+import static com.mobgen.halo.android.sdk.mock.instrumentation.HaloManagerApiInstrument.givenCallbackWithSetNotificationToken;
+import static com.mobgen.halo.android.sdk.mock.instrumentation.HaloManagerApiInstrument.givenCallbackWithSyncDevice;
 import static com.mobgen.halo.android.testing.CallbackFlag.newCallbackFlag;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
@@ -78,7 +73,7 @@ public class HaloManagerApiTest extends HaloRobolectricTest {
     }
 
     @After
-    public void tearDown() throws IOException{
+    public void tearDown() throws IOException {
         mHalo.uninstall();
         mMockServer.shutdown();
     }
@@ -86,10 +81,10 @@ public class HaloManagerApiTest extends HaloRobolectricTest {
     @Test
     public void thatAddADeviceTag() throws IOException {
         enqueueServerFile(mMockServer, ADD_SEGMENTATION_TAG);
-        final HaloSegmentationTag mySegmentationTag = new HaloSegmentationTag("myCustomTagYear","1984");
-        CallbackV2<Device> callback = givenCallbackWithDeviceSegmentationTagAdd(mCallbackFlag,mySegmentationTag);
+        final HaloSegmentationTag mySegmentationTag = new HaloSegmentationTag("myCustomTagYear", "1984");
+        CallbackV2<Device> callback = givenCallbackWithDeviceSegmentationTagAdd(mCallbackFlag, mySegmentationTag);
         ICancellable cancellable = mHalo.getCore().manager()
-                .addDeviceTag(mySegmentationTag,true)
+                .addDeviceTag(mySegmentationTag, true)
                 .threadPolicy(Threading.POOL_QUEUE_POLICY)
                 .execute(callback);
         assertThat(mCallbackFlag.isFlagged()).isTrue();
@@ -99,12 +94,12 @@ public class HaloManagerApiTest extends HaloRobolectricTest {
     @Test
     public void thatAddADeviceTagList() throws IOException {
         enqueueServerFile(mMockServer, ADD_SEGMENTATION_TAG);
-        final HaloSegmentationTag mySegmentationTagYear = new HaloSegmentationTag("myCustomTagYear","1984");
-        final HaloSegmentationTag mySegmentationTagMonth = new HaloSegmentationTag("myCustomTagMonth","12");
-        List<HaloSegmentationTag> mySegmentationTagList = new ArrayList<>(Arrays.asList(mySegmentationTagYear,mySegmentationTagMonth));
-        CallbackV2<Device> callback = givenCallbackWithDeviceSegmentationTagAddList(mCallbackFlag,mySegmentationTagList);
+        final HaloSegmentationTag mySegmentationTagYear = new HaloSegmentationTag("myCustomTagYear", "1984");
+        final HaloSegmentationTag mySegmentationTagMonth = new HaloSegmentationTag("myCustomTagMonth", "12");
+        List<HaloSegmentationTag> mySegmentationTagList = new ArrayList<>(Arrays.asList(mySegmentationTagYear, mySegmentationTagMonth));
+        CallbackV2<Device> callback = givenCallbackWithDeviceSegmentationTagAddList(mCallbackFlag, mySegmentationTagList);
         ICancellable cancellable = mHalo.getCore().manager()
-                .addDeviceTags(mySegmentationTagList,true)
+                .addDeviceTags(mySegmentationTagList, true)
                 .threadPolicy(Threading.POOL_QUEUE_POLICY)
                 .execute(callback);
         assertThat(mCallbackFlag.isFlagged()).isTrue();
@@ -114,10 +109,10 @@ public class HaloManagerApiTest extends HaloRobolectricTest {
     @Test
     public void thatRemoveADeviceTag() throws IOException {
         enqueueServerFile(mMockServer, REMOVE_SEGMENTATION_TAG);
-        final HaloSegmentationTag mySegmentationTag = new HaloSegmentationTag("myCustomTagYear","1984");
-        CallbackV2<Device> callback = givenCallbackWithDeviceSegmentationTagRemoved(mCallbackFlag,mySegmentationTag);
+        final HaloSegmentationTag mySegmentationTag = new HaloSegmentationTag("myCustomTagYear", "1984");
+        CallbackV2<Device> callback = givenCallbackWithDeviceSegmentationTagRemoved(mCallbackFlag, mySegmentationTag);
         ICancellable cancellable = mHalo.getCore().manager()
-                .removeDeviceTag("myCustomTagYear",true)
+                .removeDeviceTag("myCustomTagYear", true)
                 .threadPolicy(Threading.POOL_QUEUE_POLICY)
                 .execute(callback);
         assertThat(mCallbackFlag.isFlagged()).isTrue();
@@ -128,12 +123,12 @@ public class HaloManagerApiTest extends HaloRobolectricTest {
     public void thatRemoveADeviceTagList() throws IOException {
         enqueueServerFile(mMockServer, REMOVE_SEGMENTATION_TAG);
         List<String> removeTagListNames = new ArrayList<>(Arrays.asList("myCustomTagYear", "myCustomTagMonth"));
-        final HaloSegmentationTag mySegmentationTagYear = new HaloSegmentationTag("myCustomTagYear","1984");
-        final HaloSegmentationTag mySegmentationTagMonth = new HaloSegmentationTag("myCustomTagMonth","12");
-        List<HaloSegmentationTag> mySegmentationTagList = new ArrayList<>(Arrays.asList(mySegmentationTagYear,mySegmentationTagMonth));
-        CallbackV2<Device> callback = givenCallbackWithDeviceSegmentationTagRemovedList(mCallbackFlag,mySegmentationTagList);
+        final HaloSegmentationTag mySegmentationTagYear = new HaloSegmentationTag("myCustomTagYear", "1984");
+        final HaloSegmentationTag mySegmentationTagMonth = new HaloSegmentationTag("myCustomTagMonth", "12");
+        List<HaloSegmentationTag> mySegmentationTagList = new ArrayList<>(Arrays.asList(mySegmentationTagYear, mySegmentationTagMonth));
+        CallbackV2<Device> callback = givenCallbackWithDeviceSegmentationTagRemovedList(mCallbackFlag, mySegmentationTagList);
         ICancellable cancellable = mHalo.getCore().manager()
-                .removeDeviceTags(removeTagListNames,true)
+                .removeDeviceTags(removeTagListNames, true)
                 .threadPolicy(Threading.POOL_QUEUE_POLICY)
                 .execute(callback);
         assertThat(mCallbackFlag.isFlagged()).isTrue();
@@ -143,7 +138,7 @@ public class HaloManagerApiTest extends HaloRobolectricTest {
     @Test
     public void thatGetModulesAsContentNetwork() throws IOException {
         enqueueServerFile(mMockServer, GET_MODULES);
-        CallbackV2<List<HaloModule>>  callback = givenCallbackWithGetModules(mCallbackFlag,true);
+        CallbackV2<List<HaloModule>> callback = givenCallbackWithGetModules(mCallbackFlag, true);
         ICancellable cancellable = mHalo.getCore().manager()
                 .getModules(Data.NETWORK_ONLY)
                 .asContent()
@@ -155,7 +150,7 @@ public class HaloManagerApiTest extends HaloRobolectricTest {
     @Test
     public void thatGetModulesNetworkAndStorage() throws IOException {
         enqueueServerFile(mMockServer, GET_MODULES);
-        CallbackV2<List<HaloModule>>  callback = givenCallbackWithGetModules(mCallbackFlag,true);
+        CallbackV2<List<HaloModule>> callback = givenCallbackWithGetModules(mCallbackFlag, true);
         ICancellable cancellable = mHalo.getCore().manager()
                 .getModules(Data.NETWORK_AND_STORAGE)
                 .asContent()
@@ -166,7 +161,7 @@ public class HaloManagerApiTest extends HaloRobolectricTest {
 
     @Test
     public void thatGetModulesStorage() throws IOException {
-        CallbackV2<List<HaloModule>>  callback = givenCallbackWithGetModules(mCallbackFlag,false);
+        CallbackV2<List<HaloModule>> callback = givenCallbackWithGetModules(mCallbackFlag, false);
         ICancellable cancellable = mHalo.getCore().manager()
                 .getModules(Data.STORAGE_ONLY)
                 .asContent()
@@ -178,7 +173,7 @@ public class HaloManagerApiTest extends HaloRobolectricTest {
     @Test
     public void thatGetModulesAsRawNetwork() throws IOException {
         enqueueServerFile(mMockServer, GET_MODULES);
-        CallbackV2<Cursor>  callback = givenCallbackWithGetModulesAsRaw(mCallbackFlag,true);
+        CallbackV2<Cursor> callback = givenCallbackWithGetModulesAsRaw(mCallbackFlag, true);
         ICancellable cancellable = mHalo.getCore().manager()
                 .getModules(Data.NETWORK_AND_STORAGE)
                 .asRaw()
@@ -190,7 +185,7 @@ public class HaloManagerApiTest extends HaloRobolectricTest {
     @Test
     public void thatGetModulesAsRawNetworkAndStorage() throws IOException {
         enqueueServerFile(mMockServer, GET_MODULES);
-        CallbackV2<Cursor>  callback = givenCallbackWithGetModulesAsRaw(mCallbackFlag,true);
+        CallbackV2<Cursor> callback = givenCallbackWithGetModulesAsRaw(mCallbackFlag, true);
         ICancellable cancellable = mHalo.getCore().manager()
                 .getModules(Data.NETWORK_AND_STORAGE)
                 .asRaw()
@@ -201,7 +196,7 @@ public class HaloManagerApiTest extends HaloRobolectricTest {
 
     @Test
     public void thatGetModulesAsRawStorage() throws IOException {
-        CallbackV2<Cursor>  callback = givenCallbackWithGetModulesAsRaw(mCallbackFlag,false);
+        CallbackV2<Cursor> callback = givenCallbackWithGetModulesAsRaw(mCallbackFlag, false);
         ICancellable cancellable = mHalo.getCore().manager()
                 .getModules(Data.STORAGE_ONLY)
                 .asRaw()
@@ -237,9 +232,9 @@ public class HaloManagerApiTest extends HaloRobolectricTest {
     }
 
     @Test
-    public void thatGetCurrentDevice() throws IOException, HaloParsingException{
+    public void thatGetCurrentDevice() throws IOException, HaloParsingException {
         enqueueServerFile(mMockServer, GET_DEVICE);
-        Device device = new Device("myTestUser","57fb592ff53f3f002aa99d78",null,null);
+        Device device = new Device("myTestUser", "57fb592ff53f3f002aa99d78", null, null);
         DeviceLocalDatasource deviceLocalDatasource = new DeviceLocalDatasource(mHalo.getCore().manager().storage());
         deviceLocalDatasource.clearCurrentDevice();
         deviceLocalDatasource.cacheDevice(Device.serialize(device, mHalo.getCore().framework().parser()));
@@ -257,7 +252,7 @@ public class HaloManagerApiTest extends HaloRobolectricTest {
     @Test
     public void thatSyncDeviceAnonymous() throws IOException {
         enqueueServerFile(mMockServer, SYNC_DEVICE);
-        CallbackV2<Device>  callback = givenCallbackWithSyncDevice(mCallbackFlag);
+        CallbackV2<Device> callback = givenCallbackWithSyncDevice(mCallbackFlag);
         ICancellable cancellable = mHalo.getCore().manager()
                 .syncDevice()
                 .execute(callback);
@@ -269,11 +264,11 @@ public class HaloManagerApiTest extends HaloRobolectricTest {
     public void thatSyncDevice() throws IOException, HaloParsingException {
         enqueueServerFile(mMockServer, GET_DEVICE);
         enqueueServerFile(mMockServer, SYNC_DEVICE);
-        Device device = new Device("myTestUser","57fb592ff53f3f002aa99d78",null,null);
+        Device device = new Device("myTestUser", "57fb592ff53f3f002aa99d78", null, null);
         DeviceLocalDatasource deviceLocalDatasource = new DeviceLocalDatasource(mHalo.getCore().manager().storage());
         deviceLocalDatasource.clearCurrentDevice();
         deviceLocalDatasource.cacheDevice(Device.serialize(device, mHalo.getCore().framework().parser()));
-        CallbackV2<Device>  callback = givenCallbackWithSyncDevice(mCallbackFlag);
+        CallbackV2<Device> callback = givenCallbackWithSyncDevice(mCallbackFlag);
         ICancellable cancellable = mHalo.getCore().manager()
                 .syncDevice()
                 .threadPolicy(Threading.SAME_THREAD_POLICY)
@@ -291,7 +286,7 @@ public class HaloManagerApiTest extends HaloRobolectricTest {
     }
 
     @Test
-    public void thatSubscribeToDeviceSync(){
+    public void thatSubscribeToDeviceSync() {
         mDeviceSyncSubscription = Halo.core().manager().subscribeForDeviceSync(new Subscriber() {
             @Override
             public void onEventReceived(@NonNull Event event) {
@@ -314,7 +309,7 @@ public class HaloManagerApiTest extends HaloRobolectricTest {
     }
 
     @Test
-    public void thatIsAppAuthentication(){
+    public void thatIsAppAuthentication() {
         Credentials credentials = Credentials.createClient("newClient", "newSecret");
         mHalo.getCore().credentials(credentials);
         assertThat(mHalo.getCore().manager().isAppAuthentication()).isTrue();
@@ -322,7 +317,7 @@ public class HaloManagerApiTest extends HaloRobolectricTest {
     }
 
     @Test
-    public void thatIsPasswordAuthentication(){
+    public void thatIsPasswordAuthentication() {
         Credentials credentials = Credentials.createUser("newClient", "newSecret");
         mHalo.getCore().credentials(credentials);
         assertThat(mHalo.getCore().manager().isAppAuthentication()).isFalse();
@@ -330,7 +325,7 @@ public class HaloManagerApiTest extends HaloRobolectricTest {
     }
 
     @Test
-    public void thatStorageIsReturned(){
+    public void thatStorageIsReturned() {
         assertThat(mHalo.getCore().manager().storage()).isNotNull();
     }
 
@@ -358,7 +353,7 @@ public class HaloManagerApiTest extends HaloRobolectricTest {
 
     @Test
     public void thatCanSetNotificationsToken() throws IOException {
-        enqueueServerFile(mMockServer,GET_DEVICE);
+        enqueueServerFile(mMockServer, GET_DEVICE);
         CallbackV2<Device> callback = givenCallbackWithSetNotificationToken(mCallbackFlag);
         ICancellable cancellable = mHalo.manager().setNotificationsToken("mytoken")
                 .threadPolicy(Threading.POOL_QUEUE_POLICY)

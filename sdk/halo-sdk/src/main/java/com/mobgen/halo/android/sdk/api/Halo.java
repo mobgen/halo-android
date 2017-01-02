@@ -292,6 +292,11 @@ public class Halo {
         private StartupProcess[] mEndStartupProcesses;
 
         /**
+         * Disables the pinning.
+         */
+        private boolean mDisablePinning;
+
+        /**
          * Constructor for the installer.
          *
          * @param ctx The context of this installer.
@@ -428,7 +433,7 @@ public class Halo {
         @Api(2.0)
         @NonNull
         public Installer disablePinning(){
-            mEndpoint.disablePinning();
+            mDisablePinning = true;
             return this;
         }
 
@@ -440,6 +445,10 @@ public class Halo {
         @Api(1.0)
         @NonNull
         public Halo install() {
+            if(mDisablePinning){
+                mEndpoint.disablePinning();
+            }
+
             //Add the final endpoint to halo
             mConfigurationBuilder.addEndpoint(mEndpoint);
 

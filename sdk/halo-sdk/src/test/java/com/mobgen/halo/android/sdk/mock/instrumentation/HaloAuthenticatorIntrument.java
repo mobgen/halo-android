@@ -12,31 +12,31 @@ import okhttp3.Response;
 
 public class HaloAuthenticatorIntrument {
 
-    public static Response givenA200Response(){
+    public static Response givenA200Response() {
         return new Response.Builder()
                 .request(new Request.Builder().url("http://google.com").build())
                 .protocol(Protocol.HTTP_1_1)
                 .code(200).build();
     }
 
-    public static Response givenA401Response(){
+    public static Response givenA401Response() {
         return new Response.Builder()
                 .request(new Request.Builder().url("http://google.com").build())
                 .protocol(Protocol.HTTP_1_1)
                 .code(401).build();
     }
 
-    public static Response givenA401UserTokenResponse(){
+    public static Response givenA401UserTokenResponse() {
         return new Response.Builder()
-                .request(new Request.Builder().url("http://mockurl/"+TokenRemoteDatasource.URL_GET_USER_TOKEN).build())
+                .request(new Request.Builder().url("http://mockurl/" + TokenRemoteDatasource.URL_GET_USER_TOKEN).build())
                 .protocol(Protocol.HTTP_1_1)
                 .code(401).build();
     }
 
 
-    public static Response givenA401ClientTokenResponse(){
+    public static Response givenA401ClientTokenResponse() {
         return new Response.Builder()
-                .request(new Request.Builder().url("http://mockurl/"+ TokenRemoteDatasource.URL_GET_CLIENT_TOKEN).build())
+                .request(new Request.Builder().url("http://mockurl/" + TokenRemoteDatasource.URL_GET_CLIENT_TOKEN).build())
                 .protocol(Protocol.HTTP_1_1)
                 .code(401).build();
     }
