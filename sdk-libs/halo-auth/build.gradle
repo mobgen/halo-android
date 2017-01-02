@@ -78,14 +78,14 @@ task javadocJar(type: Jar, dependsOn: "documentationRelease") {
 
 grill {
     distribute {
-        libName 'HALO Auth'
+        libName 'HALO Social'
         libDescription 'Library plugin for HALO that helps on social authentication and share tasks.'
         libDevId "halo-mobgen"
         libDevName "MOBGEN"
         libDevEmail "halo@mobgen.com"
         libSiteUrl "https://halo.mobgen.com"
-        libGitUrl "https://github.com/mobgen/halo-android/tree/master/sdk-libs/halo-auth"
-        bintrayRepoName "HALO-Auth"
+        libGitUrl "https://github.com/mobgen/halo-android/sdk-libs/halo-social"
+        bintrayRepoName "HALO-Social"
         bintrayUser System.getenv("HALO_BINTRAY_USER")
         bintrayKey System.getenv("HALO_BINTRAY_KEY")
         bintrayMavenCentralUser System.getenv("HALO_SONATYPE_USER")
@@ -102,8 +102,8 @@ grill {
     }
     codeQuality {
         host "${rootProject.ext.sonarHost}"
-        projectKey "halo:auth"
-        projectName "Halo auth SDK"
+        projectKey "halo:social"
+        projectName "Halo Social SDK"
         projectVersion "${rootProject.ext.sonarVersion}"
         dbHost "${rootProject.ext.sonarDbHost}"
         dbUser "${rootProject.ext.sonarUser}"

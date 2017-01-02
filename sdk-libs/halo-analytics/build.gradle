@@ -52,7 +52,7 @@ grill {
         libDevName "MOBGEN"
         libDevEmail "halo@mobgen.com"
         libSiteUrl "https://halo.mobgen.com"
-        libGitUrl "https://github.com/mobgen/halo-android/tree/master/sdk-libs/halo-analytics"
+        libGitUrl "https://github.com/mobgen/halo-android/sdk-libs/halo-analytics"
         bintrayRepoName "HALO-Analytics"
         bintrayUser System.getenv("HALO_BINTRAY_USER")
         bintrayKey System.getenv("HALO_BINTRAY_KEY")

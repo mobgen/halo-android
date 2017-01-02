@@ -3,7 +3,6 @@ apply plugin: 'com.neenbedankt.android-apt'
 apply plugin: 'com.getkeepsafe.dexcount'
 apply plugin: 'grill'
 apply plugin: 'jacoco'
-
 //Known issue in jacoco: https://github.com/robolectric/robolectric/issues/2230
 jacoco {
     toolVersion = "${rootProject.ext.jacocoVersion}"
@@ -46,6 +45,8 @@ android {
 }
 
 dependencies {
+    provided project(':halo-content-annotations')
+    apt project(':halo-content-processor')
     compile "com.mobgen.halo.android:halo-sdk:${rootProject.ext.haloVersion}"
     apt "com.bluelinelabs:logansquare-compiler:${rootProject.ext.loganSquareVersion}"
 
@@ -81,7 +82,7 @@ grill {
         libDevName "MOBGEN"
         libDevEmail "halo@mobgen.com"
         libSiteUrl "https://halo.mobgen.com"
-        libGitUrl "https://bitbucket.org/mobgen/halo-android/sdk-libs/halo-content"
+        libGitUrl "https://github.com/mobgen/halo-android/halo-content"
         bintrayRepoName "HALO-Content"
         bintrayUser "${rootProject.ext.jcenterUser}"
         bintrayKey "${rootProject.ext.jcenterKey}"
