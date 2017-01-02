@@ -99,7 +99,12 @@ public class SocialTokenInformation extends MobgenHaloActivity implements  View.
     private Account getAccount() {
         try {
             List<Account> accounts = Arrays.asList(mAccountManager.getAccountsByType("halo.account.demoapp"));
-            return accounts.get(0);
+            if(accounts.size()>0) {
+                return accounts.get(0);
+            }else {
+                return null;
+            }
+
         } catch (SecurityException securityException){
             return null;
         }

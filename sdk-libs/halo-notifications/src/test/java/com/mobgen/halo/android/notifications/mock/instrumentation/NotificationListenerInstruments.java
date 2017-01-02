@@ -10,6 +10,9 @@ import com.mobgen.halo.android.notifications.callbacks.HaloNotificationListener;
 import com.mobgen.halo.android.testing.CallbackFlag;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
@@ -25,6 +28,15 @@ public class NotificationListenerInstruments {
                     assertThat(api.getNotificationId(data)).isNull();
                 } else {
                     assertThat(api.getNotificationId(data)).isNotNull();
+                }
+                if(data.getString("extra")!=null){
+
+                    try{
+                        JSONObject jsonExtra = new JSONObject(data.getString("extra"));
+                        assertThat(data.getString("instanceId")).isEqualTo("58594e203bb27211009ccc58");
+                    } catch (JSONException jsonException){
+                        assertThat(data.getString("extra")).isEqualTo("myextradata");
+                    }
                 }
             }
         };
