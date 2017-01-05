@@ -408,7 +408,9 @@ public class Halo {
         @NonNull
         @Api(2.0)
         public Installer environment(@NonNull String endpoint) {
-            environment(endpoint, HaloNetworkConstants.HALO_SHA_PINNING);
+            environment(endpoint,
+                    HaloNetworkConstants.HALO_SHA_PINNING,
+                    HaloNetworkConstants.HALO_SHA_PINNING_CERT2017);
             return this;
         }
 
