@@ -4,7 +4,6 @@ import android.support.annotation.NonNull;
 
 import com.mobgen.halo.android.sdk.api.Halo;
 import com.mobgen.halo.android.sdk.api.HaloApplication;
-import com.mobgen.halo.android.sdk.core.management.models.Credentials;
 
 import static com.mobgen.halo.android.sdk.mock.HaloMock.givenAHaloInstaller;
 

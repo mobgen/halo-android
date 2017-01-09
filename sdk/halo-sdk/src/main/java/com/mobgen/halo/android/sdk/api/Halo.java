@@ -19,7 +19,6 @@ import com.mobgen.halo.android.sdk.core.internal.network.HaloNetworkConstants;
 import com.mobgen.halo.android.sdk.core.internal.parser.LoganSquareParserFactory;
 import com.mobgen.halo.android.sdk.core.internal.startup.ReadyChecker;
 import com.mobgen.halo.android.sdk.core.internal.startup.StartupManager;
-import com.mobgen.halo.android.sdk.core.internal.startup.callbacks.HaloInstallationListener;
 import com.mobgen.halo.android.sdk.core.internal.startup.callbacks.HaloReadyListener;
 import com.mobgen.halo.android.sdk.core.internal.startup.processes.StartupProcess;
 import com.mobgen.halo.android.sdk.core.internal.startup.processes.SyncDeviceStartupProcess;
@@ -251,12 +250,13 @@ public class Halo {
 
     /**
      * Provides the manager Api.
+     *
      * @return
      */
     @Keep
     @Api(2.0)
     @NonNull
-    public HaloManagerApi manager(){
+    public HaloManagerApi manager() {
         return getCore().manager();
     }
 
@@ -290,6 +290,11 @@ public class Halo {
          * Final processes.
          */
         private StartupProcess[] mEndStartupProcesses;
+
+        /**
+         * Disables the pinning.
+         */
+        private boolean mDisablePinning;
 
         /**
          * Constructor for the installer.
@@ -403,7 +408,9 @@ public class Halo {
         @NonNull
         @Api(2.0)
         public Installer environment(@NonNull String endpoint) {
-            environment(endpoint, HaloNetworkConstants.HALO_SHA_PINNING);
+            environment(endpoint,
+                    HaloNetworkConstants.HALO_SHA_PINNING,
+                    HaloNetworkConstants.HALO_SHA_PINNING_CERT2017);
             return this;
         }
 
@@ -416,8 +423,19 @@ public class Halo {
          */
         @NonNull
         @Api(2.0)
-        public Installer environment(@NonNull String endpoint, @NonNull String shaPin) {
+        public Installer environment(@NonNull String endpoint, @NonNull String... shaPin) {
             mEndpoint = new HaloEndpoint(HaloNetworkConstants.HALO_ENDPOINT_ID, endpoint, shaPin);
+            return this;
+        }
+
+        /**
+         * Disables the ssl pinning in the HALO SDK.
+         * @return The current installer.
+         */
+        @Api(2.0)
+        @NonNull
+        public Installer disablePinning(){
+            mDisablePinning = true;
             return this;
         }
 
@@ -429,6 +447,10 @@ public class Halo {
         @Api(1.0)
         @NonNull
         public Halo install() {
+            if(mDisablePinning){
+                mEndpoint.disablePinning();
+            }
+
             //Add the final endpoint to halo
             mConfigurationBuilder.addEndpoint(mEndpoint);
 
