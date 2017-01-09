@@ -24,7 +24,10 @@ import static com.mobgen.halo.android.notifications.mock.instrumentation.Notific
 import static com.mobgen.halo.android.notifications.mock.instrumentation.NotificationDecoratorInstruments.givenANullReturningDecorator;
 import static com.mobgen.halo.android.notifications.mock.instrumentation.NotificationInstruments.givenANotification;
 import static com.mobgen.halo.android.notifications.mock.instrumentation.NotificationInstruments.withAnySourceNotification;
+import static com.mobgen.halo.android.notifications.mock.instrumentation.NotificationInstruments.withExtraData;
+import static com.mobgen.halo.android.notifications.mock.instrumentation.NotificationInstruments.withExtraDataJSON;
 import static com.mobgen.halo.android.notifications.mock.instrumentation.NotificationInstruments.withNotSilentNotification;
+import static com.mobgen.halo.android.notifications.mock.instrumentation.NotificationInstruments.withNullExtraData;
 import static com.mobgen.halo.android.notifications.mock.instrumentation.NotificationInstruments.withSilentNotification;
 import static com.mobgen.halo.android.notifications.mock.instrumentation.NotificationListenerInstruments.givenANotificationListener;
 import static com.mobgen.halo.android.notifications.mock.instrumentation.NotificationListenerInstruments.givenAnAllNotificationListener;
@@ -59,6 +62,43 @@ public class NotificationServiceTest extends HaloRobolectricTest {
     @Test
     public void thatConstructorIsPrivateOnEmitter() throws Exception {
         TestUtils.testPrivateConstructor(NotificationEmitter.class);
+    }
+
+    @Test
+    public void thatANotificationWithNullExtra() throws NoSuchFieldException, IllegalAccessException {
+        RemoteMessage notification = givenANotification(withNullExtraData());
+        ISubscription subscription = mNotificationsApi.listenNotSilentNotifications(givenANotificationListener(mNotificationsApi, mCallbackFlag, false));
+
+        mNotificationService.onMessageReceived(notification);
+
+        assertThat(subscription).isNotNull();
+        assertThat(mCallbackFlag.isFlagged()).isTrue();
+        subscription.unsubscribe();
+    }
+
+
+    @Test
+    public void thatANotificationWithExtraDataInJSON() throws NoSuchFieldException, IllegalAccessException {
+        RemoteMessage notification = givenANotification(withExtraDataJSON());
+        ISubscription subscription = mNotificationsApi.listenNotSilentNotifications(givenANotificationListener(mNotificationsApi, mCallbackFlag, false));
+
+        mNotificationService.onMessageReceived(notification);
+
+        assertThat(subscription).isNotNull();
+        assertThat(mCallbackFlag.isFlagged()).isTrue();
+        subscription.unsubscribe();
+    }
+
+    @Test
+    public void thatANotificationWithExtraDataString() throws NoSuchFieldException, IllegalAccessException {
+        RemoteMessage notification = givenANotification(withExtraData());
+        ISubscription subscription = mNotificationsApi.listenNotSilentNotifications(givenANotificationListener(mNotificationsApi, mCallbackFlag, false));
+
+        mNotificationService.onMessageReceived(notification);
+
+        assertThat(subscription).isNotNull();
+        assertThat(mCallbackFlag.isFlagged()).isTrue();
+        subscription.unsubscribe();
     }
 
     @Test
