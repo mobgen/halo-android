@@ -15,7 +15,10 @@ import com.mobgen.halo.android.app.notifications.DeeplinkDecorator;
 import com.mobgen.halo.android.app.notifications.SilentNotificationDispatcher;
 import com.mobgen.halo.android.app.ui.settings.SettingsActivity;
 import com.mobgen.halo.android.auth.HaloAuthApi;
+import com.mobgen.halo.android.framework.common.helpers.logger.Halog;
 import com.mobgen.halo.android.framework.common.helpers.subscription.ISubscription;
+import com.mobgen.halo.android.framework.toolbox.data.CallbackV2;
+import com.mobgen.halo.android.framework.toolbox.data.HaloResultV2;
 import com.mobgen.halo.android.notifications.HaloNotificationsApi;
 import com.mobgen.halo.android.sdk.api.Halo;
 import com.mobgen.halo.android.sdk.api.HaloApplication;
@@ -212,7 +215,7 @@ public class MobgenHaloApplication extends HaloApplication {
         return mTranslationsApi;
     }
 
-    public static HaloAuthApi getHaloSocialApi() {
+    public static HaloAuthApi getHaloAuthApi() {
         return mAuthApi;
     }
 }

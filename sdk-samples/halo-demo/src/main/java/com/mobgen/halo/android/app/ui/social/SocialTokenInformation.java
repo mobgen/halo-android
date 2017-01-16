@@ -11,8 +11,12 @@ import android.widget.Toast;
 
 import com.mobgen.halo.android.app.R;
 import com.mobgen.halo.android.app.ui.MobgenHaloActivity;
+import com.mobgen.halo.android.framework.common.exceptions.HaloParsingException;
+import com.mobgen.halo.android.sdk.api.Halo;
+import com.mobgen.halo.android.sdk.core.management.models.Token;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 public class SocialTokenInformation extends MobgenHaloActivity implements  View.OnClickListener{
@@ -21,6 +25,10 @@ public class SocialTokenInformation extends MobgenHaloActivity implements  View.
      * The context
      */
     private Context mContext;
+    /**
+     * The expiration date.
+     */
+    private TextView expirationDate;
     /**
      * Halo sign in.
      */
@@ -48,6 +56,7 @@ public class SocialTokenInformation extends MobgenHaloActivity implements  View.
         mContext = this;
 
         haloToken = (TextView) findViewById(R.id.tv_sht);
+        expirationDate = (TextView) findViewById(R.id.tv_hated);
         facebookToken = (TextView) findViewById(R.id.tv_sft);
         googleToken = (TextView) findViewById(R.id.tv_sgt);
 
@@ -59,7 +68,16 @@ public class SocialTokenInformation extends MobgenHaloActivity implements  View.
             String facebookTokenStored = getSocialToken(account, "facebook");
 
             if (haloTokenStored != null) {
-                haloToken.setText(haloTokenStored);
+                try {
+                    Token storedToken = Token.deserialize(haloTokenStored, Halo.instance().framework().parser());
+                    long expiresIn = storedToken.getReceivedDate().getTime() + storedToken.getExpiresIn();
+                    Date expireDate = new Date(expiresIn);
+                    haloToken.setText(storedToken.getAccessToken());
+                    expirationDate.setText("Expires in: "+ expireDate.toGMTString());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
             }
             if (facebookTokenStored != null) {
                 facebookToken.setText(facebookTokenStored);
@@ -113,6 +131,11 @@ public class SocialTokenInformation extends MobgenHaloActivity implements  View.
 
     private String getSocialToken(Account account, String accountType){
         return mAccountManager.getUserData(account, accountType);
+    }
+
+    @Override
+    public boolean hasBackNavigationToolbar() {
+        return true;
     }
 
 }

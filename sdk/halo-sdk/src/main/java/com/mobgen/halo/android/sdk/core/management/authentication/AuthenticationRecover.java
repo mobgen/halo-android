@@ -29,9 +29,36 @@ public interface AuthenticationRecover {
     /**
      * Get the account type.
      *
-     * @return The recovery policyß
+     * @return The recovery policy
      */
     @Keep
     @Api(2.1)
     String accountType();
+
+    /**
+     * Get the recovery token serialized.
+     *
+     * @return The recovery token
+     */
+    @Keep
+    @Api(2.2)
+    String recoverToken();
+
+    /**
+     * Set the recovery status
+     * @param isRecovering True if a instance is recovering
+     * @return the recovering status
+     */
+    @Keep
+    @Api(2.2)
+    void recoverStatus(Boolean isRecovering);
+
+    /**
+     * Get the recovery status
+     *
+     * @return True if there a pending recovery: false otherwise
+     */
+    @Keep
+    @Api(2.2)
+    Boolean recoverStatus();
 }
