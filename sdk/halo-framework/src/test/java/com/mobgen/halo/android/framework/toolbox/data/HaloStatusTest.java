@@ -48,7 +48,6 @@ public class HaloStatusTest extends HaloRobolectricTest {
         assertThat(status.dataStatus()).isEqualTo(HaloStatus.STATUS_INCONSISTENT);
         assertThat(status.errorStatus()).isEqualTo(HaloStatus.STATUS_SECURITY_ERROR);
         assertThat(status.isSecurityError()).isTrue();
-        assertThat(status.isAuthenticationError()).isTrue();
         assertThat(status.isInconsistent()).isTrue();
         assertThat(status.isNetworkError()).isTrue();
         assertThat(status.toString()).contains("inconsitent");

@@ -212,7 +212,11 @@ public class HaloAuthApi extends HaloPluginApi {
     @Api(2.2)
     @NonNull
     public boolean isAccountStored() {
-        return mAccountManagerHelper.recoverAccount()!=null;
+        if(mAccountManagerHelper.recoverAccount()!=null){
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -313,7 +317,7 @@ public class HaloAuthApi extends HaloPluginApi {
         mAccountType = accountType;
         if (recoverPolicy == RECOVERY_ALWAYS && mAccountType != null) {
             AuthenticationRecover haloSocialRecover = new AuthenticationRecover() {
-                public boolean mIsRecovering = false;
+                private boolean mIsRecovering = false;
 
                 @Override
                 public void recoverAccount() {

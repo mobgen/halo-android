@@ -28,7 +28,6 @@ import com.mobgen.halo.android.app.ui.views.DividerItemDecoration;
 import com.mobgen.halo.android.app.utils.StatusInterceptor;
 import com.mobgen.halo.android.app.utils.ViewUtils;
 import com.mobgen.halo.android.content.edition.HaloContentEditApi;
-import com.mobgen.halo.android.content.models.HaloEditContentOptions;
 import com.mobgen.halo.android.content.models.HaloSyncLog;
 import com.mobgen.halo.android.content.models.Paginated;
 import com.mobgen.halo.android.content.models.SearchQuery;
@@ -215,16 +214,17 @@ public class GeneralContentItemActivity extends MobgenHaloActivity implements Sw
                         values.put(elements.get(i).first, elements.get(i).second);
                     }
 
-                    HaloEditContentOptions.Builder instanceBuilder = new HaloEditContentOptions.Builder(mModuleName)
+                    HaloContentInstance.Builder instanceBuilder = new HaloContentInstance.Builder(mModuleName)
                             .withModuleId(mInstance.getModuleId())
                             .withPublishDate(mInstance.getPublishedDate())
                             .withName("From Android SDK: "+ new Date().toGMTString())
                             .withContentData(values);
-                    HaloContentEditApi.addContent(instanceBuilder.build())
+                    HaloContentEditApi.with(MobgenHaloApplication.halo())
+                            .addContent(instanceBuilder.build())
                             .execute(new CallbackV2<HaloContentInstance>() {
                                 @Override
                                 public void onFinish(@NonNull HaloResultV2<HaloContentInstance> result) {
-                                    if (result.status().isAuthenticationError()) {
+                                    if (result.status().isSecurityError()) {
                                         Toast.makeText(GeneralContentItemActivity.this, "You must sigin or login to add a content.", Toast.LENGTH_SHORT).show();
                                     } else {
                                         if (result.data() != null) {
@@ -253,17 +253,18 @@ public class GeneralContentItemActivity extends MobgenHaloActivity implements Sw
                         values.put(elements.get(i).first,elements.get(i).second);
                     }
 
-                    HaloEditContentOptions.Builder instanceBuilder = new HaloEditContentOptions.Builder(mModuleName)
+                    HaloContentInstance.Builder instanceBuilder = new HaloContentInstance.Builder(mModuleName)
                             .withId(mInstance.getItemId())
                             .withModuleId(mInstance.getModuleId())
                             .withName(mInstance.getName())
                             .withContentData(values);
 
-                    HaloContentEditApi.updateContent(instanceBuilder.build())
+                    HaloContentEditApi.with(MobgenHaloApplication.halo())
+                            .updateContent(instanceBuilder.build())
                             .execute(new CallbackV2<HaloContentInstance>() {
                                 @Override
                                 public void onFinish(@NonNull HaloResultV2<HaloContentInstance> result) {
-                                    if(result.status().isAuthenticationError()){
+                                    if(result.status().isSecurityError()){
                                         Toast.makeText(GeneralContentItemActivity.this, "You must sigin or login to update a content.", Toast.LENGTH_SHORT).show();
                                     } else {
                                         if(result.data()!=null) {
@@ -413,13 +414,14 @@ public class GeneralContentItemActivity extends MobgenHaloActivity implements Sw
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_delete_instance) {
-            HaloEditContentOptions.Builder instanceBuilder = new HaloEditContentOptions.Builder(mModuleName)
+            HaloContentInstance.Builder instanceBuilder = new HaloContentInstance.Builder(mModuleName)
                     .withId(mInstance.getItemId());
-            HaloContentEditApi.deleteContent(instanceBuilder.build())
+            HaloContentEditApi.with(MobgenHaloApplication.halo())
+                    .deleteContent(instanceBuilder.build())
                     .execute(new CallbackV2<HaloContentInstance>() {
                         @Override
                         public void onFinish(@NonNull HaloResultV2<HaloContentInstance> result) {
-                            if(result.status().isAuthenticationError()){
+                            if(result.status().isSecurityError()){
                                 Toast.makeText(GeneralContentItemActivity.this, "You must sigin or login to delete a content.", Toast.LENGTH_SHORT).show();
                             } else {
                                 if(result.data()!=null) {

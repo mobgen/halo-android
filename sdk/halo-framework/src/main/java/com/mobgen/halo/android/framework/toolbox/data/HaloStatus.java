@@ -303,16 +303,6 @@ public class HaloStatus implements Parcelable {
     }
 
     /**
-     * Checks if the error is related to a authentication exception.
-     *
-     * @return True if it a authentication error, false otherwise.
-     */
-    @Api(2.2)
-    public boolean isAuthenticationError() {
-        return isError() && mBuilder.mException instanceof HaloAuthenticationException;
-    }
-
-    /**
      * Indicates that there is an error while parsing the data.
      *
      * @return True if there was a parsing error, false otherwise.

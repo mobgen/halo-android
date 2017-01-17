@@ -36,6 +36,7 @@ import com.mobgen.halo.android.framework.toolbox.data.Data;
 import com.mobgen.halo.android.framework.toolbox.data.HaloResultV2;
 import com.mobgen.halo.android.framework.toolbox.data.HaloStatus;
 import com.mobgen.halo.android.sdk.core.management.models.HaloModule;
+import com.mobgen.halo.android.sdk.core.management.segmentation.HaloSegmentationTag;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -282,7 +283,7 @@ public class GeneralContentModuleActivity extends MobgenHaloActivity implements 
     private void launchHaloContentInstaceAlert(){
         JSONObject valuesObject = new JSONObject();
         if(mHaloContentInstance==null){
-            mHaloContentInstance = new HaloContentInstance(null, mModule.getId(), mModule.getName(), valuesObject, null, new Date(), null, new Date(), null);
+            mHaloContentInstance = new HaloContentInstance(null,null, mModule.getId(), mModule.getName(), valuesObject,null, new Date(), new Date(), new Date(), new Date(), new Date(), null);
         } else{
             valuesObject = mHaloContentInstance.getValues();
         }
@@ -374,7 +375,7 @@ public class GeneralContentModuleActivity extends MobgenHaloActivity implements 
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        HaloContentInstance defaultInstance = new HaloContentInstance(contentInstance.getItemId(),contentInstance.getModuleId(),contentInstance.getName(),valuesObject,contentInstance.getAuthor(),contentInstance.getCreatedDate(),contentInstance.getLastUpdate(),contentInstance.getPublishedDate(),contentInstance.getRemoveDate());
+        HaloContentInstance defaultInstance = new HaloContentInstance(contentInstance.getItemId(),null,contentInstance.getModuleId(),contentInstance.getName(),valuesObject,contentInstance.getAuthor(),contentInstance.getArchivedDate(),contentInstance.getCreatedDate(),contentInstance.getLastUpdate(),contentInstance.getPublishedDate(),contentInstance.getRemoveDate(),null);
         Iterator<String> iterator = defaultInstance.getValues().keys();
         String key = null;
         //set all items to non value
@@ -393,7 +394,7 @@ public class GeneralContentModuleActivity extends MobgenHaloActivity implements 
             } catch (JSONException e) {
             }
         }
-        mHaloContentInstance = new HaloContentInstance(null,defaultInstance.getModuleId(),defaultInstance.getName(),defaultInstance.getValues(),null,defaultInstance.getCreatedDate(),null,defaultInstance.getPublishedDate(),null);
+        mHaloContentInstance = new HaloContentInstance(null,null,defaultInstance.getModuleId(),defaultInstance.getName(),defaultInstance.getValues(),contentInstance.getAuthor(),null,null,null,contentInstance.getPublishedDate(),contentInstance.getRemoveDate(),null);
     }
 
     @Override

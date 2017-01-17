@@ -5,7 +5,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.mobgen.halo.android.content.models.HaloContentInstance;
-import com.mobgen.halo.android.content.models.HaloEditContentOptions;
 import com.mobgen.halo.android.framework.network.client.request.HaloRequestMethod;
 import com.mobgen.halo.android.framework.toolbox.data.HaloResultV2;
 import com.mobgen.halo.android.sdk.core.threading.HaloInteractorExecutor;
@@ -26,7 +25,7 @@ public class ContentManipulationInteractor implements HaloInteractorExecutor.Int
     /**
      * The Halo general content instace to operate with.
      */
-    private HaloEditContentOptions mHaloEditContentOptions;
+    private HaloContentInstance mHaloEditContentOptions;
 
 
     /**
@@ -36,7 +35,7 @@ public class ContentManipulationInteractor implements HaloInteractorExecutor.Int
      * @param haloEditContentOptions The general content instance.
      * @param operation The Halo request method.
      */
-    public ContentManipulationInteractor(@NonNull ContentManipulationRepository contentManipulationRepository, @Nullable HaloEditContentOptions haloEditContentOptions, @NonNull HaloRequestMethod operation) {
+    public ContentManipulationInteractor(@NonNull ContentManipulationRepository contentManipulationRepository, @Nullable HaloContentInstance haloEditContentOptions, @NonNull HaloRequestMethod operation) {
         mContentManipulationRepository = contentManipulationRepository;
         mOperation = operation;
         mHaloEditContentOptions = haloEditContentOptions;

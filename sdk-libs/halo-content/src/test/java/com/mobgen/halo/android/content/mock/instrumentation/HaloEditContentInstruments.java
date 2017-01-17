@@ -3,7 +3,6 @@ package com.mobgen.halo.android.content.mock.instrumentation;
 import android.support.annotation.NonNull;
 
 import com.mobgen.halo.android.content.models.HaloContentInstance;
-import com.mobgen.halo.android.content.models.HaloEditContentOptions;
 import com.mobgen.halo.android.framework.toolbox.data.CallbackV2;
 import com.mobgen.halo.android.framework.toolbox.data.HaloResultV2;
 import com.mobgen.halo.android.testing.CallbackFlag;
@@ -31,16 +30,16 @@ public class HaloEditContentInstruments {
             @Override
             public void onFinish(@NonNull HaloResultV2<HaloContentInstance> result) {
                 flag.flagExecuted();
-                assertThat(result.status().isAuthenticationError()).isEqualTo(true);
+                assertThat(result.status().isSecurityError()).isEqualTo(true);
             }
         };
     }
 
-    public static HaloEditContentOptions givenAUpdateHaloContentEditOptions(){
+    public static HaloContentInstance givenAUpdateHaloContentEditOptions(){
         Map<String,String> values = new HashMap<>();
         values.put("Title","My title");
 
-        HaloEditContentOptions.Builder instanceBuilder = new HaloEditContentOptions.Builder("halomodulename")
+        HaloContentInstance.Builder instanceBuilder = new HaloContentInstance.Builder("halomodulename")
                 .withModuleId("586a47f836a6b01300ec9f00")
                 .withName("From Android SDK")
                 .withContentData(values);
@@ -48,11 +47,11 @@ public class HaloEditContentInstruments {
         return instanceBuilder.build();
     }
 
-    public static HaloEditContentOptions givenANewaloContentEditOptions(){
+    public static HaloContentInstance givenANewaloContentEditOptions(){
         Map<String,String> values = new HashMap<>();
         values.put("Title","My title");
 
-        HaloEditContentOptions.Builder instanceBuilder = new HaloEditContentOptions.Builder("halomodulename")
+        HaloContentInstance.Builder instanceBuilder = new HaloContentInstance.Builder("halomodulename")
                 .withId("5874c5f06a3a0d1e00c8039d")
                 .withModuleId("586a47f836a6b01300ec9f00")
                 .withName("From Android SDK")

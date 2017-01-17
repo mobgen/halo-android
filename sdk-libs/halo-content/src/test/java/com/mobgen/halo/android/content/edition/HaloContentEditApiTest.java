@@ -48,7 +48,8 @@ public class HaloContentEditApiTest extends HaloRobolectricTest {
     public void thatCanAddGeneralContentInstance() throws IOException {
         enqueueServerFile(mMockServer, CONTENT_EDIT_API);
         CallbackV2<HaloContentInstance> callback = givenAContentSuccessCallback(mCallbackFlag, "5874c5f06a3a0d1e00c8039d");
-        HaloContentEditApi.addContent(givenANewaloContentEditOptions())
+        HaloContentEditApi.with(mHalo)
+                .addContent(givenANewaloContentEditOptions())
                 .execute(callback);
 
         assertThat(mCallbackFlag.isFlagged()).isTrue();
@@ -58,7 +59,8 @@ public class HaloContentEditApiTest extends HaloRobolectricTest {
     public void thatCanHandleAutenticationExceptionAfterAddingContent() throws IOException {
         enqueueServerError(mMockServer, 403);
         CallbackV2<HaloContentInstance> callback = givenAContentAuthenticationErrorCallback(mCallbackFlag);
-        HaloContentEditApi.addContent(givenANewaloContentEditOptions())
+        HaloContentEditApi.with(mHalo)
+                .addContent(givenANewaloContentEditOptions())
                 .execute(callback);
 
         assertThat(mCallbackFlag.isFlagged()).isTrue();
@@ -68,7 +70,8 @@ public class HaloContentEditApiTest extends HaloRobolectricTest {
     public void thatCanUpdateGeneralContentInstance() throws IOException {
         enqueueServerFile(mMockServer, CONTENT_EDIT_API);
         CallbackV2<HaloContentInstance> callback = givenAContentSuccessCallback(mCallbackFlag, "5874c5f06a3a0d1e00c8039d");
-        HaloContentEditApi.updateContent(givenAUpdateHaloContentEditOptions())
+        HaloContentEditApi.with(mHalo)
+                .updateContent(givenAUpdateHaloContentEditOptions())
                 .execute(callback);
 
         assertThat(mCallbackFlag.isFlagged()).isTrue();
@@ -78,7 +81,8 @@ public class HaloContentEditApiTest extends HaloRobolectricTest {
     public void thatCanHandleAutenticationExceptionAfterUpdatingContent() throws IOException {
         enqueueServerError(mMockServer, 403);
         CallbackV2<HaloContentInstance> callback = givenAContentAuthenticationErrorCallback(mCallbackFlag);
-        HaloContentEditApi.updateContent(givenANewaloContentEditOptions())
+        HaloContentEditApi.with(mHalo)
+                .updateContent(givenANewaloContentEditOptions())
                 .execute(callback);
 
         assertThat(mCallbackFlag.isFlagged()).isTrue();
@@ -88,7 +92,8 @@ public class HaloContentEditApiTest extends HaloRobolectricTest {
     public void thatCanDeleteGeneralContentInstance() throws IOException {
         enqueueServerFile(mMockServer, CONTENT_EDIT_API);
         CallbackV2<HaloContentInstance> callback = givenAContentSuccessCallback(mCallbackFlag, "5874c5f06a3a0d1e00c8039d");
-        HaloContentEditApi.deleteContent(givenAUpdateHaloContentEditOptions())
+        HaloContentEditApi.with(mHalo)
+                .deleteContent(givenAUpdateHaloContentEditOptions())
                 .execute(callback);
 
         assertThat(mCallbackFlag.isFlagged()).isTrue();
@@ -98,7 +103,8 @@ public class HaloContentEditApiTest extends HaloRobolectricTest {
     public void thatCanHandleAutenticationExceptionAfterDeletingContent() throws IOException {
         enqueueServerError(mMockServer, 403);
         CallbackV2<HaloContentInstance> callback = givenAContentAuthenticationErrorCallback(mCallbackFlag);
-        HaloContentEditApi.deleteContent(givenANewaloContentEditOptions())
+        HaloContentEditApi.with(mHalo)
+                .deleteContent(givenANewaloContentEditOptions())
                 .execute(callback);
 
         assertThat(mCallbackFlag.isFlagged()).isTrue();
