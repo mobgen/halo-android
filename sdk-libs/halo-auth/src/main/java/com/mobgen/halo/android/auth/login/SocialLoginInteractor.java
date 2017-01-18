@@ -10,6 +10,9 @@ import com.mobgen.halo.android.auth.authenticator.AccountManagerHelper;
 import com.mobgen.halo.android.auth.models.IdentifiedUser;
 import com.mobgen.halo.android.auth.providers.facebook.FacebookSocialProvider;
 import com.mobgen.halo.android.auth.providers.google.GoogleSocialProvider;
+import com.mobgen.halo.android.sdk.core.management.models.Session;
+
+import static com.mobgen.halo.android.sdk.core.management.authentication.HaloAuthenticator.HALO_SESSION_NAME;
 
 
 /**
@@ -70,10 +73,14 @@ public class SocialLoginInteractor implements HaloInteractorExecutor.Interactor<
             if (mAccountType != null) {
                 AccountManagerHelper accountManagerHelper = new AccountManagerHelper(Halo.instance().context(), mAccountType);
                 if (mSocialProviderName.equals(FacebookSocialProvider.SOCIAL_FACEBOOK_NAME)) {
-                    accountManagerHelper.addAccountToken(AccountManagerHelper.FACEBOOK_AUTH_PROVIDER, response.data().getUser().getEmail(), mSocialToken, response.data().getToken().getAccessToken());
+                    accountManagerHelper.addAccountToken(AccountManagerHelper.FACEBOOK_AUTH_PROVIDER, response.data().getUser().getEmail(), mSocialToken, response.data().getToken());
                 } else if (mSocialProviderName.equals(GoogleSocialProvider.SOCIAL_GOOGLE_NAME)) {
-                    accountManagerHelper.addAccountToken(AccountManagerHelper.GOOGLE_AUTH_PROVIDER, response.data().getUser().getEmail(), mSocialToken, response.data().getToken().getAccessToken());
+                    accountManagerHelper.addAccountToken(AccountManagerHelper.GOOGLE_AUTH_PROVIDER, response.data().getUser().getEmail(), mSocialToken, response.data().getToken());
                 }
+                //save session
+                Session session = new Session(response.data().getToken());
+                Halo.core().sessionManager().setSession(HALO_SESSION_NAME, session);
+                Halo.instance().getCore().haloAuthRecover().recoverStatus(false);
             }
         }
         return response;

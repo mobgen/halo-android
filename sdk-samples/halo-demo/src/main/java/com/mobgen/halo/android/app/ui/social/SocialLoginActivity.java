@@ -71,7 +71,7 @@ public class SocialLoginActivity extends MobgenHaloActivity implements View.OnCl
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_social_login);
         mContext = this;
-        mAuthApi = MobgenHaloApplication.getHaloSocialApi();
+        mAuthApi = MobgenHaloApplication.getHaloAuthApi();
         mSignInWithGoogle = (SignInButton) findViewById(R.id.google_sign_in);
         mSignInWithFacebook = (Button) findViewById(R.id.facebook_sign_in);
         mSignInWithHalo = (Button) findViewById(R.id.halo_sign_in);
@@ -130,5 +130,10 @@ public class SocialLoginActivity extends MobgenHaloActivity implements View.OnCl
                 Halog.d(getClass(), result.status().exception().toString());
             }
         }
+    }
+
+    @Override
+    public boolean hasBackNavigationToolbar() {
+        return true;
     }
 }

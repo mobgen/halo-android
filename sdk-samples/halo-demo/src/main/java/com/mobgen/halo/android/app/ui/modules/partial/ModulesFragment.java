@@ -236,7 +236,7 @@ public class ModulesFragment extends MobgenHaloFragment implements SwipeRefreshL
         } else if (module.isSingleItemInstance()) {
             HaloResultV2<HaloContentInstance> instance = mSingleInstanceItemMap.get(module.getInternalId());
             if (instance != null) {
-                GeneralContentItemActivity.startActivity(getContext(), instance.data(), instance.status());
+                GeneralContentItemActivity.startActivity(getContext(), instance.data(), module.getName(), instance.status(),false);
             } else {
                 Toast.makeText(getContext(), getString(R.string.error_no_instance), Toast.LENGTH_LONG).show();
             }

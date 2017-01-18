@@ -14,6 +14,7 @@ import com.mobgen.halo.android.framework.toolbox.bus.Subscriber;
 import com.mobgen.halo.android.framework.toolbox.data.CallbackV2;
 import com.mobgen.halo.android.framework.toolbox.data.HaloResultV2;
 import com.mobgen.halo.android.framework.toolbox.data.HaloStatus;
+import com.mobgen.halo.android.framework.toolbox.threading.Threading;
 import com.mobgen.halo.android.sdk.api.Halo;
 import com.mobgen.halo.android.auth.models.HaloAuthProfile;
 import com.mobgen.halo.android.auth.models.IdentifiedUser;
@@ -76,21 +77,24 @@ public class FacebookSocialProvider implements SocialProvider, Subscriber {
         mSocialProviderApi = SocialProviderApi.with(halo).build();
         userRequestCallbak = callback;
         if (mFacebookToken != null) {
-            mSocialProviderApi.loginWithANetwork(getSocialNetworkName(), mFacebookToken).execute(new CallbackV2<IdentifiedUser>() {
-                @Override
-                public void onFinish(@NonNull HaloResultV2<IdentifiedUser> result) {
-                    if (result.status().isOk()) {
-                        //Finish the callback
-                        if (userRequestCallbak != null) {
-                            userRequestCallbak.onFinish(result);
+            mSocialProviderApi.loginWithANetwork(getSocialNetworkName(), mFacebookToken)
+                    .threadPolicy(Threading.POOL_QUEUE_POLICY)
+                    .bypassHaloReadyCheck()
+                    .execute(new CallbackV2<IdentifiedUser>() {
+                        @Override
+                        public void onFinish(@NonNull HaloResultV2<IdentifiedUser> result) {
+                            if (result.status().isOk()) {
+                                //Finish the callback
+                                if (userRequestCallbak != null) {
+                                    userRequestCallbak.onFinish(result);
+                                }
+                                //Release the login resources
+                                release();
+                            } else {//We must revalidate token with facebook so we restart authentication proccess
+                                launchFacebookActivity(halo, subscriber);
+                            }
                         }
-                        //Release the login resources
-                        release();
-                    } else {//We must revalidate token with facebook so we restart authentication proccess
-                        launchFacebookActivity(halo, subscriber);
-                    }
-                }
-            });
+                    });
         } else {
             launchFacebookActivity(halo, subscriber);
         }
@@ -156,6 +160,8 @@ public class FacebookSocialProvider implements SocialProvider, Subscriber {
     private void emitResult() {
         if (haloSocialProfileHaloResult == null && mSocialProviderApi != null) {
             mSocialProviderApi.loginWithANetwork(getSocialNetworkName(), mFacebookToken)
+                    .threadPolicy(Threading.POOL_QUEUE_POLICY)
+                    .bypassHaloReadyCheck()
                     .execute(new CallbackV2<IdentifiedUser>() {
                         @Override
                         public void onFinish(@NonNull HaloResultV2<IdentifiedUser> result) {

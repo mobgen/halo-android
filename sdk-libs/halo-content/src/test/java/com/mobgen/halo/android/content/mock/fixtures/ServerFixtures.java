@@ -14,6 +14,9 @@ public class ServerFixtures {
     public static final String SYNC_UPDATE_MODULE = "syncUpdateModule.json";
     public static final String SYNC_UP_TO_DATE = "syncUpToDate.json";
 
+    //content edit
+    public static final String CONTENT_EDIT_API = "contentManipulation.json";
+
     public static void enqueueServerFile(MockServer server, String file) throws IOException {
         server.enqueueFile(200, file);
     }

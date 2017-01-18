@@ -1,6 +1,7 @@
 package com.mobgen.halo.android.sdk.core.management.models;
 
 
+import android.support.annotation.Keep;
 import android.support.annotation.NonNull;
 
 import com.mobgen.halo.android.framework.common.annotations.Api;
@@ -17,6 +18,7 @@ import java.util.concurrent.TimeUnit;
  * @see Credentials
  * @see Token
  */
+@Keep
 public class Session extends HaloSession {
 
     /**

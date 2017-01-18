@@ -5,11 +5,15 @@ import android.accounts.AccountManager;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.mobgen.halo.android.framework.common.exceptions.HaloParsingException;
 import com.mobgen.halo.android.framework.common.utils.AssertionUtils;
 import com.mobgen.halo.android.auth.models.HaloAuthProfile;
+import com.mobgen.halo.android.sdk.api.Halo;
+import com.mobgen.halo.android.sdk.core.management.models.Token;
 
 import java.util.Arrays;
 import java.util.List;
@@ -81,22 +85,22 @@ public class AccountManagerHelper {
      * @return Return the account added.
      */
     @Nullable
-    public Account addAccountWithPassword(@NonNull String tokenProvider, @NonNull String userName, @NonNull String password, @NonNull String haloAccessToken) {
+    public Account addAccountWithPassword(@NonNull String tokenProvider, @NonNull String userName, @NonNull String password, @NonNull Token haloAccessToken) throws HaloParsingException {
         AssertionUtils.notNull(tokenProvider, "tokenProvider");
         AssertionUtils.notNull(userName, "userName");
         AssertionUtils.notNull(password, "password");
         Account account = new Account(userName, mAccountType);
         if (checkAccountExist(account)) {
             mAccountManager.setPassword(account, password);
-            mAccountManager.setUserData(account, tokenProvider, haloAccessToken);
+            mAccountManager.setUserData(account, tokenProvider, Token.serialize(haloAccessToken, Halo.instance().framework().parser()));
             mAccountManager.setUserData(account, TOKEN_PROVIDER_TYPE, tokenProvider);
             return account;
         } else {
             deleteOtherAccounts(account);
             Bundle extraData = new Bundle();
-            extraData.putString(tokenProvider, haloAccessToken);
+            extraData.putString(tokenProvider, Token.serialize(haloAccessToken, Halo.instance().framework().parser()));
             extraData.putString(TOKEN_PROVIDER_TYPE, tokenProvider);
-            if (mAccountManager.addAccountExplicitly(setAuthToken(account, tokenProvider, haloAccessToken), password, extraData)) {
+            if (mAccountManager.addAccountExplicitly(setAuthToken(account, tokenProvider, haloAccessToken.toString()), password, extraData)) {
                 return account;
             }
         }
@@ -113,7 +117,7 @@ public class AccountManagerHelper {
      * @return Return the account added.
      */
     @Nullable
-    public Account addAccountToken(@NonNull String tokenProvider, @NonNull String userName, @NonNull String socialAuthToken, @NonNull String haloAccessToken) {
+    public Account addAccountToken(@NonNull String tokenProvider, @NonNull String userName, @NonNull String socialAuthToken, @NonNull Token haloAccessToken) throws HaloParsingException {
         AssertionUtils.notNull(tokenProvider, "tokenProvider");
         AssertionUtils.notNull(userName, "userName");
         AssertionUtils.notNull(haloAccessToken, "haloAccessToken");
@@ -124,19 +128,33 @@ public class AccountManagerHelper {
             if (mAccountManager.getPassword(account) == null) {
                 mAccountManager.setUserData(account, TOKEN_PROVIDER_TYPE, tokenProvider);
             }
-            mAccountManager.setUserData(account, HALO_AUTH_PROVIDER, haloAccessToken);
+            mAccountManager.setUserData(account, HALO_AUTH_PROVIDER, Token.serialize(haloAccessToken, Halo.instance().framework().parser()));
             return setAuthToken(account, tokenProvider, socialAuthToken);
         } else {
             deleteOtherAccounts(account);
             Bundle extraData = new Bundle();
             extraData.putString(tokenProvider, socialAuthToken);
             extraData.putString(TOKEN_PROVIDER_TYPE, tokenProvider);
-            extraData.putString(HALO_AUTH_PROVIDER, haloAccessToken);
+            extraData.putString(HALO_AUTH_PROVIDER, Token.serialize(haloAccessToken, Halo.instance().framework().parser()));
             if (mAccountManager.addAccountExplicitly(setAuthToken(account, tokenProvider, socialAuthToken), null, extraData)) {
                 return account;
             }
         }
         return null;
+    }
+
+
+    /**
+     * Remove account because user logout
+     *
+     * @param account The account.
+     */
+    public void removeAccount(@NonNull Account account) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+            mAccountManager.removeAccountExplicitly(account);
+        } else {
+            mAccountManager.removeAccount(account, null, null);
+        }
     }
 
     /**

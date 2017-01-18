@@ -8,6 +8,7 @@ import com.mobgen.halo.android.framework.common.utils.AssertionUtils;
 import com.mobgen.halo.android.framework.toolbox.data.CallbackV2;
 import com.mobgen.halo.android.framework.toolbox.data.HaloResultV2;
 import com.mobgen.halo.android.framework.toolbox.data.HaloStatus;
+import com.mobgen.halo.android.framework.toolbox.threading.Threading;
 import com.mobgen.halo.android.sdk.api.Halo;
 import com.mobgen.halo.android.auth.models.HaloAuthProfile;
 import com.mobgen.halo.android.auth.models.IdentifiedUser;
@@ -70,6 +71,8 @@ public class HaloSocialProvider implements SocialProvider {
         mSocialProviderApi = SocialProviderApi.with(halo)
                 .build();
         mSocialProviderApi.loginWithHalo(haloAuthProfile.getEmail(), haloAuthProfile.getPassword())
+                .threadPolicy(Threading.POOL_QUEUE_POLICY)
+                .bypassHaloReadyCheck()
                 .execute(new CallbackV2<IdentifiedUser>() {
                     @Override
                     public void onFinish(@NonNull HaloResultV2<IdentifiedUser> result) {

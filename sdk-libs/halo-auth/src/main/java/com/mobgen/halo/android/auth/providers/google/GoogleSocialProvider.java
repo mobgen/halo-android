@@ -16,6 +16,7 @@ import com.mobgen.halo.android.framework.toolbox.bus.Subscriber;
 import com.mobgen.halo.android.framework.toolbox.data.CallbackV2;
 import com.mobgen.halo.android.framework.toolbox.data.HaloResultV2;
 import com.mobgen.halo.android.framework.toolbox.data.HaloStatus;
+import com.mobgen.halo.android.framework.toolbox.threading.Threading;
 import com.mobgen.halo.android.sdk.api.Halo;
 import com.mobgen.halo.android.auth.models.HaloAuthProfile;
 import com.mobgen.halo.android.auth.models.IdentifiedUser;
@@ -92,19 +93,22 @@ public class GoogleSocialProvider implements SocialProvider, Subscriber {
         userRequestCallbak = callback;
         if (mGoogleToken != null) {
             //we login user with previous credentials stored
-            mSocialProviderApi.loginWithANetwork(getSocialNetworkName(), mGoogleToken).execute(new CallbackV2<IdentifiedUser>() {
-                @Override
-                public void onFinish(@NonNull HaloResultV2<IdentifiedUser> result) {
-                    if (result.status().isOk()) {
-                        if (userRequestCallbak != null) {
-                            userRequestCallbak.onFinish(result);
+            mSocialProviderApi.loginWithANetwork(getSocialNetworkName(), mGoogleToken)
+                    .threadPolicy(Threading.POOL_QUEUE_POLICY)
+                    .bypassHaloReadyCheck()
+                    .execute(new CallbackV2<IdentifiedUser>() {
+                        @Override
+                        public void onFinish(@NonNull HaloResultV2<IdentifiedUser> result) {
+                            if (result.status().isOk()) {
+                                if (userRequestCallbak != null) {
+                                    userRequestCallbak.onFinish(result);
+                                }
+                                release();
+                            } else { //We must revalidate token with google so we restart authentication proccess
+                                launchGoogleActivity(halo, subscriber);
+                            }
                         }
-                        release();
-                    } else { //We must revalidate token with google so we restart authentication proccess
-                        launchGoogleActivity(halo, subscriber);
-                    }
-                }
-            });
+                    });
         } else {
             launchGoogleActivity(halo, subscriber);
         }
@@ -160,17 +164,20 @@ public class GoogleSocialProvider implements SocialProvider, Subscriber {
      */
     public void emitResult() {
         if (haloSocialProfileHaloResult == null && mSocialProviderApi != null) {
-            mSocialProviderApi.loginWithANetwork(getSocialNetworkName(), mGoogleToken).execute(new CallbackV2<IdentifiedUser>() {
-                @Override
-                public void onFinish(@NonNull HaloResultV2<IdentifiedUser> result) {
-                    if (result.status().isOk()) {
-                        if (userRequestCallbak != null) {
-                            userRequestCallbak.onFinish(result);
+            mSocialProviderApi.loginWithANetwork(getSocialNetworkName(), mGoogleToken)
+                    .threadPolicy(Threading.POOL_QUEUE_POLICY)
+                    .bypassHaloReadyCheck()
+                    .execute(new CallbackV2<IdentifiedUser>() {
+                        @Override
+                        public void onFinish(@NonNull HaloResultV2<IdentifiedUser> result) {
+                            if (result.status().isOk()) {
+                                if (userRequestCallbak != null) {
+                                    userRequestCallbak.onFinish(result);
+                                }
+                                release();
+                            }
                         }
-                        release();
-                    }
-                }
-            });
+                    });
         } else if (userRequestCallbak != null) {
             userRequestCallbak.onFinish(haloSocialProfileHaloResult);
         }
