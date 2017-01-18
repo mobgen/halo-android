@@ -16,7 +16,6 @@ import com.mobgen.halo.android.sdk.BuildConfig;
 import com.mobgen.halo.android.sdk.R;
 import com.mobgen.halo.android.testing.HaloRobolectricTest;
 
-
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -30,17 +29,18 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
+
 @Config(constants = BuildConfig.class, sdk = 23)
 public class SegmentationTagCollectorsTests extends HaloRobolectricTest {
 
     @Test
-    public void thatLoadFromDefaultLocale(){
+    public void thatLoadFromDefaultLocale() {
         String locale = HaloLocale.fromDefaultLocale();
         assertThat(locale).isNotNull();
     }
 
     @Test
-    public void thatLoadFromLocale(){
+    public void thatLoadFromLocale() {
         String locale = HaloLocale.fromLocale(Locale.CANADA_FRENCH);
         assertThat(locale).isEqualTo(HaloLocale.FRENCH_CANADA);
     }
@@ -75,7 +75,7 @@ public class SegmentationTagCollectorsTests extends HaloRobolectricTest {
     public void thatApplicationVersionTagIsOk() {
         ApplicationVersionCollector collector = new ApplicationVersionCollector();
         HaloSegmentationTag tag = collector.collect(RuntimeEnvironment.application);
-      //  assertThat(tag.getValue()).isEqualTo(BuildConfig.VERSION_NAME);
+        //  assertThat(tag.getValue()).isEqualTo(BuildConfig.VERSION_NAME);
         assertThat(tag.getName()).isEqualTo("Application Version");
     }
 

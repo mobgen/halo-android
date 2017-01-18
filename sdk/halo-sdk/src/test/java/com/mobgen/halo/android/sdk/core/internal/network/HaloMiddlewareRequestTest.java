@@ -18,8 +18,8 @@ import java.util.HashMap;
 
 import okhttp3.Response;
 
-import static com.mobgen.halo.android.sdk.mock.fixtures.ServerFixtures.enqueueServerFile;
 import static com.mobgen.halo.android.sdk.mock.fixtures.ServerFixtures.MIDDLEWARE_REQUEST;
+import static com.mobgen.halo.android.sdk.mock.fixtures.ServerFixtures.enqueueServerFile;
 import static com.mobgen.halo.android.testing.CallbackFlag.newCallbackFlag;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -39,36 +39,36 @@ public class HaloMiddlewareRequestTest extends HaloRobolectricTest {
     }
 
     @After
-    public void tearDown() throws IOException{
+    public void tearDown() throws IOException {
         mHalo.uninstall();
         mMockServer.shutdown();
     }
 
     @Test
     public void thatMiddlewareGetRequestIsSuccesfull() throws IOException {
-        enqueueServerFile(mMockServer,MIDDLEWARE_REQUEST);
+        enqueueServerFile(mMockServer, MIDDLEWARE_REQUEST);
         Object tag = mock(Object.class);
         HaloMiddlewareRequest middlewareRequest = new HaloMiddlewareRequest.Builder(mHalo.getCore().framework().network())
-               .hasProxy(false)
-               .header("customHeaderName","customHeaderValue")
-               .middleware("companyName","companyDataType")
-               .method(HaloRequestMethod.GET)
-               .tag(tag)
-               .url("getData")
-               .build();
+                .hasProxy(false)
+                .header("customHeaderName", "customHeaderValue")
+                .middleware("companyName", "companyDataType")
+                .method(HaloRequestMethod.GET)
+                .tag(tag)
+                .url("getData")
+                .build();
         Response response = middlewareRequest.execute();
         assertThat(response).isNotNull();
         assertThat(response.isSuccessful()).isTrue();
-   }
+    }
 
     @Test
     public void thatMiddlewarePostRequestIsSuccesfull() throws IOException {
-        enqueueServerFile(mMockServer,MIDDLEWARE_REQUEST);
+        enqueueServerFile(mMockServer, MIDDLEWARE_REQUEST);
         HaloMiddlewareRequest middlewareRequest = new HaloMiddlewareRequest.Builder(mHalo.getCore().framework().network())
                 .hasProxy(true)
-                .header("customHeaderName","customHeaderValue")
-                .middleware("companyName","companyDataType")
-                .body(HaloBodyFactory.stringBody(HaloMediaType.TEXT_PLAIN,"testPlainString"))
+                .header("customHeaderName", "customHeaderValue")
+                .middleware("companyName", "companyDataType")
+                .body(HaloBodyFactory.stringBody(HaloMediaType.TEXT_PLAIN, "testPlainString"))
                 .method(HaloRequestMethod.POST)
                 .url("sendData")
                 .build();
@@ -80,15 +80,15 @@ public class HaloMiddlewareRequestTest extends HaloRobolectricTest {
 
     @Test
     public void thatMiddlewarePutRequestIsSuccesfull() throws IOException {
-        enqueueServerFile(mMockServer,MIDDLEWARE_REQUEST);
+        enqueueServerFile(mMockServer, MIDDLEWARE_REQUEST);
         HaloMiddlewareRequest.Builder haloMiddlewareBuilder = HaloMiddlewareRequest.builder(mHalo.getCore().framework().network());
-        HaloMiddlewareRequest middlewareRequest = haloMiddlewareBuilder.middleware("","")
+        HaloMiddlewareRequest middlewareRequest = haloMiddlewareBuilder.middleware("", "")
                 .hasProxy(true)
-                .header("customHeaderName","customHeaderValue")
-                .middleware("companyName","companyDataType")
-                .body(HaloBodyFactory.stringBody(HaloMediaType.TEXT_PLAIN,"testPlainString"))
+                .header("customHeaderName", "customHeaderValue")
+                .middleware("companyName", "companyDataType")
+                .body(HaloBodyFactory.stringBody(HaloMediaType.TEXT_PLAIN, "testPlainString"))
                 .method(HaloRequestMethod.PUT)
-                .url("updateData",new HashMap<String, String>())
+                .url("updateData", new HashMap<String, String>())
                 .build();
         Response response = middlewareRequest.execute();
         assertThat(response).isNotNull();

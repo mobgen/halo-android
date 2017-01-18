@@ -10,15 +10,15 @@ public class TokenInstruments {
         return new Token("access", "refresh", 10000L, "bearer");
     }
 
-    public static Token givenAExpiredToken(){
+    public static Token givenAExpiredToken() {
         return new Token("expired", "expiredRefresh", -1L, "bearer");
     }
 
-    public static Token givenAToken(){
+    public static Token givenAToken() {
         return new Token("access", "refresh", 0L, "type");
     }
 
-    public static Token givenACustomTypeToken(){
+    public static Token givenACustomTypeToken() {
         return new Token("token", "refresh", 10L, "myType");
     }
 }

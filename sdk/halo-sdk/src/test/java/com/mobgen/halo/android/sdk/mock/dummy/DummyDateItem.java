@@ -13,7 +13,8 @@ public class DummyDateItem {
     @JsonField(name = "date")
     Date mDate;
 
-    public DummyDateItem(){}
+    public DummyDateItem() {
+    }
 
     public DummyDateItem(@Nullable Date date) {
         mDate = date;

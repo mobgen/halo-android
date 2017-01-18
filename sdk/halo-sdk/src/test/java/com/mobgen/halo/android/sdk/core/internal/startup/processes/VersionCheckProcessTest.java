@@ -4,13 +4,6 @@ import com.mobgen.halo.android.framework.toolbox.threading.Threading;
 import com.mobgen.halo.android.sdk.api.Halo;
 import com.mobgen.halo.android.sdk.core.management.models.HaloServerVersion;
 import com.mobgen.halo.android.sdk.mock.HaloMock;
-
-import static com.mobgen.halo.android.sdk.mock.fixtures.ServerFixtures.TEST_SERVER_VERSION;
-import static com.mobgen.halo.android.sdk.mock.fixtures.ServerFixtures.GET_VALID_SERVER_VERSION;
-import static com.mobgen.halo.android.sdk.mock.fixtures.ServerFixtures.GET_OUTDATED_SERVER_VERSION;
-import static com.mobgen.halo.android.sdk.mock.fixtures.ServerFixtures.enqueueServerFile;
-import static com.mobgen.halo.android.sdk.mock.instrumentation.StartupManagerInstrument.givenAProcessListener;
-
 import com.mobgen.halo.android.testing.CallbackFlag;
 import com.mobgen.halo.android.testing.HaloRobolectricTest;
 import com.mobgen.halo.android.testing.MockServer;
@@ -21,6 +14,11 @@ import org.junit.Test;
 
 import java.io.IOException;
 
+import static com.mobgen.halo.android.sdk.mock.fixtures.ServerFixtures.GET_OUTDATED_SERVER_VERSION;
+import static com.mobgen.halo.android.sdk.mock.fixtures.ServerFixtures.GET_VALID_SERVER_VERSION;
+import static com.mobgen.halo.android.sdk.mock.fixtures.ServerFixtures.TEST_SERVER_VERSION;
+import static com.mobgen.halo.android.sdk.mock.fixtures.ServerFixtures.enqueueServerFile;
+import static com.mobgen.halo.android.sdk.mock.instrumentation.StartupManagerInstrument.givenAProcessListener;
 import static com.mobgen.halo.android.testing.CallbackFlag.newCallbackFlag;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
@@ -40,7 +38,7 @@ public class VersionCheckProcessTest extends HaloRobolectricTest {
     }
 
     @After
-    public void tearDown() throws IOException{
+    public void tearDown() throws IOException {
         mHalo.uninstall();
         mMockServer.shutdown();
     }
@@ -50,18 +48,18 @@ public class VersionCheckProcessTest extends HaloRobolectricTest {
         enqueueServerFile(mMockServer, TEST_SERVER_VERSION);
         VersionCheckStartupProcess versionCheckStartupProcess = new VersionCheckStartupProcess();
         versionCheckStartupProcess.setProcessListener(givenAProcessListener(mCallbackFlag));
-        StartupRunnableAdapter startupRunnableAdapter = new StartupRunnableAdapter(mHalo,versionCheckStartupProcess);
+        StartupRunnableAdapter startupRunnableAdapter = new StartupRunnableAdapter(mHalo, versionCheckStartupProcess);
         startupRunnableAdapter.run();
         assertThat(mCallbackFlag.isFlagged()).isTrue();
         assertThat(mHalo.getCore().isVersionValid()).isTrue();
     }
 
     @Test
-    public void thatVersionIsNotChecked() throws IOException{
+    public void thatVersionIsNotChecked() throws IOException {
         enqueueServerFile(mMockServer, TEST_SERVER_VERSION);
         VersionCheckStartupProcess versionCheckStartupProcess = new VersionCheckStartupProcess();
         versionCheckStartupProcess.setProcessListener(givenAProcessListener(mCallbackFlag));
-        StartupRunnableAdapter startupRunnableAdapter = new StartupRunnableAdapter(mHalo,versionCheckStartupProcess);
+        StartupRunnableAdapter startupRunnableAdapter = new StartupRunnableAdapter(mHalo, versionCheckStartupProcess);
         startupRunnableAdapter.run();
         assertThat(mCallbackFlag.isFlagged()).isTrue();
         assertThat(mHalo.getCore().serverVersionCheck()).isEqualTo(HaloServerVersion.NOT_CHECKED);
@@ -73,7 +71,7 @@ public class VersionCheckProcessTest extends HaloRobolectricTest {
         enqueueServerFile(mMockServer, GET_VALID_SERVER_VERSION);
         VersionCheckStartupProcess versionCheckStartupProcess = new VersionCheckStartupProcess();
         versionCheckStartupProcess.setProcessListener(givenAProcessListener(mCallbackFlag));
-        StartupRunnableAdapter startupRunnableAdapter = new StartupRunnableAdapter(mHalo,versionCheckStartupProcess);
+        StartupRunnableAdapter startupRunnableAdapter = new StartupRunnableAdapter(mHalo, versionCheckStartupProcess);
         startupRunnableAdapter.run();
         assertThat(mCallbackFlag.isFlagged()).isTrue();
         assertThat(mHalo.getCore().serverVersionCheck()).isEqualTo(HaloServerVersion.VALID);
@@ -82,10 +80,10 @@ public class VersionCheckProcessTest extends HaloRobolectricTest {
 
     @Test
     public void thatVersionIsOutdated() throws IOException {
-        enqueueServerFile(mMockServer,GET_OUTDATED_SERVER_VERSION);
+        enqueueServerFile(mMockServer, GET_OUTDATED_SERVER_VERSION);
         VersionCheckStartupProcess versionCheckStartupProcess = new VersionCheckStartupProcess();
         versionCheckStartupProcess.setProcessListener(givenAProcessListener(mCallbackFlag));
-        StartupRunnableAdapter startupRunnableAdapter = new StartupRunnableAdapter(mHalo,versionCheckStartupProcess);
+        StartupRunnableAdapter startupRunnableAdapter = new StartupRunnableAdapter(mHalo, versionCheckStartupProcess);
         startupRunnableAdapter.run();
         assertThat(mCallbackFlag.isFlagged()).isTrue();
         assertThat(mHalo.getCore().serverVersionCheck()).isEqualTo(HaloServerVersion.OUTDATED);

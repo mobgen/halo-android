@@ -6,7 +6,6 @@ import com.mobgen.halo.android.sdk.BuildConfig;
 import com.mobgen.halo.android.sdk.mock.HaloApplicationMock;
 import com.mobgen.halo.android.testing.HaloRobolectricTest;
 
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,7 +14,6 @@ import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
-
 import static com.mobgen.halo.android.sdk.mock.HaloMock.givenAHaloInstaller;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
@@ -23,12 +21,13 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 @Config(constants = BuildConfig.class, application = HaloApplicationMock.class, sdk = 21)
 public class HaloApplicationTest extends HaloRobolectricTest {
 
-    private  HaloApplicationMock mMockApplication;
+    private HaloApplicationMock mMockApplication;
 
     @Before
     public void initialize() {
         mMockApplication = (HaloApplicationMock) RuntimeEnvironment.application;
     }
+
     @After
     public void tearDown() {
         Halo.instance().uninstall();
@@ -42,12 +41,11 @@ public class HaloApplicationTest extends HaloRobolectricTest {
     }
 
     @Test
-    public void thatOnlyOneHaloInstanceIsInstalled(){
+    public void thatOnlyOneHaloInstanceIsInstalled() {
 
         try {
             givenAHaloInstaller().install();
-        }
-        catch (HaloConfigurationException e){
+        } catch (HaloConfigurationException e) {
             assertThat(Halo.isInitialized()).isTrue();
         }
     }

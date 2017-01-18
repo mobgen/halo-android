@@ -48,7 +48,7 @@ public class HaloCoreTest extends HaloRobolectricTest {
     }
 
     @Test
-    public void thatConfigureCredentialsInDebugMode(){
+    public void thatConfigureCredentialsInDebugMode() {
         mHalo.framework().setDebugFlag(true);
         HaloCore core = HaloMock.createCore(mHalo.framework(), Credentials.createClient("myClientIdDebug", "myClientSecretDebug"));
         assertThat(core.credentials()).isNotNull();
@@ -57,7 +57,7 @@ public class HaloCoreTest extends HaloRobolectricTest {
     }
 
     @Test
-    public void thatVersionIsCorrect(){
+    public void thatVersionIsCorrect() {
         HaloCore core = HaloMock.createCore(Credentials.createClient("myClient", "myPass"), null);
         assertThat(core.version()).isEqualTo(BuildConfig.HALO_SDK_VERSION);
     }
@@ -69,8 +69,8 @@ public class HaloCoreTest extends HaloRobolectricTest {
         assertThat(core.debug()).isTrue();
     }
 
-    @Test (expected = Exception.class)
-    public void thatCanCreateWithNullCredentials(){
+    @Test(expected = Exception.class)
+    public void thatCanCreateWithNullCredentials() {
         HaloCore core = HaloMock.createCore(mHalo.framework(), null);
         assertThat(core.credentials()).isNotNull();
     }
@@ -97,7 +97,7 @@ public class HaloCoreTest extends HaloRobolectricTest {
     }
 
     @Test
-    public void thatCanLogout(){
+    public void thatCanLogout() {
         HaloCore core = HaloMock.createCore(Credentials.createClient("myClient", "myPass"), null);
         core.sessionManager().setSession(HaloAuthenticator.HALO_SESSION_NAME, new Session(new Token("token", "refresh", 1L, "type")));
         core.logout();
@@ -105,19 +105,20 @@ public class HaloCoreTest extends HaloRobolectricTest {
     }
 
     @Test
-    public void thatDeviceIsNullIfNotCreated(){
+    public void thatDeviceIsNullIfNotCreated() {
         HaloCore core = HaloMock.createCore(Credentials.createClient("myClient", "myPass"), null);
         core.sessionManager().setSession(HaloAuthenticator.HALO_SESSION_NAME, new Session(new Token("token", "refresh", 1L, "type")));
         Device device = mHalo.manager().getDevice();
         assertThat(device).isNull();
     }
-    public void thatCanGetTagCollectors(){
+
+    public void thatCanGetTagCollectors() {
         HaloCore core = HaloMock.createCore(Credentials.createClient("myClient", "myPass"), null);
         assertThat(core.tagCollectors().size()).isEqualTo(0);
     }
 
     @Test
-    public void thatSegmentationTagsCollectorsExists(){
+    public void thatSegmentationTagsCollectorsExists() {
         List<TagCollector> collectors = new ArrayList<>();
         collectors.add(new DeviceModelCollector());
         collectors.add(new DeviceManufacturerCollector());
@@ -126,13 +127,13 @@ public class HaloCoreTest extends HaloRobolectricTest {
     }
 
     @Test
-    public void thatSegmentationTagsAreEmpty(){
+    public void thatSegmentationTagsAreEmpty() {
         HaloCore core = HaloMock.createCore(Credentials.createClient("myClient", "myPass"), new ArrayList<TagCollector>());
         assertThat(core.segmentationTags().size()).isEqualTo(0);
     }
 
     @Test
-    public void thatSegmentationTagsExists(){
+    public void thatSegmentationTagsExists() {
         List<TagCollector> collectors = new ArrayList<>();
         collectors.add(new DeviceModelCollector());
         collectors.add(new DeviceManufacturerCollector());
@@ -141,7 +142,7 @@ public class HaloCoreTest extends HaloRobolectricTest {
     }
 
     @Test
-    public void thatCanCreateCore(){
+    public void thatCanCreateCore() {
         HaloCore core = HaloMock.createCore(Credentials.createClient("myClient", "myPass"), null);
         assertThat(core.framework()).isNotNull();
     }

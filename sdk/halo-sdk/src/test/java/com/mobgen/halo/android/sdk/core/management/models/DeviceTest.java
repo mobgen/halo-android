@@ -4,8 +4,6 @@ import com.mobgen.halo.android.sdk.core.management.segmentation.HaloSegmentation
 import com.mobgen.halo.android.testing.HaloRobolectricTest;
 import com.mobgen.halo.android.testing.TestUtils;
 
-import junit.framework.Assert;
-
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -47,6 +45,7 @@ public class DeviceTest extends HaloRobolectricTest {
         assertThat(user.getDevices()).isNotNull();
         assertThat(user.getNotificationsToken()).isEqualTo(token);
     }
+
     @Test
     public void thatCanUnsetToken() {
         String token = "myToken";
@@ -76,7 +75,7 @@ public class DeviceTest extends HaloRobolectricTest {
     }
 
     @Test
-    public void thatNewUserIsNotAnonymous(){
+    public void thatNewUserIsNotAnonymous() {
         Device user = new Device("alias", "id", "mobgen@mobgen.com", null);
         assertThat(user.isAnonymous()).isFalse();
     }

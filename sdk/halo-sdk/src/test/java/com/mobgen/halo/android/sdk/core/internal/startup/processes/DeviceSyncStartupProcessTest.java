@@ -11,14 +11,6 @@ import com.mobgen.halo.android.testing.CallbackFlag;
 import com.mobgen.halo.android.testing.HaloRobolectricTest;
 import com.mobgen.halo.android.testing.MockServer;
 
-import static com.mobgen.halo.android.sdk.mock.fixtures.ServerFixtures.SYNC_DEVICE;
-import static com.mobgen.halo.android.sdk.mock.fixtures.ServerFixtures.enqueueServerFile;
-import static com.mobgen.halo.android.sdk.mock.instrumentation.StartupManagerInstrument.givenAProcessListener;
-
-import static com.mobgen.halo.android.testing.CallbackFlag.newCallbackFlag;
-import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,6 +18,12 @@ import org.junit.Test;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.mobgen.halo.android.sdk.mock.fixtures.ServerFixtures.SYNC_DEVICE;
+import static com.mobgen.halo.android.sdk.mock.fixtures.ServerFixtures.enqueueServerFile;
+import static com.mobgen.halo.android.sdk.mock.instrumentation.StartupManagerInstrument.givenAProcessListener;
+import static com.mobgen.halo.android.testing.CallbackFlag.newCallbackFlag;
+import static org.assertj.core.api.Java6Assertions.assertThat;
 
 
 public class DeviceSyncStartupProcessTest extends HaloRobolectricTest {
@@ -35,11 +33,11 @@ public class DeviceSyncStartupProcessTest extends HaloRobolectricTest {
     private MockServer mMockServer;
 
     @Before
-    public void initialize()throws IOException {
+    public void initialize() throws IOException {
         List<TagCollector> collectors = new ArrayList<>();
         collectors.add(new TestDeviceCollector(true));
         mMockServer = MockServer.create();
-        mHalo = HaloMock.create(mMockServer.start(),collectors);
+        mHalo = HaloMock.create(mMockServer.start(), collectors);
         mCallbackFlag = newCallbackFlag();
     }
 
@@ -55,7 +53,7 @@ public class DeviceSyncStartupProcessTest extends HaloRobolectricTest {
         final Device device = new Device();
         SyncDeviceStartupProcess syncDeviceStartupProcess = new SyncDeviceStartupProcess();
         syncDeviceStartupProcess.setProcessListener(givenAProcessListener(mCallbackFlag));
-        StartupRunnableAdapter startupRunnableAdapter = new StartupRunnableAdapter(mHalo,syncDeviceStartupProcess);
+        StartupRunnableAdapter startupRunnableAdapter = new StartupRunnableAdapter(mHalo, syncDeviceStartupProcess);
         startupRunnableAdapter.run();
         assertThat(mCallbackFlag.isFlagged()).isTrue();
         assertThat(mHalo.manager().getDevice()).isNotEqualTo(device);
@@ -68,7 +66,7 @@ public class DeviceSyncStartupProcessTest extends HaloRobolectricTest {
         final Device device = null;
         SyncDeviceStartupProcess syncDeviceStartupProcess = new SyncDeviceStartupProcess();
         syncDeviceStartupProcess.setProcessListener(givenAProcessListener(mCallbackFlag));
-        StartupRunnableAdapter startupRunnableAdapter = new StartupRunnableAdapter(null,syncDeviceStartupProcess);
+        StartupRunnableAdapter startupRunnableAdapter = new StartupRunnableAdapter(null, syncDeviceStartupProcess);
         startupRunnableAdapter.run();
         assertThat(mCallbackFlag.isFlagged()).isTrue();
         assertThat(mHalo.manager().getDevice()).isEqualTo(device);

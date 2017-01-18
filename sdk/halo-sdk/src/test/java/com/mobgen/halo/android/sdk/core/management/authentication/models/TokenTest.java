@@ -4,8 +4,6 @@ import com.mobgen.halo.android.sdk.core.management.models.Token;
 import com.mobgen.halo.android.testing.HaloRobolectricTest;
 import com.mobgen.halo.android.testing.TestUtils;
 
-import junit.framework.Assert;
-
 import org.junit.Test;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;

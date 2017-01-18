@@ -44,7 +44,7 @@ public class HaloMock {
         return new HaloCore(framework, HaloManagerApi.with(Halo.instance()), new HaloSessionManager(), credentials, null);
     }
 
-    public static HaloCore createCore(Credentials credentials,List<TagCollector> tagCollectors) {
+    public static HaloCore createCore(Credentials credentials, List<TagCollector> tagCollectors) {
         HaloFramework framework = HaloFramework.create(
                 FrameworkMock.createSameThreadMockConfig(LoganSquareParserFactory.create())
                         .setParser(LoganSquareParserFactory.create())
@@ -66,7 +66,7 @@ public class HaloMock {
 
     public static Halo create(HaloConfig.Builder configurationBuilder, HaloSessionManager sessionManager,
                               Credentials credentials, List<TagCollector> tagCollectors) {
-        return createInstaller().install(configurationBuilder,sessionManager,credentials,tagCollectors,new StartupProcess[]{});
+        return createInstaller().install(configurationBuilder, sessionManager, credentials, tagCollectors, new StartupProcess[]{});
     }
 
     public static Halo create() {
@@ -83,8 +83,8 @@ public class HaloMock {
         return givenACustomHalo(givenASingleThreadedConfig(url));
     }
 
-    public static Halo create(String url,List<TagCollector> collectors) {
-        return givenACustomHalo(givenASingleThreadedConfig(url),collectors);
+    public static Halo create(String url, List<TagCollector> collectors) {
+        return givenACustomHalo(givenASingleThreadedConfig(url), collectors);
     }
 
     public static Halo givenACustomHalo(HaloConfig.Builder builder) {
@@ -140,7 +140,7 @@ public class HaloMock {
         return scheduler;
     }
 
-    public static Halo.Installer givenAHaloInstaller(){
+    public static Halo.Installer givenAHaloInstaller() {
         Halo.Installer installer = Halo.installer(RuntimeEnvironment.application)
                 .credentials(Credentials.createClient("clientId", "clientSecret"))
                 .addTagCollector(mock(TestDeviceCollector.class))

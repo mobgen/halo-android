@@ -25,16 +25,16 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 import static com.mobgen.halo.android.sdk.mock.fixtures.ServerFixtures.AUTHENTICATE;
-import static com.mobgen.halo.android.sdk.mock.fixtures.ServerFixtures.enqueueServerFile;
 import static com.mobgen.halo.android.sdk.mock.fixtures.ServerFixtures.enqueueServerError;
-import static com.mobgen.halo.android.sdk.mock.instrumentation.TokenInstruments.givenARefreshToken;
-import static com.mobgen.halo.android.sdk.mock.instrumentation.TokenInstruments.givenAExpiredToken;
-import static com.mobgen.halo.android.sdk.mock.instrumentation.TokenInstruments.givenAToken;
-import static com.mobgen.halo.android.sdk.mock.instrumentation.TokenInstruments.givenACustomTypeToken;
+import static com.mobgen.halo.android.sdk.mock.fixtures.ServerFixtures.enqueueServerFile;
 import static com.mobgen.halo.android.sdk.mock.instrumentation.HaloAuthenticatorIntrument.givenA200Response;
-import static com.mobgen.halo.android.sdk.mock.instrumentation.HaloAuthenticatorIntrument.givenA401Response;
 import static com.mobgen.halo.android.sdk.mock.instrumentation.HaloAuthenticatorIntrument.givenA401ClientTokenResponse;
+import static com.mobgen.halo.android.sdk.mock.instrumentation.HaloAuthenticatorIntrument.givenA401Response;
 import static com.mobgen.halo.android.sdk.mock.instrumentation.HaloAuthenticatorIntrument.givenA401UserTokenResponse;
+import static com.mobgen.halo.android.sdk.mock.instrumentation.TokenInstruments.givenACustomTypeToken;
+import static com.mobgen.halo.android.sdk.mock.instrumentation.TokenInstruments.givenAExpiredToken;
+import static com.mobgen.halo.android.sdk.mock.instrumentation.TokenInstruments.givenARefreshToken;
+import static com.mobgen.halo.android.sdk.mock.instrumentation.TokenInstruments.givenAToken;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
@@ -50,7 +50,7 @@ public class HaloAuthenticatorTest extends HaloRobolectricTest {
     private CallbackFlag mCallbackFlag;
 
     @Before
-    public void initialize() throws IOException{
+    public void initialize() throws IOException {
         mSessionManager = new HaloSessionManager();
         Credentials credentials = Credentials.createClient("clientId", "clientSecret");
         mMockServer = MockServer.create();
@@ -60,13 +60,13 @@ public class HaloAuthenticatorTest extends HaloRobolectricTest {
     }
 
     @After
-    public void tearDown() throws IOException{
+    public void tearDown() throws IOException {
         mHalo.uninstall();
         mMockServer.shutdown();
     }
 
     @Test
-    public void thatSessionIsExpired(){
+    public void thatSessionIsExpired() {
         Token expiredToken = givenAExpiredToken();
         Session session = new Session(expiredToken);
         assertThat(session.isSessionExpired()).isTrue();
@@ -102,7 +102,7 @@ public class HaloAuthenticatorTest extends HaloRobolectricTest {
 
     @Test
     public void thatRenewTokenIsCalledIfSessionIsNotSet() throws IOException {
-        enqueueServerError(mMockServer,401);
+        enqueueServerError(mMockServer, 401);
         enqueueServerFile(mMockServer, AUTHENTICATE);
         Response response = givenA401Response();
         Request newRequest = mAuthenticator.authenticate(null, response);
@@ -111,7 +111,7 @@ public class HaloAuthenticatorTest extends HaloRobolectricTest {
     }
 
     @Test
-    public void thatCanChangeCredentials(){
+    public void thatCanChangeCredentials() {
         Credentials credentials = Credentials.createClient("newClient", "newSecret");
         mAuthenticator.setCredentials(credentials);
         assertThat(mAuthenticator.getCredentials()).isNotNull();
@@ -120,7 +120,7 @@ public class HaloAuthenticatorTest extends HaloRobolectricTest {
     }
 
     @Test
-    public void thatCanSetANewSession(){
+    public void thatCanSetANewSession() {
         mSessionManager.setSession(HaloAuthenticator.HALO_SESSION_NAME, new Session(givenAToken()));
         assertThat(mSessionManager.getSession(HaloAuthenticator.HALO_SESSION_NAME)).isNotNull();
     }
@@ -179,7 +179,7 @@ public class HaloAuthenticatorTest extends HaloRobolectricTest {
 
     @Test
     public void thatCanAuthenticateANewTokenAndSessionIfSessionIsExpired() throws IOException {
-        enqueueServerError(mMockServer,401);
+        enqueueServerError(mMockServer, 401);
         Token token = givenAToken();
         Session newSession = new Session(token);
         Response response = givenA200Response();
