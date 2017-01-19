@@ -13,6 +13,7 @@ import com.mobgen.halo.android.testing.TestUtils;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 import static com.mobgen.halo.android.content.mock.instrumentation.SearchInstruments.givenAFullQuery;
@@ -189,6 +190,15 @@ public class SearchQueryTest extends HaloRobolectricTest {
                 .beginSearch()
                 .and()
                 .eq("field1", "value1")
+                .end();
+    }
+
+    @Test(expected = HaloConfigurationException.class)
+    public void thatABadExpressionThrowsException() {
+        SearchQuery.builder()
+                .beginSearch()
+                .or()
+                .lt("field1", new Date())
                 .end();
     }
 

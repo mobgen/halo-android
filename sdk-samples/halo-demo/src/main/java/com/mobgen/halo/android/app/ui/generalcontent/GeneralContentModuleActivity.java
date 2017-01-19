@@ -263,7 +263,7 @@ public class GeneralContentModuleActivity extends MobgenHaloActivity implements 
     public void listGeneralContentModuleData(final String moduleName) {
         if (moduleName != null) {
             ViewUtils.refreshing(mSwipeRefreshLayout, true);
-            SearchQuery options = SearchQueryBuilderFactory.getPublishedItems(moduleName, moduleName)
+            SearchQuery options = SearchQueryBuilderFactory.getPublishedItemsByName(moduleName, moduleName,mSearchQuery)
                     .onePage(true)
                     .segmentWithDevice()
                     .build();
@@ -279,11 +279,16 @@ public class GeneralContentModuleActivity extends MobgenHaloActivity implements 
                                     mAdapter.setModuleDataItems(new HaloResultV2<>(result.status(), result.data().data()));
                                     mAdapter.notifyDataSetChanged();
                                     //create generic object of the instance to push a new one
-                                    HaloContentInstance instance = result.data().data().get(0);
-                                    setGenericHaloContentInstance(instance);
-
-                                } else {
-                                    mHaloContentInstance = null;
+                                    //create generic object of the instance to push a new one
+                                    if (result.data().data().size() > 0) {
+                                        HaloContentInstance instance = result.data().data().get(0);
+                                        setGenericHaloContentInstance(instance);
+                                    } else {
+                                        if(mSearchQuery!=null && !mSearchQuery.isEmpty()){
+                                            Toast.makeText(GeneralContentModuleActivity.this, "Sorry we did not find any instance with that name.", Toast.LENGTH_SHORT).show();
+                                        }
+                                        mHaloContentInstance = null;
+                                    }
                                 }
                             }
                         }
@@ -471,7 +476,6 @@ public class GeneralContentModuleActivity extends MobgenHaloActivity implements 
                 mSearchQuery = "";
                 mSearchView.setQuery("", true);
                 closeButtonReset = true;
-                listGeneralContentModuleData(getModuleName());
             }
         });
 
@@ -486,7 +490,7 @@ public class GeneralContentModuleActivity extends MobgenHaloActivity implements 
             }
             @Override
             public boolean onMenuItemActionExpand(MenuItem item) {
-                if (mSearchQuery != null && !mSearchQuery.isEmpty() && mSearchQuery.length()>2) {
+                if (mSearchQuery != null && !mSearchQuery.isEmpty() && mSearchQuery.length()> 2) {
                     mSearchView.post(new Runnable() {
                         @Override
                         public void run() {
@@ -503,7 +507,7 @@ public class GeneralContentModuleActivity extends MobgenHaloActivity implements 
             @Override
             public boolean onQueryTextSubmit(String query) {
                 if(query.length()>2) {
-                    searchQuery(query);
+                    listGeneralContentModuleData(getModuleName());
                     mSearchView.clearFocus();
                 }
                 return true;
@@ -535,37 +539,6 @@ public class GeneralContentModuleActivity extends MobgenHaloActivity implements 
             super.onOptionsItemSelected(item);
         }
         return true;
-    }
-
-    private void searchQuery(String query){
-        SearchQuery options = SearchQueryBuilderFactory.getPublishedItemsByName(mModule.getName(), mModule.getName(),query)
-                .onePage(true)
-                .segmentWithDevice()
-                .build();
-        HaloContentApi.with(MobgenHaloApplication.halo())
-                .search(Data.NETWORK_AND_STORAGE, options)
-                .asContent()
-                .execute(new CallbackV2<Paginated<HaloContentInstance>>() {
-                    @Override
-                    public void onFinish(@NonNull HaloResultV2<Paginated<HaloContentInstance>> result) {
-                        ViewUtils.refreshing(mSwipeRefreshLayout, false);
-                        if (result.status().isOk()) {
-                            List<HaloContentInstance> data = result.data().data();
-                            if (!data.isEmpty()) {
-                                mAdapter.setModuleDataItems(new HaloResultV2<>(result.status(), result.data().data()));
-                                mAdapter.notifyDataSetChanged();
-                                //create generic object of the instance to push a new one
-                                HaloContentInstance instance = result.data().data().get(0);
-                                setGenericHaloContentInstance(instance);
-                            } else {
-                                mHaloContentInstance = null;
-                                Toast.makeText(GeneralContentModuleActivity.this, "Sorry we did not find any instance with that name.", Toast.LENGTH_SHORT).show();
-                            }
-                        } else {
-                            Halog.e(GeneralContentItemActivity.class, "Error while retrieving the new instance: " + result.status().getExceptionMessage());
-                        }
-                    }
-                });
     }
 
     @Override

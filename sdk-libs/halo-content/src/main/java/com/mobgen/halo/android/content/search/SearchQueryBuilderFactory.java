@@ -2,6 +2,7 @@ package com.mobgen.halo.android.content.search;
 
 import android.support.annotation.Keep;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.mobgen.halo.android.content.models.SearchQuery;
 import com.mobgen.halo.android.framework.common.annotations.Api;
@@ -58,34 +59,51 @@ public final class SearchQueryBuilderFactory {
      *
      * @param moduleName  The module name.
      * @param searchTag The tag for this search.
-     * @param query The query
+     * @param queryPattern The instance query pattern to search.
      * @return The options built.
      */
     @NonNull
     @Api(2.2)
     @Keep
-    public static SearchQuery.Builder getPublishedItemsByName(@NonNull String moduleName, @NonNull String searchTag, @NonNull String query) {
+    public static SearchQuery.Builder getPublishedItemsByName(@NonNull String moduleName, @NonNull String searchTag, @Nullable String queryPattern) {
         AssertionUtils.notNull(moduleName, "moduleName");
         AssertionUtils.notNull(searchTag, "searchTag");
         Date now = new Date();
-        return SearchQuery.builder()
-                .moduleName(moduleName)
-                .beginMetaSearch()
-                .lte("publishedAt", now)
-                .and()
-                .eq("deletedAt", null)
-                .and()
-                .beginGroup()
-                .gt("removedAt", now)
-                .or()
-                .eq("removedAt", null)
-                .endGroup()
-                .and()
-                .beginGroup()
-                .like("name",query)
-                .endGroup()
-                .end()
-                .searchTag(searchTag);
+        if(queryPattern!=null && !queryPattern.isEmpty()) {
+            return SearchQuery.builder()
+                    .moduleName(moduleName)
+                    .beginMetaSearch()
+                    .lte("publishedAt", now)
+                    .and()
+                    .eq("deletedAt", null)
+                    .and()
+                    .beginGroup()
+                    .gt("removedAt", now)
+                    .or()
+                    .eq("removedAt", null)
+                    .endGroup()
+                    .and()
+                    .beginGroup()
+                    .like("name", queryPattern)
+                    .endGroup()
+                    .end()
+                    .searchTag(searchTag);
+        } else {
+            return SearchQuery.builder()
+                    .moduleName(moduleName)
+                    .beginMetaSearch()
+                    .lte("publishedAt", now)
+                    .and()
+                    .eq("deletedAt", null)
+                    .and()
+                    .beginGroup()
+                    .gt("removedAt", now)
+                    .or()
+                    .eq("removedAt", null)
+                    .endGroup()
+                    .end()
+                    .searchTag(searchTag);
+        }
     }
 
     /**

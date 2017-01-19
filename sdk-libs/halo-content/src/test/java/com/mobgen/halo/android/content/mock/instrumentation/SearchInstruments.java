@@ -38,6 +38,11 @@ public class SearchInstruments {
                 .build();
     }
 
+    public static SearchQuery givenASearchLikePatternQuery() {
+        return SearchQueryBuilderFactory.getPublishedItemsByName("sampleId", "sample","searchString")
+                .build();
+    }
+
     public static SearchQuery givenTimedCacheQuery(long waitingMillis) {
         return SearchQuery.builder()
                 .moduleIds("sampleId")
