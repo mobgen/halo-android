@@ -10,10 +10,12 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -31,12 +33,12 @@ import com.mobgen.halo.android.content.models.HaloContentInstance;
 import com.mobgen.halo.android.content.models.Paginated;
 import com.mobgen.halo.android.content.models.SearchQuery;
 import com.mobgen.halo.android.content.search.SearchQueryBuilderFactory;
+import com.mobgen.halo.android.framework.common.helpers.logger.Halog;
 import com.mobgen.halo.android.framework.toolbox.data.CallbackV2;
 import com.mobgen.halo.android.framework.toolbox.data.Data;
 import com.mobgen.halo.android.framework.toolbox.data.HaloResultV2;
 import com.mobgen.halo.android.framework.toolbox.data.HaloStatus;
 import com.mobgen.halo.android.sdk.core.management.models.HaloModule;
-import com.mobgen.halo.android.sdk.core.management.segmentation.HaloSegmentationTag;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -118,6 +120,21 @@ public class GeneralContentModuleActivity extends MobgenHaloActivity implements 
      * The tag dialog.
      */
     private AlertDialog mTagDialog;
+
+    /**
+     * The search view
+     */
+    private SearchView mSearchView;
+
+    /**
+     * The search string
+     */
+    private String mSearchQuery;
+
+    /**
+     * Close button state
+     */
+    private Boolean closeButtonReset = false;
 
     /**
      * Factory method to start this activity.
@@ -262,12 +279,11 @@ public class GeneralContentModuleActivity extends MobgenHaloActivity implements 
                                     mAdapter.setModuleDataItems(new HaloResultV2<>(result.status(), result.data().data()));
                                     mAdapter.notifyDataSetChanged();
                                     //create generic object of the instance to push a new one
-                                    if(result.data().data().size()>0) {
-                                        HaloContentInstance instance = result.data().data().get(0);
-                                        setGenericHaloContentInstance(instance);
-                                    } else {
-                                        mHaloContentInstance = null;
-                                    }
+                                    HaloContentInstance instance = result.data().data().get(0);
+                                    setGenericHaloContentInstance(instance);
+
+                                } else {
+                                    mHaloContentInstance = null;
                                 }
                             }
                         }
@@ -414,12 +430,15 @@ public class GeneralContentModuleActivity extends MobgenHaloActivity implements 
         outState.putParcelableArrayList(BUNDLE_SAVE_MODULE_ITEMS, (ArrayList<? extends Parcelable>) mAdapter.getModuleDataItems());
         outState.putParcelable(BUNDLE_SAVE_MODULE_ITEMS_STATUS, mAdapter.getStatus());
         outState.putParcelable("mHaloContentInstance", mHaloContentInstance);
+        mSearchQuery = mSearchView.getQuery().toString();
+        outState.putString("mSearchView", mSearchQuery);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         mHaloContentInstance = savedInstanceState.getParcelable("mHaloContentInstance");
+        mSearchQuery =  savedInstanceState.getString("mSearchView");
     }
 
     @Override
@@ -432,9 +451,74 @@ public class GeneralContentModuleActivity extends MobgenHaloActivity implements 
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(final Menu menu) {
         getMenuInflater().inflate(R.menu.menu_generalcontent_instance_add, menu);
-        return true;
+
+        final MenuItem searchMenuItem = menu.findItem(R.id.action_search);
+        mSearchView = (SearchView) MenuItemCompat.getActionView(searchMenuItem);
+        mSearchView.setQueryHint(getString(R.string.search_hint));
+        //focus the SearchView
+        if (mSearchQuery != null && !mSearchQuery.isEmpty()) {
+            searchMenuItem.expandActionView();
+            mSearchView.setQuery(mSearchQuery, true);
+            mSearchView.clearFocus();
+        }
+
+        final View closeButton = mSearchView.findViewById(android.support.v7.appcompat.R.id.search_close_btn);
+        closeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mSearchQuery = "";
+                mSearchView.setQuery("", true);
+                closeButtonReset = true;
+                listGeneralContentModuleData(getModuleName());
+            }
+        });
+
+        MenuItemCompat.setOnActionExpandListener(searchMenuItem, new MenuItemCompat.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                if(mSearchQuery==null || mSearchQuery.isEmpty()) {
+                    mSearchQuery = null;
+                    listGeneralContentModuleData(getModuleName());
+                }
+                return true;
+            }
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                if (mSearchQuery != null && !mSearchQuery.isEmpty() && mSearchQuery.length()>2) {
+                    mSearchView.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            mSearchView.setQuery(mSearchQuery, false);
+                        }
+                    });
+                }
+                return true;
+            }
+        });
+
+
+        mSearchView.setOnQueryTextListener(new android.support.v7.widget.SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                if(query.length()>2) {
+                    searchQuery(query);
+                    mSearchView.clearFocus();
+                }
+                return true;
+            }
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if(!newText.isEmpty() || closeButtonReset){
+                    mSearchQuery = newText;
+                }
+                closeButtonReset = false;
+                return true;
+            }
+        });
+
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -451,6 +535,37 @@ public class GeneralContentModuleActivity extends MobgenHaloActivity implements 
             super.onOptionsItemSelected(item);
         }
         return true;
+    }
+
+    private void searchQuery(String query){
+        SearchQuery options = SearchQueryBuilderFactory.getPublishedItemsByName(mModule.getName(), mModule.getName(),query)
+                .onePage(true)
+                .segmentWithDevice()
+                .build();
+        HaloContentApi.with(MobgenHaloApplication.halo())
+                .search(Data.NETWORK_AND_STORAGE, options)
+                .asContent()
+                .execute(new CallbackV2<Paginated<HaloContentInstance>>() {
+                    @Override
+                    public void onFinish(@NonNull HaloResultV2<Paginated<HaloContentInstance>> result) {
+                        ViewUtils.refreshing(mSwipeRefreshLayout, false);
+                        if (result.status().isOk()) {
+                            List<HaloContentInstance> data = result.data().data();
+                            if (!data.isEmpty()) {
+                                mAdapter.setModuleDataItems(new HaloResultV2<>(result.status(), result.data().data()));
+                                mAdapter.notifyDataSetChanged();
+                                //create generic object of the instance to push a new one
+                                HaloContentInstance instance = result.data().data().get(0);
+                                setGenericHaloContentInstance(instance);
+                            } else {
+                                mHaloContentInstance = null;
+                                Toast.makeText(GeneralContentModuleActivity.this, "Sorry we did not find any instance with that name.", Toast.LENGTH_SHORT).show();
+                            }
+                        } else {
+                            Halog.e(GeneralContentItemActivity.class, "Error while retrieving the new instance: " + result.status().getExceptionMessage());
+                        }
+                    }
+                });
     }
 
     @Override

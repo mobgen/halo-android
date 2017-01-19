@@ -250,6 +250,21 @@ public class SearchSyntax {
     }
 
     /**
+     * Like operation.
+     *
+     * @param property The property.
+     * @param value    The value.
+     * @return The current query.
+     */
+    @Keep
+    @Api(2.2)
+    @NonNull
+    public SearchSyntax like(@NonNull String property, @Nullable Object value) {
+        mInfixExpression.add(Operator.like(property, value));
+        return this;
+    }
+
+    /**
      * Begins a group in the query.
      *
      * @return The group to begin.

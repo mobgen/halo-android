@@ -113,6 +113,7 @@
     <string name="load_retrieve_time">Database fetch time: </string>
     <string name="load_measuring">Measuring</string>
     <string name="search_title">Search</string>
+    <string name="search_hint">Find a item</string>
     <string name="sync_title">Sync</string>
 
     <!-- Analytics -->

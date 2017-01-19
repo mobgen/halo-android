@@ -54,6 +54,41 @@ public final class SearchQueryBuilderFactory {
     }
 
     /**
+     * Brings all the published items for the given module filtered by name
+     *
+     * @param moduleName  The module name.
+     * @param searchTag The tag for this search.
+     * @param query The query
+     * @return The options built.
+     */
+    @NonNull
+    @Api(2.2)
+    @Keep
+    public static SearchQuery.Builder getPublishedItemsByName(@NonNull String moduleName, @NonNull String searchTag, @NonNull String query) {
+        AssertionUtils.notNull(moduleName, "moduleName");
+        AssertionUtils.notNull(searchTag, "searchTag");
+        Date now = new Date();
+        return SearchQuery.builder()
+                .moduleName(moduleName)
+                .beginMetaSearch()
+                .lte("publishedAt", now)
+                .and()
+                .eq("deletedAt", null)
+                .and()
+                .beginGroup()
+                .gt("removedAt", now)
+                .or()
+                .eq("removedAt", null)
+                .endGroup()
+                .and()
+                .beginGroup()
+                .like("name",query)
+                .endGroup()
+                .end()
+                .searchTag(searchTag);
+    }
+
+    /**
      * Provides the expired items.
      *
      * @param moduleName  The module name.
