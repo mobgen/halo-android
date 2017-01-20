@@ -106,6 +106,33 @@ public final class SearchQueryBuilderFactory {
         }
     }
 
+
+    /**
+     * Brings all items for the given module filtered by value
+     *
+     * @param moduleName  The module name.
+     * @param searchTag The tag for this search.
+     * @param valueName The value name to search for.
+     * @param valueQuery The instance query pattern to search.
+     * @return The options built.
+     */
+    @NonNull
+    @Api(2.2)
+    @Keep
+    public static SearchQuery.Builder getItemsByContentValue(@NonNull String moduleName, @NonNull String searchTag, @NonNull String valueName, @NonNull Object valueQuery) {
+        AssertionUtils.notNull(moduleName, "moduleName");
+        AssertionUtils.notNull(searchTag, "searchTag");
+        AssertionUtils.notNull(valueName,"valueName");
+        AssertionUtils.notNull(valueQuery,"queryPattern");
+        Date now = new Date();
+        return SearchQuery.builder()
+                .moduleName(moduleName)
+                .beginSearch()
+                .like(valueName, valueQuery)
+                .end()
+                .searchTag(searchTag);
+    }
+
     /**
      * Provides the expired items.
      *

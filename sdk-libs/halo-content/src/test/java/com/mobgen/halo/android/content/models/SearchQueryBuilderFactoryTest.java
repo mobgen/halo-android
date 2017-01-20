@@ -20,6 +20,8 @@ public class SearchQueryBuilderFactoryTest extends HaloJUnitTest {
         String moduleId = "fakeId";
         String fakeTag = "fakeTag";
         String query = "fakeQuery";
+        String valueName = "fakeValue";
+        assertThat(SearchQueryBuilderFactory.getItemsByContentValue(moduleId, fakeTag, valueName, true)).isNotNull();
         assertThat(SearchQueryBuilderFactory.getPublishedItemsByName(moduleId, fakeTag,query)).isNotNull();
         assertThat(SearchQueryBuilderFactory.getArchivedItems(moduleId, fakeTag)).isNotNull();
         assertThat(SearchQueryBuilderFactory.getDraftItems(moduleId, fakeTag)).isNotNull();
