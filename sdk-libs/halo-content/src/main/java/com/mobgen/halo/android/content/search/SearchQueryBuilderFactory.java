@@ -2,6 +2,7 @@ package com.mobgen.halo.android.content.search;
 
 import android.support.annotation.Keep;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.mobgen.halo.android.content.models.SearchQuery;
 import com.mobgen.halo.android.framework.common.annotations.Api;
@@ -49,6 +50,85 @@ public final class SearchQueryBuilderFactory {
                 .or()
                 .eq("removedAt", null)
                 .endGroup()
+                .end()
+                .searchTag(searchTag);
+    }
+
+    /**
+     * Brings all the published items for the given module filtered by name
+     *
+     * @param moduleName  The module name.
+     * @param searchTag The tag for this search.
+     * @param queryPattern The instance query pattern to search.
+     * @return The options built.
+     */
+    @NonNull
+    @Api(2.2)
+    @Keep
+    public static SearchQuery.Builder getPublishedItemsByName(@NonNull String moduleName, @NonNull String searchTag, @Nullable String queryPattern) {
+        AssertionUtils.notNull(moduleName, "moduleName");
+        AssertionUtils.notNull(searchTag, "searchTag");
+        Date now = new Date();
+        if(queryPattern!=null && !queryPattern.isEmpty()) {
+            return SearchQuery.builder()
+                    .moduleName(moduleName)
+                    .beginMetaSearch()
+                    .lte("publishedAt", now)
+                    .and()
+                    .eq("deletedAt", null)
+                    .and()
+                    .beginGroup()
+                    .gt("removedAt", now)
+                    .or()
+                    .eq("removedAt", null)
+                    .endGroup()
+                    .and()
+                    .beginGroup()
+                    .like("name", queryPattern)
+                    .endGroup()
+                    .end()
+                    .searchTag(searchTag);
+        } else {
+            return SearchQuery.builder()
+                    .moduleName(moduleName)
+                    .beginMetaSearch()
+                    .lte("publishedAt", now)
+                    .and()
+                    .eq("deletedAt", null)
+                    .and()
+                    .beginGroup()
+                    .gt("removedAt", now)
+                    .or()
+                    .eq("removedAt", null)
+                    .endGroup()
+                    .end()
+                    .searchTag(searchTag);
+        }
+    }
+
+
+    /**
+     * Brings all items for the given module filtered by value
+     *
+     * @param moduleName  The module name.
+     * @param searchTag The tag for this search.
+     * @param valueName The value name to search for.
+     * @param valueQuery The instance query pattern to search.
+     * @return The options built.
+     */
+    @NonNull
+    @Api(2.2)
+    @Keep
+    public static SearchQuery.Builder getItemsByContentValue(@NonNull String moduleName, @NonNull String searchTag, @NonNull String valueName, @NonNull Object valueQuery) {
+        AssertionUtils.notNull(moduleName, "moduleName");
+        AssertionUtils.notNull(searchTag, "searchTag");
+        AssertionUtils.notNull(valueName,"valueName");
+        AssertionUtils.notNull(valueQuery,"queryPattern");
+        Date now = new Date();
+        return SearchQuery.builder()
+                .moduleName(moduleName)
+                .beginSearch()
+                .like(valueName, valueQuery)
                 .end()
                 .searchTag(searchTag);
     }

@@ -28,6 +28,7 @@ import static com.mobgen.halo.android.content.mock.instrumentation.HaloContentAp
 import static com.mobgen.halo.android.content.mock.instrumentation.HaloMock.givenADefaultHalo;
 import static com.mobgen.halo.android.content.mock.instrumentation.SearchInstruments.givenAComplexQuery;
 import static com.mobgen.halo.android.content.mock.instrumentation.SearchInstruments.givenANotPaginatedQuery;
+import static com.mobgen.halo.android.content.mock.instrumentation.SearchInstruments.givenASearchLikePatternQuery;
 import static com.mobgen.halo.android.content.mock.instrumentation.SearchInstruments.givenCallbackContentParsedEmptyDataLocal;
 import static com.mobgen.halo.android.content.mock.instrumentation.SearchInstruments.givenCallbackContentParsedSuccessData;
 import static com.mobgen.halo.android.content.mock.instrumentation.SearchInstruments.givenCallbackContentSuccessData;
@@ -77,6 +78,20 @@ public class HaloContentSearchTest extends HaloRobolectricTest {
         SearchQuery query = givenTheSimplestQuery();
         enqueueServerError(mMockServer, 500);
         CallbackV2<Paginated<HaloContentInstance>> callback = givenCallbackThatChecksDataIsInconsistent(mCallbackFlag);
+
+        ICancellable cancellable = mHaloContentApi.search(Data.NETWORK_ONLY, query)
+                .asContent()
+                .execute(callback);
+
+        assertThat(mCallbackFlag.isFlagged()).isTrue();
+        assertThat(cancellable).isNotNull();
+    }
+
+    @Test
+    public void thatCanPerfomASearchQueryWithOperationLikePattern() throws IOException {
+        enqueueServerFile(mMockServer, SEARCH_PAGINATED_RESPONSE);
+        SearchQuery query = givenASearchLikePatternQuery();
+        CallbackV2<Paginated<HaloContentInstance>> callback = givenCallbackContentSuccessData(mCallbackFlag,true);
 
         ICancellable cancellable = mHaloContentApi.search(Data.NETWORK_ONLY, query)
                 .asContent()

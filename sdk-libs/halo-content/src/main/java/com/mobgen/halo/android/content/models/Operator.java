@@ -59,6 +59,10 @@ public class Operator implements SearchExpression {
      * Not in operator
      */
     private static final String NOT_IN = "!in";
+    /**
+     * Like operator.
+     */
+    private static final String LIKE = "like";
 
     /**
      * Type null.
@@ -244,6 +248,18 @@ public class Operator implements SearchExpression {
     @NonNull
     public static Operator in(@NonNull String property, @NonNull List data) {
         return new Operator(property, IN, data);
+    }
+
+    /**
+     * Like operation definition.
+     *
+     * @param property The property to act on.
+     * @param data     The data for the operation of this property.
+     * @return The operator generated.
+     */
+    @NonNull
+    public static Operator like(@NonNull String property, @Nullable Object data) {
+        return new Operator(property, LIKE, data);
     }
 
     /**
