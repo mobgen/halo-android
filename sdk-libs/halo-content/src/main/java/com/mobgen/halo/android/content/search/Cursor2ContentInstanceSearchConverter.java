@@ -68,11 +68,12 @@ public class Cursor2ContentInstanceSearchConverter implements ISelectorConverter
      */
     @NonNull
     private Paginated<HaloContentInstance> parse(@NonNull Cursor cursor) throws HaloStorageParseException, HaloStorageGeneralException {
+        Cursor optionsCursor = null;
         try {
             String optionsId = mQuery.createHash(mParser);
 
             //Take the query using the info from the search table
-            Cursor optionsCursor = Select.all()
+            optionsCursor = Select.all()
                     .from(HaloContentContract.ContentSearchQuery.class)
                     .where(HaloContentContract.ContentSearchQuery.QUERY_ID)
                     .eq(optionsId)
@@ -94,11 +95,14 @@ public class Cursor2ContentInstanceSearchConverter implements ISelectorConverter
                 // From the server
                 info = new PaginationInfo(instances.size());
             }
-
             //Just return
             return new Paginated<>(instances, info);
         } catch (HaloParsingException e) {
             throw new HaloStorageParseException("Error while creating the hash", e);
+        } finally {
+            if(optionsCursor!=null && !optionsCursor.isClosed()){
+                optionsCursor.close();
+            }
         }
     }
 }

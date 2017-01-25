@@ -127,6 +127,15 @@ public class HaloConfig {
     }
 
     /**
+     * Provides the print log to file policy.
+     * @return The policy value.
+     */
+    @Api(2.2)
+    public int printToFilePolicy() {
+        return mBuilder.mPrintPolicy;
+    }
+
+    /**
      * Creates a new configuration with the given context.
      *
      * @param context The context.
@@ -152,6 +161,10 @@ public class HaloConfig {
          * Sets the debug flag on the framework.
          */
         private boolean mIsDebug;
+        /**
+         * The print log to file policy
+         */
+        private int mPrintPolicy;
         /**
          * The response parser.
          */
@@ -202,6 +215,19 @@ public class HaloConfig {
         @NonNull
         public Builder setDebug(boolean debug) {
             mIsDebug = debug;
+            return this;
+        }
+
+        /**
+         * Sets the print to file policy.
+         *
+         * @param printPolicy The print to file policy.
+         * @return The current builder.
+         */
+        @Api(2.2)
+        @NonNull
+        public Builder printToFilePolicy(int printPolicy) {
+            mPrintPolicy = printPolicy;
             return this;
         }
 

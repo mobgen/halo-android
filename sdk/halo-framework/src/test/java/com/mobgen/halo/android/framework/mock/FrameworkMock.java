@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import com.mobgen.halo.android.framework.api.HaloConfig;
 import com.mobgen.halo.android.framework.api.HaloFramework;
 import com.mobgen.halo.android.framework.api.HaloNetworkApi;
+import com.mobgen.halo.android.framework.common.helpers.logger.PrintLog;
 import com.mobgen.halo.android.framework.network.client.HaloNetClient;
 import com.mobgen.halo.android.framework.network.client.endpoint.HaloEndpoint;
 import com.mobgen.halo.android.framework.network.client.response.Parser;
@@ -36,12 +37,66 @@ public class FrameworkMock {
         return HaloFramework.create(createSameThreadMockConfig(mock(Parser.Factory.class),endpointUrl));
     }
 
+
+    public static HaloFramework createSameThreadFrameworkWithFilePolicy(String endpointUrl,int type) {
+        switch (type){
+            case 1: return HaloFramework.create(createSameThreadMockConfigNoPrintingLogFile(mock(Parser.Factory.class),endpointUrl));
+            case 2: return HaloFramework.create(createSameThreadMockConfigPrintingASingleLogFile(mock(Parser.Factory.class),endpointUrl));
+            case 3: return HaloFramework.create(createSameThreadMockConfigPrintingMultipleLogFile(mock(Parser.Factory.class),endpointUrl));
+            default: return HaloFramework.create(createSameThreadMockConfigWithoutDebugMode(mock(Parser.Factory.class),endpointUrl));
+        }
+    }
+
+    @NonNull
+    public static HaloConfig.Builder createSameThreadMockConfigWithoutDebugMode(Parser.Factory factory,String endpointUrl) {
+        return HaloConfig.builder(RuntimeEnvironment.application).threadManager(new TestThreadManager())
+                .setParser(factory)
+                .jobScheduler(givenAMockedScheduler())
+                .setDebug(false)
+                .printToFilePolicy(PrintLog.SINGLE_FILE_POLICY)
+                .setOkClient(givenOkHttpBuilder())
+                .addEndpoint(new HaloEndpoint("1",endpointUrl));
+    }
+
     @NonNull
     public static HaloConfig.Builder createSameThreadMockConfig(Parser.Factory factory,String endpointUrl) {
         return HaloConfig.builder(RuntimeEnvironment.application).threadManager(new TestThreadManager())
                 .setParser(factory)
                 .jobScheduler(givenAMockedScheduler())
                 .setDebug(true)
+                .setOkClient(givenOkHttpBuilder())
+                .addEndpoint(new HaloEndpoint("1",endpointUrl));
+    }
+
+    @NonNull
+    public static HaloConfig.Builder createSameThreadMockConfigNoPrintingLogFile(Parser.Factory factory,String endpointUrl) {
+        return HaloConfig.builder(RuntimeEnvironment.application).threadManager(new TestThreadManager())
+                .setParser(factory)
+                .jobScheduler(givenAMockedScheduler())
+                .setDebug(true)
+                .printToFilePolicy(PrintLog.NO_FILE_POLICY)
+                .setOkClient(givenOkHttpBuilder())
+                .addEndpoint(new HaloEndpoint("1",endpointUrl));
+    }
+
+    @NonNull
+    public static HaloConfig.Builder createSameThreadMockConfigPrintingASingleLogFile(Parser.Factory factory,String endpointUrl) {
+        return HaloConfig.builder(RuntimeEnvironment.application).threadManager(new TestThreadManager())
+                .setParser(factory)
+                .jobScheduler(givenAMockedScheduler())
+                .setDebug(true)
+                .printToFilePolicy(PrintLog.SINGLE_FILE_POLICY)
+                .setOkClient(givenOkHttpBuilder())
+                .addEndpoint(new HaloEndpoint("1",endpointUrl));
+    }
+
+    @NonNull
+    public static HaloConfig.Builder createSameThreadMockConfigPrintingMultipleLogFile(Parser.Factory factory,String endpointUrl) {
+        return HaloConfig.builder(RuntimeEnvironment.application).threadManager(new TestThreadManager())
+                .setParser(factory)
+                .jobScheduler(givenAMockedScheduler())
+                .setDebug(true)
+                .printToFilePolicy(PrintLog.MULTIPLE_FILE_POLICY)
                 .setOkClient(givenOkHttpBuilder())
                 .addEndpoint(new HaloEndpoint("1",endpointUrl));
     }
