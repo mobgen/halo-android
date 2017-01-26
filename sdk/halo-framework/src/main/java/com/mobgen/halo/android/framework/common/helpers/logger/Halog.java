@@ -96,7 +96,7 @@ public class Halog {
             if (mPrintDebug) {
                 mFormatter.d(clazz, message);
                 if(mPrintLogToFilePolicy!= PrintLog.NO_FILE_POLICY){
-                    enqueuePrintLogToFile(message);
+                    enqueuePrintLogToFile(clazz,message);
                 }
             }
         }
@@ -114,7 +114,7 @@ public class Halog {
             if (mPrintDebug) {
                 mFormatter.v(clazz, message);
                 if(mPrintLogToFilePolicy!= PrintLog.NO_FILE_POLICY){
-                    enqueuePrintLogToFile(message);
+                    enqueuePrintLogToFile(clazz,message);
                 }
             }
         }
@@ -131,7 +131,7 @@ public class Halog {
         synchronized (SYNCHRONIZED_REFERENCE) {
             mFormatter.i(clazz, message);
             if(mPrintLogToFilePolicy!= PrintLog.NO_FILE_POLICY && mPrintDebug){
-                enqueuePrintLogToFile(message);
+                enqueuePrintLogToFile(clazz,message);
             }
         }
     }
@@ -147,7 +147,7 @@ public class Halog {
         synchronized (SYNCHRONIZED_REFERENCE) {
             mFormatter.w(clazz, message);
             if(mPrintLogToFilePolicy!= PrintLog.NO_FILE_POLICY && mPrintDebug){
-                enqueuePrintLogToFile(message);
+                enqueuePrintLogToFile(clazz,message);
             }
         }
     }
@@ -163,7 +163,7 @@ public class Halog {
         synchronized (SYNCHRONIZED_REFERENCE) {
             mFormatter.e(clazz, message);
             if(mPrintLogToFilePolicy!= PrintLog.NO_FILE_POLICY && mPrintDebug){
-                enqueuePrintLogToFile(message);
+                enqueuePrintLogToFile(clazz,message);
             }
         }
     }
@@ -180,7 +180,7 @@ public class Halog {
         synchronized (SYNCHRONIZED_REFERENCE) {
             mFormatter.e(clazz, message, e);
             if(mPrintLogToFilePolicy!= PrintLog.NO_FILE_POLICY && mPrintDebug) {
-                enqueuePrintLogToFile(message);
+                enqueuePrintLogToFile(clazz,message);
             }
         }
     }
@@ -197,7 +197,7 @@ public class Halog {
             if (mPrintDebug) {
                 mFormatter.wtf(clazz, message);
                 if(mPrintLogToFilePolicy!= PrintLog.NO_FILE_POLICY){
-                    enqueuePrintLogToFile(message);
+                    enqueuePrintLogToFile(clazz,message);
                 }
             }
         }
@@ -233,7 +233,6 @@ public class Halog {
             }
             if (mPrintLogToFilePolicy != PrintLog.NO_FILE_POLICY) {
                 mLogFile = new File(haloFramework.context().getExternalFilesDir(null).getAbsolutePath() + filename);
-                //  mLogFile = new File(context.getFilesDir().getAbsolutePath() + filename);
                 try {
                     //create directory
                     File directory = mLogFile.getParentFile();
@@ -253,7 +252,7 @@ public class Halog {
     /**
      * Get the path of the printed log file.
      *
-     * @return The path to log file
+     * @return The path to log file or the last modified file if multiple file policy.
      */
     @Nullable
     @Api (2.2)
@@ -281,28 +280,32 @@ public class Halog {
     /**
      * Enqueue print task on a single thread.
      *
+     * @param clazz The classname
      * @param message The message to print to file.
      */
-    private static void enqueuePrintLogToFile(final String message)  {
+    private static void enqueuePrintLogToFile(final Class<?> clazz,final String message)  {
 
         mHaloFramework.toolbox().queue().enqueue(Threading.SINGLE_QUEUE_POLICY, new Runnable() {
             @Override
             public void run() {
-                printMessageToFile(message);
+                printMessageToFile(clazz,message);
             }
         });
     }
 
     /**
      * Tries to print Halo log messages to file.
+     * @param clazz The classname
      * @param message The message to print to file.
      */
-    private static void printMessageToFile(String message){
+    private static void printMessageToFile(Class<?> clazz,String message){
         String state = Environment.getExternalStorageState();
         if (Environment.MEDIA_MOUNTED.equals(state)) {
             try {
+                Date now = new Date();
+                String tag = now.toString() + "/" + clazz.getSimpleName();
                 BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(mLogFile, true));
-                bufferedWriter.write(message + "\r\n");
+                bufferedWriter.write(tag + "\t\t|" + message + "\r");
                 bufferedWriter.newLine();
                 bufferedWriter.flush();
                 bufferedWriter.close();
