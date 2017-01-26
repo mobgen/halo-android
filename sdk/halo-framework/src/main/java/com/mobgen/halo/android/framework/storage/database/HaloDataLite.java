@@ -3,6 +3,7 @@ package com.mobgen.halo.android.framework.storage.database;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
 import com.mobgen.halo.android.framework.common.annotations.Api;
@@ -141,7 +142,10 @@ public class HaloDataLite extends SQLiteOpenHelper implements Corruptible {
     public void attachDatabase(@NonNull String databaseName, @NonNull String aliasName) {
         AssertionUtils.notNull(databaseName, "databaseName");
         AssertionUtils.notNull(aliasName, "aliasName");
-        getDatabase().execSQL(String.format("ATTACH ? as ?;", mContext.getDatabasePath(databaseName), aliasName));
+        SQLiteStatement stmt = getDatabase().compileStatement("ATTACH ? as ? ;");
+        stmt.bindString(1, databaseName);
+        stmt.bindString(2, aliasName);
+        stmt.execute();
     }
 
     /**
@@ -152,7 +156,9 @@ public class HaloDataLite extends SQLiteOpenHelper implements Corruptible {
     @Api(1.3)
     public void detachDatabase(@NonNull String aliasName) {
         AssertionUtils.notNull(aliasName, "aliasName");
-        getDatabase().execSQL(String.format("DETACH ?;", aliasName));
+        SQLiteStatement statement = getDatabase().compileStatement("DETACH ?;");
+        statement.bindString(1, aliasName);
+        statement.execute();
     }
 
     /**
