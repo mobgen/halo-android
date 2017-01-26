@@ -142,10 +142,7 @@ public class HaloDataLite extends SQLiteOpenHelper implements Corruptible {
     public void attachDatabase(@NonNull String databaseName, @NonNull String aliasName) {
         AssertionUtils.notNull(databaseName, "databaseName");
         AssertionUtils.notNull(aliasName, "aliasName");
-        SQLiteStatement stmt = getDatabase().compileStatement("ATTACH ? as ? ;");
-        stmt.bindString(1, databaseName);
-        stmt.bindString(2, aliasName);
-        stmt.execute();
+        getDatabase().execSQL("ATTACH '" + mContext.getDatabasePath(databaseName) + "' as " + aliasName + ";");
     }
 
     /**
@@ -156,9 +153,7 @@ public class HaloDataLite extends SQLiteOpenHelper implements Corruptible {
     @Api(1.3)
     public void detachDatabase(@NonNull String aliasName) {
         AssertionUtils.notNull(aliasName, "aliasName");
-        SQLiteStatement statement = getDatabase().compileStatement("DETACH ?;");
-        statement.bindString(1, aliasName);
-        statement.execute();
+        getDatabase().execSQL("DETACH " + aliasName + ";");
     }
 
     /**
