@@ -122,7 +122,10 @@ public class SocialTokenInformation extends MobgenHaloActivity implements  View.
             }else {
                 return null;
             }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 4e8470ccaf14de54679e019834827092907bb00d
         } catch (SecurityException securityException){
             return null;
         }

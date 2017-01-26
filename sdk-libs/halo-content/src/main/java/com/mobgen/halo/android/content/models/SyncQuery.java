@@ -76,6 +76,7 @@ public class SyncQuery implements Parcelable {
     @Keep
     @Api(2.0)
     @NonNull
+
     public static SyncQuery create(@NonNull String moduleName, @Threading.Policy int threadingMode) {
         return create(moduleName, null, threadingMode);
     }
@@ -83,6 +84,7 @@ public class SyncQuery implements Parcelable {
     /**
      * Creates the builder of the sync options.
      *
+     * @param moduleName    The module name.
      * @param moduleName    The module name.
      * @param locale        The locale definition.
      * @param threadingMode The threadPolicy mode.

@@ -5,10 +5,13 @@ import android.os.Parcelable;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
+import com.mobgen.halo.android.content.annotations.HaloQuery;
+import com.mobgen.halo.android.content.annotations.HaloSearchable;
 
 import java.util.Date;
 
 @JsonObject
+@HaloSearchable(version = 15)
 public class QROffer implements Parcelable {
 
     private String mId;
@@ -51,7 +54,7 @@ public class QROffer implements Parcelable {
     public String getTitle() {
         return mTitle;
     }
-
+    @HaloQuery(name="selectDate",query="select * from HALO_GC_QROFFER where GC_MDATE = ?mDate:Date orderBy id DESCENDANT")
     public Date getDate() {
         return mDate;
     }
