@@ -22,7 +22,6 @@ task javadocCustom(type: Javadoc) {
     source = sourceSets.main.java.srcDirs
 }
 
-//task javadocJar(type: Jar, dependsOn: "documentationRelease") {
 task javadocJar(type: Jar) {
     from javadoc.destinationDir
     classifier = 'javadocCustom'

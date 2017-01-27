@@ -76,7 +76,6 @@ public class SyncQuery implements Parcelable {
     @Keep
     @Api(2.0)
     @NonNull
-
     public static SyncQuery create(@NonNull String moduleName, @Threading.Policy int threadingMode) {
         return create(moduleName, null, threadingMode);
     }

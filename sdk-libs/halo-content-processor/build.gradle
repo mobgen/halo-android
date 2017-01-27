@@ -9,16 +9,10 @@ jacoco {
     toolVersion = "${rootProject.ext.jacocoVersion}"
 }
 
-//repositories {
-  //  maven { url '/Users/mobgenimac/Library/Android/sdk/extras/android/m2repository' }
-//}
-
 dependencies{
     compile "com.squareup:javapoet:${rootProject.ext.javapoetVersion}"
     compile "com.google.auto.service:auto-service:${rootProject.ext.autoServiceVersion}"
     compile project(path: ':halo-content-annotations')
-//    compile "com.mobgen.halo.android:halo-sdk:${rootProject.ext.haloVersion}"
-//    compile "com.mobgen.halo.android:halo-framework:${rootProject.ext.haloVersion}"
 }
 
 /**
@@ -36,7 +30,6 @@ task javadocCustom(type: Javadoc) {
     source = sourceSets.main.java.srcDirs
 }
 
-//task javadocJar(type: Jar, dependsOn: "documentationRelease") {
 task javadocJar(type: Jar) {
     from javadoc.destinationDir
     classifier = 'javadocCustom'
