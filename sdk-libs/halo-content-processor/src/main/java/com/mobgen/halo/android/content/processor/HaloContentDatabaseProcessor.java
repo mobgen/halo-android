@@ -9,6 +9,8 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.ParameterizedTypeName;
+import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 
 import java.io.IOException;
@@ -159,11 +161,12 @@ public class HaloContentDatabaseProcessor extends AbstractProcessor {
             List<String> paramNames = new ArrayList<>();
             //create the query method
             for(int i=0;i<query.length();i++){
-                if(query.charAt(i) == '?'){
+                if(query.charAt(i) == '@'){
+                    i++;//skip { char
                     String param = query.substring(i+1);
                     paramNames.add(param.substring(0,param.indexOf(":")));
-                    methodBuilder.addParameter(resolveDataType(param.substring(param.indexOf(":")+1,param.indexOf("@"))),param.substring(0,param.indexOf(":")));
-                    query = query.replace("?" + param.substring(0,param.indexOf("@")+1),"?");
+                    methodBuilder.addParameter(resolveDataType(param.substring(param.indexOf(":")+1,param.indexOf("}"))),param.substring(0,param.indexOf(":")));
+                    query = query.replace("@{" + param.substring(0,param.indexOf("}")+1),"?");
                 }
             }
             //return statement of the query method
@@ -172,7 +175,7 @@ public class HaloContentDatabaseProcessor extends AbstractProcessor {
             for(int j=0;j<paramNames.size();j++) {
                 methodBuilder.addStatement("bindArgs[$L]=$L", j, paramNames.get(j));
             }
-            methodBuilder.returns(haloInteractor)
+            methodBuilder.returns(ParameterizedTypeName.get(haloInteractor, cursor))
                     .addStatement("return new HaloInteractorExecutor<$4T>(halo()," +
                             "\"Generated field query\"," +
                             "new $1T(new $2T(new $3T(halo().framework())),query,bindArgs)" +

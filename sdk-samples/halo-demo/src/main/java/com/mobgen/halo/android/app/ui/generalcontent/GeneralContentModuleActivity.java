@@ -20,6 +20,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -43,6 +44,7 @@ import com.mobgen.halo.android.content.models.SearchQuery;
 import com.mobgen.halo.android.content.search.SearchQueryBuilderFactory;
 import com.mobgen.halo.android.content.spec.HaloContentContract;
 import com.mobgen.halo.android.framework.storage.database.dsl.queries.Create;
+import com.mobgen.halo.android.framework.storage.database.dsl.queries.Delete;
 import com.mobgen.halo.android.framework.toolbox.data.CallbackV2;
 import com.mobgen.halo.android.framework.toolbox.data.Data;
 import com.mobgen.halo.android.framework.toolbox.data.HaloResultV2;
@@ -225,7 +227,7 @@ public class GeneralContentModuleActivity extends MobgenHaloActivity implements 
         ContentValues values1 = new ContentValues();
         values1.put(HaloTable$$ContentVersion.TABLE_ID, 1);
         values1.put(HaloTable$$ContentVersion.TABLE_NAME, "HALO_GC_ARTICLE");
-        values1.put(HaloTable$$ContentVersion.TABLE_VERSION,10);
+        values1.put(HaloTable$$ContentVersion.TABLE_VERSION,11);
         database.insertWithOnConflict("HALO_GC_CONTENT_VERSION",null,values1, SQLiteDatabase.CONFLICT_REPLACE);
         Create.table(HaloTable$$QROffer.class).on(database, "Creates the HaloTable$$QROffer table from codegen");
         ContentValues values2 = new ContentValues();
@@ -235,9 +237,25 @@ public class GeneralContentModuleActivity extends MobgenHaloActivity implements 
         database.insertWithOnConflict("HALO_GC_CONTENT_VERSION",null,values2,SQLiteDatabase.CONFLICT_REPLACE);
 
         HaloContentQueryApi.with(MobgenHaloApplication.halo()).insertArticle("The best article ever",new Date(),"Article","Summary",null,null)
-                .execute(new CallbackV2() {
+                .execute(new CallbackV2<Cursor>() {
                     @Override
-                    public void onFinish(@NonNull HaloResultV2 result) {
+                    public void onFinish(@NonNull HaloResultV2<Cursor> result) {
+
+                    }
+                });
+        HaloContentQueryApi.with(MobgenHaloApplication.halo()).selectTitle("The best article ever")
+                .execute(new CallbackV2<Cursor>() {
+                    @Override
+                    public void onFinish(@NonNull HaloResultV2<Cursor> result) {
+                        if(result.status().isOk()){
+                            Log.v("Resuklt",result.data().toString());
+                        }
+                    }
+                });
+        HaloContentQueryApi.with(MobgenHaloApplication.halo()).deleteByTitle("The best article ever")
+                .execute(new CallbackV2<Cursor>() {
+                    @Override
+                    public void onFinish(@NonNull HaloResultV2<Cursor> result) {
 
                     }
                 });

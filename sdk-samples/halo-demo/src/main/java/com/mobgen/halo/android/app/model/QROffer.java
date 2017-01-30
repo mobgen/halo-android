@@ -54,7 +54,7 @@ public class QROffer implements Parcelable {
     public String getTitle() {
         return mTitle;
     }
-    @HaloQuery(name="selectDate",query="select * from HALO_GC_QROFFER where GC_MDATE = ?mDate:String@ orderBy id DESCENDANT")
+    @HaloQuery(name="selectDate",query="select * from HALO_GC_QROFFER where GC_MDATE = @{mDate:String} orderBy id DESCENDANT")
     public Date getDate() {
         return mDate;
     }

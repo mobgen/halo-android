@@ -19,11 +19,11 @@ android {
         versionName "${rootProject.ext.haloVersion}"
     }
 
-    sourceSets {
+    /*sourceSets {
         main {
             java.srcDirs = ['src/main/java', 'build/generated/source/apt/release']
         }
-    }
+    }*/
 
     buildTypes {
         debug {

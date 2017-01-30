@@ -1,6 +1,7 @@
 package com.mobgen.halo.android.content.generated;
 
 import android.database.Cursor;
+import android.database.SQLException;
 import android.support.annotation.NonNull;
 
 import com.mobgen.halo.android.content.models.HaloContentInstance;
@@ -33,11 +34,11 @@ public class GeneratedContentQueriesLocalDataSource {
 
 
     @NonNull
-    public Cursor perfomQuery(@NonNull String query,@NonNull Object[] bindArgs) throws HaloNetException, HaloParsingException {
+    public Cursor perfomQuery(@NonNull String query,@NonNull Object[] bindArgs) throws SQLException {
         //convert obects to string to perfom queries
         int length = bindArgs.length;
-        String[] bindstringArgs = new String[length-1];
-        for(int i=0;i<length-1;i++){
+        String[] bindstringArgs = new String[length];
+        for(int i=0;i<length;i++){
             if(bindArgs[i]==null){
                 bindstringArgs[i] = "";
             } else if(bindArgs[i] instanceof String) {
