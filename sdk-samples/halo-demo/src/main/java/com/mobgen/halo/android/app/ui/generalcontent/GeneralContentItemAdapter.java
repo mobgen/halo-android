@@ -187,7 +187,7 @@ public class GeneralContentItemAdapter extends RecyclerView.Adapter<GeneralConte
 
                 @Override
                 public void afterTextChanged(Editable s) {
-                    if(s!=null && s.toString()!="" && s.toString()!="null") {
+                    if(s!=null && !s.toString().isEmpty() && !s.toString().equals("null")) {
                         try {
                             if (mItems.get(position).second instanceof String) {
                                 mUpdateContent.set(position, s.toString());

@@ -1,5 +1,6 @@
 package com.mobgen.halo.android.framework.common.helpers.logger;
 
+import com.mobgen.halo.android.framework.api.HaloFramework;
 import com.mobgen.halo.android.testing.HaloRobolectricTest;
 
 import junit.framework.Assert;
@@ -12,6 +13,8 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 
+import static com.mobgen.halo.android.framework.mock.FrameworkMock.createSameThreadFrameworkWithFilePolicy;
+import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 
@@ -113,5 +116,41 @@ public class LoggerTest extends HaloRobolectricTest {
         Assert.assertTrue(Halog.isPrinting());
         Halog.printDebug(false);
         Assert.assertFalse(Halog.isPrinting());
+    }
+
+    @Test
+    public void thatDoNotPrintToFileWithouDebugEnabled() {
+        Halog.printDebug(false);
+        HaloFramework framework = createSameThreadFrameworkWithFilePolicy("http://mytest",-1);
+        Halog.setupPrintLogToFile(framework);
+        Halog.v(LoggerTest.class,"test msg");
+        assertThat(Halog.getLogFilePath()).isNull();
+    }
+
+    @Test
+    public void thatDoNotPrintToFile() {
+        Halog.printDebug(true);
+        HaloFramework framework = createSameThreadFrameworkWithFilePolicy("http://mytest",1);
+        Halog.setupPrintLogToFile(framework);
+        Halog.v(LoggerTest.class,"test msg");
+        assertThat(Halog.getLogFilePath()).isNull();
+    }
+
+    @Test
+    public void thatPrintToSingleFile() {
+        Halog.printDebug(true);
+        HaloFramework framework = createSameThreadFrameworkWithFilePolicy("http://mytest",2);
+        Halog.setupPrintLogToFile(framework);
+        Halog.v(LoggerTest.class,"test msg");
+        assertThat(Halog.getLogFilePath()).isNotNull();
+    }
+
+    @Test
+    public void thatPrintToMultipleFiles() {
+        Halog.printDebug(true);
+        HaloFramework framework = createSameThreadFrameworkWithFilePolicy("http://mytest",3);
+        Halog.setupPrintLogToFile(framework);
+        Halog.v(LoggerTest.class,"test msg");
+        assertThat(Halog.getLogFilePath()).isNotNull();
     }
 }
