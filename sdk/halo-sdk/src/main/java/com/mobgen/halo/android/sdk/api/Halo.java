@@ -28,7 +28,6 @@ import com.mobgen.halo.android.sdk.core.management.models.Credentials;
 import com.mobgen.halo.android.sdk.core.management.segmentation.DefaultCollectorFactory;
 import com.mobgen.halo.android.sdk.core.management.segmentation.TagCollector;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
