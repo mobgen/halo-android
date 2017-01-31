@@ -47,7 +47,6 @@ public class LoginRepository {
             status.error(e);
         }
         return new HaloResultV2<>(status.build(), identifiedUser);
-
     }
 
     /**

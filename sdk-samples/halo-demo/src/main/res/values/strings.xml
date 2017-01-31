@@ -29,6 +29,16 @@
     <string name="social_login_addon">Social login</string>
     <string name="app_name">Halo</string>
     <string name="app_disclaimer">Welcome to the future!</string>
+    <string name="instance_save">Save changes</string>
+
+    <!-- Content instance -->
+    <string name="addons_content_values_title">Content instance fields</string>
+    <string name="add_content_values_hint">Add the content field name</string>
+    <string name="add_content_values_value">Add the content field value</string>
+    <string name="menu_content_values_segmentation_tag">Add tag</string>
+    <string name="bt_more_content_values">More</string>
+    <string name="bt_more_content_done">Done</string>
+    <string name="bt_close_content_values">Close</string>
 
     <!-- Segmentation -->
     <string name="addons_tags_title">Segmentation tags</string>
@@ -103,6 +113,7 @@
     <string name="load_retrieve_time">Database fetch time: </string>
     <string name="load_measuring">Measuring</string>
     <string name="search_title">Search</string>
+    <string name="search_hint">Find a item</string>
     <string name="sync_title">Sync</string>
 
     <!-- Analytics -->
@@ -116,6 +127,8 @@
     <string name="analytic_send_transaction">Send transaction</string>
 
     <!-- Social login -->
+    <string name="social_loout_title">Logout</string>
+    <string name="social_loout_ok">Ok</string>
     <string name="social_login_title">Social login</string>
     <string name="social_halo_signin_title">Halo sign in</string>
     <string name="social_halo_login_title">Halo login</string>

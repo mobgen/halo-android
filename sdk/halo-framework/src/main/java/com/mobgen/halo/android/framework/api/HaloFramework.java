@@ -45,6 +45,10 @@ public class HaloFramework {
      * Sets the debug flag on the framework.
      */
     private boolean mIsDebug;
+    /**
+     * Sets the print log policy
+     */
+    private int mPrintPolicy;
 
     /**
      * Configures the halo framework based on the configuration parameters.
@@ -56,6 +60,7 @@ public class HaloFramework {
 
         //Setup the debug flag
         setDebugFlag(configuration.getIsDebug());
+        setPrintLogToFilePolicy(configuration.printToFilePolicy());
         mJsonParser = configuration.getParser();
 
         mNetworkApi = HaloNetworkApi.newNetworkApi(this, configuration);
@@ -197,6 +202,27 @@ public class HaloFramework {
     public boolean isInDebugMode() {
         return mIsDebug;
     }
+
+    /**
+     * Sets the print policy flag on the framework.
+     *
+     * @param printPolicy The print to file policy
+     */
+    @Api(2.2)
+    public void setPrintLogToFilePolicy(int printPolicy){
+        mPrintPolicy = printPolicy;
+    }
+
+    /**
+     * Provides the print log to file policy
+     *
+     * @return The print to file policy
+     */
+    @Api(2.2)
+    public int printToFilePolicy(){
+        return mPrintPolicy;
+    }
+
 
     /**
      * Provides the json parser configured for the framework.

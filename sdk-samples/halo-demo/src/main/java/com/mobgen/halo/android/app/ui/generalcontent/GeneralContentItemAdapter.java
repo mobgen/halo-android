@@ -5,6 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +15,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.webkit.URLUtil;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -48,6 +52,11 @@ public class GeneralContentItemAdapter extends RecyclerView.Adapter<GeneralConte
     private static final int VIEW_TYPE_IMAGE = 2;
 
     /**
+     * The editable preview
+     */
+    private static final int VIEW_TYPE_EDITABLE = 3;
+
+    /**
      * Youtube regular expression.
      */
     private static final String YOUTUBE_PATTERN = "(?<=watch\\?v=|/videos/|embed\\/|youtu.be\\/|\\/v\\/|watch\\?v%3D|%2Fvideos%2F|embed%\u200C\u200B2F|youtu.be%2F|%2Fv%2F)[^#\\&\\?\\n]*";
@@ -65,7 +74,15 @@ public class GeneralContentItemAdapter extends RecyclerView.Adapter<GeneralConte
     /**
      * The items to display.
      */
-    private List<Pair<String, String>> mItems;
+    private List<Pair<String, Object>>  mItems;
+    /**
+     * The updated items
+     */
+    private List<Object> mUpdateContent = new ArrayList<>();
+    /**
+     *
+     */
+    private boolean mEditable = false;
 
     /**
      * Constructor for this adapter.
@@ -73,8 +90,9 @@ public class GeneralContentItemAdapter extends RecyclerView.Adapter<GeneralConte
      * @param context  The context of the activity.
      * @param instance The instance to display in the sample app.
      */
-    public GeneralContentItemAdapter(Context context, HaloContentInstance instance) {
+    public GeneralContentItemAdapter(Context context, HaloContentInstance instance, boolean editable) {
         mContext = context;
+        mEditable = editable;
         if (instance == null) {
             throw new IllegalArgumentException("The instance should not be null to be displayed in the adapter.");
         }
@@ -84,7 +102,12 @@ public class GeneralContentItemAdapter extends RecyclerView.Adapter<GeneralConte
             Iterator<String> it = instance.getValues().keys();
             while (it.hasNext()) {
                 String key = it.next();
-                mItems.add(new Pair<>(key, instance.getValues().opt(key).toString()));
+                mItems.add(new Pair<>(key, instance.getValues().opt(key)));
+                if(!instance.getValues().opt(key).equals(null)) {
+                    mUpdateContent.add(instance.getValues().opt(key));
+                } else {
+                    mUpdateContent.add(null);
+                }
             }
         }
     }
@@ -110,20 +133,24 @@ public class GeneralContentItemAdapter extends RecyclerView.Adapter<GeneralConte
             resource = R.layout.adapter_keyvalue_color;
         } else if (viewType == VIEW_TYPE_IMAGE) {
             resource = R.layout.adapter_keyvalue_url;
+        } else if (viewType == VIEW_TYPE_EDITABLE) {
+            resource = R.layout.generic_keyvalue_editable;
         }
         return new GeneralContentItemViewHolder(LayoutInflater.from(mContext).inflate(resource, parent, false), viewType);
     }
 
     @Override
-    public void onBindViewHolder(GeneralContentItemViewHolder holder, int position) {
-        final Pair<String, String> pair = mItems.get(position);
+    public void onBindViewHolder(GeneralContentItemViewHolder holder, final int position) {
+        final Pair<String, Object> pair = mItems.get(position);
         holder.mKey.setText(pair.first);
         if (holder.getItemViewType() == VIEW_TYPE_STRING) {
-            holder.mValue.setText(pair.second);
+            if(!pair.second.equals(null)) {
+                holder.mValue.setText(pair.second.toString());
+            }
         } else if (holder.getItemViewType() == VIEW_TYPE_COLOR) {
-            holder.mColorValue.setBackgroundColor(HaloUtils.getArgb(pair.second));
+            holder.mColorValue.setBackgroundColor(HaloUtils.getArgb(pair.second.toString()));
         } else if (holder.getItemViewType() == VIEW_TYPE_IMAGE) {
-            String urlToLoad = pair.second;
+            String urlToLoad = pair.second.toString();
             String youtubeId = extractYoutubeId(urlToLoad);
             if (youtubeId != null) {
                 urlToLoad = String.format("http://img.youtube.com/vi/%s/default.jpg", youtubeId);
@@ -133,11 +160,51 @@ public class GeneralContentItemAdapter extends RecyclerView.Adapter<GeneralConte
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(Intent.ACTION_VIEW);
-                    intent.setData(Uri.parse(pair.second));
+                    intent.setData(Uri.parse(pair.second.toString()));
                     try {
                         mContext.startActivity(intent);
                     } catch (ActivityNotFoundException e) {
                         Toast.makeText(mContext, "There is not an application available to open this link", Toast.LENGTH_LONG).show();
+                    }
+                }
+            });
+        } else if (holder.getItemViewType() == VIEW_TYPE_COLOR) {
+            holder.mValue.setText(pair.second.toString());
+        } else if (holder.getItemViewType() == VIEW_TYPE_EDITABLE) {
+            if(!pair.second.equals(null)) {
+                holder.mEditableValue.setText(pair.second.toString());
+            }
+            holder.mEditableValue.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    if(s!=null && !s.toString().isEmpty() && !s.toString().equals("null")) {
+                        try {
+                            if (mItems.get(position).second instanceof String) {
+                                mUpdateContent.set(position, s.toString());
+                                mItems.set(position,new Pair<>(mItems.get(position).first, (Object)s.toString()));
+                            } else if (mItems.get(position).second instanceof Boolean) {
+                                mUpdateContent.set(position, Boolean.valueOf(s.toString()));
+                                mItems.set(position,new Pair<>(mItems.get(position).first, (Object)Boolean.valueOf(s.toString())));
+                            } else if (mItems.get(position).second instanceof Number) {
+                                mUpdateContent.set(position, Integer.valueOf(s.toString()));
+                                mItems.set(position,new Pair<>(mItems.get(position).first, (Object)Integer.valueOf(s.toString())));
+                            }
+                        } catch (Exception e) {
+                            mUpdateContent.set(position,null);
+                            mItems.set(position,new Pair<>(mItems.get(position).first, null));
+                        }
+                    } else {
+                        mItems.set(position,new Pair<>(mItems.get(position).first, null));
                     }
                 }
             });
@@ -166,14 +233,42 @@ public class GeneralContentItemAdapter extends RecyclerView.Adapter<GeneralConte
 
     @Override
     public int getItemViewType(int position) {
-        Pair<String, String> elem = mItems.get(position);
-        if (HaloUtils.isColor(elem.second)) {
+        Pair<String, Object> elem = mItems.get(position);
+        if(mEditable){
+            return VIEW_TYPE_EDITABLE;
+        } else if (HaloUtils.isColor(elem.second.toString())) {
             return VIEW_TYPE_COLOR;
         }
-        if (URLUtil.isNetworkUrl(elem.second)) {
+        if (URLUtil.isNetworkUrl(elem.second.toString())) {
             return VIEW_TYPE_IMAGE;
         } else {
             return VIEW_TYPE_STRING;
+        }
+    }
+
+    /**
+     * Put the layout in editmode to update content instances.
+     *
+     * @param editMode True if edit mode is enabled.
+     */
+    public void editableMode(boolean editMode){
+        mEditable = editMode;
+    }
+
+    /**
+     * Get the list of the items on instance.
+     *
+     * @return List with the general content instance items.
+     */
+    public List<Pair<String, Object>> getItems(){
+        if(mEditable){
+            List<Pair<String,Object>> updatedItems = new ArrayList<>();
+            for(int j = 0;j<mItems.size(); j++) {
+                updatedItems.add(new Pair<String, Object>(mItems.get(j).first, mUpdateContent.get(j)));
+            }
+            return updatedItems;
+        } else {
+            return mItems;
         }
     }
 
@@ -190,6 +285,11 @@ public class GeneralContentItemAdapter extends RecyclerView.Adapter<GeneralConte
          * The value name view of this item.
          */
         private TextView mValue;
+
+        /**
+         * The value edit view
+         */
+        private EditText mEditableValue;
 
         /**
          * The color value.
@@ -214,6 +314,9 @@ public class GeneralContentItemAdapter extends RecyclerView.Adapter<GeneralConte
             } else if (viewType == VIEW_TYPE_IMAGE) {
                 mKey = (TextView) itemView.findViewById(R.id.tv_general_key);
                 mImagePreview = (ImageView) itemView.findViewById(R.id.iv_preview);
+            } else if (viewType == VIEW_TYPE_EDITABLE) {
+                mKey = (TextView) itemView.findViewById(R.id.tv_general_key);
+                mEditableValue = (EditText) itemView.findViewById(R.id.et_general_value);
             }
         }
     }

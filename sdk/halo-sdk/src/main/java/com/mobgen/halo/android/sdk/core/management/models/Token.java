@@ -4,11 +4,18 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.Keep;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.mobgen.halo.android.framework.common.annotations.Api;
+import com.mobgen.halo.android.framework.common.exceptions.HaloParsingException;
+import com.mobgen.halo.android.framework.common.utils.AssertionUtils;
+import com.mobgen.halo.android.framework.network.client.response.Parser;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Date;
 
 /**
@@ -171,5 +178,42 @@ public class Token implements Parcelable {
         dest.writeValue(this.mExpiresIn);
         dest.writeString(this.mTokenType);
         dest.writeLong(mTokenReceivedDate.getTime());
+    }
+
+    /**
+     * Provides the serializer given the factory.
+     *
+     * @param token The object to serialize.
+     * @param parser   The parser factory.
+     * @return The parser obtained.
+     */
+    public static String serialize(@NonNull Token token, @NonNull Parser.Factory parser) throws HaloParsingException {
+        AssertionUtils.notNull(token, "token");
+        AssertionUtils.notNull(parser, "parser");
+        try {
+            return ((Parser<Token, String>) parser.serialize(Token.class)).convert(token);
+        } catch (IOException e) {
+            throw new HaloParsingException("Error while serializing the device", e);
+        }
+    }
+
+    /**
+     * Parses the token.
+     *
+     * @param token   The token as string.
+     * @param parser The parser.
+     * @return The token parsed or an empty token if the string passed is null.
+     * @throws HaloParsingException Error parsing the item.
+     */
+    @Nullable
+    public static Token deserialize(@Nullable String token, @NonNull Parser.Factory parser) throws HaloParsingException {
+        if (token != null) {
+            try {
+                return ((Parser<InputStream, Token>) parser.deserialize(Token.class)).convert(new ByteArrayInputStream(token.getBytes()));
+            } catch (IOException e) {
+                throw new HaloParsingException("Error while deserializing the token", e);
+            }
+        }
+        return null;
     }
 }

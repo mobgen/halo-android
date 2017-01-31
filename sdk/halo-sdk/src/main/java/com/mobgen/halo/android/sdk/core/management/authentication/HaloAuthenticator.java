@@ -1,9 +1,11 @@
 package com.mobgen.halo.android.sdk.core.management.authentication;
 
+import android.support.annotation.Keep;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.mobgen.halo.android.framework.api.HaloFramework;
+import com.mobgen.halo.android.framework.common.exceptions.HaloParsingException;
 import com.mobgen.halo.android.framework.common.helpers.logger.Halog;
 import com.mobgen.halo.android.framework.common.utils.AssertionUtils;
 import com.mobgen.halo.android.framework.network.exceptions.HaloNetException;
@@ -13,6 +15,7 @@ import com.mobgen.halo.android.framework.network.sessions.HaloSessionManager;
 import com.mobgen.halo.android.framework.toolbox.data.CallbackV2;
 import com.mobgen.halo.android.framework.toolbox.data.HaloResultV2;
 import com.mobgen.halo.android.framework.toolbox.threading.Threading;
+import com.mobgen.halo.android.sdk.api.Halo;
 import com.mobgen.halo.android.sdk.core.management.HaloManagerApi;
 import com.mobgen.halo.android.sdk.core.management.models.Credentials;
 import com.mobgen.halo.android.sdk.core.management.models.Session;
@@ -35,6 +38,7 @@ public class HaloAuthenticator implements Authenticator {
     /**
      * The session index name. This is reserved.
      */
+    @Keep
     public static final String HALO_SESSION_NAME = "halo-session";
 
     /**
@@ -64,7 +68,7 @@ public class HaloAuthenticator implements Authenticator {
     private Credentials mUserCredentials;
 
     /**
-     * The management api.
+     *  The management api.
      */
     private HaloManagerApi mManagementApi;
 
@@ -106,14 +110,10 @@ public class HaloAuthenticator implements Authenticator {
                 Token token = null;
                 if (!response.request().url().toString().endsWith(TokenRemoteDatasource.URL_GET_CLIENT_TOKEN) &&
                         !response.request().url().toString().endsWith(TokenRemoteDatasource.URL_GET_USER_TOKEN)) {
+                    //request app token
                     token = requestToken();
                     if (token != null) {
                         session = new Session(token);
-                        //recover login if there is a halo auth api
-                        if (mAuthenticationRecover != null) {
-                            //recover account if exist
-                            mAuthenticationRecover.recoverAccount();
-                        }
                     }
                 }
             }
@@ -124,6 +124,10 @@ public class HaloAuthenticator implements Authenticator {
 
         //The request authentication finished successfully
         if (session != null) {
+            //recover from logged user if there is a halo auth api
+            if (mAuthenticationRecover != null && !mAuthenticationRecover.recoverStatus()) {
+                mAuthenticationRecover.recoverAccount();
+            }
             //Store the session
             mSessionManager.setSession(HALO_SESSION_NAME, session);
             return response.request()

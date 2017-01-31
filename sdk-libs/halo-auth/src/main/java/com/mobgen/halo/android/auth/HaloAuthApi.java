@@ -10,6 +10,7 @@ import android.text.TextUtils;
 import android.util.SparseArray;
 
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.mobgen.halo.android.auth.login.LogoutInteractor;
 import com.mobgen.halo.android.framework.common.annotations.Api;
 import com.mobgen.halo.android.framework.common.exceptions.HaloConfigurationException;
 import com.mobgen.halo.android.framework.common.helpers.builder.IBuilder;
@@ -191,6 +192,34 @@ public class HaloAuthApi extends HaloPluginApi {
     }
 
     /**
+     *  Logout the user and flush session to restore app token
+     */
+    @Keep
+    @Api(2.2)
+    @NonNull
+    @CheckResult(suggest = "You may want to call execute() to run the task")
+    public HaloInteractorExecutor<Boolean>  logout() {
+        return new HaloInteractorExecutor<>(halo(),
+                "Logout user",
+                new LogoutInteractor(mAccountManagerHelper)
+        );
+    }
+
+    /**
+     *  Verify is a account is stored
+     */
+    @Keep
+    @Api(2.2)
+    @NonNull
+    public boolean isAccountStored() {
+        if(mAccountManagerHelper.recoverAccount()!=null){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * Checks if the social network with the given id is available.
      *
      * @param socialNetwork The social network.
@@ -269,7 +298,7 @@ public class HaloAuthApi extends HaloPluginApi {
      * Tries to recover a halo auth token for a given account.
      *
      * @param tokenProvider The social token provider.
-     * @return HaloAuthProfile The HaloAuthProfile.
+     * @return String The Auth Token.
      */
     @Nullable
     private String recoverAuthToken(@NonNull String tokenProvider) {
@@ -288,9 +317,12 @@ public class HaloAuthApi extends HaloPluginApi {
         mAccountType = accountType;
         if (recoverPolicy == RECOVERY_ALWAYS && mAccountType != null) {
             AuthenticationRecover haloSocialRecover = new AuthenticationRecover() {
+                private boolean mIsRecovering = false;
+
                 @Override
                 public void recoverAccount() {
                     recoverSocialProviderAccount();
+                    mIsRecovering = true;
                 }
 
                 @Override
@@ -301,6 +333,21 @@ public class HaloAuthApi extends HaloPluginApi {
                 @Override
                 public String accountType() {
                     return mAccountType;
+                }
+
+                @Override
+                public String recoverToken() {
+                    return recoverAuthToken(AccountManagerHelper.HALO_AUTH_PROVIDER);
+                }
+
+                @Override
+                public void recoverStatus(Boolean isRecovering) {
+                    mIsRecovering = isRecovering;
+                }
+
+                @Override
+                public Boolean recoverStatus() {
+                    return mIsRecovering;
                 }
             };
             Halo.instance().getCore().haloAuthRecover(haloSocialRecover);

@@ -1,0 +1,22 @@
+{
+  "name": "From Android SDK",
+  "module": "000000000000000000000004",
+  "publishedAt": 1483953114080,
+  "createdBy": "Halo SDK Test App",
+  "customerId": 1,
+  "values": {
+    "Title": "The title of the test"
+  },
+  "tags": [],
+  "pushSchedule": null,
+  "externalId": null,
+  "revision": 0,
+  "createdAt": 1484047856141,
+  "updatedAt": null,
+  "deletedAt": null,
+  "archivedAt": null,
+  "removedAt": null,
+  "updatedBy": null,
+  "deletedBy": null,
+  "id": "5874c5f06a3a0d1e00c8039d"
+}

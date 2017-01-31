@@ -4,10 +4,13 @@ import android.support.annotation.NonNull;
 
 import com.mobgen.halo.android.framework.toolbox.data.HaloResultV2;
 import com.mobgen.halo.android.sdk.api.Halo;
+import com.mobgen.halo.android.sdk.core.management.models.Session;
 import com.mobgen.halo.android.sdk.core.threading.HaloInteractorExecutor;
 import com.mobgen.halo.android.auth.HaloAuthApi;
 import com.mobgen.halo.android.auth.authenticator.AccountManagerHelper;
 import com.mobgen.halo.android.auth.models.IdentifiedUser;
+
+import static com.mobgen.halo.android.sdk.core.management.authentication.HaloAuthenticator.HALO_SESSION_NAME;
 
 /**
  * Login with halo
@@ -66,7 +69,11 @@ public class LoginInteractor implements HaloInteractorExecutor.Interactor<Identi
         if (mRecoveryPolicy == HaloAuthApi.RECOVERY_ALWAYS && response.status().isOk()) {
             if (mAccountType != null) {
                 AccountManagerHelper accountManagerHelper = new AccountManagerHelper(Halo.instance().context(),mAccountType);
-                accountManagerHelper.addAccountWithPassword(AccountManagerHelper.HALO_AUTH_PROVIDER, mUserName, mPassword, response.data().getToken().getAccessToken());
+                accountManagerHelper.addAccountWithPassword(AccountManagerHelper.HALO_AUTH_PROVIDER, mUserName, mPassword, response.data().getToken());
+                //save session
+                Session session = new Session(response.data().getToken());
+                Halo.core().sessionManager().setSession(HALO_SESSION_NAME, session);
+                Halo.instance().getCore().haloAuthRecover().recoverStatus(false);
             }
         }
         return response;

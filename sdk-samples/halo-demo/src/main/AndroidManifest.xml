@@ -34,7 +34,8 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.generalcontent.GeneralContentModuleActivity" />
+        <activity android:name=".ui.generalcontent.GeneralContentModuleActivity"
+            android:launchMode="singleTask"/>
 
         <activity android:name=".ui.generalcontent.GeneralContentItemActivity" />
 

@@ -39,7 +39,7 @@ public class SocialHaloSignIn extends MobgenHaloActivity implements View.OnClick
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_social_halo_sigin);
         mContext = this;
-        mAuthApi = MobgenHaloApplication.getHaloSocialApi();
+        mAuthApi = MobgenHaloApplication.getHaloAuthApi();
         mSignInWithHalo = (Button) findViewById(R.id.halo_sign_in);
     }
 
@@ -67,7 +67,7 @@ public class SocialHaloSignIn extends MobgenHaloActivity implements View.OnClick
             }
 
             HaloAuthProfile authProfile = new HaloAuthProfile(editEmail.getText().toString().trim(), editPassword.getText().toString().trim());
-            HaloUserProfile userProfile = new HaloUserProfile(null, displayName, editName.getText().toString().trim(), editSurname.getText().toString().trim(), "http://yogasara.staff.gunadarma.ac.id/photo.jpg", editEmail.getText().toString().trim());
+            HaloUserProfile userProfile = new HaloUserProfile(null, displayName, editName.getText().toString().trim(), editSurname.getText().toString().trim(), "https://bytebucket.org/mobgen/halo-android/wiki/images/halo.png?rev=b6f0d10e1e474dbbbf4d04d3420b2a18da17e37c", editEmail.getText().toString().trim());
             mAuthApi.register(authProfile, userProfile)
                     .execute(new CallbackV2<HaloUserProfile>() {
                         @Override
@@ -78,5 +78,10 @@ public class SocialHaloSignIn extends MobgenHaloActivity implements View.OnClick
                         }
                     });
         }
+    }
+
+    @Override
+    public boolean hasBackNavigationToolbar() {
+        return true;
     }
 }

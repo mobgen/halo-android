@@ -139,7 +139,8 @@ public final class HaloContentHelper {
         if (close) {
             cursor.close();
         }
-        return new HaloContentInstance(itemId, moduleId, name, values, author, createdAt, updatedAt, publishedAt, removedAt);
+        //TODO store modulename, archivedAt and segmentation tags on database migration
+        return new HaloContentInstance(itemId, null, moduleId, name, values, author, null, createdAt, updatedAt, publishedAt, removedAt, null);
     }
 
     /**

@@ -61,13 +61,14 @@ public class ContentSearchLocalDatasource {
      */
     @NonNull
     public Cursor findByQuery(@NonNull SearchQuery query) throws HaloStorageException {
+        Cursor optionsData = null;
         //Bring the data to life
         try {
             //Clear previous items based on the EXPIRES_ON
             clearExpiredSearchItems(mStorage.db().getDatabase());
 
             //Fetch
-            Cursor optionsData = Select.columns(ContentSearchQuery.INSTANCE_IDS)
+            optionsData = Select.columns(ContentSearchQuery.INSTANCE_IDS)
                     .from(ContentSearchQuery.class)
                     .where(ContentSearchQuery.QUERY_ID)
                     .eq(query.createHash(mStorage.framework().parser()))
@@ -90,6 +91,10 @@ public class ContentSearchLocalDatasource {
                     .on(mStorage.db(), "Queries the found instances in the search table by hash id");
         } catch (HaloParsingException e) {
             throw new HaloStorageParseException("Error creating options hash.", e);
+        } finally {
+            if(optionsData!=null && !optionsData.isClosed()){
+                optionsData.close();
+            }
         }
     }
 

@@ -95,6 +95,9 @@ public class Halo {
                 credentials,
                 tagCollectors);
 
+        //clear log file to store logs if its in print log mode
+        Halog.setupPrintLogToFile(mFramework);
+
         //Print the halo logo
         printHaloFootPrint();
 
@@ -355,6 +358,18 @@ public class Halo {
         @NonNull
         public Installer debug(Boolean enabled) {
             mConfigurationBuilder.setDebug(enabled);
+            return this;
+        }
+
+        /**
+         * Set the print to file policy.
+         * @param printToFilePolicy The policy to store files.
+         * @return The current installer.
+         */
+        @Api(2.2)
+        @NonNull
+        public Installer printLogToFile(int printToFilePolicy) {
+            mConfigurationBuilder.printToFilePolicy(printToFilePolicy);
             return this;
         }
 
