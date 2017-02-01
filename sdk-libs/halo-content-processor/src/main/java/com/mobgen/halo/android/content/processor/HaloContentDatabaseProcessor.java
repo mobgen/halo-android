@@ -10,12 +10,10 @@ import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
-import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashSet;
@@ -35,17 +33,12 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
-import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
-import javax.swing.tree.TreePath;
 import javax.tools.JavaFileObject;
 
-import static java.util.Calendar.DATE;
 import static javax.lang.model.element.ElementKind.FIELD;
-import static javax.lang.model.type.TypeKind.*;
-import static jdk.nashorn.internal.codegen.types.Type.STRING;
 
 @AutoService(Processor.class)
 @SupportedAnnotationTypes({"com.mobgen.halo.android.content.annotations.HaloQuery",
@@ -89,11 +82,14 @@ public class HaloContentDatabaseProcessor extends AbstractProcessor {
     public boolean process(Set<? extends TypeElement> set, RoundEnvironment roundEnvironment) {
 
         generateHaloQueryClass(roundEnvironment);
-        generateHaloFieldClass(roundEnvironment);
         //add all annotated query elements
         for (Element element : roundEnvironment.getElementsAnnotatedWith(HaloSearchable.class)) {
             databaseTables.add(generateHaloSearchableClass(element));
             databaseVersion.add(element.getAnnotation(HaloSearchable.class).version());
+        }
+        for (Element element : roundEnvironment.getElementsAnnotatedWith(HaloField.class)) {
+           // databaseFields.add(generateHaloSearchableClass(element));
+            System.err.println(element.getSimpleName().toString());
         }
         if(databaseTables.size()>0) {
             generateHaloContentTable();
@@ -102,6 +98,11 @@ public class HaloContentDatabaseProcessor extends AbstractProcessor {
         return true;
     }
 
+    /**
+     * Generate Halo query class with all the HaloQuery annotation
+     *
+     * @param roundEnvironment
+     */
     private void generateHaloQueryClass(RoundEnvironment roundEnvironment){
         JavaFile javaFile=null;
         String className = "HaloContentQueryApi";
@@ -149,8 +150,8 @@ public class HaloContentDatabaseProcessor extends AbstractProcessor {
             String query = element.getAnnotation(HaloQuery.class).query();
             String methodName = element.getAnnotation(HaloQuery.class).name();
 
-            ClassName cursor = ClassName.get("android.database","Cursor");
             ClassName haloInteractor = ClassName.get("com.mobgen.halo.android.sdk.core.threading","HaloInteractorExecutor");
+            ClassName cursor = ClassName.get("android.database","Cursor");
 
             //prepare statements
             MethodSpec.Builder methodBuilder = MethodSpec.methodBuilder(methodName)
@@ -201,10 +202,11 @@ public class HaloContentDatabaseProcessor extends AbstractProcessor {
         }
     }
 
-    private void generateHaloFieldClass(RoundEnvironment roundEnvironment){
-
-    }
-
+    /**
+     * Create a class per model annotated with HaloSearchable annotation
+     * @param element
+     * @return
+     */
     private String generateHaloSearchableClass(Element element){
         JavaFile javaFile=null;
         String className = "HaloTable$$" + element.getSimpleName();
@@ -270,7 +272,10 @@ public class HaloContentDatabaseProcessor extends AbstractProcessor {
         return element.getSimpleName().toString();
     }
 
-
+    /**
+     * Generates a shared table to store the versions of the content tables
+     * @return
+     */
     private String generateHaloContentTable(){
         JavaFile javaFile=null;
         String className = "HaloTable$$ContentVersion";
@@ -341,18 +346,23 @@ public class HaloContentDatabaseProcessor extends AbstractProcessor {
         return "HALO_GC_CONTENT_VERSION";
     }
 
+    /**
+     * Generate the database migration to create tables on database
+     * @param roundEnvironment
+     * @param version
+     */
     private void generateDatabaseMigration(RoundEnvironment roundEnvironment,int version){
 
 
         JavaFile javaFile=null;
-        String className = "HaloDataBase$$ContentMigration";
+        String className = "HaloDataBase$$GeneratedMigration";
 
-        ClassName databaseMigration = ClassName.get("com.mobgen.halo.android.framework.storage.database", "HaloDatabaseMigration");
+        ClassName generatedHaloDatabase = ClassName.get("com.mobgen.halo.android.content.generated", "GeneratedHaloDatabase");
 
         TypeSpec.Builder queryClassBuilder = TypeSpec.classBuilder(className);
         queryClassBuilder.addJavadoc("Database migration for autogenerated tables.");
         queryClassBuilder.addModifiers(Modifier.PUBLIC);
-        queryClassBuilder.superclass(databaseMigration);
+        queryClassBuilder.addSuperinterface(generatedHaloDatabase);
 
         FieldSpec versionField = FieldSpec.builder(int.class,"VERSION",Modifier.PUBLIC,Modifier.STATIC,Modifier.FINAL)
                 .initializer("$L",version)
@@ -360,7 +370,7 @@ public class HaloContentDatabaseProcessor extends AbstractProcessor {
         queryClassBuilder.addField(versionField);
 
         ClassName sqLite = ClassName.get("android.database.sqlite", "SQLiteDatabase");
-
+        ClassName cursor = ClassName.get("android.database","Cursor");
         MethodSpec.Builder updateDatabaseBuilder = MethodSpec.methodBuilder("updateDatabase")
                 .addAnnotation(Override.class)
                 .returns(void.class)
@@ -368,24 +378,43 @@ public class HaloContentDatabaseProcessor extends AbstractProcessor {
                 .addParameter(sqLite,"database");
 
         ClassName ormUtils = ClassName.get("com.mobgen.halo.android.framework.storage.database.dsl", "ORMUtils");
-        ClassName queries = ClassName.get("com.mobgen.halo.android.framework.storage.database.dsl.queries", "Create");
+        ClassName createQuery = ClassName.get("com.mobgen.halo.android.framework.storage.database.dsl.queries", "Create");
+        ClassName selectQuery = ClassName.get("com.mobgen.halo.android.framework.storage.database.dsl.queries", "Select");
+        ClassName dropQuery = ClassName.get("com.mobgen.halo.android.framework.storage.database.dsl.queries", "Drop");
         ClassName contentValues = ClassName.get("android.content", "ContentValues");
 
         generateHaloContentTable();
-        updateDatabaseBuilder.addCode("$1T.table($2L.class).on(database, \"Creates the HaloTable$$ContentVersion table from codegen\");\n",queries,"HaloTable$$ContentVersion");
+        updateDatabaseBuilder.addCode("$1T.table($2L.class).on(database, \"Creates the HaloTable$$ContentVersion table from codegen\");\n",createQuery,"HaloTable$$ContentVersion");
 
         //create each table on dabase
         for(int i=0; i<databaseTables.size();i++){
             String classNameTable = "HaloTable$$" + databaseTables.get(i);
             String tableName = "HALO_GC_" + databaseTables.get(i).toUpperCase();
             int index = i+1;
-            updateDatabaseBuilder.addCode("$1T.table($2L.class).on(database, \"Creates the $2L table from codegen\");\n",queries,classNameTable);
+            //Select version from ContentVersion table
+            updateDatabaseBuilder.addCode("int version$1L=$2L;\n",index,databaseVersion.get(i));
+            updateDatabaseBuilder.addCode("$3T result$5L = $1T.columns($2L.TABLE_VERSION)" +
+                    ".from($2L.class)" +
+                    ".where($2L.TABLE_NAME)" +
+                    ".eq($4S)" +
+                    ".on(database,\"Select version from $2L table from codegen\");\n",selectQuery,"HaloTable$$ContentVersion",cursor,tableName,index);
+            //check current version and stored version to update database content version
+            updateDatabaseBuilder.addCode("if(result$4L.moveToFirst()){\n" +
+                    "\tversion$1L = result$4L.getInt(result$4L.getColumnIndex($2L.TABLE_VERSION));\n" +
+                    "\tif(version$1L<$3L){\n" +
+                   // "\t\tversion$1L =$3L;\n"+
+                    "\t\t$5T.table($6L.class).on(database,\"Drop table of type $6L due to new version from codegen\");\n"+
+                    "\t}\n"+
+                    "}\n",index,"HaloTable$$ContentVersion",databaseVersion.get(i),index,dropQuery,classNameTable);
+            updateDatabaseBuilder.addCode("result$1L.close();\n",index);
+            updateDatabaseBuilder.addCode("$1T.table($2L.class).on(database, \"Creates the $2L table from codegen\");\n",createQuery,classNameTable);
             updateDatabaseBuilder.addCode("$1T values$2L = new $1T();\n" +
-                    "values$2L.put($5L.TABLE_ID, $2L);\n" +
-                    "        values$2L.put($5L.TABLE_NAME, $3S);\n" +
-                    "        values$2L.put($5L.TABLE_VERSION,$4L);\n" +
-                    "        database.insertWithOnConflict($6S,null,values$2L,SQLiteDatabase.CONFLICT_REPLACE);\n",
-                    contentValues,index,tableName,databaseVersion.get(i),"HaloTable$$ContentVersion","HALO_GC_CONTENT_VERSION");
+                    "values$2L.put($4L.TABLE_ID, $2L);\n" +
+                    "values$2L.put($4L.TABLE_NAME, $3S);\n" +
+                    "values$2L.put($4L.TABLE_VERSION,version$2L);\n" +
+                    "database.insertWithOnConflict($5S,null,values$2L,SQLiteDatabase.CONFLICT_REPLACE);\n",
+                    contentValues,index,tableName,"HaloTable$$ContentVersion","HALO_GC_CONTENT_VERSION");
+            updateDatabaseBuilder.addCode("//End of the $1L database table\n",index);
         }
 
         queryClassBuilder.addMethod(updateDatabaseBuilder.build());
@@ -415,6 +444,11 @@ public class HaloContentDatabaseProcessor extends AbstractProcessor {
         }
     }
 
+    /**
+     * Set the halo table annotation
+     * @param element
+     * @return
+     */
     private FieldSpec setHaloTableFields(Element element){
         ClassName keepClass = ClassName.get("android.support.annotation", "Keep");
         if(element.getKind()==FIELD){
@@ -431,6 +465,11 @@ public class HaloContentDatabaseProcessor extends AbstractProcessor {
         return null;
     }
 
+    /**
+     * Get the annotation with data type on HaloTable
+     * @param typeMirror
+     * @return
+     */
     private AnnotationSpec resolveAnnotations(TypeMirror typeMirror){
         ClassName columnClass = ClassName.get("com.mobgen.halo.android.framework.storage.database.dsl.annotations", "Column");
         if(typeUtils.asElement(typeMirror).getSimpleName().toString().equals("String")){
@@ -449,6 +488,12 @@ public class HaloContentDatabaseProcessor extends AbstractProcessor {
         return  null;//not supported this type
     }
 
+    /**
+     * Get the current data type
+     *
+     * @param type
+     * @return
+     */
     private Class resolveDataType(String type) {
         if(type.equals("String")){
             return String.class;

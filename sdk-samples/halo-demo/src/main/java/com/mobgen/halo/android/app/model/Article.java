@@ -15,7 +15,7 @@ import java.util.Date;
  * Created by javierdepedrolopez on 9/11/15.
  */
 @JsonObject
-@HaloSearchable(version = 10)
+@HaloSearchable(version = 11)
 public class Article implements Parcelable {
     @HaloField(index = true)
     @JsonField(name = "Title")
