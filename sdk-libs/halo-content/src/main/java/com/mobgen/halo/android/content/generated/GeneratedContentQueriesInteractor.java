@@ -11,8 +11,10 @@ import com.mobgen.halo.android.framework.network.client.request.HaloRequestMetho
 import com.mobgen.halo.android.framework.toolbox.data.HaloResultV2;
 import com.mobgen.halo.android.sdk.core.threading.HaloInteractorExecutor;
 
+import java.util.List;
 
-public class GeneratedContentQueriesInteractor implements HaloInteractorExecutor.Interactor<Cursor>{
+
+public class GeneratedContentQueriesInteractor implements HaloInteractorExecutor.Interactor<List<HaloContentInstance>>{
 
 
     private GeneratedContentQueriesRepository mGeneratedContentQueriesRepository;
@@ -32,7 +34,7 @@ public class GeneratedContentQueriesInteractor implements HaloInteractorExecutor
 
     @NonNull
     @Override
-    public HaloResultV2<Cursor> executeInteractor() throws Exception {
+    public HaloResultV2<List<HaloContentInstance>> executeInteractor() throws Exception {
         HaloResultV2<Cursor> result = null;
         return mGeneratedContentQueriesRepository.perfomQuery(mQuery, mBindArgs);
     }

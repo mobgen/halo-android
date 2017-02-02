@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 
 import com.mobgen.halo.android.content.models.HaloContentInstance;
 import com.mobgen.halo.android.content.spec.HaloContentContract;
+import com.mobgen.halo.android.content.utils.HaloContentHelper;
 import com.mobgen.halo.android.framework.api.HaloFramework;
 import com.mobgen.halo.android.framework.api.HaloNetworkApi;
 import com.mobgen.halo.android.framework.common.exceptions.HaloParsingException;
@@ -15,12 +16,14 @@ import com.mobgen.halo.android.framework.network.client.request.HaloRequestMetho
 import com.mobgen.halo.android.framework.network.exceptions.HaloNetException;
 import com.mobgen.halo.android.framework.storage.database.HaloDataLite;
 import com.mobgen.halo.android.framework.storage.database.dsl.queries.Create;
+import com.mobgen.halo.android.framework.storage.exceptions.HaloStorageParseException;
 import com.mobgen.halo.android.sdk.api.Halo;
 import com.mobgen.halo.android.sdk.core.internal.network.HaloNetworkConstants;
 
 import org.json.JSONObject;
 
 import java.util.Date;
+import java.util.List;
 
 
 public class GeneratedContentQueriesLocalDataSource {
@@ -32,9 +35,10 @@ public class GeneratedContentQueriesLocalDataSource {
         mDataLite = haloFramework.storage(HaloContentContract.HALO_CONTENT_STORAGE).db();
     }
 
+    //TODO Convert HaloContentInstance to model
 
     @NonNull
-    public Cursor perfomQuery(@NonNull String query,@NonNull Object[] bindArgs) throws SQLException {
+    public List<HaloContentInstance> perfomQuery(@NonNull String query,@NonNull Object[] bindArgs) throws SQLException {
         //convert obects to string to perfom queries
         int length = bindArgs.length;
         String[] bindstringArgs = new String[length];
@@ -49,8 +53,15 @@ public class GeneratedContentQueriesLocalDataSource {
                 bindstringArgs[i] = String.valueOf(((Date)bindArgs[i]).getTime());
             }
         }
-        Cursor result = mDataLite.getDatabase().rawQuery(query,bindstringArgs);
-        if(result!=null)result.moveToFirst();
+        Cursor rawResult = mDataLite.getDatabase().rawQuery(query,bindstringArgs);
+        List<HaloContentInstance> result = null;
+        try {
+            if(rawResult!=null) {
+                result = HaloContentHelper.createList(rawResult, true);
+            }
+        } catch (HaloStorageParseException e) {
+
+        }
         return result;
     }
 

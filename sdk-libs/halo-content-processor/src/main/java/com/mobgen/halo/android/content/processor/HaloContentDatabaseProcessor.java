@@ -151,8 +151,9 @@ public class HaloContentDatabaseProcessor extends AbstractProcessor {
             String methodName = element.getAnnotation(HaloQuery.class).name();
 
             ClassName haloInteractor = ClassName.get("com.mobgen.halo.android.sdk.core.threading","HaloInteractorExecutor");
-            ClassName cursor = ClassName.get("android.database","Cursor");
-
+            //ClassName cursor = ClassName.get("android.database","Cursor");
+            ClassName contentInstance = ClassName.get("com.mobgen.halo.android.content.models","HaloContentInstance");
+            ClassName list = ClassName.get("java.util","List");
             //prepare statements
             MethodSpec.Builder methodBuilder = MethodSpec.methodBuilder(methodName)
                     .addJavadoc("Query by codegen: "+ query)
@@ -176,11 +177,11 @@ public class HaloContentDatabaseProcessor extends AbstractProcessor {
             for(int j=0;j<paramNames.size();j++) {
                 methodBuilder.addStatement("bindArgs[$L]=$L", j, paramNames.get(j));
             }
-            methodBuilder.returns(ParameterizedTypeName.get(haloInteractor, cursor))
+            methodBuilder.returns(ParameterizedTypeName.get(haloInteractor, ParameterizedTypeName.get(list, contentInstance)))
                     .addStatement("return new HaloInteractorExecutor<$4T>(halo()," +
                             "\"Generated field query\"," +
                             "new $1T(new $2T(new $3T(halo().framework())),query,bindArgs)" +
-                            ")",interactor,repository,datasource,cursor);
+                            ")",interactor,repository,datasource,ParameterizedTypeName.get(list, contentInstance));
 
             MethodSpec queryDatabase = methodBuilder.build();
             queryClassBuilder.addMethod(queryDatabase);
@@ -353,7 +354,6 @@ public class HaloContentDatabaseProcessor extends AbstractProcessor {
      */
     private void generateDatabaseMigration(RoundEnvironment roundEnvironment,int version){
 
-
         JavaFile javaFile=null;
         String className = "HaloDataBase$$GeneratedMigration";
 
@@ -392,8 +392,8 @@ public class HaloContentDatabaseProcessor extends AbstractProcessor {
             String tableName = "HALO_GC_" + databaseTables.get(i).toUpperCase();
             int index = i+1;
             //Select version from ContentVersion table
-            updateDatabaseBuilder.addCode("int version$1L=$2L;\n",index,databaseVersion.get(i));
-            updateDatabaseBuilder.addCode("$3T result$5L = $1T.columns($2L.TABLE_VERSION)" +
+            updateDatabaseBuilder.addCode("int version$1L = $2L;\n",index,databaseVersion.get(i));
+            updateDatabaseBuilder.addCode("$3T result$5L = $1T.columns(\"MAX(\"+ $2L.TABLE_VERSION + \") as \" + $2L.TABLE_VERSION)" +
                     ".from($2L.class)" +
                     ".where($2L.TABLE_NAME)" +
                     ".eq($4S)" +
@@ -407,13 +407,25 @@ public class HaloContentDatabaseProcessor extends AbstractProcessor {
                     "\t}\n"+
                     "}\n",index,"HaloTable$$ContentVersion",databaseVersion.get(i),index,dropQuery,classNameTable);
             updateDatabaseBuilder.addCode("result$1L.close();\n",index);
+            //get max id from shared table
+            updateDatabaseBuilder.addCode("int id$1L = 1;\n",index);
+            updateDatabaseBuilder.addCode("$3T identifier$4L = $1T.columns(\"MAX(\"+ $2L.TABLE_ID + \") as \" + $2L.TABLE_ID)" +
+                    ".from($2L.class)" +
+                    ".on(database,\"Select max id from $2L table from codegen\");\n",selectQuery,"HaloTable$$ContentVersion",cursor,index);
+            updateDatabaseBuilder.addCode("if(identifier$1L.moveToFirst()){\n" +
+                    "\tid$1L = identifier$1L.getInt(identifier$1L.getColumnIndex($2L.TABLE_ID)) + 1;\n" +
+                    "}\n",index,"HaloTable$$ContentVersion");
+            updateDatabaseBuilder.addCode("identifier$1L.close();\n",index);
+            //insert shared table statement
             updateDatabaseBuilder.addCode("$1T.table($2L.class).on(database, \"Creates the $2L table from codegen\");\n",createQuery,classNameTable);
             updateDatabaseBuilder.addCode("$1T values$2L = new $1T();\n" +
-                    "values$2L.put($4L.TABLE_ID, $2L);\n" +
+                    "values$2L.put($4L.TABLE_ID, id$2L);\n" +
                     "values$2L.put($4L.TABLE_NAME, $3S);\n" +
-                    "values$2L.put($4L.TABLE_VERSION,version$2L);\n" +
-                    "database.insertWithOnConflict($5S,null,values$2L,SQLiteDatabase.CONFLICT_REPLACE);\n",
-                    contentValues,index,tableName,"HaloTable$$ContentVersion","HALO_GC_CONTENT_VERSION");
+                    "values$2L.put($4L.TABLE_VERSION,$6L);\n" +
+                    "if (version$2L!= $6L) {\n" +
+                    "\tdatabase.insertWithOnConflict($5S,null,values$2L,SQLiteDatabase.CONFLICT_REPLACE);\n" +
+                    "}\n",
+                    contentValues,index,tableName,"HaloTable$$ContentVersion","HALO_GC_CONTENT_VERSION",databaseVersion.get(i));
             updateDatabaseBuilder.addCode("//End of the $1L database table\n",index);
         }
 

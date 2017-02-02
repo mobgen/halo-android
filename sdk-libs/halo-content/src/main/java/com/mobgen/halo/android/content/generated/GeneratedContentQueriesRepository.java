@@ -17,6 +17,8 @@ import com.mobgen.halo.android.framework.toolbox.data.HaloResultV2;
 import com.mobgen.halo.android.framework.toolbox.data.HaloStatus;
 import com.mobgen.halo.android.framework.toolbox.threading.Threading;
 
+import java.util.List;
+
 
 public class GeneratedContentQueriesRepository {
 
@@ -29,9 +31,9 @@ public class GeneratedContentQueriesRepository {
 
 
     @NonNull
-    public HaloResultV2<Cursor> perfomQuery(@NonNull String query,@NonNull Object[] bindArgs) {
+    public HaloResultV2<List<HaloContentInstance>> perfomQuery(@NonNull String query, @NonNull Object[] bindArgs) {
         HaloStatus.Builder status = HaloStatus.builder();
-        Cursor response = null;
+        List<HaloContentInstance> response = null;
         try {
             response = mLocalDataSource.perfomQuery(query,bindArgs);
         } catch (SQLException haloException) {
