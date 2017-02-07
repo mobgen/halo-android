@@ -1,6 +1,7 @@
 package com.mobgen.halo.android.content.processor;
 
 import com.google.auto.service.AutoService;
+import com.mobgen.halo.android.content.annotations.HaloConstructor;
 import com.mobgen.halo.android.content.annotations.HaloField;
 import com.mobgen.halo.android.content.annotations.HaloQuery;
 import com.mobgen.halo.android.content.annotations.HaloSearchable;
@@ -43,7 +44,8 @@ import static javax.lang.model.element.ElementKind.FIELD;
 @AutoService(Processor.class)
 @SupportedAnnotationTypes({"com.mobgen.halo.android.content.annotations.HaloQuery",
         "com.mobgen.halo.android.content.annotations.HaloField",
-        "com.mobgen.halo.android.content.annotations.HaloSearchable"})
+        "com.mobgen.halo.android.content.annotations.HaloSearchable",
+        "com.mobgen.halo.android.content.annotations.HaloConstructor"})
 @SupportedSourceVersion(SourceVersion.RELEASE_7)
 public class HaloContentDatabaseProcessor extends AbstractProcessor {
 
@@ -53,6 +55,7 @@ public class HaloContentDatabaseProcessor extends AbstractProcessor {
     private Messager messager;
     private List<String> databaseTables = new ArrayList<String>();
     private List<Integer> databaseVersion = new ArrayList<>();
+    private List<Element> constructorElements =  new ArrayList<>();
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
@@ -69,6 +72,7 @@ public class HaloContentDatabaseProcessor extends AbstractProcessor {
         annotataions.add(HaloQuery.class.getCanonicalName());
         annotataions.add(HaloField.class.getCanonicalName());
         annotataions.add(HaloSearchable.class.getCanonicalName());
+        annotataions.add(HaloConstructor.class.getCanonicalName());
         return annotataions;
     }
 
@@ -82,13 +86,18 @@ public class HaloContentDatabaseProcessor extends AbstractProcessor {
     public boolean process(Set<? extends TypeElement> set, RoundEnvironment roundEnvironment) {
 
         generateHaloQueryClass(roundEnvironment);
+        //add all constructor to dabase
+        for (Element constructor : roundEnvironment.getElementsAnnotatedWith(HaloConstructor.class)) {
+            constructorElements.add(constructor);
+        }
         //add all annotated query elements
+        int haloConstructorIndex = 0;
         for (Element element : roundEnvironment.getElementsAnnotatedWith(HaloSearchable.class)) {
-            databaseTables.add(generateHaloSearchableClass(element));
+            databaseTables.add(generateHaloSearchableClass(element,constructorElements.get(haloConstructorIndex)));
             databaseVersion.add(element.getAnnotation(HaloSearchable.class).version());
+            haloConstructorIndex++;
         }
         for (Element element : roundEnvironment.getElementsAnnotatedWith(HaloField.class)) {
-           // databaseFields.add(generateHaloSearchableClass(element));
             System.err.println(element.getSimpleName().toString());
         }
         if(databaseTables.size()>0) {
@@ -110,9 +119,16 @@ public class HaloContentDatabaseProcessor extends AbstractProcessor {
         ClassName haloPulgin = ClassName.get("com.mobgen.halo.android.sdk.api","HaloPluginApi");
         ClassName thisClass = ClassName.get("com.mobgen.halo.android.app.generated","HaloContentQueryApi");
 
-        ClassName interactor = ClassName.get("com.mobgen.halo.android.content.generated","GeneratedContentQueriesInteractor");
-        ClassName repository = ClassName.get("com.mobgen.halo.android.content.generated","GeneratedContentQueriesRepository");
-        ClassName datasource = ClassName.get("com.mobgen.halo.android.content.generated","GeneratedContentQueriesLocalDataSource");
+        //necesary classes
+        ClassName contentSelectorFactory = ClassName.get("com.mobgen.halo.android.content.selectors","HaloContentSelectorFactory");
+        ClassName cursor = ClassName.get("android.database","Cursor");
+        ClassName paginated = ClassName.get("com.mobgen.halo.android.content.models","Paginated");
+        ClassName generatedContentQueriesInteractorInstance = ClassName.get("com.mobgen.halo.android.content.generated","GeneratedContentQueriesInteractor");
+        ClassName generatedContentQueriesRepositoryInstance = ClassName.get("com.mobgen.halo.android.content.generated","GeneratedContentQueriesRepository");
+        ClassName generatedContentQueriesLocalDataSource = ClassName.get("com.mobgen.halo.android.content.generated","GeneratedContentQueriesLocalDataSource");
+        ClassName cursor2ContentInstanceGeneratedModelConverter = ClassName.get("com.mobgen.halo.android.content.generated","Cursor2ContentInstanceGeneratedModelConverter");
+        ClassName cursor2GeneratedModelClassConverterFactory = ClassName.get("com.mobgen.halo.android.content.generated","Cursor2GeneratedModelClassConverterFactory");
+        ClassName storageData = ClassName.get("com.mobgen.halo.android.framework.toolbox.data","Data");
 
         TypeSpec.Builder queryClassBuilder = TypeSpec.classBuilder(className);
         queryClassBuilder.addModifiers(Modifier.PUBLIC);
@@ -150,10 +166,8 @@ public class HaloContentDatabaseProcessor extends AbstractProcessor {
             String query = element.getAnnotation(HaloQuery.class).query();
             String methodName = element.getAnnotation(HaloQuery.class).name();
 
-            ClassName haloInteractor = ClassName.get("com.mobgen.halo.android.sdk.core.threading","HaloInteractorExecutor");
-            //ClassName cursor = ClassName.get("android.database","Cursor");
-            ClassName contentInstance = ClassName.get("com.mobgen.halo.android.content.models","HaloContentInstance");
-            ClassName list = ClassName.get("java.util","List");
+            ClassName modelClass = ClassName.get(getPackageName(element),element.getEnclosingElement().getSimpleName().toString());
+
             //prepare statements
             MethodSpec.Builder methodBuilder = MethodSpec.methodBuilder(methodName)
                     .addJavadoc("Query by codegen: "+ query)
@@ -177,11 +191,18 @@ public class HaloContentDatabaseProcessor extends AbstractProcessor {
             for(int j=0;j<paramNames.size();j++) {
                 methodBuilder.addStatement("bindArgs[$L]=$L", j, paramNames.get(j));
             }
-            methodBuilder.returns(ParameterizedTypeName.get(haloInteractor, ParameterizedTypeName.get(list, contentInstance)))
-                    .addStatement("return new HaloInteractorExecutor<$4T>(halo()," +
-                            "\"Generated field query\"," +
-                            "new $1T(new $2T(new $3T(halo().framework())),query,bindArgs)" +
-                            ")",interactor,repository,datasource,ParameterizedTypeName.get(list, contentInstance));
+
+            methodBuilder.returns(ParameterizedTypeName.get(contentSelectorFactory, ParameterizedTypeName.get(paginated, modelClass),cursor))
+                .addStatement("return new HaloContentSelectorFactory<>(\n" +
+                        "\thalo(),\n" +
+                        "\tnew $1T(new $2T(new $3T(halo().framework())),query,bindArgs),\n" +
+                        "\tnew $4T($5T.class),\n" +
+                        "\tnew $6T(halo().framework().parser()),\n" +
+                        "\tnull,\n" +
+                        "\t$7T.STORAGE_ONLY,\n" +
+                        "\t\"generatedModelQuery with method $8L\")",generatedContentQueriesInteractorInstance,generatedContentQueriesRepositoryInstance,
+                        generatedContentQueriesLocalDataSource,cursor2ContentInstanceGeneratedModelConverter,
+                        modelClass,cursor2GeneratedModelClassConverterFactory,storageData,methodName);
 
             MethodSpec queryDatabase = methodBuilder.build();
             queryClassBuilder.addMethod(queryDatabase);
@@ -204,14 +225,35 @@ public class HaloContentDatabaseProcessor extends AbstractProcessor {
     }
 
     /**
+     * Get package name of a element
+     *
+     * @param element the element which is annotated
+     * @return The package name as string
+     */
+    private String getPackageName(Element element) {
+        String packageName = "";
+        boolean moreEnclosingElements = true;
+        Element recursiveElement = element.getEnclosingElement();
+        while(moreEnclosingElements){
+            if(recursiveElement.getEnclosingElement()!=null) {
+                packageName = packageName + recursiveElement.getEnclosingElement();
+                recursiveElement = recursiveElement.getEnclosingElement();
+            } else {
+                moreEnclosingElements = false;
+            }
+        }
+        return packageName;
+    }
+
+    /**
      * Create a class per model annotated with HaloSearchable annotation
      * @param element
      * @return
      */
-    private String generateHaloSearchableClass(Element element){
+    private String generateHaloSearchableClass(Element element, Element constructorElement){
         JavaFile javaFile=null;
-        String className = "HaloTable$$" + element.getSimpleName();
-        String tableAnnotationName = "HALO_GC_" + element.getSimpleName().toString().toUpperCase();
+        String className = "HaloTable$$" + element.getAnnotation(HaloSearchable.class).tableName();
+        String tableAnnotationName = element.getAnnotation(HaloSearchable.class).tableName();
 
         TypeSpec.Builder queryClassBuilder = TypeSpec.classBuilder(className);
         queryClassBuilder.addModifiers(Modifier.PUBLIC);
@@ -247,10 +289,12 @@ public class HaloContentDatabaseProcessor extends AbstractProcessor {
                 .build());
 
         //prepare all fields to convert to columns on halotable
+        int haloConstructorFieldIndex = 0;
         for(int k=0;k<element.getEnclosedElements().size();k++){
-            FieldSpec fieldSpec = setHaloTableFields(element.getEnclosedElements().get(k));
+            FieldSpec fieldSpec = setHaloTableFields(element.getEnclosedElements().get(k), constructorElement, haloConstructorFieldIndex);
             if(fieldSpec!=null){
                 consturctorBuilder.addField(fieldSpec);
+                haloConstructorFieldIndex++;
             }
         }
         int version = element.getAnnotation(HaloSearchable.class).version();
@@ -270,7 +314,7 @@ public class HaloContentDatabaseProcessor extends AbstractProcessor {
             e.printStackTrace();
         }
 
-        return element.getSimpleName().toString();
+        return element.getAnnotation(HaloSearchable.class).tableName();
     }
 
     /**
@@ -355,7 +399,7 @@ public class HaloContentDatabaseProcessor extends AbstractProcessor {
     private void generateDatabaseMigration(RoundEnvironment roundEnvironment,int version){
 
         JavaFile javaFile=null;
-        String className = "HaloDataBase$$GeneratedMigration";
+        String className = "GeneratedDatabaseFromModel";
 
         ClassName generatedHaloDatabase = ClassName.get("com.mobgen.halo.android.content.generated", "GeneratedHaloDatabase");
 
@@ -364,14 +408,9 @@ public class HaloContentDatabaseProcessor extends AbstractProcessor {
         queryClassBuilder.addModifiers(Modifier.PUBLIC);
         queryClassBuilder.addSuperinterface(generatedHaloDatabase);
 
-        FieldSpec versionField = FieldSpec.builder(int.class,"VERSION",Modifier.PUBLIC,Modifier.STATIC,Modifier.FINAL)
-                .initializer("$L",version)
-                .build();
-        queryClassBuilder.addField(versionField);
-
         ClassName sqLite = ClassName.get("android.database.sqlite", "SQLiteDatabase");
         ClassName cursor = ClassName.get("android.database","Cursor");
-        MethodSpec.Builder updateDatabaseBuilder = MethodSpec.methodBuilder("updateDatabase")
+        MethodSpec.Builder updateDatabaseBuilder = MethodSpec.methodBuilder("updateDatabaseWithAutoGeneratedModels")
                 .addAnnotation(Override.class)
                 .returns(void.class)
                 .addModifiers(Modifier.PUBLIC)
@@ -383,13 +422,12 @@ public class HaloContentDatabaseProcessor extends AbstractProcessor {
         ClassName dropQuery = ClassName.get("com.mobgen.halo.android.framework.storage.database.dsl.queries", "Drop");
         ClassName contentValues = ClassName.get("android.content", "ContentValues");
 
-        generateHaloContentTable();
         updateDatabaseBuilder.addCode("$1T.table($2L.class).on(database, \"Creates the HaloTable$$ContentVersion table from codegen\");\n",createQuery,"HaloTable$$ContentVersion");
 
         //create each table on dabase
         for(int i=0; i<databaseTables.size();i++){
             String classNameTable = "HaloTable$$" + databaseTables.get(i);
-            String tableName = "HALO_GC_" + databaseTables.get(i).toUpperCase();
+            String tableName = databaseTables.get(i).toUpperCase();
             int index = i+1;
             //Select version from ContentVersion table
             updateDatabaseBuilder.addCode("int version$1L = $2L;\n",index,databaseVersion.get(i));
@@ -431,15 +469,6 @@ public class HaloContentDatabaseProcessor extends AbstractProcessor {
 
         queryClassBuilder.addMethod(updateDatabaseBuilder.build());
 
-        MethodSpec getDatabaseVersion = MethodSpec.methodBuilder("getDatabaseVersion")
-                .addAnnotation(Override.class)
-                .returns(int.class)
-                .addModifiers(Modifier.PUBLIC)
-                .addStatement("return VERSION")
-                .build();
-
-        queryClassBuilder.addMethod(getDatabaseVersion);
-
         TypeSpec queryClass = queryClassBuilder.build();
 
         javaFile = JavaFile.builder("com.mobgen.halo.android.app.generated", queryClass)
@@ -461,16 +490,16 @@ public class HaloContentDatabaseProcessor extends AbstractProcessor {
      * @param element
      * @return
      */
-    private FieldSpec setHaloTableFields(Element element){
+    private FieldSpec setHaloTableFields(Element element, Element constructor, int index){
         ClassName keepClass = ClassName.get("android.support.annotation", "Keep");
         if(element.getKind()==FIELD){
             AnnotationSpec annotationSpec =  resolveAnnotations(((VariableElement) element).asType());
-            if( annotationSpec!=null) {
-                return FieldSpec.builder(String.class, "C_" + element.toString().toUpperCase())
+            if( annotationSpec!=null && constructor.getAnnotation(HaloConstructor.class)!= null && index < constructor.getAnnotation(HaloConstructor.class).columnNames().length) {
+                return FieldSpec.builder(String.class, constructor.getAnnotation(HaloConstructor.class).columnNames()[index])
                         .addAnnotation(keepClass)
                         .addAnnotation(annotationSpec)
                         .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
-                        .initializer("$S", "GC_" + element.toString().toUpperCase())
+                        .initializer("$S",  constructor.getAnnotation(HaloConstructor.class).columnNames()[index])
                         .build();
             }
         }

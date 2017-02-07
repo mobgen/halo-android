@@ -3,38 +3,46 @@ package com.mobgen.halo.android.content.generated;
 
 import android.database.Cursor;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-
-import com.mobgen.halo.android.content.edition.ContentManipulationRepository;
-import com.mobgen.halo.android.content.models.HaloContentInstance;
-import com.mobgen.halo.android.framework.network.client.request.HaloRequestMethod;
+import com.mobgen.halo.android.content.models.Paginated;
 import com.mobgen.halo.android.framework.toolbox.data.HaloResultV2;
-import com.mobgen.halo.android.sdk.core.threading.HaloInteractorExecutor;
+import com.mobgen.halo.android.sdk.core.selectors.SelectorProviderAdapter;
 
-import java.util.List;
+/**
+ * Perfom the operation to perfom queries from codegen
+ *
+ * @param <T> The type
+ */
+public class GeneratedContentQueriesInteractor<T>  extends SelectorProviderAdapter<Paginated<T>, Cursor> {
 
-
-public class GeneratedContentQueriesInteractor implements HaloInteractorExecutor.Interactor<List<HaloContentInstance>>{
-
-
+    /**
+     * The repository to perfom the query
+     */
     private GeneratedContentQueriesRepository mGeneratedContentQueriesRepository;
-
+    /**
+     * The query generated from annotations
+     */
     private String mQuery;
-
+    /**
+     * The arguments to use on the query
+     */
     private Object[] mBindArgs;
 
-
-
+    /**
+     * Constructor of the interactor.
+     *
+     * @param generatedContentQueriesRepository The repository.
+     * @param query The query to perfom.
+     * @param bindArgs The args to put on the query.
+     */
     public GeneratedContentQueriesInteractor(@NonNull GeneratedContentQueriesRepository generatedContentQueriesRepository, @NonNull String query, @NonNull Object[] bindArgs) {
         mGeneratedContentQueriesRepository = generatedContentQueriesRepository;
         mQuery = query;
         mBindArgs = bindArgs;
     }
 
-
     @NonNull
     @Override
-    public HaloResultV2<List<HaloContentInstance>> executeInteractor() throws Exception {
+    public HaloResultV2<Cursor> fromStorage() {
         HaloResultV2<Cursor> result = null;
         return mGeneratedContentQueriesRepository.perfomQuery(mQuery, mBindArgs);
     }

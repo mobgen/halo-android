@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
+import com.mobgen.halo.android.content.annotations.HaloConstructor;
 import com.mobgen.halo.android.content.annotations.HaloField;
 import com.mobgen.halo.android.content.annotations.HaloQuery;
 import com.mobgen.halo.android.content.annotations.HaloSearchable;
@@ -15,11 +16,12 @@ import java.util.Date;
  * Created by javierdepedrolopez on 9/11/15.
  */
 @JsonObject
-@HaloSearchable(version = 20)
+@HaloSearchable(version = 20 , tableName = "Article")
 public class Article implements Parcelable {
     @HaloField(index = true)
     @JsonField(name = "Title")
     String mTitle;
+
     @JsonField(name = "Date")
     Date mDate;
 
@@ -38,24 +40,25 @@ public class Article implements Parcelable {
     public Article(){
 
     }
-
-    public Article(String title, Date date, String article, String thumnail, String image) {
+    @HaloConstructor( columnNames = {"Title","Date","ContentHtml","Summary","Thumbnail","Image"})
+    public Article(String title, Date date, String article, String summary, String thumnail, String image) {
         mTitle = title;
         mDate = date;
         mArticle = article;
+        mSummary = summary;
         mThumbnail = thumnail;
         mImage = image;
     }
 
-    @HaloQuery(name="selectTitle",query="select * from HALO_GC_ARTICLE where GC_MTITLE = @{mTitle:String}")
+    @HaloQuery(name="selectTitle",query="select * from Article where Title = @{mTitle:String}")
     public String getTitle() {
         return mTitle;
     }
-    @HaloQuery(name="insertArticle",query="insert into HALO_GC_ARTICLE(GC_MTITLE,GC_MDATE,GC_MARTICLE,GC_MSUMMARY,GC_MTHUMBNAIL,GC_MIMAGE) VALUES (@{mTitle:String},@{mDate:Date},@{mArticle:String},@{mSummary:String},@{mThumbnail:String},@{mImage:String});")
+    @HaloQuery(name="insertArticle",query="insert into Article(Title,Date,ContentHtml,Summary,Thumbnail,Image) VALUES (@{mTitle:String},@{mDate:Date},@{mArticle:String},@{mSummary:String},@{mThumbnail:String},@{mImage:String});")
     public Date getDate() {
         return mDate;
     }
-    @HaloQuery(name="deleteByTitle", query=("delete from HALO_GC_ARTICLE where GC_MTITLE = @{mTitle:String}"))
+    @HaloQuery(name="deleteByTitle", query=("delete from Article where Title = @{mTitle:String}"))
     public String getArticle() {
         return mArticle;
     }

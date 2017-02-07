@@ -3,42 +3,39 @@ package com.mobgen.halo.android.content.generated;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.support.annotation.NonNull;
-
-import com.mobgen.halo.android.content.models.HaloContentInstance;
+import android.support.annotation.Nullable;
 import com.mobgen.halo.android.content.spec.HaloContentContract;
-import com.mobgen.halo.android.content.utils.HaloContentHelper;
 import com.mobgen.halo.android.framework.api.HaloFramework;
-import com.mobgen.halo.android.framework.api.HaloNetworkApi;
-import com.mobgen.halo.android.framework.common.exceptions.HaloParsingException;
-import com.mobgen.halo.android.framework.network.client.body.HaloBodyFactory;
-import com.mobgen.halo.android.framework.network.client.request.HaloRequest;
-import com.mobgen.halo.android.framework.network.client.request.HaloRequestMethod;
-import com.mobgen.halo.android.framework.network.exceptions.HaloNetException;
 import com.mobgen.halo.android.framework.storage.database.HaloDataLite;
-import com.mobgen.halo.android.framework.storage.database.dsl.queries.Create;
-import com.mobgen.halo.android.framework.storage.exceptions.HaloStorageParseException;
-import com.mobgen.halo.android.sdk.api.Halo;
-import com.mobgen.halo.android.sdk.core.internal.network.HaloNetworkConstants;
-
-import org.json.JSONObject;
-
 import java.util.Date;
-import java.util.List;
 
-
+/**
+ * The data source to perfom queries against local database.
+ */
 public class GeneratedContentQueriesLocalDataSource {
-
+    /**
+     *  Helper to perfom operation on databse
+     */
     private HaloDataLite mDataLite;
 
-
+    /**
+     * The constructor of the local data source.
+     * @param haloFramework The framewrok.
+     */
     public GeneratedContentQueriesLocalDataSource(@NonNull HaloFramework haloFramework) {
         mDataLite = haloFramework.storage(HaloContentContract.HALO_CONTENT_STORAGE).db();
     }
 
-    //TODO Convert HaloContentInstance to model
-
-    @NonNull
-    public List<HaloContentInstance> perfomQuery(@NonNull String query,@NonNull Object[] bindArgs) throws SQLException {
+    /**
+     * Perfom the query against dabase from annotated code.
+     *
+     * @param query the query to perfom.
+     * @param bindArgs the args to the query.
+     * @return A cursor raw response from databse
+     * @throws SQLException
+     */
+    @Nullable
+    public Cursor perfomQuery(@NonNull String query,@NonNull Object[] bindArgs) throws SQLException {
         //convert obects to string to perfom queries
         int length = bindArgs.length;
         String[] bindstringArgs = new String[length];
@@ -54,15 +51,8 @@ public class GeneratedContentQueriesLocalDataSource {
             }
         }
         Cursor rawResult = mDataLite.getDatabase().rawQuery(query,bindstringArgs);
-        List<HaloContentInstance> result = null;
-        try {
-            if(rawResult!=null) {
-                result = HaloContentHelper.createList(rawResult, true);
-            }
-        } catch (HaloStorageParseException e) {
-
-        }
-        return result;
+        if(rawResult!=null)rawResult.moveToFirst();
+        return rawResult;
     }
 
 }

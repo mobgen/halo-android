@@ -5,17 +5,17 @@ import android.os.Parcelable;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
+import com.mobgen.halo.android.content.annotations.HaloConstructor;
+import com.mobgen.halo.android.content.annotations.HaloField;
 import com.mobgen.halo.android.content.annotations.HaloQuery;
 import com.mobgen.halo.android.content.annotations.HaloSearchable;
 
 import java.util.Date;
 
 @JsonObject
-@HaloSearchable(version = 15)
+@HaloSearchable(version = 15 , tableName ="QROffer")
 public class QROffer implements Parcelable {
-
     private String mId;
-
     @JsonField(name = "Title")
     String mTitle;
 
@@ -28,13 +28,14 @@ public class QROffer implements Parcelable {
     @JsonField(name = "QRImage")
     String mQRImage;
 
+
     @JsonField(name = "Thumbnail")
     String mThumbnail;
 
     public QROffer(){
 
     }
-
+    @HaloConstructor (columnNames = {"id","title","date","article","thumbnail"})
     public QROffer(String id, String title, Date date, String article, String thumbnail) {
         mId = id;
         mTitle = title;
@@ -54,7 +55,7 @@ public class QROffer implements Parcelable {
     public String getTitle() {
         return mTitle;
     }
-    @HaloQuery(name="selectDate",query="select * from HALO_GC_QROFFER where GC_MDATE = @{mDate:String} orderBy id DESCENDANT")
+    @HaloQuery(name="selectDate",query="select * from QROffer where DateQR = @{mDate:String} orderBy id DESCENDANT")
     public Date getDate() {
         return mDate;
     }

@@ -60,9 +60,9 @@ public class Drop extends Query {
     }
 
     /**
-     * Creates a table.
+     * Drops a table.
      *
-     * @param table The table to create.
+     * @param table The table to drop.
      * @return The table syntax expression.
      */
     public static Drop.TableSyntax table(@NonNull Class<? extends HaloTable> table) {
