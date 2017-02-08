@@ -145,10 +145,31 @@ public class HaloManagerApi extends HaloPluginApi {
     public HaloSelectorFactory<List<HaloModule>, Cursor> getModules(@Data.Policy int dataMode) {
         return new HaloSelectorFactory<>(
                 halo(),
-                new RequestModulesInteractor(mModulesRepository),
+                new RequestModulesInteractor(mModulesRepository,false),
                 new Cursor2ModulesConverter(),
                 null,
                 dataMode,
+                "Get modules request"
+        );
+    }
+
+    /**
+     * Provides the current modules with the fields metadata. You can use this method to see in the
+     * log the metadata.
+     *
+     * @return Returns the selector to execute the action.
+     */
+    @Keep
+    @NonNull
+    @Api(2.3)
+    @CheckResult(suggest = "You may want to call asContent() or asRaw() to get the information")
+    public HaloSelectorFactory<List<HaloModule>, Cursor> getModulesMetaData() {
+        return new HaloSelectorFactory<>(
+                halo(),
+                new RequestModulesInteractor(mModulesRepository,true),
+                new Cursor2ModulesConverter(),
+                null,
+                Data.NETWORK_ONLY,
                 "Get modules request"
         );
     }

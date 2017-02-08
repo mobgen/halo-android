@@ -43,9 +43,10 @@ public class ModulesRemoteDatasource {
      * @return The modules obtained.
      */
     @NonNull
-    public List<HaloModule> getModules() throws HaloNetException {
+    public List<HaloModule> getModules(boolean withFields) throws HaloNetException {
+
         return HaloRequest.builder(mClientApi)
-                .url(HaloNetworkConstants.HALO_ENDPOINT_ID, URL_GET_MODULES)
+                .url(HaloNetworkConstants.HALO_ENDPOINT_ID, URL_GET_MODULES +"&withFields=" + withFields)
                 .method(HaloRequestMethod.GET)
                 .build().execute(new TypeReference<List<HaloModule>>() {
                 });

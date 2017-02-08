@@ -58,7 +58,7 @@ public class InternetBroadcastListenerTest extends HaloRobolectricTest {
     public void thatInternetListenerIsReadyCheck(){
         InternetBroadcastListener listener = InternetBroadcastListener.listen(mContext,givenAInternetBroadcastListener(mCallbackFlag));
         listener.onReceive(mContext,new Intent());
-        listener.unlisten(listener);
+        listener.unlisten();
         assertThat(mCallbackFlag.isFlagged()).isTrue();
     }
 
