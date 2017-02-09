@@ -152,11 +152,9 @@ public class ModulesFragment extends MobgenHaloFragment implements SwipeRefreshL
      */
     public void refreshModules() {
         ViewUtils.refreshing(mRefreshLayout, true);
-        HaloManagerApi.with(Halo.instance())
-                .getModulesMetaData()
-                .asContent()
-                .threadPolicy(Threading.POOL_QUEUE_POLICY)
-                .execute();
+
+        //print module metadata
+        HaloManagerApi.with(Halo.instance()).printModulesMetaData();
 
         HaloManagerApi.with(Halo.instance())
                 .getModules(Data.NETWORK_AND_STORAGE)

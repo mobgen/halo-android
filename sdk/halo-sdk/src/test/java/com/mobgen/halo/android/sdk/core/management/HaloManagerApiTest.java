@@ -2,6 +2,7 @@ package com.mobgen.halo.android.sdk.core.management;
 
 import android.database.Cursor;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.mobgen.halo.android.framework.common.exceptions.HaloParsingException;
 import com.mobgen.halo.android.framework.common.helpers.subscription.ISubscription;
@@ -36,6 +37,7 @@ import java.util.List;
 import static com.mobgen.halo.android.sdk.mock.fixtures.ServerFixtures.ADD_SEGMENTATION_TAG;
 import static com.mobgen.halo.android.sdk.mock.fixtures.ServerFixtures.GET_DEVICE;
 import static com.mobgen.halo.android.sdk.mock.fixtures.ServerFixtures.GET_MODULES;
+import static com.mobgen.halo.android.sdk.mock.fixtures.ServerFixtures.GET_MODULES_META_DATA;
 import static com.mobgen.halo.android.sdk.mock.fixtures.ServerFixtures.REMOVE_SEGMENTATION_TAG;
 import static com.mobgen.halo.android.sdk.mock.fixtures.ServerFixtures.REQUEST_TOKEN;
 import static com.mobgen.halo.android.sdk.mock.fixtures.ServerFixtures.SYNC_DEVICE;
@@ -202,6 +204,13 @@ public class HaloManagerApiTest extends HaloRobolectricTest {
                 .asRaw()
                 .execute(callback);
         assertThat(mCallbackFlag.isFlagged()).isTrue();
+        assertThat(cancellable).isNotNull();
+    }
+
+    @Test
+    public void thatGetModulesWithMetadata() throws IOException {
+        enqueueServerFile(mMockServer, GET_MODULES_META_DATA);
+        ICancellable cancellable = mHalo.getCore().manager().printModulesMetaData();
         assertThat(cancellable).isNotNull();
     }
 

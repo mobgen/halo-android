@@ -27,7 +27,7 @@ public class HaloModuleTest extends HaloRobolectricTest {
     public void initialize() {
         mUpdatedAt = new Date();
         mCreatedAt = new Date();
-        mModule = new HaloModule(1, "1", "myModule", true, mCreatedAt, mUpdatedAt, "internalId", false);
+        mModule = new HaloModule(1, "1", "myModule", true, mCreatedAt, mUpdatedAt, "internalId", false, null);
     }
 
     private void assertModule(HaloModule module) {
