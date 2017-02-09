@@ -2,6 +2,7 @@ package com.mobgen.halo.android.content.generated;
 
 import android.database.Cursor;
 import android.database.SQLException;
+import android.support.annotation.BoolRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.mobgen.halo.android.content.spec.HaloContentContract;
@@ -48,6 +49,8 @@ public class GeneratedContentQueriesLocalDataSource {
                 bindstringArgs[i] = bindArgs[i].toString();
             } else if(bindArgs[i] instanceof Date) {
                 bindstringArgs[i] = String.valueOf(((Date)bindArgs[i]).getTime());
+            } else if(bindArgs[i] instanceof Boolean) {
+                bindstringArgs[i] = String.valueOf(bindArgs[i]);
             }
         }
         Cursor rawResult = mDataLite.getDatabase().rawQuery(query,bindstringArgs);

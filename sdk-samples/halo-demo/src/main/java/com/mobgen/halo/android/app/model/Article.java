@@ -37,10 +37,13 @@ public class Article implements Parcelable {
     @JsonField(name = "Image")
     String mImage;
 
+    @JsonField(name = "Question")
+    Boolean mQuestion;
+
     public Article(){
 
     }
-    @HaloConstructor( columnNames = {"Title","Date","ContentHtml","Summary","Thumbnail","Image"})
+    @HaloConstructor( columnNames = {"Title","Date","ContentHtml","Summary","Thumbnail","Image","Question"})
     public Article(String title, Date date, String article, String summary, String thumnail, String image) {
         mTitle = title;
         mDate = date;
@@ -50,11 +53,11 @@ public class Article implements Parcelable {
         mImage = image;
     }
 
-    @HaloQuery(name="selectTitle",query="select * from Article where Title = @{mTitle:String}")
+    @HaloQuery(name="selectTitle",query="select * from Article where Title = @{mTitle:String} AND Question = @{mQuestion:Boolean}")
     public String getTitle() {
         return mTitle;
     }
-    @HaloQuery(name="insertArticle",query="insert into Article(Title,Date,ContentHtml,Summary,Thumbnail,Image) VALUES (@{mTitle:String},@{mDate:Date},@{mArticle:String},@{mSummary:String},@{mThumbnail:String},@{mImage:String});")
+    @HaloQuery(name="insertArticle",query="insert into Article(Title,Date,ContentHtml,Summary,Thumbnail,Image,Question) VALUES (@{mTitle:String},@{mDate:Date},@{mArticle:String},@{mSummary:String},@{mThumbnail:String},@{mImage:String},@{mQuestion:Boolean});")
     public Date getDate() {
         return mDate;
     }

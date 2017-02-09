@@ -228,17 +228,17 @@ public class GeneralContentModuleActivity extends MobgenHaloActivity implements 
 
         //api things
         HaloContentApi.with(MobgenHaloApplication.halo(), null, new GeneratedDatabaseFromModel());
-//        HaloContentQueryApi.with(MobgenHaloApplication.halo()).insertArticle("The best article ever",new Date(),"Article","summary",null,null)
-//                .asContent(Article.class)
-//                .execute(new CallbackV2<List<Article>>() {
-//                    @Override
-//                    public void onFinish(@NonNull HaloResultV2<List<Article>> result) {
-//                        if(result.data().size()>0){
-//                            Log.v("the article parsed::>>",result.data().get(0).getTitle());
-//                        }
-//                    }
-//                });
-        HaloContentQueryApi.with(MobgenHaloApplication.halo()).selectTitle("The best article ever")
+        HaloContentQueryApi.with(MobgenHaloApplication.halo()).insertArticle("The best article ever",new Date(),"Article","summary",null,null,true)
+                .asContent(Article.class)
+                .execute(new CallbackV2<List<Article>>() {
+                    @Override
+                    public void onFinish(@NonNull HaloResultV2<List<Article>> result) {
+                        if(result.data().size()>0){
+                            Log.v("the article parsed::>>",result.data().get(0).getTitle());
+                        }
+                    }
+                });
+        HaloContentQueryApi.with(MobgenHaloApplication.halo()).selectTitle("The best article ever",true)
                 .asContent(Article.class)
                 .execute(new CallbackV2<List<Article>>() {
                     @Override

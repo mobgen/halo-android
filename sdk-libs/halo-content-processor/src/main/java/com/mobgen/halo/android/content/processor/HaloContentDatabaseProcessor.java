@@ -1,6 +1,7 @@
 package com.mobgen.halo.android.content.processor;
 
 import com.google.auto.service.AutoService;
+import com.google.common.primitives.Booleans;
 import com.mobgen.halo.android.content.annotations.HaloConstructor;
 import com.mobgen.halo.android.content.annotations.HaloField;
 import com.mobgen.halo.android.content.annotations.HaloQuery;
@@ -525,6 +526,10 @@ public class HaloContentDatabaseProcessor extends AbstractProcessor {
             return  AnnotationSpec.builder(columnClass)
                     .addMember("type", "$L", "Column.Type.DATE")
                     .build();
+        } else if(typeUtils.asElement(typeMirror).getSimpleName().toString().equals("Boolean")){
+            return  AnnotationSpec.builder(columnClass)
+                    .addMember("type", "$L", "Column.Type.BOOLEAN")
+                    .build();
         }
         return  null;//not supported this type
     }
@@ -542,7 +547,9 @@ public class HaloContentDatabaseProcessor extends AbstractProcessor {
             return Integer.class;
         } else if(type.equals("Date")){
             return Date.class;
-        } else {
+        } else if(type.equals("Boolean")){
+            return Boolean.class;
+        }else {
             return Object.class;
         }
     }

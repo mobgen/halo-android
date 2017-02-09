@@ -135,9 +135,13 @@ public final class HaloContentHelper {
                     values[indexParam] = null;
                 } else if (type == Cursor.FIELD_TYPE_INTEGER) {
                     try{
-                        Date date = new Date(Long.parseLong(cursor.getString(cursor.getColumnIndex(cursor.getColumnNames()[i]))));
-                        values[indexParam] =date;
-                    } catch (Exception e){
+                        if(cursor.getString(cursor.getColumnIndex(cursor.getColumnNames()[i])).length()==1){
+                            values[indexParam] = Integer.parseInt(cursor.getString(cursor.getColumnIndex(cursor.getColumnNames()[i]))) != 0;
+                        } else {
+                            Date date = new Date(Long.parseLong(cursor.getString(cursor.getColumnIndex(cursor.getColumnNames()[i]))));
+                            values[indexParam] = date;
+                        }
+                    } catch (NumberFormatException e){
                         values[indexParam] = cursor.getInt(cursor.getColumnIndex(cursor.getColumnNames()[i]));
                     }
                 } else if (type == Cursor.FIELD_TYPE_STRING) {
