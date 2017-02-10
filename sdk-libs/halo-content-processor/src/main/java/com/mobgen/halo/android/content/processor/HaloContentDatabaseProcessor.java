@@ -1,9 +1,9 @@
 package com.mobgen.halo.android.content.processor;
 
 import com.google.auto.service.AutoService;
-import com.google.common.primitives.Booleans;
 import com.mobgen.halo.android.content.annotations.HaloConstructor;
 import com.mobgen.halo.android.content.annotations.HaloField;
+import com.mobgen.halo.android.content.annotations.HaloQueries;
 import com.mobgen.halo.android.content.annotations.HaloQuery;
 import com.mobgen.halo.android.content.annotations.HaloSearchable;
 import com.squareup.javapoet.AnnotationSpec;
@@ -44,6 +44,7 @@ import static javax.lang.model.element.ElementKind.FIELD;
 
 @AutoService(Processor.class)
 @SupportedAnnotationTypes({"com.mobgen.halo.android.content.annotations.HaloQuery",
+        "com.mobgen.halo.android.content.annotations.HaloQueries",
         "com.mobgen.halo.android.content.annotations.HaloField",
         "com.mobgen.halo.android.content.annotations.HaloSearchable",
         "com.mobgen.halo.android.content.annotations.HaloConstructor"})
@@ -57,6 +58,8 @@ public class HaloContentDatabaseProcessor extends AbstractProcessor {
     private List<String> databaseTables = new ArrayList<String>();
     private List<Integer> databaseVersion = new ArrayList<>();
     private List<Element> constructorElements =  new ArrayList<>();
+    private List<Element> searchable =  new ArrayList<>();
+    private List<Element> queriesElments = new ArrayList<>();
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
@@ -71,6 +74,7 @@ public class HaloContentDatabaseProcessor extends AbstractProcessor {
     public Set<String> getSupportedAnnotationTypes() {
         Set<String> annotataions = new LinkedHashSet<String>();
         annotataions.add(HaloQuery.class.getCanonicalName());
+        annotataions.add(HaloQueries.class.getCanonicalName());
         annotataions.add(HaloField.class.getCanonicalName());
         annotataions.add(HaloSearchable.class.getCanonicalName());
         annotataions.add(HaloConstructor.class.getCanonicalName());
@@ -86,7 +90,11 @@ public class HaloContentDatabaseProcessor extends AbstractProcessor {
     @Override
     public boolean process(Set<? extends TypeElement> set, RoundEnvironment roundEnvironment) {
 
-        generateHaloQueryClass(roundEnvironment);
+        for (Element query : roundEnvironment.getElementsAnnotatedWith(HaloQueries.class)) {
+            queriesElments.add(query);
+        }
+        generateHaloQueryClass();
+
         //add all constructor to dabase
         for (Element constructor : roundEnvironment.getElementsAnnotatedWith(HaloConstructor.class)) {
             constructorElements.add(constructor);
@@ -111,9 +119,8 @@ public class HaloContentDatabaseProcessor extends AbstractProcessor {
     /**
      * Generate Halo query class with all the HaloQuery annotation
      *
-     * @param roundEnvironment
      */
-    private void generateHaloQueryClass(RoundEnvironment roundEnvironment){
+    private void generateHaloQueryClass(){
         JavaFile javaFile=null;
         String className = "HaloContentQueryApi";
         ClassName halo = ClassName.get("com.mobgen.halo.android.sdk.api","Halo");
@@ -161,52 +168,54 @@ public class HaloContentDatabaseProcessor extends AbstractProcessor {
                 .addMember("suggest","\"You may want to call execute() to run the task\"")
                 .build();
 
-        //add all annotated query elements
-        for (Element element : roundEnvironment.getElementsAnnotatedWith(HaloQuery.class)) {
+        //add all annotated query elements for all elements with halo queries
+        for(int w=0;w<queriesElments.size();w++) {
+            HaloQuery[] queries = queriesElments.get(w).getAnnotation(HaloQueries.class).queries();
+            for (int q = 0; q < queries.length; q++) {
 
-            String query = element.getAnnotation(HaloQuery.class).query();
-            String methodName = element.getAnnotation(HaloQuery.class).name();
+                String query = queries[q].query();
+                String methodName = queries[q].name();
 
-            ClassName modelClass = ClassName.get(getPackageName(element),element.getEnclosingElement().getSimpleName().toString());
+                ClassName modelClass = ClassName.get(getPackageName(queriesElments.get(w)), queriesElments.get(w).getSimpleName().toString());
+                //prepare statements
+                MethodSpec.Builder methodBuilder = MethodSpec.methodBuilder(methodName)
+                        .addJavadoc("Query by codegen: " + query)
+                        .addAnnotation(checkResultAnnontation)
+                        .addModifiers(Modifier.PUBLIC);
 
-            //prepare statements
-            MethodSpec.Builder methodBuilder = MethodSpec.methodBuilder(methodName)
-                    .addJavadoc("Query by codegen: "+ query)
-                    .addAnnotation(checkResultAnnontation)
-                    .addModifiers(Modifier.PUBLIC);
-
-            List<String> paramNames = new ArrayList<>();
-            //create the query method
-            for(int i=0;i<query.length();i++){
-                if(query.charAt(i) == '@'){
-                    i++;//skip { char
-                    String param = query.substring(i+1);
-                    paramNames.add(param.substring(0,param.indexOf(":")));
-                    methodBuilder.addParameter(resolveDataType(param.substring(param.indexOf(":")+1,param.indexOf("}"))),param.substring(0,param.indexOf(":")));
-                    query = query.replace("@{" + param.substring(0,param.indexOf("}")+1),"?");
+                List<String> paramNames = new ArrayList<>();
+                //create the query method
+                for (int i = 0; i < query.length(); i++) {
+                    if (query.charAt(i) == '@') {
+                        i++;//skip { char
+                        String param = query.substring(i + 1);
+                        paramNames.add(param.substring(0, param.indexOf(":")));
+                        methodBuilder.addParameter(resolveDataType(param.substring(param.indexOf(":") + 1, param.indexOf("}"))), param.substring(0, param.indexOf(":")));
+                        query = query.replace("@{" + param.substring(0, param.indexOf("}") + 1), "?");
+                    }
                 }
-            }
-            //return statement of the query method
-            methodBuilder.addStatement("String query = $S",query);
-            methodBuilder.addStatement("Object[] bindArgs = new Object[$L]", paramNames.size());
-            for(int j=0;j<paramNames.size();j++) {
-                methodBuilder.addStatement("bindArgs[$L]=$L", j, paramNames.get(j));
-            }
+                //return statement of the query method
+                methodBuilder.addStatement("String query = $S", query);
+                methodBuilder.addStatement("Object[] bindArgs = new Object[$L]", paramNames.size());
+                for (int j = 0; j < paramNames.size(); j++) {
+                    methodBuilder.addStatement("bindArgs[$L]=$L", j, paramNames.get(j));
+                }
 
-            methodBuilder.returns(ParameterizedTypeName.get(contentSelectorFactory, ParameterizedTypeName.get(paginated, modelClass),cursor))
-                .addStatement("return new HaloContentSelectorFactory<>(\n" +
-                        "\thalo(),\n" +
-                        "\tnew $1T(new $2T(new $3T(halo().framework())),query,bindArgs),\n" +
-                        "\tnew $4T($5T.class),\n" +
-                        "\tnew $6T(halo().framework().parser()),\n" +
-                        "\tnull,\n" +
-                        "\t$7T.STORAGE_ONLY,\n" +
-                        "\t\"generatedModelQuery with method $8L\")",generatedContentQueriesInteractorInstance,generatedContentQueriesRepositoryInstance,
-                        generatedContentQueriesLocalDataSource,cursor2ContentInstanceGeneratedModelConverter,
-                        modelClass,cursor2GeneratedModelClassConverterFactory,storageData,methodName);
+                methodBuilder.returns(ParameterizedTypeName.get(contentSelectorFactory, ParameterizedTypeName.get(paginated, modelClass), cursor))
+                        .addStatement("return new HaloContentSelectorFactory<>(\n" +
+                                        "\thalo(),\n" +
+                                        "\tnew $1T(new $2T(new $3T(halo().framework())),query,bindArgs),\n" +
+                                        "\tnew $4T($5T.class),\n" +
+                                        "\tnew $6T(halo().framework().parser()),\n" +
+                                        "\tnull,\n" +
+                                        "\t$7T.STORAGE_ONLY,\n" +
+                                        "\t\"generatedModelQuery with method $8L\")", generatedContentQueriesInteractorInstance, generatedContentQueriesRepositoryInstance,
+                                generatedContentQueriesLocalDataSource, cursor2ContentInstanceGeneratedModelConverter,
+                                modelClass, cursor2GeneratedModelClassConverterFactory, storageData, methodName);
 
-            MethodSpec queryDatabase = methodBuilder.build();
-            queryClassBuilder.addMethod(queryDatabase);
+                MethodSpec queryDatabase = methodBuilder.build();
+                queryClassBuilder.addMethod(queryDatabase);
+            }
         }
 
         TypeSpec queryClass = queryClassBuilder.build();
@@ -234,7 +243,7 @@ public class HaloContentDatabaseProcessor extends AbstractProcessor {
     private String getPackageName(Element element) {
         String packageName = "";
         boolean moreEnclosingElements = true;
-        Element recursiveElement = element.getEnclosingElement();
+        Element recursiveElement = element;
         while(moreEnclosingElements){
             if(recursiveElement.getEnclosingElement()!=null) {
                 packageName = packageName + recursiveElement.getEnclosingElement();
@@ -441,7 +450,7 @@ public class HaloContentDatabaseProcessor extends AbstractProcessor {
             updateDatabaseBuilder.addCode("if(result$4L.moveToFirst()){\n" +
                     "\tversion$1L = result$4L.getInt(result$4L.getColumnIndex($2L.TABLE_VERSION));\n" +
                     "\tif(version$1L<$3L){\n" +
-                   // "\t\tversion$1L =$3L;\n"+
+                    // "\t\tversion$1L =$3L;\n"+
                     "\t\t$5T.table($6L.class).on(database,\"Drop table of type $6L due to new version from codegen\");\n"+
                     "\t}\n"+
                     "}\n",index,"HaloTable$$ContentVersion",databaseVersion.get(i),index,dropQuery,classNameTable);
@@ -458,12 +467,12 @@ public class HaloContentDatabaseProcessor extends AbstractProcessor {
             //insert shared table statement
             updateDatabaseBuilder.addCode("$1T.table($2L.class).on(database, \"Creates the $2L table from codegen\");\n",createQuery,classNameTable);
             updateDatabaseBuilder.addCode("$1T values$2L = new $1T();\n" +
-                    "values$2L.put($4L.TABLE_ID, id$2L);\n" +
-                    "values$2L.put($4L.TABLE_NAME, $3S);\n" +
-                    "values$2L.put($4L.TABLE_VERSION,$6L);\n" +
-                    "if (version$2L!= $6L) {\n" +
-                    "\tdatabase.insertWithOnConflict($5S,null,values$2L,SQLiteDatabase.CONFLICT_REPLACE);\n" +
-                    "}\n",
+                            "values$2L.put($4L.TABLE_ID, id$2L);\n" +
+                            "values$2L.put($4L.TABLE_NAME, $3S);\n" +
+                            "values$2L.put($4L.TABLE_VERSION,$6L);\n" +
+                            "if (version$2L!= $6L) {\n" +
+                            "\tdatabase.insertWithOnConflict($5S,null,values$2L,SQLiteDatabase.CONFLICT_REPLACE);\n" +
+                            "}\n",
                     contentValues,index,tableName,"HaloTable$$ContentVersion","HALO_GC_CONTENT_VERSION",databaseVersion.get(i));
             updateDatabaseBuilder.addCode("//End of the $1L database table\n",index);
         }
@@ -530,8 +539,11 @@ public class HaloContentDatabaseProcessor extends AbstractProcessor {
             return  AnnotationSpec.builder(columnClass)
                     .addMember("type", "$L", "Column.Type.BOOLEAN")
                     .build();
+        } else {
+            return  AnnotationSpec.builder(columnClass)
+                    .addMember("type", "$L", "Column.Type.TEXT")
+                    .build();
         }
-        return  null;//not supported this type
     }
 
     /**

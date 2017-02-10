@@ -2,13 +2,10 @@ package com.mobgen.halo.android.app.ui.generalcontent;
 
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
@@ -28,33 +25,23 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.mobgen.halo.android.app.R;
-import com.mobgen.halo.android.app.generated.HaloContentQueryApi;
 import com.mobgen.halo.android.app.generated.GeneratedDatabaseFromModel;
+import com.mobgen.halo.android.app.generated.HaloContentQueryApi;
 import com.mobgen.halo.android.app.model.Article;
+import com.mobgen.halo.android.app.model.QROffer;
 import com.mobgen.halo.android.app.ui.MobgenHaloActivity;
 import com.mobgen.halo.android.app.ui.MobgenHaloApplication;
 import com.mobgen.halo.android.app.ui.views.DividerItemDecoration;
 import com.mobgen.halo.android.app.utils.ViewUtils;
 import com.mobgen.halo.android.content.HaloContentApi;
-import com.mobgen.halo.android.content.generated.GeneratedContentQueriesInteractor;
-import com.mobgen.halo.android.content.generated.GeneratedContentQueriesLocalDataSource;
-import com.mobgen.halo.android.content.generated.GeneratedContentQueriesRepository;
 import com.mobgen.halo.android.content.models.HaloContentInstance;
 import com.mobgen.halo.android.content.models.Paginated;
 import com.mobgen.halo.android.content.models.SearchQuery;
-import com.mobgen.halo.android.content.search.Cursor2ClassSearchConverterFactory;
 import com.mobgen.halo.android.content.search.SearchQueryBuilderFactory;
-import com.mobgen.halo.android.content.selectors.HaloContentSelectorFactory;
-import com.mobgen.halo.android.content.spec.HaloContentContract;
-import com.mobgen.halo.android.framework.storage.database.dsl.queries.Create;
-import com.mobgen.halo.android.framework.storage.database.dsl.queries.Delete;
-import com.mobgen.halo.android.framework.storage.database.dsl.queries.Drop;
-import com.mobgen.halo.android.framework.storage.database.dsl.queries.Select;
 import com.mobgen.halo.android.framework.toolbox.data.CallbackV2;
 import com.mobgen.halo.android.framework.toolbox.data.Data;
 import com.mobgen.halo.android.framework.toolbox.data.HaloResultV2;
 import com.mobgen.halo.android.framework.toolbox.data.HaloStatus;
-import com.mobgen.halo.android.sdk.api.Halo;
 import com.mobgen.halo.android.sdk.core.management.models.HaloModule;
 
 import org.json.JSONException;
@@ -225,10 +212,10 @@ public class GeneralContentModuleActivity extends MobgenHaloActivity implements 
         mRefreshReceiver = new RefreshBroadcastReceiver();
         LocalBroadcastManager.getInstance(this).registerReceiver(mRefreshReceiver, new IntentFilter("generalcontent-notification"));
 
-
+        QROffer qrOffer = new QROffer("1","MyqRofofer", new Date(), "great opportunity",null);
         //api things
         HaloContentApi.with(MobgenHaloApplication.halo(), null, new GeneratedDatabaseFromModel());
-        HaloContentQueryApi.with(MobgenHaloApplication.halo()).insertArticle("The best article ever",new Date(),"Article","summary",null,null,true)
+        HaloContentQueryApi.with(MobgenHaloApplication.halo()).insertArticle("The best article ever",new Date(),"Article","summary",null,null,qrOffer)
                 .asContent(Article.class)
                 .execute(new CallbackV2<List<Article>>() {
                     @Override
@@ -238,16 +225,17 @@ public class GeneralContentModuleActivity extends MobgenHaloActivity implements 
                         }
                     }
                 });
-        HaloContentQueryApi.with(MobgenHaloApplication.halo()).selectTitle("The best article ever",true)
-                .asContent(Article.class)
-                .execute(new CallbackV2<List<Article>>() {
-                    @Override
-                    public void onFinish(@NonNull HaloResultV2<List<Article>> result) {
-                        if(result.data().size()>0){
-                            Log.v("the article parsed::>>",result.data().get(0).getTitle());
-                        }
-                    }
-                });
+
+//        HaloContentQueryApi.with(MobgenHaloApplication.halo()).selectTitle("The best article ever")
+//                .asContent(Article.class)
+//                .execute(new CallbackV2<List<Article>>() {
+//                    @Override
+//                    public void onFinish(@NonNull HaloResultV2<List<Article>> result) {
+//                        if(result.data().size()>0){
+//                            Log.v("the article parsed::>>",result.data().get(0).getTitle());
+//                        }
+//                    }
+//                });
 
 //        HaloContentQueryApi.with(MobgenHaloApplication.halo()).deleteByTitle("The best article ever")
 //                .execute(new CallbackV2<Cursor>() {

@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.mobgen.halo.android.content.annotations.HaloConstructor;
+import com.mobgen.halo.android.content.models.GeneratedContent;
 import com.mobgen.halo.android.content.models.HaloContentInstance;
 import com.mobgen.halo.android.content.models.Paginated;
 import com.mobgen.halo.android.content.spec.HaloContentContract;
@@ -19,6 +20,7 @@ import com.mobgen.halo.android.framework.network.client.response.TypeReference;
 import com.mobgen.halo.android.framework.storage.exceptions.HaloStorageGeneralException;
 import com.mobgen.halo.android.framework.storage.exceptions.HaloStorageParseException;
 import com.mobgen.halo.android.framework.toolbox.data.HaloResultV2;
+import com.mobgen.halo.android.sdk.api.Halo;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -135,17 +137,25 @@ public final class HaloContentHelper {
                     values[indexParam] = null;
                 } else if (type == Cursor.FIELD_TYPE_INTEGER) {
                     try{
-                        if(cursor.getString(cursor.getColumnIndex(cursor.getColumnNames()[i])).length()==1){
-                            values[indexParam] = Integer.parseInt(cursor.getString(cursor.getColumnIndex(cursor.getColumnNames()[i]))) != 0;
-                        } else {
-                            Date date = new Date(Long.parseLong(cursor.getString(cursor.getColumnIndex(cursor.getColumnNames()[i]))));
-                            values[indexParam] = date;
-                        }
+                        Date date = new Date(Long.parseLong(cursor.getString(cursor.getColumnIndex(cursor.getColumnNames()[i]))));
+                        values[indexParam] = date;
                     } catch (NumberFormatException e){
                         values[indexParam] = cursor.getInt(cursor.getColumnIndex(cursor.getColumnNames()[i]));
                     }
                 } else if (type == Cursor.FIELD_TYPE_STRING) {
-                    values[indexParam] = cursor.getString(cursor.getColumnIndex(cursor.getColumnNames()[i]));
+
+                    if(cursor.getString(cursor.getColumnIndex(cursor.getColumnNames()[i])).equals("false")){
+                        values[indexParam] = false;
+                    } else if(cursor.getString(cursor.getColumnIndex(cursor.getColumnNames()[i])).equals("true")){
+                        values[indexParam] = true;
+                    } else{
+                        try {
+                            String objectSerialized = cursor.getString(cursor.getColumnIndex(cursor.getColumnNames()[i]));
+                            values[indexParam] = GeneratedContent.deserialize(objectSerialized, Halo.instance().framework().parser(),constructor.getParameterTypes()[indexParam]);
+                        } catch (HaloParsingException | NullPointerException e) {
+                            values[indexParam] = cursor.getString(cursor.getColumnIndex(cursor.getColumnNames()[i]));
+                        }
+                    }
                 }
             }
         }

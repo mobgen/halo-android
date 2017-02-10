@@ -1,14 +1,14 @@
 package com.mobgen.halo.android.content.annotations;
 
 import java.lang.annotation.ElementType;
-import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import javax.management.Query;
+
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.SOURCE)
-public @interface HaloQuery {
-    String name();
-    String query();
+public @interface HaloQueries {
+    HaloQuery[] queries();
 }
