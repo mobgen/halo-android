@@ -3,11 +3,14 @@ package com.mobgen.halo.android.sdk.core.management.modules;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 
+import com.mobgen.halo.android.framework.common.exceptions.HaloParsingException;
 import com.mobgen.halo.android.framework.network.exceptions.HaloNetException;
 import com.mobgen.halo.android.framework.storage.exceptions.HaloStorageException;
 import com.mobgen.halo.android.framework.toolbox.data.HaloResultV2;
 import com.mobgen.halo.android.sdk.core.management.models.HaloModule;
 import com.mobgen.halo.android.sdk.core.selectors.SelectorProvider;
+
+import org.json.JSONException;
 
 import java.util.List;
 
@@ -21,6 +24,17 @@ public class RequestModulesInteractor implements SelectorProvider<List<HaloModul
      */
     private ModulesRepository mModulesRepository;
 
+    private boolean enableFieldsMode = false;
+
+    /**
+     * The modules repository.
+     * @param modulesRepository The modules repository.
+     */
+    public RequestModulesInteractor(@NonNull ModulesRepository modulesRepository, boolean withFields) {
+        mModulesRepository = modulesRepository;
+        enableFieldsMode = withFields;
+    }
+
     /**
      * The modules repository.
      * @param modulesRepository The modules repository.
@@ -32,7 +46,7 @@ public class RequestModulesInteractor implements SelectorProvider<List<HaloModul
     @NonNull
     @Override
     public HaloResultV2<List<HaloModule>> fromNetwork() throws HaloNetException {
-        return mModulesRepository.getModulesFromNetwork();
+        return mModulesRepository.getModulesFromNetwork(enableFieldsMode);
     }
 
     @NonNull

@@ -4,6 +4,7 @@ import android.support.annotation.Keep;
 import android.support.annotation.NonNull;
 
 import com.mobgen.halo.android.framework.common.annotations.Api;
+import com.mobgen.halo.android.framework.common.exceptions.HaloParsingException;
 import com.mobgen.halo.android.framework.network.exceptions.HaloNetException;
 import com.mobgen.halo.android.framework.storage.exceptions.HaloStorageException;
 import com.mobgen.halo.android.framework.toolbox.data.Data;
