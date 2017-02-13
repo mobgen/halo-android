@@ -31,10 +31,10 @@ public class GeneratedContent{
     }
 
     @Nullable
-    public static <T> T deserialize(@Nullable String haloContentInstance, @NonNull Parser.Factory parser, @NonNull Class T) throws HaloParsingException {
+    public static <T> T deserialize(@Nullable String haloContentInstance, @NonNull Parser.Factory parser, @NonNull Class clazz) throws HaloParsingException {
         if (haloContentInstance != null) {
             try {
-                return ((Parser<InputStream, T>) parser.deserialize(T)).convert(new ByteArrayInputStream(haloContentInstance.getBytes()));
+                return ((Parser<InputStream, T>) parser.deserialize(clazz)).convert(new ByteArrayInputStream(haloContentInstance.getBytes()));
             } catch (IOException e) {
                 throw new HaloParsingException("Error while deserializing the object instance", e);
             }

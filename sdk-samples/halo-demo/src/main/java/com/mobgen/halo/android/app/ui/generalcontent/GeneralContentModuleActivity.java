@@ -212,15 +212,17 @@ public class GeneralContentModuleActivity extends MobgenHaloActivity implements 
         mRefreshReceiver = new RefreshBroadcastReceiver();
         LocalBroadcastManager.getInstance(this).registerReceiver(mRefreshReceiver, new IntentFilter("generalcontent-notification"));
 
+        List<QROffer> qrOffers =  new ArrayList<>();
         QROffer qrOffer = new QROffer("1","MyqRofofer", new Date(), "great opportunity",null);
+        qrOffers.add(qrOffer);
         //api things
         HaloContentApi.with(MobgenHaloApplication.halo(), null, new GeneratedDatabaseFromModel());
-        HaloContentQueryApi.with(MobgenHaloApplication.halo()).insertArticle("The best article ever",new Date(),"Article","summary",null,null,qrOffer)
+        HaloContentQueryApi.with(MobgenHaloApplication.halo()).insertArticle("The best article ever",new Date(),"Article","summary",null,null,qrOffers)
                 .asContent(Article.class)
                 .execute(new CallbackV2<List<Article>>() {
                     @Override
                     public void onFinish(@NonNull HaloResultV2<List<Article>> result) {
-                        if(result.data().size()>0){
+                       if(result.data().size()>0){
                             Log.v("the article parsed::>>",result.data().get(0).getTitle());
                         }
                     }
