@@ -50,7 +50,7 @@ public class ModulesRepository {
      * Provides the modules cached from the network.
      * @return The modules cached from the network.
      */
-    public HaloResultV2<List<HaloModule>> getModulesFromNetwork(boolean withFields) throws HaloParsingException {
+    public HaloResultV2<List<HaloModule>> getModulesFromNetwork(boolean withFields) {
         HaloStatus.Builder status = HaloStatus.builder();
         List<HaloModule> modules = null;
         try {
@@ -58,7 +58,7 @@ public class ModulesRepository {
             if(withFields){
                 try {
                     printFieldsToLog(modules);
-                } catch (JSONException jsonException) {
+                } catch (HaloParsingException | JSONException jsonException) {
                     Halog.d(ModulesRepository.class, "Cannot extract MODULE FIELDS information");
                 }
             }

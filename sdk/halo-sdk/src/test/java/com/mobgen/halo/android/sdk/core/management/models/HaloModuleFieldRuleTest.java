@@ -7,6 +7,8 @@ import com.mobgen.halo.android.testing.TestUtils;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
+
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
 public class HaloModuleFieldRuleTest extends HaloRobolectricTest {
@@ -15,7 +17,7 @@ public class HaloModuleFieldRuleTest extends HaloRobolectricTest {
 
     @Before
     public void initialize() {
-        mHaloModuleRule = new HaloModuleFieldRule("rule1",null,"error");
+        mHaloModuleRule = new HaloModuleFieldRule("rule1",new ArrayList<String>(),"error");
     }
 
     @Test
@@ -30,5 +32,11 @@ public class HaloModuleFieldRuleTest extends HaloRobolectricTest {
         assertThat(mHaloModuleRule.describeContents()).isEqualTo(0);
         assertThat(mHaloModuleRule.getRule()).isEqualTo(newHaloModuleRule.getRule());
     }
+    @Test
+    public void thatPrintObjectToString() {
+        HaloModuleFieldRule newHaloModuleRule = TestUtils.testParcel(mHaloModuleRule, HaloModuleFieldRule.CREATOR);
+        assertThat(mHaloModuleRule.toString()).isNotNull();
+    }
+
 
 }

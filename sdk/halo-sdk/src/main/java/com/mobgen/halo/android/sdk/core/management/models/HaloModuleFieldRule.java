@@ -14,7 +14,6 @@ import java.util.List;
 /**
  * The halo module field rules valitadions to apply on each moduel field type.
  */
-@Keep
 @JsonObject
 public class HaloModuleFieldRule implements Parcelable{
 
@@ -55,7 +54,6 @@ public class HaloModuleFieldRule implements Parcelable{
      * @return The validation rule.
      */
     @NonNull
-    @Api(2.3)
     public String getRule() {
         return mRule;
     }
@@ -90,4 +88,13 @@ public class HaloModuleFieldRule implements Parcelable{
             return new HaloModuleFieldRule[size];
         }
     };
+
+    @Override
+    public String toString() {
+        return "HaloModuleFieldRule{" +
+                "mParams='" + mParams.toString() + '\'' +
+                ", mRule='" + mRule + '\'' +
+                ", mError='" + mError + '\'' +
+                '}';
+    }
 }

@@ -21,7 +21,6 @@ import java.util.Date;
 /**
  * The halo module field are the subcomponents that create the meta data structure of a halo module.
  */
-@Keep
 @JsonObject
 public class HaloModuleField implements Parcelable {
 
@@ -110,7 +109,6 @@ public class HaloModuleField implements Parcelable {
      */
 
     @NonNull
-    @Api(2.3)
     public HaloModuleFieldType getModuleFieldType() {
         return mModuleFieldType;
     }
@@ -120,7 +118,6 @@ public class HaloModuleField implements Parcelable {
      * @return The module id.
      */
     @NonNull
-    @Api(2.3)
     public String getModule() {
         return mModule;
     }
@@ -130,7 +127,6 @@ public class HaloModuleField implements Parcelable {
      * @return The field name.
      */
     @NonNull
-    @Api(2.3)
     public String getName() {
         return mName;
     }
@@ -140,7 +136,6 @@ public class HaloModuleField implements Parcelable {
      * @return The field format.
      */
     @NonNull
-    @Api(2.3)
     public String getFormat() {
         return mFormat;
     }
@@ -150,7 +145,6 @@ public class HaloModuleField implements Parcelable {
      * @return The field description.
      */
     @NonNull
-    @Api(2.3)
     public String getDescription() {
         return mDescription;
     }
@@ -160,7 +154,6 @@ public class HaloModuleField implements Parcelable {
      * @return The customer id.
      */
     @NonNull
-    @Api(2.3)
     public int getCustomerId() {
         return mCustomerId;
     }
@@ -170,7 +163,6 @@ public class HaloModuleField implements Parcelable {
      * @return The delete date.
      */
     @NonNull
-    @Api(2.3)
     public Date getDeleteDate() {
         return mDeleteDate;
     }
@@ -180,7 +172,6 @@ public class HaloModuleField implements Parcelable {
      * @return The las update date.
      */
     @NonNull
-    @Api(2.3)
     public Date getLastUpdate() {
         return mLastUpdate;
     }
@@ -190,7 +181,6 @@ public class HaloModuleField implements Parcelable {
      * @return The field craetion date.
      */
     @NonNull
-    @Api(2.3)
     public Date getCreationDate() {
         return mCreationDate;
     }
@@ -251,6 +241,21 @@ public class HaloModuleField implements Parcelable {
         dest.writeLong(mDeleteDate != null ? mDeleteDate.getTime() : -1);
     }
 
+    @Override
+    public String toString() {
+        return "HaloModuleField{" +
+                "mModuleFieldType='" + mModuleFieldType + '\'' +
+                ", mModule='" + mModule + '\'' +
+                ", mName='" + mName + '\'' +
+                ", mDescription='" + mDescription + '\'' +
+                ", mCustomerId='" + mCustomerId + '\'' +
+                ", mId='" + mId + '\'' +
+                ", mCreationDate='" + mCreationDate + '\'' +
+                ", mLastUpdate='" + mLastUpdate + '\'' +
+                ", mDeleteDate='" + mDeleteDate + '\'' +
+                '}';
+    }
+
     /**
      * Provides the serializer given the factory.
      *
@@ -258,7 +263,6 @@ public class HaloModuleField implements Parcelable {
      * @param parser   The parser factory.
      * @return The parser obtained.
      */
-    @Api(2.3)
     public static String serialize(@NonNull HaloModuleField haloModuleField, @NonNull Parser.Factory parser) throws HaloParsingException {
         AssertionUtils.notNull(haloModuleField, "haloContentInstance");
         AssertionUtils.notNull(parser, "parser");
@@ -278,7 +282,6 @@ public class HaloModuleField implements Parcelable {
      * @throws HaloParsingException Error parsing the item.
      */
     @Nullable
-    @Api(2.3)
     public static HaloModuleField deserialize(@Nullable String haloModuleField, @NonNull Parser.Factory parser) throws HaloParsingException {
         if (haloModuleField != null) {
             try {

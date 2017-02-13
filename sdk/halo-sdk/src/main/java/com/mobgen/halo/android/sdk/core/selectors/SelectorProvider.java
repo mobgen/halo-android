@@ -23,7 +23,7 @@ public interface SelectorProvider<P, U> {
      */
     @NonNull
     @Api(2.0)
-    HaloResultV2<P> fromNetwork() throws HaloNetException, HaloParsingException;
+    HaloResultV2<P> fromNetwork() throws HaloNetException;
 
     /**
      * Called when it is as a {@link Data.Policy#STORAGE_ONLY}.

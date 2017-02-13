@@ -11,6 +11,7 @@ import com.mobgen.halo.android.framework.network.exceptions.HaloNetException;
 import com.mobgen.halo.android.sdk.core.internal.network.HaloNetworkConstants;
 import com.mobgen.halo.android.sdk.core.management.models.HaloModule;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -23,7 +24,7 @@ public class ModulesRemoteDatasource {
     /**
      * The url to retrieve the modules.
      */
-    public static final String URL_GET_MODULES = "api/generalcontent/module?skip=true";
+    public static final String URL_GET_MODULES = "api/generalcontent/module?skip={skip}&withFields={withFields}";
 
     /**
      * The client api.
@@ -44,9 +45,11 @@ public class ModulesRemoteDatasource {
      */
     @NonNull
     public List<HaloModule> getModules(boolean withFields) throws HaloNetException {
-
+        HashMap<String, String> params = new HashMap<String, String>();
+        params.put("skip",String.valueOf(true));
+        params.put("withFields",String.valueOf(withFields));
         return HaloRequest.builder(mClientApi)
-                .url(HaloNetworkConstants.HALO_ENDPOINT_ID, URL_GET_MODULES +"&withFields=" + withFields)
+                .url(HaloNetworkConstants.HALO_ENDPOINT_ID, URL_GET_MODULES, params)
                 .method(HaloRequestMethod.GET)
                 .build().execute(new TypeReference<List<HaloModule>>() {
                 });

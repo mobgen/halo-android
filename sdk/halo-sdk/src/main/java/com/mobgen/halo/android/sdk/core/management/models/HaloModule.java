@@ -355,4 +355,19 @@ public class HaloModule implements Parcelable {
         dest.writeValue(this.mIsSingle);
         dest.writeString(mFields != null ? this.mFields.toString() : null);
     }
+
+    @Override
+    public String toString() {
+        return "HaloModule{" +
+                "mCustomerId='" + mCustomerId + '\'' +
+                ", mId='" + mId + '\'' +
+                ", mName='" + mName + '\'' +
+                ", mEnabled='" + mEnabled + '\'' +
+                ", mInternalId='" + mInternalId + '\'' +
+                ", mIsSingle='" + mIsSingle + '\'' +
+                ", mCreationDate='" + mCreationDate + '\'' +
+                ", mLastUpdate='" + mLastUpdate + '\'' +
+                ", mFields='" + mFields.toString() + '\'' +
+                '}';
+    }
 }

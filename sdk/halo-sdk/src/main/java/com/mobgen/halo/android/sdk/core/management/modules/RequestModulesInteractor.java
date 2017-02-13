@@ -45,7 +45,7 @@ public class RequestModulesInteractor implements SelectorProvider<List<HaloModul
 
     @NonNull
     @Override
-    public HaloResultV2<List<HaloModule>> fromNetwork() throws HaloNetException , HaloParsingException {
+    public HaloResultV2<List<HaloModule>> fromNetwork() throws HaloNetException {
         return mModulesRepository.getModulesFromNetwork(enableFieldsMode);
     }
 

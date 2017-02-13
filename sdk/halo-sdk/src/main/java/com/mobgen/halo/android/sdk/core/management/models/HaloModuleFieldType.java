@@ -82,7 +82,6 @@ public class HaloModuleFieldType implements Parcelable{
      * @return The field type name.
      */
     @NonNull
-    @Api(2.3)
     public String getName() {
         return mName;
     }
@@ -92,7 +91,6 @@ public class HaloModuleFieldType implements Parcelable{
      * @return The validation rules of the field type.
      */
     @NonNull
-    @Api(2.3)
     public List<HaloModuleFieldRule> getRules() {
         return mRules;
     }
@@ -102,7 +100,6 @@ public class HaloModuleFieldType implements Parcelable{
      * @return True if its a long value. Otherwise false.
      */
     @NonNull
-    @Api(2.3)
     public Boolean getIsLongvalue() {
         return mIsLongvalue;
     }
@@ -112,7 +109,6 @@ public class HaloModuleFieldType implements Parcelable{
      * @return The delete date.
      */
     @NonNull
-    @Api(2.3)
     public Date getDeleteDate() {
         return mDeleteDate;
     }
@@ -122,7 +118,6 @@ public class HaloModuleFieldType implements Parcelable{
      * @return The las update date.
      */
     @NonNull
-    @Api(2.3)
     public Date getLastUpdate() {
         return mLastUpdate;
     }
@@ -132,7 +127,6 @@ public class HaloModuleFieldType implements Parcelable{
      * @return The field craetion date.
      */
     @NonNull
-    @Api(2.3)
     public Date getCreationDate() {
         return mCreationDate;
     }
@@ -185,5 +179,19 @@ public class HaloModuleFieldType implements Parcelable{
         dest.writeLong(mCreationDate != null ? mCreationDate.getTime() : -1);
         dest.writeLong(mLastUpdate != null ? mLastUpdate.getTime() : -1);
         dest.writeLong(mDeleteDate != null ? mDeleteDate.getTime() : -1);
+    }
+
+    @Override
+    public String toString() {
+        return "HaloModuleFieldType{" +
+                "mName='" + mName + '\'' +
+                ", mId='" + mId + '\'' +
+                ", mIsLongvalue='" + mIsLongvalue + '\'' +
+                ", mName='" + mName + '\'' +
+                ", mRules=" + mRules.toString() +
+                ", mCreationDate=" + mCreationDate +
+                ", mLastUpdate=" + mLastUpdate +
+                ", mDeleteDate=" + mDeleteDate +
+                '}';
     }
 }
