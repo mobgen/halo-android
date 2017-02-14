@@ -303,7 +303,24 @@ public class HaloContentApi extends HaloPluginApi {
                 locale);
     }
 
-
+    /**
+     * Creates the content api instance with the reference to a yet created HALO
+     * instance. This factory uses a default locale that can also be null to avoid
+     * using one by default.
+     * <p>
+     * You must set a generated class if you are using the halo annotations in your models.
+     * <p>
+     * You must keep this instance as singleton or as local, since
+     * its creation should not be so expensive. Anyway we recommend to keep one
+     * and use it across the whole app injecting it whether it is useful.
+     *
+     * @param halo   The halo instance.
+     * @param locale The locale that will be used in all the requests where locale param is
+     *               available. If the request asks for another locale this other locale
+     *               will be used. None if it is null.
+     * @param generatedHaloDatabase   The halo generated database by codegen.
+     * @return A new created content instance.
+     */
     @Keep
     @NonNull
     @Api(2.3)

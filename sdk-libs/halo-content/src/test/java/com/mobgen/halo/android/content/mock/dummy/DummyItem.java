@@ -16,7 +16,7 @@ import java.util.Date;
         query = "SELECT * FROM DummyItem WHERE foo = @{foo:String}"),
         @HaloQuery(
         name = "insertData",
-        query = "INSERT into DummyItem (foo,fooInt,fooBool,dateFoo) VALUES (@{foo:String},@{fooInt:Integer},@{fooBool:Boolean},@{dateFoo:Date})"
+        query = "INSERT into DummyItem (foo,fooInt,fooBool,dateFoo) VALUES (@{foo:String},@{fooInt:Integer},@{fooBool:Boolean},@{dateFoo:Date},@{dummyObject:DummyObject})"
 )})
 @HaloSearchable(tableName = "DummyItem" , version = 2)
 public class DummyItem {
@@ -33,12 +33,16 @@ public class DummyItem {
     @JsonField(name = "dateFoo")
     public Date dateFoo;
 
-    @HaloConstructor(columnNames = {"foo","fooInt","fooBool","dateFoo"})
-    public DummyItem(String fuu, Integer fuuInt, Boolean fuuBool,Date dateFuu){
+    @JsonField(name = "customObject")
+    public DummyObject customObject;
+
+    @HaloConstructor(columnNames = {"foo","fooInt","fooBool","dateFoo","customObject"})
+    public DummyItem(String fuu, Integer fuuInt, Boolean fuuBool,Date dateFuu,DummyObject dummyObject){
         foo = fuu;
         fooInt = fuuInt;
         fooBool = fuuBool;
         dateFoo = dateFuu;
+        customObject = dummyObject;
     }
 
     public DummyItem(){
