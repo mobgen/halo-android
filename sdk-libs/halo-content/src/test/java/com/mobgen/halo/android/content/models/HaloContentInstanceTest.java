@@ -1,8 +1,5 @@
 package com.mobgen.halo.android.content.models;
 
-import com.mobgen.halo.android.content.annotations.HaloQueries;
-import com.mobgen.halo.android.content.annotations.HaloQuery;
-import com.mobgen.halo.android.content.annotations.HaloSearchable;
 import com.mobgen.halo.android.framework.common.exceptions.HaloParsingException;
 import com.mobgen.halo.android.sdk.api.Halo;
 import com.mobgen.halo.android.sdk.core.management.segmentation.HaloSegmentationTag;
@@ -19,11 +16,6 @@ import java.util.Date;
 
 import static com.mobgen.halo.android.content.mock.instrumentation.HaloMock.givenADefaultHalo;
 import static org.assertj.core.api.Java6Assertions.assertThat;
-@HaloQueries(queries = {@HaloQuery(
-        name = "getData",
-        query = "SELECT * FROM HALACONTENTINSTANCE"
-)})
-@HaloSearchable(tableName = "HALOCONTENTINSTANCE" , version = 1)
 public class HaloContentInstanceTest extends HaloRobolectricTest {
 
     private static Halo mHalo;

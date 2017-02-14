@@ -17,13 +17,13 @@ import java.util.Date;
  * Created by javierdepedrolopez on 9/11/15.
  */
 @JsonObject
-@HaloSearchable(version = 20 , tableName = "Article")
+@HaloSearchable(version = 22 , tableName = "Article")
 @HaloQueries(queries = {@HaloQuery(name="deleteByTitle", query=("delete from Article where Title = @{mTitle:String}")),
         @HaloQuery(name="selectTitle",query="select * from Article where Title = @{mTitle:String}"),
         @HaloQuery(name="insertArticle",query="insert into Article(Title,Date,ContentHtml,Summary,Thumbnail,Image,Question) VALUES (@{mTitle:String},@{mDate:Date},@{mArticle:String},@{mSummary:String},@{mThumbnail:String},@{mImage:String},@{mQuestion:QROffer});")
 })
 public class Article implements Parcelable {
-    @HaloField(index = true)
+    @HaloField(index = true,columnName = "Title")
     @JsonField(name = "Title")
     String mTitle;
 
@@ -38,7 +38,7 @@ public class Article implements Parcelable {
 
     @JsonField(name = "Thumbnail")
     String mThumbnail;
-
+    @HaloField(index = true,columnName = "Image")
     @JsonField(name = "Image")
     String mImage;
 

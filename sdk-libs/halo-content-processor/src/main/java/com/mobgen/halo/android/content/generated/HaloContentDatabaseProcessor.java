@@ -1,4 +1,4 @@
-package com.mobgen.halo.android.content.processor;
+package com.mobgen.halo.android.content.generated;
 
 import com.google.auto.service.AutoService;
 import com.mobgen.halo.android.content.annotations.HaloConstructor;
@@ -16,8 +16,10 @@ import com.squareup.javapoet.TypeSpec;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -60,6 +62,7 @@ public class HaloContentDatabaseProcessor extends AbstractProcessor {
     private List<Element> constructorElements =  new ArrayList<>();
     private List<Element> searchable =  new ArrayList<>();
     private List<Element> queriesElments = new ArrayList<>();
+    private HashMap<String, List<String>> indexableFields = new HashMap<>();
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
@@ -102,12 +105,18 @@ public class HaloContentDatabaseProcessor extends AbstractProcessor {
         //add all annotated query elements
         int haloConstructorIndex = 0;
         for (Element element : roundEnvironment.getElementsAnnotatedWith(HaloSearchable.class)) {
-            databaseTables.add(generateHaloSearchableClass(element,constructorElements.get(haloConstructorIndex)));
+            String haloTableName = generateHaloSearchableClass(element,constructorElements.get(haloConstructorIndex));
+            databaseTables.add(haloTableName);
+            //get index fields
+            List<String> indexFields = new ArrayList<>();
+            for(Element encloseElements : element.getEnclosedElements()){
+                if(encloseElements.getAnnotation(HaloField.class)!=null && encloseElements.getAnnotation(HaloField.class).index()) {
+                    indexFields.add(encloseElements.getAnnotation(HaloField.class).columnName());
+                }
+            }
+            indexableFields.put(haloTableName,indexFields);
             databaseVersion.add(element.getAnnotation(HaloSearchable.class).version());
             haloConstructorIndex++;
-        }
-        for (Element element : roundEnvironment.getElementsAnnotatedWith(HaloField.class)) {
-            System.err.println(element.getSimpleName().toString());
         }
         if(databaseTables.size()>0) {
             generateHaloContentTable();
@@ -466,6 +475,12 @@ public class HaloContentDatabaseProcessor extends AbstractProcessor {
             updateDatabaseBuilder.addCode("identifier$1L.close();\n",index);
             //insert shared table statement
             updateDatabaseBuilder.addCode("$1T.table($2L.class).on(database, \"Creates the $2L table from codegen\");\n",createQuery,classNameTable);
+            //set index
+            List<String> indexFields = indexableFields.get(databaseTables.get(i));
+            for(int j=0;j<indexFields.size();j++) {
+                String indexName = indexFields.get(j) + databaseVersion.get(i);
+                updateDatabaseBuilder.addCode("$1T.index($2L.class,$3S,new String[]{$4S}).on(database, \"Creates index into the $2L table from codegen\");\n",createQuery,classNameTable,indexName, indexFields.get(j));
+            }
             updateDatabaseBuilder.addCode("$1T values$2L = new $1T();\n" +
                             "values$2L.put($4L.TABLE_ID, id$2L);\n" +
                             "values$2L.put($4L.TABLE_NAME, $3S);\n" +
@@ -527,7 +542,7 @@ public class HaloContentDatabaseProcessor extends AbstractProcessor {
             return  AnnotationSpec.builder(columnClass)
                     .addMember("type", "$L", "Column.Type.TEXT")
                     .build();
-        } else if(typeUtils.asElement(typeMirror).getSimpleName().toString().equals("int")){
+        } else if(typeUtils.asElement(typeMirror).getSimpleName().toString().equals("Integer")){
             return  AnnotationSpec.builder(columnClass)
                     .addMember("type", "$L", "Column.Type.NUMERIC")
                     .build();

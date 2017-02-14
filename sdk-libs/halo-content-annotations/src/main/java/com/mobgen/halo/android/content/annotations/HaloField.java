@@ -9,4 +9,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.SOURCE)
 public @interface HaloField {
     boolean index() default false;
+    String columnName();
 }

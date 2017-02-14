@@ -17,7 +17,7 @@ import java.util.Date;
 @HaloSearchable(version = 15 , tableName ="QROffer")
 @HaloQueries(queries = {@HaloQuery(name="selectDate",query="select * from QROffer where Date = @{mDate:Date}")})
 public class QROffer implements Parcelable {
-    @HaloField(index = true)
+    @HaloField(index = true,columnName = "id")
     @JsonField(name = "Id")
     private String mId;
     @JsonField(name = "Title")

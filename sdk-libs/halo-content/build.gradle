@@ -19,17 +19,12 @@ android {
         versionName "${rootProject.ext.haloVersion}"
     }
 
-    /*sourceSets {
-        main {
-            java.srcDirs = ['src/main/java', 'build/generated/source/apt/release']
-        }
-    }*/
-
     buildTypes {
         debug {
             minifyEnabled false
         }
-        /*release {
+        /*
+        release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }*/
@@ -57,6 +52,7 @@ dependencies {
     apt "com.bluelinelabs:logansquare-compiler:${rootProject.ext.loganSquareVersion}"
 
     testApt "com.bluelinelabs:logansquare-compiler:${rootProject.ext.loganSquareVersion}"
+    testApt project(':halo-content-processor')
     testCompile "com.mobgen.halo.android:halo-testing:${rootProject.ext.haloVersion}"
 }
 
