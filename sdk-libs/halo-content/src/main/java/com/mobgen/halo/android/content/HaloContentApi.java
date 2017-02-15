@@ -1,19 +1,12 @@
 package com.mobgen.halo.android.content;
 
-import android.content.ContentValues;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.os.Looper;
 import android.support.annotation.CheckResult;
 import android.support.annotation.Keep;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.util.Pair;
 
-import com.mobgen.halo.android.content.annotations.HaloField;
-import com.mobgen.halo.android.content.annotations.HaloQuery;
-import com.mobgen.halo.android.content.annotations.HaloSearchable;
 import com.mobgen.halo.android.content.generated.GeneratedHaloDatabase;
 import com.mobgen.halo.android.content.models.HaloContentInstance;
 import com.mobgen.halo.android.content.models.HaloSyncLog;
@@ -45,8 +38,6 @@ import com.mobgen.halo.android.framework.common.annotations.Api;
 import com.mobgen.halo.android.framework.common.helpers.subscription.ISubscription;
 import com.mobgen.halo.android.framework.common.utils.AssertionUtils;
 import com.mobgen.halo.android.framework.storage.database.HaloDatabaseErrorHandler;
-import com.mobgen.halo.android.framework.storage.database.HaloDatabaseMigration;
-import com.mobgen.halo.android.framework.storage.database.dsl.queries.Create;
 import com.mobgen.halo.android.framework.toolbox.bus.Event;
 import com.mobgen.halo.android.framework.toolbox.bus.EventId;
 import com.mobgen.halo.android.framework.toolbox.bus.Subscriber;
@@ -64,7 +55,6 @@ import com.mobgen.halo.android.sdk.core.threading.InteractorExecutionCallback;
 
 import java.util.List;
 
-import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
 
 /**
  * The content API is the facade for the Content HALO SDK. Importing
