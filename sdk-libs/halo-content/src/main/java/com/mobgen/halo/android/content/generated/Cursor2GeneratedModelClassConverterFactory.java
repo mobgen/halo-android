@@ -1,6 +1,7 @@
 package com.mobgen.halo.android.content.generated;
 
 import android.database.Cursor;
+import android.support.annotation.Keep;
 import android.support.annotation.NonNull;
 
 import com.mobgen.halo.android.content.models.Paginated;
@@ -16,6 +17,7 @@ import java.util.List;
 /**
  * @hide Factory that provides generic model parsed as a model type.
  */
+@Keep
 public class Cursor2GeneratedModelClassConverterFactory<P> implements SelectorCursor2CustomClass.Factory<Paginated<P>, Cursor> {
 
     /**

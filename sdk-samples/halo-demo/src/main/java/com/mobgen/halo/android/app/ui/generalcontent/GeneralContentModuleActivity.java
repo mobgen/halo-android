@@ -206,7 +206,7 @@ public class GeneralContentModuleActivity extends MobgenHaloActivity implements 
 
         mRefreshReceiver = new RefreshBroadcastReceiver();
         LocalBroadcastManager.getInstance(this).registerReceiver(mRefreshReceiver, new IntentFilter("generalcontent-notification"));
-        
+
     }
 
     @Override

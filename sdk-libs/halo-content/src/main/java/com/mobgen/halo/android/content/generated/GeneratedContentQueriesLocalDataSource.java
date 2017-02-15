@@ -3,6 +3,7 @@ package com.mobgen.halo.android.content.generated;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.support.annotation.BoolRes;
+import android.support.annotation.Keep;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -19,6 +20,7 @@ import java.util.Date;
 /**
  * The data source to perfom queries against local database.
  */
+@Keep
 public class GeneratedContentQueriesLocalDataSource {
     /**
      *  Helper to perfom operation on databse

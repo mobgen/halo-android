@@ -2,6 +2,7 @@ package com.mobgen.halo.android.content.generated;
 
 import android.database.Cursor;
 import android.database.SQLException;
+import android.support.annotation.Keep;
 import android.support.annotation.NonNull;
 import com.mobgen.halo.android.framework.toolbox.data.HaloResultV2;
 import com.mobgen.halo.android.framework.toolbox.data.HaloStatus;
@@ -9,6 +10,7 @@ import com.mobgen.halo.android.framework.toolbox.data.HaloStatus;
 /**
  *  The repository to perfom generated queries.
  */
+@Keep
 public class GeneratedContentQueriesRepository {
 
     /**

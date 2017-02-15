@@ -1,6 +1,7 @@
 package com.mobgen.halo.android.content.generated;
 
 import android.database.Cursor;
+import android.support.annotation.Keep;
 import android.support.annotation.NonNull;
 import com.mobgen.halo.android.content.models.Paginated;
 import com.mobgen.halo.android.content.models.PaginationInfo;
@@ -15,6 +16,7 @@ import java.util.List;
 /**
  * @hide Parses the cursor to a generic model.
  */
+@Keep
 public class Cursor2ContentInstanceGeneratedModelConverter<T> implements ISelectorConverter<Paginated<T>, Cursor> {
 
     /**

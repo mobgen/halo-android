@@ -2,6 +2,7 @@ package com.mobgen.halo.android.content.generated;
 
 
 import android.database.Cursor;
+import android.support.annotation.Keep;
 import android.support.annotation.NonNull;
 import com.mobgen.halo.android.content.models.Paginated;
 import com.mobgen.halo.android.framework.toolbox.data.HaloResultV2;
@@ -12,6 +13,7 @@ import com.mobgen.halo.android.sdk.core.selectors.SelectorProviderAdapter;
  *
  * @param <T> The type
  */
+@Keep
 public class GeneratedContentQueriesInteractor<T>  extends SelectorProviderAdapter<Paginated<T>, Cursor> {
 
     /**
