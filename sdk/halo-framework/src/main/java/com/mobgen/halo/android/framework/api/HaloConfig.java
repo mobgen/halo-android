@@ -1,12 +1,14 @@
 package com.mobgen.halo.android.framework.api;
 
 import android.content.Context;
+import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.mobgen.halo.android.framework.common.annotations.Api;
 import com.mobgen.halo.android.framework.common.helpers.builder.IBuilder;
 import com.mobgen.halo.android.framework.common.helpers.logger.Halog;
+import com.mobgen.halo.android.framework.common.helpers.logger.PrintLog;
 import com.mobgen.halo.android.framework.common.utils.AssertionUtils;
 import com.mobgen.halo.android.framework.network.client.endpoint.HaloEndpoint;
 import com.mobgen.halo.android.framework.network.client.endpoint.HaloEndpointCluster;
@@ -226,7 +228,7 @@ public class HaloConfig {
          */
         @Api(2.2)
         @NonNull
-        public Builder printToFilePolicy(int printPolicy) {
+        public Builder printToFilePolicy(@PrintLog.Policy int printPolicy) {
             mPrintPolicy = printPolicy;
             return this;
         }

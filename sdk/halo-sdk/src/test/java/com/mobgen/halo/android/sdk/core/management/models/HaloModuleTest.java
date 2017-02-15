@@ -7,6 +7,7 @@ import com.mobgen.halo.android.testing.HaloRobolectricTest;
 import com.mobgen.halo.android.testing.MockCursor;
 import com.mobgen.halo.android.testing.TestUtils;
 
+import org.json.JSONArray;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -27,7 +28,7 @@ public class HaloModuleTest extends HaloRobolectricTest {
     public void initialize() {
         mUpdatedAt = new Date();
         mCreatedAt = new Date();
-        mModule = new HaloModule(1, "1", "myModule", true, mCreatedAt, mUpdatedAt, "internalId", false);
+        mModule = new HaloModule(1, "1", "myModule", true, mCreatedAt, mUpdatedAt, "internalId", false, new JSONArray());
     }
 
     private void assertModule(HaloModule module) {
@@ -120,6 +121,11 @@ public class HaloModuleTest extends HaloRobolectricTest {
             assertCursorModule(module, createDate, updateDate);
         }
         assertThat(cursor.isClosed()).isTrue();
+    }
+
+    @Test
+    public void thatPrintObjectToString() {
+        assertThat(mModule.toString()).isNotNull();
     }
 
 }

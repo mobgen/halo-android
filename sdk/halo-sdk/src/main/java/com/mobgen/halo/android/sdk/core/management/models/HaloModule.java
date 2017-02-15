@@ -8,14 +8,26 @@ import android.support.annotation.Keep;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.bluelinelabs.logansquare.JsonMapper;
+import com.bluelinelabs.logansquare.LoganSquare;
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
+import com.bluelinelabs.logansquare.typeconverters.TypeConverter;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonParser;
 import com.mobgen.halo.android.framework.common.annotations.Api;
+import com.mobgen.halo.android.framework.common.helpers.logger.Halog;
 import com.mobgen.halo.android.sdk.core.internal.storage.HaloManagerContract;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Modules are every component built in halo. Those components can be of different types such as
@@ -24,6 +36,29 @@ import java.util.List;
 @Keep
 @JsonObject
 public class HaloModule implements Parcelable {
+
+
+    /**
+     * Json converter to transform the json that comes to a json object.
+     */
+    @Keep
+    public static class JSONArrayObjectConverter implements TypeConverter<JSONArray> {
+
+        /**
+         * The mapper for objects.
+         */
+        private static final JsonMapper<Object> mapper = LoganSquare.mapperFor(Object.class);
+
+        @Override
+        public JSONArray parse(JsonParser jsonParser) throws IOException {
+            List<HaloModuleField> haloModuleFields = (List<HaloModuleField>) mapper.parse(jsonParser);
+            return haloModuleFields != null ? new JSONArray(haloModuleFields) : null;
+        }
+
+        @Override
+        public void serialize(JSONArray object, String fieldName, boolean writeFieldNameForObject, JsonGenerator jsonGenerator) throws IOException {
+        }
+    }
 
     public static final Creator<HaloModule> CREATOR = new Creator<HaloModule>() {
         public HaloModule createFromParcel(Parcel source) {
@@ -75,6 +110,11 @@ public class HaloModule implements Parcelable {
      */
     @JsonField(name = "isSingle")
     Boolean mIsSingle;
+    /**
+     *
+     */
+    @JsonField(name = "fields", typeConverter = JSONArrayObjectConverter.class)
+    JSONArray mFields;
 
     /**
      * Parsing empty constructor.
@@ -96,7 +136,7 @@ public class HaloModule implements Parcelable {
      * @param isSingle     True if the module is a single module type.
      */
     @Api(1.2)
-    public HaloModule(@NonNull Integer customerId, @NonNull String id, @NonNull String name, boolean enabled, @NonNull Date creationDate, @Nullable Date lastUpdate, @NonNull String internalId, boolean isSingle) {
+    public HaloModule(@NonNull Integer customerId, @NonNull String id, @NonNull String name, boolean enabled, @NonNull Date creationDate, @Nullable Date lastUpdate, @NonNull String internalId, boolean isSingle, JSONArray fields) {
         mCustomerId = customerId;
         mId = id;
         mName = name;
@@ -105,6 +145,7 @@ public class HaloModule implements Parcelable {
         mCreationDate = creationDate;
         mInternalId = internalId;
         mIsSingle = isSingle;
+        mFields = fields;
     }
 
     /**
@@ -123,6 +164,12 @@ public class HaloModule implements Parcelable {
         this.mCreationDate = tmpMCreationDate == -1 ? null : new Date(tmpMCreationDate);
         this.mInternalId = in.readString();
         this.mIsSingle = (Boolean) in.readValue(Boolean.class.getClassLoader());
+        try {
+            String fields = in.readString();
+            this.mFields = fields != null ? new JSONArray(fields): null;
+        } catch (JSONException e) {
+            Halog.e(getClass(), "The fields of the module with id " + mId + "could not be parsed on the parceling op.");
+        }
     }
 
     /**
@@ -271,6 +318,16 @@ public class HaloModule implements Parcelable {
     }
 
     /**
+     * Provides the fields meta-data of the module
+     *
+     * @return The fields meta-data of the module
+     */
+    @Api(2.3)
+    public JSONArray getFields() {
+        return mFields;
+    }
+
+    /**
      * Provides the information of this middleware being a single instance.
      *
      * @return True if it is a single instance, false otherwise. It can be null if this middleware
@@ -296,5 +353,21 @@ public class HaloModule implements Parcelable {
         dest.writeLong(mCreationDate != null ? mCreationDate.getTime() : -1);
         dest.writeString(this.mInternalId);
         dest.writeValue(this.mIsSingle);
+        dest.writeString(mFields != null ? this.mFields.toString() : null);
+    }
+
+    @Override
+    public String toString() {
+        return "HaloModule{" +
+                "mCustomerId='" + mCustomerId + '\'' +
+                ", mId='" + mId + '\'' +
+                ", mName='" + mName + '\'' +
+                ", mEnabled='" + mEnabled + '\'' +
+                ", mInternalId='" + mInternalId + '\'' +
+                ", mIsSingle='" + mIsSingle + '\'' +
+                ", mCreationDate='" + mCreationDate + '\'' +
+                ", mLastUpdate='" + mLastUpdate + '\'' +
+                ", mFields='" + mFields.toString() + '\'' +
+                '}';
     }
 }

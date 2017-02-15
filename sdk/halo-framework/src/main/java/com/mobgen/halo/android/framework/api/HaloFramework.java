@@ -60,7 +60,7 @@ public class HaloFramework {
 
         //Setup the debug flag
         setDebugFlag(configuration.getIsDebug());
-        setPrintToFilePolicy(configuration.printToFilePolicy());
+        setPrintLogToFilePolicy(configuration.printToFilePolicy());
         mJsonParser = configuration.getParser();
 
         mNetworkApi = HaloNetworkApi.newNetworkApi(this, configuration);
@@ -209,7 +209,7 @@ public class HaloFramework {
      * @param printPolicy The print to file policy
      */
     @Api(2.2)
-    public void setPrintToFilePolicy(int printPolicy){
+    public void setPrintLogToFilePolicy(int printPolicy){
         mPrintPolicy = printPolicy;
     }
 

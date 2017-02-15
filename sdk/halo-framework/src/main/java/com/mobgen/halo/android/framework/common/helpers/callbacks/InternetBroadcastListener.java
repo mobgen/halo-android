@@ -59,7 +59,7 @@ public class InternetBroadcastListener extends BroadcastReceiver {
      * Stops listening the context.
      *
      */
-    @Api(2.0)
+    @Api(2.3)
     public void unlisten() {
         mContext.unregisterReceiver(this);
     }

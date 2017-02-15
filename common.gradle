@@ -68,6 +68,7 @@ ext {
     jcenterKey = System.getenv("HALO_BINTRAY_KEY")
 }
 
+//Configures to reload all the time the dependencies
 configurations.all {
     resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
     resolutionStrategy.cacheDynamicVersionsFor 0, 'seconds'
