@@ -17,10 +17,10 @@ import java.util.Date;
  * Created by javierdepedrolopez on 9/11/15.
  */
 @JsonObject
-@HaloSearchable(version = 22 , tableName = "Article")
+@HaloSearchable(version = 25 , tableName = "Article")
 @HaloQueries(queries = {@HaloQuery(name="deleteByTitle", query=("delete from Article where Title = @{mTitle:String}")),
         @HaloQuery(name="selectTitle",query="select * from Article where Title = @{mTitle:String}"),
-        @HaloQuery(name="insertArticle",query="insert into Article(Title,Date,ContentHtml,Summary,Thumbnail,Image,Question) VALUES (@{mTitle:String},@{mDate:Date},@{mArticle:String},@{mSummary:String},@{mThumbnail:String},@{mImage:String},@{mQuestion:QROffer});")
+        @HaloQuery(name="insertArticle",query="insert into Article(Title,Date,ContentHtml,Summary,Thumbnail,Image) VALUES (@{mTitle:String},@{mDate:Date},@{mArticle:String},@{mSummary:String},@{mThumbnail:String},@{mImage:String});")
 })
 public class Article implements Parcelable {
     @HaloField(index = true,columnName = "Title")
@@ -42,22 +42,18 @@ public class Article implements Parcelable {
     @JsonField(name = "Image")
     String mImage;
 
-    @JsonField(name = "Question")
-    QROffer mQuestion;
-
     public Article(){
 
     }
 
-    @HaloConstructor( columnNames = {"Title","Date","ContentHtml","Summary","Thumbnail","Image","Question"})
-    public Article(String title, Date date, String article, String summary, String thumnail, String image, QROffer question) {
+    @HaloConstructor( columnNames = {"Title","Date","ContentHtml","Summary","Thumbnail","Image"})
+    public Article(String title, Date date, String article, String summary, String thumnail, String image) {
         mTitle = title;
         mDate = date;
         mArticle = article;
         mSummary = summary;
         mThumbnail = thumnail;
         mImage = image;
-        mQuestion = question;
     }
 
 

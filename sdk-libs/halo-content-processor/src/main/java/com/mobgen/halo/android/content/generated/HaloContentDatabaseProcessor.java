@@ -71,6 +71,7 @@ public class HaloContentDatabaseProcessor extends AbstractProcessor {
     private ClassName haloPulgin = ClassName.get("com.mobgen.halo.android.sdk.api","HaloPluginApi");
     private ClassName thisClass = ClassName.get(PACKAGE_GENERATED,"HaloContentQueryApi");
     private ClassName keepClass = ClassName.get("android.support.annotation", "Keep");
+    private ClassName dateClass = ClassName.get("java.util","Date");
     private ClassName tableAnnotationClass = ClassName.get("com.mobgen.halo.android.framework.storage.database.dsl.annotations", "Table");
     private ClassName tableClass = ClassName.get(" com.mobgen.halo.android.framework.storage.database.dsl", "HaloTable");
     private ClassName sqLite = ClassName.get("android.database.sqlite", "SQLiteDatabase");
@@ -259,11 +260,6 @@ public class HaloContentDatabaseProcessor extends AbstractProcessor {
                 .addMember("value","$S",tableAnnotationName)
                 .build();
 
-        AnnotationSpec columnAnnotationID = AnnotationSpec.builder(columnClass)
-                .addMember("type", "$L", "Column.Type.NUMERIC")
-                .addMember("isPrimaryKey", "$L", true)
-                .build();
-
         //create table
         TypeSpec.Builder constructorBuilder = TypeSpec.interfaceBuilder(className)
                 .addJavadoc("Constructor of the class to create table")
@@ -271,13 +267,6 @@ public class HaloContentDatabaseProcessor extends AbstractProcessor {
                 .addAnnotation(keepClass)
                 .addAnnotation(tableAnnotation)
                 .addModifiers(Modifier.PUBLIC);
-
-        constructorBuilder.addField(FieldSpec.builder(String.class, "ID")
-                .addAnnotation(keepClass)
-                .addAnnotation(columnAnnotationID)
-                .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
-                .initializer("$S", "GC_ID")
-                .build());
 
         //prepare all fields to convert to columns on halotable
         int haloConstructorFieldIndex = 0;
@@ -317,6 +306,9 @@ public class HaloContentDatabaseProcessor extends AbstractProcessor {
                 .addMember("type", "$L", "Column.Type.NUMERIC")
                 .addMember("isPrimaryKey", "$L", true)
                 .build();
+        AnnotationSpec columnAnnotationDate = AnnotationSpec.builder(columnClass)
+                .addMember("type", "$L", "Column.Type.DATE")
+                .build();
         //create table
         TypeSpec.Builder constructorBuilder = TypeSpec.interfaceBuilder(className)
                 .addJavadoc("Constructor of the class to create table")
@@ -341,6 +333,12 @@ public class HaloContentDatabaseProcessor extends AbstractProcessor {
                         .addAnnotation(columnAnnotationVersion)
                         .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
                         .initializer("$S", "GC_TABLE_VERSION")
+                        .build())
+                .addField(FieldSpec.builder(String.class, "TABLE_DATE")
+                        .addAnnotation(keepClass)
+                        .addAnnotation(columnAnnotationDate)
+                        .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
+                        .initializer("$S", "GC_TABLE_DATE")
                         .build());
 
         TypeSpec versionClass = constructorBuilder.build();
@@ -405,10 +403,12 @@ public class HaloContentDatabaseProcessor extends AbstractProcessor {
                 String indexName = indexFields.get(j) + "index";
                 updateDatabaseBuilder.addCode("$1T.index($2L.class,$3S,new String[]{$4S}).on(database, \"Creates index into the $2L table from codegen\");\n",createQuery,classNameTable,indexName, indexFields.get(j));
             }
+            updateDatabaseBuilder.addCode("$1T now$2L = new $1T();\n",dateClass,index);
             updateDatabaseBuilder.addCode("$1T values$2L = new $1T();\n" +
                             "values$2L.put($4L.TABLE_ID, id$2L);\n" +
                             "values$2L.put($4L.TABLE_NAME, $3S);\n" +
                             "values$2L.put($4L.TABLE_VERSION,$6L);\n" +
+                            "values$2L.put($4L.TABLE_DATE, now$2L.getTime());\n" +
                             "if (version$2L!= $6L) {\n" +
                             "\tdatabase.insertWithOnConflict($5S,null,values$2L,SQLiteDatabase.CONFLICT_REPLACE);\n" +
                             "}\n",

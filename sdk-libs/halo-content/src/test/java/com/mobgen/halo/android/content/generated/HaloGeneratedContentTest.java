@@ -7,7 +7,6 @@ import android.support.annotation.NonNull;
 import com.mobgen.halo.android.app.generated.GeneratedDatabaseFromModel;
 import com.mobgen.halo.android.app.generated.HaloContentQueryApi;
 import com.mobgen.halo.android.app.generated.HaloTable$$DummyItem;
-import com.mobgen.halo.android.app.generated.HaloTable$$DummyObject;
 import com.mobgen.halo.android.content.HaloContentApi;
 import com.mobgen.halo.android.content.annotations.HaloSearchable;
 import com.mobgen.halo.android.content.mock.dummy.DummyItem;
@@ -16,22 +15,18 @@ import com.mobgen.halo.android.content.models.Paginated;
 import com.mobgen.halo.android.content.spec.HaloContentContract;
 import com.mobgen.halo.android.content.utils.HaloContentHelper;
 import com.mobgen.halo.android.framework.network.client.response.Parser;
-import com.mobgen.halo.android.framework.storage.database.dsl.queries.Create;
 import com.mobgen.halo.android.framework.storage.exceptions.HaloStorageParseException;
 import com.mobgen.halo.android.framework.toolbox.data.CallbackV2;
 import com.mobgen.halo.android.framework.toolbox.data.HaloResultV2;
 import com.mobgen.halo.android.sdk.api.Halo;
 import com.mobgen.halo.android.testing.CallbackFlag;
 import com.mobgen.halo.android.testing.HaloRobolectricTest;
-import com.mobgen.halo.android.testing.MockCursor;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
-
 import java.lang.reflect.Method;
 import java.util.Date;
 import java.util.List;
@@ -100,8 +95,9 @@ public class HaloGeneratedContentTest extends HaloRobolectricTest {
 
     @Test
     public void thatHaloTableCreationIsCorrect() throws ClassNotFoundException {
-        int numberOfHaloTableFields= HaloTable$$DummyItem.class.getDeclaredFields().length;
-        assertThat(numberOfHaloTableFields).isEqualTo(6);
+        int numberOfHaloTableFields = HaloTable$$DummyItem.class.getDeclaredFields().length;
+        int numberOfModelFields = DummyItem.class.getDeclaredFields().length;
+        assertThat(numberOfHaloTableFields).isEqualTo(numberOfModelFields);
     }
 
     @Test
@@ -185,7 +181,7 @@ public class HaloGeneratedContentTest extends HaloRobolectricTest {
         Cursor cursor = mock(Cursor.class);
         // Set non empty cursor.
         when(cursor.moveToFirst()).thenReturn(true);
-        when(cursor.getColumnNames()).thenReturn(new String[]{FAKE_COLUMN_NAME,"GC_ID"});
+        when(cursor.getColumnNames()).thenReturn(new String[]{FAKE_COLUMN_NAME});
         //zero index
         when(cursor.getColumnName(0)).thenReturn(FAKE_COLUMN_NAME);
         when(cursor.getType(0)).thenReturn(Cursor.FIELD_TYPE_STRING);
@@ -193,13 +189,6 @@ public class HaloGeneratedContentTest extends HaloRobolectricTest {
                 .thenReturn(0);
         when(cursor.getString(0))
                 .thenReturn(FAKE_STRING);
-        //first index
-        when(cursor.getColumnName(1)).thenReturn("GC_ID");
-        when(cursor.getType(1)).thenReturn(Cursor.FIELD_TYPE_INTEGER);
-        when(cursor.getColumnIndex("GC_ID"))
-                .thenReturn(1);
-        when(cursor.getInt(1))
-                .thenReturn(10);
 
         return cursor;
     }

@@ -11,6 +11,7 @@ import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.text.TextUtils;
 import android.transition.TransitionInflater;
+import android.util.Log;
 import android.view.View;
 import android.webkit.WebView;
 import android.widget.ImageView;
@@ -18,7 +19,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mobgen.halo.android.app.R;
+import com.mobgen.halo.android.app.generated.HaloContentQueryApi;
 import com.mobgen.halo.android.app.model.Article;
+import com.mobgen.halo.android.app.model.QROffer;
 import com.mobgen.halo.android.app.ui.MobgenHaloActivity;
 import com.mobgen.halo.android.app.ui.MobgenHaloApplication;
 import com.mobgen.halo.android.app.ui.modules.partial.ModulesActivity;
@@ -33,6 +36,7 @@ import com.mobgen.halo.android.framework.toolbox.data.HaloStatus;
 import com.mobgen.halo.android.sdk.api.Halo;
 import com.squareup.picasso.Picasso;
 
+import java.util.Date;
 import java.util.List;
 
 public class ArticleActivity extends MobgenHaloActivity {
@@ -97,6 +101,23 @@ public class ArticleActivity extends MobgenHaloActivity {
         } else {
             finish();
         }
+
+        HaloContentQueryApi.with(MobgenHaloApplication.halo()).selectTitle(mArticle.getTitle())
+                .asContent(Article.class)
+                .execute(new CallbackV2<List<Article>>() {
+                    @Override
+                    public void onFinish(@NonNull HaloResultV2<List<Article>> result) {
+                        if(result.data().size()==0){
+                            insertArticle();
+                        }
+                    }
+                });
+    }
+
+    private void insertArticle(){
+        HaloContentQueryApi.with(MobgenHaloApplication.halo()).insertArticle(mArticle.getTitle(),mArticle.getDate(),mArticle.getArticle(),mArticle.getSummary(),mArticle.getThumbnail(),mArticle.getImage())
+                .asContent(Article.class)
+                .execute();
     }
 
     @Override

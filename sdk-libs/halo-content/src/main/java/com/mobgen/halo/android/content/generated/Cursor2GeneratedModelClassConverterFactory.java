@@ -38,7 +38,7 @@ public class Cursor2GeneratedModelClassConverterFactory<P> implements SelectorCu
         return new SelectorCursor2CustomClass<>(
                 dataProvider,
                 new ContentCursor2GeneratedModelClassConverter<>(clazz, mParser),
-                null,//operation is always from storage so parserConverter not needed
+                null,
                 mode);
     }
 }

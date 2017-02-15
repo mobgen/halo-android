@@ -17,7 +17,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,10 +24,6 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.mobgen.halo.android.app.R;
-import com.mobgen.halo.android.app.generated.GeneratedDatabaseFromModel;
-import com.mobgen.halo.android.app.generated.HaloContentQueryApi;
-import com.mobgen.halo.android.app.model.Article;
-import com.mobgen.halo.android.app.model.QROffer;
 import com.mobgen.halo.android.app.ui.MobgenHaloActivity;
 import com.mobgen.halo.android.app.ui.MobgenHaloApplication;
 import com.mobgen.halo.android.app.ui.views.DividerItemDecoration;
@@ -211,39 +206,7 @@ public class GeneralContentModuleActivity extends MobgenHaloActivity implements 
 
         mRefreshReceiver = new RefreshBroadcastReceiver();
         LocalBroadcastManager.getInstance(this).registerReceiver(mRefreshReceiver, new IntentFilter("generalcontent-notification"));
-
-        QROffer qrOffer = new QROffer("1","MyqRofofer", new Date(), "great opportunity",null);
-        //api things
-        HaloContentApi.with(MobgenHaloApplication.halo(), null, new GeneratedDatabaseFromModel());
-        HaloContentQueryApi.with(MobgenHaloApplication.halo()).insertArticle("The best article ever",new Date(),"Article","summary",null,null,qrOffer)
-                .asContent(Article.class)
-                .execute(new CallbackV2<List<Article>>() {
-                    @Override
-                    public void onFinish(@NonNull HaloResultV2<List<Article>> result) {
-                       if(result.data().size()>0){
-                            Log.v("the article parsed::>>",result.data().get(0).getTitle());
-                        }
-                    }
-                });
-
-        HaloContentQueryApi.with(MobgenHaloApplication.halo()).selectTitle("The best article ever")
-                .asContent(Article.class)
-                .execute(new CallbackV2<List<Article>>() {
-                    @Override
-                    public void onFinish(@NonNull HaloResultV2<List<Article>> result) {
-                        if(result.data().size()>0){
-                            Log.v("the article parsed::>>",result.data().get(0).getTitle());
-                        }
-                    }
-                });
-
-//        HaloContentQueryApi.with(MobgenHaloApplication.halo()).deleteByTitle("The best article ever")
-//                .execute(new CallbackV2<Cursor>() {
-//                    @Override
-//                    public void onFinish(@NonNull HaloResultV2<Cursor> result) {
-//
-//                    }
-//                });
+        
     }
 
     @Override

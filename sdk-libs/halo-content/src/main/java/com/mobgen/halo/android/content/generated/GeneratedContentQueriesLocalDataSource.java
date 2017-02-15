@@ -43,7 +43,7 @@ public class GeneratedContentQueriesLocalDataSource {
      */
     @Nullable
     public Cursor perfomQuery(@NonNull String query,@NonNull Object[] bindArgs) throws SQLException {
-        //convert obects to string to perfom queries
+        //convert obects to string to perfom raw queries
         int length = bindArgs.length;
         String[] bindstringArgs = new String[length];
         for(int i=0;i<length;i++){
