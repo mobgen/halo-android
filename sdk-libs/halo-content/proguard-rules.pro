@@ -1,6 +1,9 @@
 -keepparameternames
 -keepattributes EnclosingMethod
 
+-keep class com.mobgen.halo.android.content.annotations.**
+-dontwarn com.mobgen.halo.android.content.annotations.**
+
 -keep class com.mobgen.halo.android.content.processor.**
 -dontwarn com.mobgen.halo.android.content.processor.**
 

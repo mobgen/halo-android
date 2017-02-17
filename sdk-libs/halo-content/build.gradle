@@ -3,7 +3,7 @@ apply plugin: 'com.neenbedankt.android-apt'
 apply plugin: 'com.getkeepsafe.dexcount'
 apply plugin: 'grill'
 apply plugin: 'jacoco'
-//Knwn issue in jacoco: https://github.com/robolectric/robolectric/issues/2230
+//Known issue in jacoco: https://github.com/robolectric/robolectric/issues/2230
 jacoco {
     toolVersion = "${rootProject.ext.jacocoVersion}"
 }

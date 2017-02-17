@@ -84,7 +84,6 @@ public class SyncQuery implements Parcelable {
      * Creates the builder of the sync options.
      *
      * @param moduleName    The module name.
-     * @param moduleName    The module name.
      * @param locale        The locale definition.
      * @param threadingMode The threadPolicy mode.
      * @return The builder.

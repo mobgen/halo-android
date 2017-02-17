@@ -68,7 +68,9 @@ public class GeneratedContentQueriesLocalDataSource {
             }
         }
         Cursor rawResult = mDataLite.getDatabase().rawQuery(query,bindstringArgs);
-        if(rawResult!=null)rawResult.moveToFirst();
+        if(rawResult!=null) {
+            rawResult.moveToFirst();
+        }
         return rawResult;
     }
 

@@ -40,7 +40,7 @@ ext {
 
     //Code generation
     javapoetVersion = '1.8.0'
-    autoServiceVersion = '1.0-rc2'
+    autoServiceVersion = '1.0-rc3'
 
     //Testing
     jUnitVersion = '4.12'

@@ -110,8 +110,9 @@ public final class HaloContentHelper {
      * @param cursor The raw used.
      * @param clazz The class to convert the content.
      * @param <T>
-     * @return
+     * @return The instance of the object of clazz type; otherwise null
      */
+    @Nullable
     public static <T> Object fromCursorToModel(@NonNull Cursor cursor, @NonNull Class<T> clazz) {
         int sizeCursorColumns = cursor.getColumnNames().length;
         //get the constructor of the object
@@ -161,11 +162,11 @@ public final class HaloContentHelper {
         try {
             instance = constructor.newInstance(values);
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            return instance;
         } catch (InstantiationException e) {
-            e.printStackTrace();
+            return instance;
         } catch (InvocationTargetException e) {
-            e.printStackTrace();
+            return instance;
         }
 
         return instance;
@@ -250,7 +251,10 @@ public final class HaloContentHelper {
         List<T> instances = new ArrayList<>(cursor.getCount());
         if (cursor.moveToFirst()) {
             do {
-                instances.add((T)fromCursorToModel(cursor,clazz));
+                Object instance = fromCursorToModel(cursor,clazz);
+                if(instance!=null) {
+                    instances.add((T) instance);
+                }
             } while (cursor.moveToNext());
         }
         if (cursor!=null && !cursor.isClosed()) {
