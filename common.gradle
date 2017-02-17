@@ -29,7 +29,7 @@ ext {
 
     //Google
     appcompatVersion = '24.2.1'
-    firebaseVersion = '9.6.1'
+    firebaseVersion = '10.0.1'
 
     //Facebook
     facebookSdkVersion = '4.13.1'
@@ -68,15 +68,4 @@ ext {
 configurations.all {
     resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
     resolutionStrategy.cacheDynamicVersionsFor 0, 'seconds'
-}
-
-//Load the gradle wrapper in the given version
-def props = new Properties()
-props.load(new FileInputStream("${topDir}/halo.properties"))
-props.each { key, val ->
-    project.set(key, val)
-}
-
-task wrapper(type: Wrapper) {
-    gradleVersion = project.gradleVersion
 }
