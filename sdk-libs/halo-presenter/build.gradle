@@ -79,7 +79,7 @@ grill {
         libDevName "MOBGEN"
         libDevEmail "halo@mobgen.com"
         libSiteUrl "https://halo.mobgen.com"
-        libGitUrl "https://bitbucket.org/mobgen/halo-android/sdk-libs/halo-presenter"
+        libGitUrl "https://github.com/mobgen/halo-android/tree/master/sdk-libs/halo-presenter"
         bintrayRepoName "HALO-Presenter"
         bintrayUser System.getenv("HALO_BINTRAY_USER")
         bintrayKey System.getenv("HALO_BINTRAY_KEY")

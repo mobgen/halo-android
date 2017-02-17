@@ -16,7 +16,6 @@ import java.util.Date;
 
 import static com.mobgen.halo.android.content.mock.instrumentation.HaloMock.givenADefaultHalo;
 import static org.assertj.core.api.Java6Assertions.assertThat;
-
 public class HaloContentInstanceTest extends HaloRobolectricTest {
 
     private static Halo mHalo;
