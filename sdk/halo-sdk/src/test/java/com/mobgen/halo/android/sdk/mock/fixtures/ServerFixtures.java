@@ -12,6 +12,7 @@ public class ServerFixtures {
     public static final String REMOVE_SEGMENTATION_TAG = "removeSegmentationTag.json";
     //modules
     public static final String GET_MODULES = "getModules.json";
+    public static final String GET_MODULES_META_DATA = "getModulesWithMetaData.json";
     //sync device
     public static final String SYNC_DEVICE = "deviceResponse.json";
     public static final String GET_DEVICE = "deviceResponse.json";

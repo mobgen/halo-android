@@ -10,6 +10,8 @@
         android:layout_height="wrap_content">
 
         <LinearLayout
+            android:focusable="true"
+            android:focusableInTouchMode="true"
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -164,6 +166,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/text_size_small"
+                    android:textIsSelectable="true"
+                    android:selectAllOnFocus="true"
                     android:layout_weight="1"
                     android:textColor="@color/medium_gray"
                     tools:text="user" />
@@ -193,6 +197,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/text_size_small"
+                    android:textIsSelectable="true"
+                    android:selectAllOnFocus="true"
                     android:textColor="@color/medium_gray"
                     tools:text="gcmToken" />
 

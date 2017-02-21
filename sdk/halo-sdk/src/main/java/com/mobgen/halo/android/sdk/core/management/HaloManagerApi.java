@@ -52,6 +52,7 @@ import com.mobgen.halo.android.sdk.core.management.version.VersionRepository;
 import com.mobgen.halo.android.sdk.core.selectors.HaloSelectorFactory;
 import com.mobgen.halo.android.sdk.core.threading.HaloInteractorExecutor;
 import com.mobgen.halo.android.sdk.core.threading.HaloSchedule;
+import com.mobgen.halo.android.sdk.core.threading.ICancellable;
 
 import java.util.Collections;
 import java.util.List;
@@ -145,11 +146,45 @@ public class HaloManagerApi extends HaloPluginApi {
     public HaloSelectorFactory<List<HaloModule>, Cursor> getModules(@Data.Policy int dataMode) {
         return new HaloSelectorFactory<>(
                 halo(),
-                new RequestModulesInteractor(mModulesRepository),
+                new RequestModulesInteractor(mModulesRepository,false),
                 new Cursor2ModulesConverter(),
                 null,
                 dataMode,
                 "Get modules request"
+        );
+    }
+
+    /**
+     * Prints the current modules with all the fields metadata. You can use this method to see in the
+     * log the metadata of the module instances.
+     *
+     */
+    @Keep
+    @NonNull
+    @Api(2.3)
+    public ICancellable printModulesMetaData() {
+        return HaloManagerApi.with(Halo.instance())
+                .getModuleWithMetaData()
+                .asContent()
+                .threadPolicy(Threading.POOL_QUEUE_POLICY)
+                .execute();
+    }
+
+    /**
+     * Provides the current modules with all the fields metadata.
+     *
+     * @return Returns the selector to execute the action.
+     */
+    @NonNull
+    @CheckResult(suggest = "You may want to call execute() to run the task")
+    private HaloSelectorFactory<List<HaloModule>, Cursor> getModuleWithMetaData() {
+        return new HaloSelectorFactory<>(
+                halo(),
+                new RequestModulesInteractor(mModulesRepository,true),
+                new Cursor2ModulesConverter(),
+                null,
+                Data.NETWORK_ONLY,
+                "Get modules request with metadata fields"
         );
     }
 

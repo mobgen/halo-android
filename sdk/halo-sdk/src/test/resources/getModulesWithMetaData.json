@@ -1,0 +1,3051 @@
+[
+  {
+    "isSingle": false,
+    "name": "matus DO NOT DELETE",
+    "tags": [
+      {
+        "id": "582b3ba74cfec9150012a8ac",
+        "name": "Android SDK Version",
+        "value": "2.0.0-SNAPSHOT",
+        "tagType": "000000000000000000000001"
+      },
+      {
+        "id": "582b40fd2b34eb0f0039c59a",
+        "name": "Android SDK Version",
+        "value": "2.0.0-rc6",
+        "tagType": "000000000000000000000001"
+      },
+      {
+        "id": "582b40fd2b34eb0f0039c595",
+        "name": "Android Version",
+        "value": "5.1",
+        "tagType": "000000000000000000000001"
+      },
+      {
+        "id": "582b3ba74cfec9150012a8a3",
+        "name": "Android Version",
+        "value": "6.0.1",
+        "tagType": "000000000000000000000001"
+      },
+      {
+        "id": "583d5db33576e61000d5dbb2",
+        "name": "Android Version",
+        "value": "7.0",
+        "tagType": "000000000000000000000001"
+      },
+      {
+        "id": "582b3ba74cfec9150012a8a4",
+        "name": "Application Name",
+        "value": "HALO Sensor",
+        "tagType": "000000000000000000000001"
+      },
+      {
+        "id": "582c7952d13ac012008b3ec0",
+        "name": "Application Name",
+        "value": "Halo",
+        "tagType": "000000000000000000000001"
+      },
+      {
+        "id": "584037e43b75f9120009cef5",
+        "name": "Application Name",
+        "value": "HaloDemo",
+        "tagType": "000000000000000000000001"
+      },
+      {
+        "id": "583d87d7c36fcf11000b42df",
+        "name": "Application Name",
+        "value": "HaloSensorApp",
+        "tagType": "000000000000000000000001"
+      },
+      {
+        "id": "583d87d7c36fcf11000b42e4",
+        "name": "Application Version",
+        "value": "1.0",
+        "tagType": "000000000000000000000001"
+      },
+      {
+        "id": "5874b8c8e8b82c22002bdb5d",
+        "name": "Android Version",
+        "value": "4.2.2",
+        "tagType": "000000000000000000000001"
+      },
+      {
+        "id": "585a53c172e8270f00edfe7f",
+        "name": "Android Version",
+        "value": "7.1.1",
+        "tagType": "000000000000000000000001"
+      },
+      {
+        "id": "582c7952d13ac012008b3ec1",
+        "name": "Application Version",
+        "value": "2.0.0-SNAPSHOT-demo",
+        "tagType": "000000000000000000000001"
+      },
+      {
+        "id": "582b3ba74cfec9150012a8a5",
+        "name": "Application Version",
+        "value": "v0",
+        "tagType": "000000000000000000000001"
+      },
+      {
+        "id": "5874b8c8e8b82c22002bdb5f",
+        "name": "Bluetooth 4 Support",
+        "value": "false",
+        "tagType": "000000000000000000000001"
+      },
+      {
+        "id": "582b3ba74cfec9150012a8a9",
+        "name": "Bluetooth 4 Support",
+        "value": "true",
+        "tagType": "000000000000000000000001"
+      },
+      {
+        "id": "583d87d7c36fcf11000b42e1",
+        "name": "Device Manufacturer",
+        "value": "Apple",
+        "tagType": "000000000000000000000001"
+      },
+      {
+        "id": "585ab027ab82521000a2609d",
+        "name": "Device Manufacturer",
+        "value": "Huawei",
+        "tagType": "000000000000000000000001"
+      },
+      {
+        "id": "582b3ba74cfec9150012a8a6",
+        "name": "Device Manufacturer",
+        "value": "LGE",
+        "tagType": "000000000000000000000001"
+      },
+      {
+        "id": "582b40fd2b34eb0f0039c596",
+        "name": "Device Manufacturer",
+        "value": "motorola",
+        "tagType": "000000000000000000000001"
+      },
+      {
+        "id": "5857b453fd509c1000ee5e08",
+        "name": "Device Manufacturer",
+        "value": "samsung",
+        "tagType": "000000000000000000000001"
+      },
+      {
+        "id": "5874b8c8e8b82c22002bdb5e",
+        "name": "Device Model",
+        "value": "GT-I9105P",
+        "tagType": "000000000000000000000001"
+      },
+      {
+        "id": "583ffdb668c7d31000e53203",
+        "name": "Device Model",
+        "value": "Moto G (4)",
+        "tagType": "000000000000000000000001"
+      },
+      {
+        "id": "582b3ba74cfec9150012a8a7",
+        "name": "Device Model",
+        "value": "Nexus 5",
+        "tagType": "000000000000000000000001"
+      },
+      {
+        "id": "582c7952d13ac012008b3ec2",
+        "name": "Device Model",
+        "value": "Nexus 5X",
+        "tagType": "000000000000000000000001"
+      },
+      {
+        "id": "585ab027ab82521000a2609e",
+        "name": "Device Model",
+        "value": "Nexus 6P",
+        "tagType": "000000000000000000000001"
+      },
+      {
+        "id": "5857b453fd509c1000ee5e09",
+        "name": "Device Model",
+        "value": "SM-G920F",
+        "tagType": "000000000000000000000001"
+      },
+      {
+        "id": "583d87d7c36fcf11000b42e3",
+        "name": "Device Model",
+        "value": "Simulator",
+        "tagType": "000000000000000000000001"
+      },
+      {
+        "id": "582b40fd2b34eb0f0039c597",
+        "name": "Device Model",
+        "value": "XT1032",
+        "tagType": "000000000000000000000001"
+      },
+      {
+        "id": "586ccf03648f410f007ea941",
+        "name": "Device Model",
+        "value": "iPhone 6",
+        "tagType": "000000000000000000000001"
+      },
+      {
+        "id": "583efaec4269fa0f00b0f1ed",
+        "name": "Device Model",
+        "value": "iPhone 6s",
+        "tagType": "000000000000000000000001"
+      },
+      {
+        "id": "583d87d7c36fcf11000b42e0",
+        "name": "Device Screen Size",
+        "value": "750x1334",
+        "tagType": "000000000000000000000001"
+      },
+      {
+        "id": "582b3ba74cfec9150012a8a8",
+        "name": "Device Type",
+        "value": "Phone",
+        "tagType": "000000000000000000000001"
+      },
+      {
+        "id": "582b40fd2b34eb0f0039c598",
+        "name": "NFC Support",
+        "value": "false",
+        "tagType": "000000000000000000000001"
+      },
+      {
+        "id": "582b3ba74cfec9150012a8aa",
+        "name": "NFC Support",
+        "value": "true",
+        "tagType": "000000000000000000000001"
+      },
+      {
+        "id": "582b3ba74cfec9150012a8a2",
+        "name": "Platform Name",
+        "value": "android",
+        "tagType": "000000000000000000000001"
+      },
+      {
+        "id": "583d87d7c36fcf11000b42e2",
+        "name": "Platform Name",
+        "value": "ios",
+        "tagType": "000000000000000000000001"
+      },
+      {
+        "id": "582b3ba74cfec9150012a8ab",
+        "name": "Screen Size",
+        "value": "1080x1776",
+        "tagType": "000000000000000000000001"
+      },
+      {
+        "id": "582c7952d13ac012008b3ec3",
+        "name": "Screen Size",
+        "value": "1080x1794",
+        "tagType": "000000000000000000000001"
+      },
+      {
+        "id": "5845c7905c014f0f00237997",
+        "name": "Screen Size",
+        "value": "1196x720",
+        "tagType": "000000000000000000000001"
+      },
+      {
+        "id": "585ab027ab82521000a2609f",
+        "name": "Screen Size",
+        "value": "1440x2392",
+        "tagType": "000000000000000000000001"
+      },
+      {
+        "id": "5857b453fd509c1000ee5e0a",
+        "name": "Screen Size",
+        "value": "1440x2560",
+        "tagType": "000000000000000000000001"
+      },
+      {
+        "id": "5832e84f3bdd430f00023433",
+        "name": "Screen Size",
+        "value": "1794x1080",
+        "tagType": "000000000000000000000001"
+      },
+      {
+        "id": "58659f73b60f1e11003505ff",
+        "name": "Screen Size",
+        "value": "2392x1440",
+        "tagType": "000000000000000000000001"
+      },
+      {
+        "id": "5874b8c8e8b82c22002bdb60",
+        "name": "Screen Size",
+        "value": "480x800",
+        "tagType": "000000000000000000000001"
+      },
+      {
+        "id": "582b40fd2b34eb0f0039c599",
+        "name": "Screen Size",
+        "value": "720x1184",
+        "tagType": "000000000000000000000001"
+      },
+      {
+        "id": "5857b453fd509c1000ee5e0b",
+        "name": "Test Device",
+        "value": "false",
+        "tagType": "000000000000000000000001"
+      },
+      {
+        "id": "582b3ba74cfec9150012a8ad",
+        "name": "Test Device",
+        "value": "true",
+        "tagType": "000000000000000000000001"
+      },
+      {
+        "id": "583efaec4269fa0f00b0f1eb",
+        "name": "apns",
+        "value": "development",
+        "tagType": "000000000000000000000001"
+      },
+      {
+        "id": "58590d8f0bee380f00d4622a",
+        "name": "apns",
+        "value": "enterprise",
+        "tagType": "000000000000000000000001"
+      },
+      {
+        "id": "000000000000000000000675",
+        "name": "Italian Italy",
+        "value": "it-IT",
+        "tagType": "000000000000000000000004"
+      },
+      {
+        "id": "000000000000000000000772",
+        "name": "Slovak Hungary",
+        "value": "sk-HU",
+        "tagType": "000000000000000000000004"
+      },
+      {
+        "id": "000000000000000000000460",
+        "name": "Danish Germany",
+        "value": "da-DE",
+        "tagType": "000000000000000000000004"
+      },
+      {
+        "id": "000000000000000000000486",
+        "name": "English Barbados",
+        "value": "en-BB",
+        "tagType": "000000000000000000000004"
+      },
+      {
+        "id": "000000000000000000000759",
+        "name": "Romanian",
+        "value": "ro",
+        "tagType": "000000000000000000000004"
+      }
+    ],
+    "pushTemplates": [
+      "000000000000000000000001"
+    ],
+    "customerId": 1,
+    "createdBy": "Admin Admin",
+    "updatedBy": "Admin Admin",
+    "externalId": null,
+    "deletedAt": null,
+    "deletedBy": null,
+    "createdAt": 1481276424991,
+    "updatedAt": 1486542096565,
+    "id": "584a7c0882ad011100ac82de",
+    "fields": [
+      {
+        "fieldType": {
+          "name": "Object",
+          "rules": [
+            {
+              "rule": "custom||isJSONObject",
+              "params": [],
+              "error": "validator.11"
+            }
+          ],
+          "isLongValue": true,
+          "deletedAt": null,
+          "createdAt": 1479220924795,
+          "updatedAt": 1486571865937,
+          "id": "000000000000000000000013"
+        },
+        "module": "584a7c0882ad011100ac82de",
+        "name": "Object",
+        "description": "object",
+        "format": {},
+        "customerId": 1,
+        "deletedAt": null,
+        "createdAt": 1481279133200,
+        "updatedAt": 1481279155601,
+        "id": "584a869d2b458411009fe5cd"
+      },
+      {
+        "fieldType": {
+          "name": "Single select dropdown",
+          "rules": [
+            {
+              "rule": "custom||singleChoiceValidator",
+              "params": [],
+              "error": "validator.16"
+            }
+          ],
+          "isLongValue": true,
+          "deletedAt": null,
+          "createdAt": 1479220924771,
+          "updatedAt": 1486571865954,
+          "id": "000000000000000000000020"
+        },
+        "module": "584a7c0882ad011100ac82de",
+        "name": "Single select ddm",
+        "description": "single select ddm",
+        "format": {
+          "values": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+            "11"
+          ],
+          "default": "2"
+        },
+        "customerId": 1,
+        "deletedAt": null,
+        "createdAt": 1481279306025,
+        "updatedAt": 1481279306025,
+        "id": "584a874a82ad011100ac82e2"
+      },
+      {
+        "fieldType": {
+          "name": "Video",
+          "rules": [
+            {
+              "rule": "matches",
+              "params": [
+                "^(?:(?:https?|ftp)://)(?:S+(?::S*)?@)?(?:(?!10(?:.d{1,3}){3})(?!127(?:.d{1,3}){3})(?!169.254(?:.d{1,3}){2})(?!192.168(?:.d{1,3}){2})(?!172.(?:1[6-9]|2d|3[0-1])(?:.d{1,3}){2})(?:[1-9]d?|1dd|2[01]d|22[0-3])(?:.(?:1?d{1,2}|2[0-4]d|25[0-5])){2}(?:.(?:[1-9]d?|1dd|2[0-4]d|25[0-4]))|(?:(?:[a-z¡-￿0-9]+-?)*[a-z¡-￿0-9]+)(?:.(?:[a-z¡-￿0-9]+-?)*[a-z¡-￿0-9]+)*(?:.(?:[a-z¡-￿]{2,})))(?::d{2,5})?(?:/[^s]*)?"
+              ],
+              "error": "validator.1"
+            }
+          ],
+          "isLongValue": true,
+          "deletedAt": null,
+          "createdAt": 1479220924784,
+          "updatedAt": 1486571865944,
+          "id": "000000000000000000000016"
+        },
+        "module": "584a7c0882ad011100ac82de",
+        "name": "Video",
+        "description": "video",
+        "format": {},
+        "customerId": 1,
+        "deletedAt": null,
+        "createdAt": 1481279471864,
+        "updatedAt": 1481279471864,
+        "id": "584a87ef512c981200f0861c"
+      },
+      {
+        "fieldType": {
+          "name": "Website",
+          "rules": [
+            {
+              "rule": "matches",
+              "params": [
+                "^(?:(?:https?|ftp)://)(?:S+(?::S*)?@)?(?:(?!10(?:.d{1,3}){3})(?!127(?:.d{1,3}){3})(?!169.254(?:.d{1,3}){2})(?!192.168(?:.d{1,3}){2})(?!172.(?:1[6-9]|2d|3[0-1])(?:.d{1,3}){2})(?:[1-9]d?|1dd|2[01]d|22[0-3])(?:.(?:1?d{1,2}|2[0-4]d|25[0-5])){2}(?:.(?:[1-9]d?|1dd|2[0-4]d|25[0-4]))|(?:(?:[a-z¡-￿0-9]+-?)*[a-z¡-￿0-9]+)(?:.(?:[a-z¡-￿0-9]+-?)*[a-z¡-￿0-9]+)*(?:.(?:[a-z¡-￿]{2,})))(?::d{2,5})?(?:/[^s]*)?"
+              ],
+              "error": "validator.1"
+            }
+          ],
+          "isLongValue": true,
+          "deletedAt": null,
+          "createdAt": 1479220924788,
+          "updatedAt": 1486571865890,
+          "id": "000000000000000000000003"
+        },
+        "module": "584a7c0882ad011100ac82de",
+        "name": "Website",
+        "description": "website",
+        "format": {},
+        "customerId": 1,
+        "deletedAt": null,
+        "createdAt": 1481279448258,
+        "updatedAt": 1481279453101,
+        "id": "584a87d8512c981200f0861b"
+      },
+      {
+        "fieldType": {
+          "name": "Youtube",
+          "rules": [
+            {
+              "rule": "matches",
+              "params": [
+                "^(?:https?:\\/\\/)?(?:www\\.)?(?:youtu\\.be\\/|youtube\\.com\\/(?:embed\\/|v\\/|watch\\?v=|watch\\?.+&v=))((\\w|-){11})(?:\\S+)?$"
+              ],
+              "error": "validator.2"
+            }
+          ],
+          "isLongValue": true,
+          "deletedAt": null,
+          "createdAt": 1479220924798,
+          "updatedAt": 1486571865891,
+          "id": "000000000000000000000004"
+        },
+        "module": "584a7c0882ad011100ac82de",
+        "name": "Youtube",
+        "description": "youtube",
+        "format": {},
+        "customerId": 1,
+        "deletedAt": null,
+        "createdAt": 1481279495800,
+        "updatedAt": 1481279501123,
+        "id": "584a8807fefaba1d0051fe03"
+      },
+      {
+        "fieldType": {
+          "name": "Audio",
+          "rules": [
+            {
+              "rule": "matches",
+              "params": [
+                "^(?:(?:https?|ftp)://)(?:S+(?::S*)?@)?(?:(?!10(?:.d{1,3}){3})(?!127(?:.d{1,3}){3})(?!169.254(?:.d{1,3}){2})(?!192.168(?:.d{1,3}){2})(?!172.(?:1[6-9]|2d|3[0-1])(?:.d{1,3}){2})(?:[1-9]d?|1dd|2[01]d|22[0-3])(?:.(?:1?d{1,2}|2[0-4]d|25[0-5])){2}(?:.(?:[1-9]d?|1dd|2[0-4]d|25[0-4]))|(?:(?:[a-z¡-￿0-9]+-?)*[a-z¡-￿0-9]+)(?:.(?:[a-z¡-￿0-9]+-?)*[a-z¡-￿0-9]+)*(?:.(?:[a-z¡-￿]{2,})))(?::d{2,5})?(?:/[^s]*)?"
+              ],
+              "error": "validator.1"
+            }
+          ],
+          "isLongValue": true,
+          "deletedAt": null,
+          "createdAt": 1486535644443,
+          "updatedAt": 1486571865964,
+          "id": "000000000000000000000021"
+        },
+        "module": "584a7c0882ad011100ac82de",
+        "name": "audio",
+        "format": {},
+        "customerId": 1,
+        "deletedAt": null,
+        "createdAt": 1486542096489,
+        "updatedAt": 1486542096489,
+        "id": "589ad5104b4d37100059d006"
+      },
+      {
+        "fieldType": {
+          "name": "Boolean",
+          "rules": [
+            {
+              "rule": "custom||isStrictBoolean",
+              "params": [],
+              "error": "validator.6"
+            }
+          ],
+          "isLongValue": false,
+          "deletedAt": null,
+          "createdAt": 1479220924794,
+          "updatedAt": 1486571865914,
+          "id": "000000000000000000000008"
+        },
+        "module": "584a7c0882ad011100ac82de",
+        "name": "boolean",
+        "format": {},
+        "customerId": 1,
+        "deletedAt": null,
+        "createdAt": 1481278416339,
+        "updatedAt": 1481278424185,
+        "description": "124",
+        "id": "584a83d02b458411009fe5c8"
+      },
+      {
+        "fieldType": {
+          "name": "Color",
+          "rules": [
+            {
+              "rule": "isHexColor",
+              "params": [],
+              "error": "validator.7"
+            }
+          ],
+          "isLongValue": false,
+          "deletedAt": null,
+          "createdAt": 1479220924798,
+          "updatedAt": 1486571865915,
+          "id": "000000000000000000000009"
+        },
+        "module": "584a7c0882ad011100ac82de",
+        "name": "color",
+        "description": "color",
+        "format": {},
+        "customerId": 1,
+        "deletedAt": null,
+        "createdAt": 1481278437841,
+        "updatedAt": 1481278441737,
+        "id": "584a83e5fefaba1d0051fe02"
+      },
+      {
+        "fieldType": {
+          "name": "Date",
+          "rules": [
+            {
+              "rule": "custom||isTimestamp",
+              "params": [],
+              "error": "validator.4"
+            }
+          ],
+          "isLongValue": false,
+          "deletedAt": null,
+          "createdAt": 1479220924782,
+          "updatedAt": 1486571865905,
+          "id": "000000000000000000000006"
+        },
+        "module": "584a7c0882ad011100ac82de",
+        "name": "date",
+        "description": "date\n",
+        "format": {},
+        "customerId": 1,
+        "deletedAt": null,
+        "createdAt": 1481278463173,
+        "updatedAt": 1481278463173,
+        "id": "584a83ff2b458411009fe5c9"
+      },
+      {
+        "fieldType": {
+          "name": "Image",
+          "rules": [
+            {
+              "rule": "matches",
+              "params": [
+                "^(?:(?:https?|ftp)://)(?:S+(?::S*)?@)?(?:(?!10(?:.d{1,3}){3})(?!127(?:.d{1,3}){3})(?!169.254(?:.d{1,3}){2})(?!192.168(?:.d{1,3}){2})(?!172.(?:1[6-9]|2d|3[0-1])(?:.d{1,3}){2})(?:[1-9]d?|1dd|2[01]d|22[0-3])(?:.(?:1?d{1,2}|2[0-4]d|25[0-5])){2}(?:.(?:[1-9]d?|1dd|2[0-4]d|25[0-4]))|(?:(?:[a-z¡-￿0-9]+-?)*[a-z¡-￿0-9]+)(?:.(?:[a-z¡-￿0-9]+-?)*[a-z¡-￿0-9]+)*(?:.(?:[a-z¡-￿]{2,})))(?::d{2,5})?(?:/[^s]*)?"
+              ],
+              "error": "validator.1"
+            }
+          ],
+          "isLongValue": true,
+          "deletedAt": null,
+          "createdAt": 1479220924763,
+          "updatedAt": 1486571865904,
+          "id": "000000000000000000000005"
+        },
+        "module": "584a7c0882ad011100ac82de",
+        "name": "image",
+        "description": "image",
+        "format": {},
+        "customerId": 1,
+        "deletedAt": null,
+        "createdAt": 1481278480375,
+        "updatedAt": 1481278480375,
+        "id": "584a84102b458411009fe5ca"
+      },
+      {
+        "fieldType": {
+          "name": "List",
+          "rules": [
+            {
+              "rule": "custom||isJSONArray",
+              "params": [],
+              "error": "validator.12"
+            }
+          ],
+          "isLongValue": true,
+          "deletedAt": null,
+          "createdAt": 1479220924799,
+          "updatedAt": 1486571865940,
+          "id": "000000000000000000000014"
+        },
+        "module": "584a7c0882ad011100ac82de",
+        "name": "list",
+        "description": "list",
+        "format": {},
+        "customerId": 1,
+        "deletedAt": null,
+        "createdAt": 1481278506292,
+        "updatedAt": 1481278506292,
+        "id": "584a842a2b458411009fe5cb"
+      },
+      {
+        "fieldType": {
+          "name": "Localized text",
+          "rules": [
+            {
+              "rule": "custom||isJSONObject",
+              "params": [],
+              "error": "validator.11"
+            },
+            {
+              "rule": "custom||hasAllKeyLanguage",
+              "params": [],
+              "error": "validator.13"
+            },
+            {
+              "rule": "custom||allObjectValuesAreStringValidator",
+              "params": [],
+              "error": "validator.14"
+            }
+          ],
+          "isLongValue": true,
+          "deletedAt": null,
+          "createdAt": 1479220924770,
+          "updatedAt": 1486571865940,
+          "id": "000000000000000000000015"
+        },
+        "module": "584a7c0882ad011100ac82de",
+        "name": "localized",
+        "format": {
+          "default": "pen"
+        },
+        "customerId": 1,
+        "deletedAt": null,
+        "createdAt": 1481278688413,
+        "updatedAt": 1484577572418,
+        "id": "584a84e082ad011100ac82df"
+      },
+      {
+        "fieldType": {
+          "name": "Long text",
+          "rules": [
+            {
+              "rule": "custom||isString",
+              "params": [],
+              "error": "validator.8"
+            }
+          ],
+          "isLongValue": true,
+          "deletedAt": null,
+          "createdAt": 1479220924786,
+          "updatedAt": 1486571865923,
+          "id": "000000000000000000000012"
+        },
+        "module": "584a7c0882ad011100ac82de",
+        "name": "long text",
+        "description": "long text",
+        "format": {},
+        "customerId": 1,
+        "deletedAt": null,
+        "createdAt": 1481278713504,
+        "updatedAt": 1481278820759,
+        "id": "584a84f982ad011100ac82e0"
+      },
+      {
+        "fieldType": {
+          "name": "Multiple select dropdown",
+          "rules": [
+            {
+              "rule": "custom||multipleChoiceValidator",
+              "params": [],
+              "error": "validator.15"
+            }
+          ],
+          "isLongValue": true,
+          "deletedAt": null,
+          "createdAt": 1479220924800,
+          "updatedAt": 1486571865953,
+          "id": "000000000000000000000019"
+        },
+        "module": "584a7c0882ad011100ac82de",
+        "name": "multiple chice ddm",
+        "description": "multiple select ddm",
+        "format": {
+          "values": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+            "11",
+            "12",
+            "13",
+            "14"
+          ],
+          "default": null
+        },
+        "customerId": 1,
+        "deletedAt": null,
+        "createdAt": 1481279022310,
+        "updatedAt": 1481279022310,
+        "id": "584a862e2b458411009fe5cc"
+      },
+      {
+        "fieldType": {
+          "name": "Multiple choice",
+          "rules": [
+            {
+              "rule": "custom||multipleChoiceValidator",
+              "params": [],
+              "error": "validator.15"
+            }
+          ],
+          "isLongValue": true,
+          "deletedAt": null,
+          "createdAt": 1479220924787,
+          "updatedAt": 1486571865951,
+          "id": "000000000000000000000017"
+        },
+        "module": "584a7c0882ad011100ac82de",
+        "name": "multiple choice",
+        "format": {
+          "values": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10"
+          ],
+          "default": null
+        },
+        "customerId": 1,
+        "deletedAt": null,
+        "createdAt": 1481278938606,
+        "updatedAt": 1481278959008,
+        "id": "584a85da512c981200f08618"
+      },
+      {
+        "fieldType": {
+          "name": "Multiple relation",
+          "rules": [
+            {
+              "rule": "custom||isRelation",
+              "params": [],
+              "error": "validator.9"
+            }
+          ],
+          "isLongValue": false,
+          "deletedAt": null,
+          "createdAt": 1479220924764,
+          "updatedAt": 1486571865920,
+          "id": "000000000000000000000010"
+        },
+        "module": "584a7c0882ad011100ac82de",
+        "name": "multiple relation",
+        "description": "multiple relation",
+        "format": {},
+        "customerId": 1,
+        "deletedAt": null,
+        "createdAt": 1481279053253,
+        "updatedAt": 1481279053253,
+        "id": "584a864d82ad011100ac82e1"
+      },
+      {
+        "fieldType": {
+          "name": "Number",
+          "rules": [
+            {
+              "rule": "custom||isNumber",
+              "params": [],
+              "error": "validator.3"
+            }
+          ],
+          "isLongValue": false,
+          "deletedAt": null,
+          "createdAt": 1479220924785,
+          "updatedAt": 1486571865871,
+          "id": "000000000000000000000002"
+        },
+        "module": "584a7c0882ad011100ac82de",
+        "name": "number",
+        "description": "number #",
+        "format": {},
+        "customerId": 1,
+        "deletedAt": null,
+        "createdAt": 1481279075144,
+        "updatedAt": 1481279089762,
+        "id": "584a8663512c981200f08619"
+      },
+      {
+        "fieldType": {
+          "name": "Single choice",
+          "rules": [
+            {
+              "rule": "custom||singleChoiceValidator",
+              "params": [],
+              "error": "validator.16"
+            }
+          ],
+          "isLongValue": true,
+          "deletedAt": null,
+          "createdAt": 1479220924797,
+          "updatedAt": 1486571865952,
+          "id": "000000000000000000000018"
+        },
+        "module": "584a7c0882ad011100ac82de",
+        "name": "single choice",
+        "description": "single choice",
+        "format": {
+          "values": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "0"
+          ],
+          "default": "0"
+        },
+        "customerId": 1,
+        "deletedAt": null,
+        "createdAt": 1481279200864,
+        "updatedAt": 1481279200864,
+        "id": "584a86e0512c981200f0861a"
+      },
+      {
+        "fieldType": {
+          "name": "Single relation",
+          "rules": [
+            {
+              "rule": "custom||isString",
+              "params": [],
+              "error": "validator.8"
+            }
+          ],
+          "isLongValue": false,
+          "deletedAt": null,
+          "createdAt": 1479220924782,
+          "updatedAt": 1486571865921,
+          "id": "000000000000000000000011"
+        },
+        "module": "584a7c0882ad011100ac82de",
+        "name": "single relation",
+        "description": "123456",
+        "format": {},
+        "customerId": 1,
+        "deletedAt": null,
+        "createdAt": 1481279356096,
+        "updatedAt": 1481279356096,
+        "id": "584a877c2b458411009fe5ce"
+      },
+      {
+        "fieldType": {
+          "name": "Text",
+          "rules": [
+            {
+              "rule": "custom||isString",
+              "params": [],
+              "error": "validator.8"
+            },
+            {
+              "rule": "isLength",
+              "params": [
+                0,
+                1000
+              ],
+              "error": "validator.10"
+            }
+          ],
+          "isLongValue": false,
+          "deletedAt": null,
+          "createdAt": 1479220924781,
+          "updatedAt": 1486571865860,
+          "id": "000000000000000000000001"
+        },
+        "module": "584a7c0882ad011100ac82de",
+        "name": "text",
+        "description": "text",
+        "format": {},
+        "customerId": 1,
+        "deletedAt": null,
+        "createdAt": 1481279411441,
+        "updatedAt": 1481279417587,
+        "id": "584a87b32b458411009fe5cf"
+      },
+      {
+        "fieldType": {
+          "name": "Time",
+          "rules": [
+            {
+              "rule": "custom||isTimestamp",
+              "params": [],
+              "error": "validator.4"
+            }
+          ],
+          "isLongValue": false,
+          "deletedAt": null,
+          "createdAt": 1479220924786,
+          "updatedAt": 1486571865914,
+          "id": "000000000000000000000007"
+        },
+        "module": "584a7c0882ad011100ac82de",
+        "name": "time",
+        "description": "time",
+        "format": {},
+        "customerId": 1,
+        "deletedAt": null,
+        "createdAt": 1481724028882,
+        "updatedAt": 1481724028882,
+        "id": "5851507c8e091f0f009f7e55"
+      }
+    ]
+  },
+  {
+    "isSingle": false,
+    "name": "ContentSDK",
+    "tags": [],
+    "pushTemplates": [
+      "000000000000000000000001"
+    ],
+    "customerId": 1,
+    "createdBy": "Admin Admin",
+    "updatedBy": "Admin Admin",
+    "externalId": null,
+    "deletedAt": null,
+    "deletedBy": null,
+    "createdAt": 1484128632055,
+    "updatedAt": 1485182214021,
+    "id": "587601789e03d11e0072bd9d",
+    "fields": [
+      {
+        "fieldType": {
+          "name": "Color",
+          "rules": [
+            {
+              "rule": "isHexColor",
+              "params": [],
+              "error": "validator.7"
+            }
+          ],
+          "isLongValue": false,
+          "deletedAt": null,
+          "createdAt": 1479220924798,
+          "updatedAt": 1486571865915,
+          "id": "000000000000000000000009"
+        },
+        "module": "587601789e03d11e0072bd9d",
+        "name": "BackgroundColor",
+        "description": "The background color",
+        "format": {},
+        "customerId": 1,
+        "deletedAt": null,
+        "createdAt": 1484128681864,
+        "updatedAt": 1484128681864,
+        "id": "587601a99e03d11e0072bd9f"
+      },
+      {
+        "fieldType": {
+          "name": "Boolean",
+          "rules": [
+            {
+              "rule": "custom||isStrictBoolean",
+              "params": [],
+              "error": "validator.6"
+            }
+          ],
+          "isLongValue": false,
+          "deletedAt": null,
+          "createdAt": 1479220924794,
+          "updatedAt": 1486571865914,
+          "id": "000000000000000000000008"
+        },
+        "module": "587601789e03d11e0072bd9d",
+        "name": "Boolean",
+        "description": "This is the main boolean",
+        "format": {},
+        "customerId": 1,
+        "deletedAt": null,
+        "createdAt": 1484128724223,
+        "updatedAt": 1484128724223,
+        "id": "587601d4acb5761d000f2844"
+      },
+      {
+        "fieldType": {
+          "name": "Image",
+          "rules": [
+            {
+              "rule": "matches",
+              "params": [
+                "^(?:(?:https?|ftp)://)(?:S+(?::S*)?@)?(?:(?!10(?:.d{1,3}){3})(?!127(?:.d{1,3}){3})(?!169.254(?:.d{1,3}){2})(?!192.168(?:.d{1,3}){2})(?!172.(?:1[6-9]|2d|3[0-1])(?:.d{1,3}){2})(?:[1-9]d?|1dd|2[01]d|22[0-3])(?:.(?:1?d{1,2}|2[0-4]d|25[0-5])){2}(?:.(?:[1-9]d?|1dd|2[0-4]d|25[0-4]))|(?:(?:[a-z¡-￿0-9]+-?)*[a-z¡-￿0-9]+)(?:.(?:[a-z¡-￿0-9]+-?)*[a-z¡-￿0-9]+)*(?:.(?:[a-z¡-￿]{2,})))(?::d{2,5})?(?:/[^s]*)?"
+              ],
+              "error": "validator.1"
+            }
+          ],
+          "isLongValue": true,
+          "deletedAt": null,
+          "createdAt": 1479220924763,
+          "updatedAt": 1486571865904,
+          "id": "000000000000000000000005"
+        },
+        "module": "587601789e03d11e0072bd9d",
+        "name": "Image",
+        "description": "This is the main image",
+        "format": {},
+        "customerId": 1,
+        "deletedAt": null,
+        "createdAt": 1484128664621,
+        "updatedAt": 1484128664621,
+        "id": "587601986a3a0d1e00c803c2"
+      },
+      {
+        "fieldType": {
+          "name": "Number",
+          "rules": [
+            {
+              "rule": "custom||isNumber",
+              "params": [],
+              "error": "validator.3"
+            }
+          ],
+          "isLongValue": false,
+          "deletedAt": null,
+          "createdAt": 1479220924785,
+          "updatedAt": 1486571865871,
+          "id": "000000000000000000000002"
+        },
+        "module": "587601789e03d11e0072bd9d",
+        "name": "Number",
+        "description": "This is the main number",
+        "format": {},
+        "customerId": 1,
+        "deletedAt": null,
+        "createdAt": 1484128699487,
+        "updatedAt": 1484128699487,
+        "id": "587601bb9e03d11e0072bda0"
+      },
+      {
+        "fieldType": {
+          "name": "Text",
+          "rules": [
+            {
+              "rule": "custom||isString",
+              "params": [],
+              "error": "validator.8"
+            },
+            {
+              "rule": "isLength",
+              "params": [
+                0,
+                1000
+              ],
+              "error": "validator.10"
+            }
+          ],
+          "isLongValue": false,
+          "deletedAt": null,
+          "createdAt": 1479220924781,
+          "updatedAt": 1486571865860,
+          "id": "000000000000000000000001"
+        },
+        "module": "587601789e03d11e0072bd9d",
+        "name": "Title",
+        "description": "This is main title",
+        "format": {},
+        "customerId": 1,
+        "deletedAt": null,
+        "createdAt": 1484128654389,
+        "updatedAt": 1484128654389,
+        "id": "5876018e9e03d11e0072bd9e"
+      },
+      {
+        "fieldType": {
+          "name": "Website",
+          "rules": [
+            {
+              "rule": "matches",
+              "params": [
+                "^(?:(?:https?|ftp)://)(?:S+(?::S*)?@)?(?:(?!10(?:.d{1,3}){3})(?!127(?:.d{1,3}){3})(?!169.254(?:.d{1,3}){2})(?!192.168(?:.d{1,3}){2})(?!172.(?:1[6-9]|2d|3[0-1])(?:.d{1,3}){2})(?:[1-9]d?|1dd|2[01]d|22[0-3])(?:.(?:1?d{1,2}|2[0-4]d|25[0-5])){2}(?:.(?:[1-9]d?|1dd|2[0-4]d|25[0-4]))|(?:(?:[a-z¡-￿0-9]+-?)*[a-z¡-￿0-9]+)(?:.(?:[a-z¡-￿0-9]+-?)*[a-z¡-￿0-9]+)*(?:.(?:[a-z¡-￿]{2,})))(?::d{2,5})?(?:/[^s]*)?"
+              ],
+              "error": "validator.1"
+            }
+          ],
+          "isLongValue": true,
+          "deletedAt": null,
+          "createdAt": 1479220924788,
+          "updatedAt": 1486571865890,
+          "id": "000000000000000000000003"
+        },
+        "module": "587601789e03d11e0072bd9d",
+        "name": "Website",
+        "format": {},
+        "customerId": 1,
+        "deletedAt": null,
+        "createdAt": 1484128733507,
+        "updatedAt": 1484128733507,
+        "id": "587601dd9e03d11e0072bda1"
+      },
+      {
+        "fieldType": {
+          "name": "Youtube",
+          "rules": [
+            {
+              "rule": "matches",
+              "params": [
+                "^(?:https?:\\/\\/)?(?:www\\.)?(?:youtu\\.be\\/|youtube\\.com\\/(?:embed\\/|v\\/|watch\\?v=|watch\\?.+&v=))((\\w|-){11})(?:\\S+)?$"
+              ],
+              "error": "validator.2"
+            }
+          ],
+          "isLongValue": true,
+          "deletedAt": null,
+          "createdAt": 1479220924798,
+          "updatedAt": 1486571865891,
+          "id": "000000000000000000000004"
+        },
+        "module": "587601789e03d11e0072bd9d",
+        "name": "youTube",
+        "description": "youTube video",
+        "format": {},
+        "customerId": 1,
+        "deletedAt": null,
+        "createdAt": 1485181329357,
+        "updatedAt": 1485181329357,
+        "id": "58861191e1923b120056974b"
+      }
+    ]
+  },
+  {
+    "isSingle": true,
+    "name": "choice test",
+    "tags": [],
+    "pushTemplates": [],
+    "customerId": 1,
+    "createdBy": "Admin Admin",
+    "updatedBy": "Admin Admin",
+    "externalId": null,
+    "deletedAt": null,
+    "deletedBy": null,
+    "createdAt": 1484129039707,
+    "updatedAt": 1484129039707,
+    "id": "5876030f9e03d11e0072bda2",
+    "fields": [
+      {
+        "fieldType": {
+          "name": "Multiple select dropdown",
+          "rules": [
+            {
+              "rule": "custom||multipleChoiceValidator",
+              "params": [],
+              "error": "validator.15"
+            }
+          ],
+          "isLongValue": true,
+          "deletedAt": null,
+          "createdAt": 1479220924800,
+          "updatedAt": 1486571865953,
+          "id": "000000000000000000000019"
+        },
+        "module": "5876030f9e03d11e0072bda2",
+        "name": "mltple",
+        "format": {
+          "values": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6"
+          ],
+          "default": null
+        },
+        "customerId": 1,
+        "deletedAt": null,
+        "createdAt": 1484129101462,
+        "updatedAt": 1484129101462,
+        "id": "5876034d9e03d11e0072bda4"
+      },
+      {
+        "fieldType": {
+          "name": "Multiple choice",
+          "rules": [
+            {
+              "rule": "custom||multipleChoiceValidator",
+              "params": [],
+              "error": "validator.15"
+            }
+          ],
+          "isLongValue": true,
+          "deletedAt": null,
+          "createdAt": 1479220924787,
+          "updatedAt": 1486571865951,
+          "id": "000000000000000000000017"
+        },
+        "module": "5876030f9e03d11e0072bda2",
+        "name": "multipl",
+        "format": {
+          "values": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8"
+          ],
+          "default": null
+        },
+        "customerId": 1,
+        "deletedAt": null,
+        "createdAt": 1484129091044,
+        "updatedAt": 1484129091044,
+        "id": "587603436a3a0d1e00c803c3"
+      },
+      {
+        "fieldType": {
+          "name": "Single choice",
+          "rules": [
+            {
+              "rule": "custom||singleChoiceValidator",
+              "params": [],
+              "error": "validator.16"
+            }
+          ],
+          "isLongValue": true,
+          "deletedAt": null,
+          "createdAt": 1479220924797,
+          "updatedAt": 1486571865952,
+          "id": "000000000000000000000018"
+        },
+        "module": "5876030f9e03d11e0072bda2",
+        "name": "single choice",
+        "format": {
+          "values": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5"
+          ],
+          "default": "1"
+        },
+        "customerId": 1,
+        "deletedAt": null,
+        "createdAt": 1484129061914,
+        "updatedAt": 1484129061914,
+        "id": "58760325acb5761d000f2845"
+      },
+      {
+        "fieldType": {
+          "name": "Single select dropdown",
+          "rules": [
+            {
+              "rule": "custom||singleChoiceValidator",
+              "params": [],
+              "error": "validator.16"
+            }
+          ],
+          "isLongValue": true,
+          "deletedAt": null,
+          "createdAt": 1479220924771,
+          "updatedAt": 1486571865954,
+          "id": "000000000000000000000020"
+        },
+        "module": "5876030f9e03d11e0072bda2",
+        "name": "single select",
+        "format": {
+          "values": [
+            "1",
+            "3",
+            "4",
+            "5",
+            "6"
+          ],
+          "default": "1"
+        },
+        "customerId": 1,
+        "deletedAt": null,
+        "createdAt": 1484129079558,
+        "updatedAt": 1484129079558,
+        "id": "587603379e03d11e0072bda3"
+      }
+    ]
+  },
+  {
+    "isSingle": false,
+    "name": "4567647",
+    "tags": [],
+    "pushTemplates": [
+      "585284a9f8ea271100b13bd1",
+      "58528c49f8ea271100b13bd9",
+      "58528da2f8ea271100b13bda",
+      "5852a6854ebb770f006ce2e8",
+      "58528db14ebb770f006ce2d9",
+      "5851560dc0174a10002cad41",
+      "585277554ebb770f006ce2ce",
+      "585283ebf8ea271100b13bd0"
+    ],
+    "customerId": 1,
+    "createdBy": "Admin Admin",
+    "updatedBy": "Admin Admin",
+    "externalId": null,
+    "deletedAt": null,
+    "deletedBy": null,
+    "createdAt": 1482242802704,
+    "updatedAt": 1483086351781,
+    "id": "58593af24587971100a8b0f2",
+    "fields": [
+      {
+        "fieldType": {
+          "name": "Multiple choice",
+          "rules": [
+            {
+              "rule": "custom||multipleChoiceValidator",
+              "params": [],
+              "error": "validator.15"
+            }
+          ],
+          "isLongValue": true,
+          "deletedAt": null,
+          "createdAt": 1479220924787,
+          "updatedAt": 1486571865951,
+          "id": "000000000000000000000017"
+        },
+        "module": "58593af24587971100a8b0f2",
+        "name": "5efsa,",
+        "format": {
+          "values": [
+            "45567890778899000"
+          ],
+          "default": null
+        },
+        "customerId": 1,
+        "deletedAt": null,
+        "createdAt": 1482329453502,
+        "updatedAt": 1482329847187,
+        "id": "585a8d6d6f76f0100013a40f"
+      },
+      {
+        "fieldType": {
+          "name": "Image",
+          "rules": [
+            {
+              "rule": "matches",
+              "params": [
+                "^(?:(?:https?|ftp)://)(?:S+(?::S*)?@)?(?:(?!10(?:.d{1,3}){3})(?!127(?:.d{1,3}){3})(?!169.254(?:.d{1,3}){2})(?!192.168(?:.d{1,3}){2})(?!172.(?:1[6-9]|2d|3[0-1])(?:.d{1,3}){2})(?:[1-9]d?|1dd|2[01]d|22[0-3])(?:.(?:1?d{1,2}|2[0-4]d|25[0-5])){2}(?:.(?:[1-9]d?|1dd|2[0-4]d|25[0-4]))|(?:(?:[a-z¡-￿0-9]+-?)*[a-z¡-￿0-9]+)(?:.(?:[a-z¡-￿0-9]+-?)*[a-z¡-￿0-9]+)*(?:.(?:[a-z¡-￿]{2,})))(?::d{2,5})?(?:/[^s]*)?"
+              ],
+              "error": "validator.1"
+            }
+          ],
+          "isLongValue": true,
+          "deletedAt": null,
+          "createdAt": 1479220924763,
+          "updatedAt": 1486571865904,
+          "id": "000000000000000000000005"
+        },
+        "module": "58593af24587971100a8b0f2",
+        "name": "abc",
+        "format": {},
+        "customerId": 1,
+        "deletedAt": null,
+        "createdAt": 1482315226012,
+        "updatedAt": 1482315226012,
+        "id": "585a55da85e4bb0f007c8ce9"
+      },
+      {
+        "fieldType": {
+          "name": "Single select dropdown",
+          "rules": [
+            {
+              "rule": "custom||singleChoiceValidator",
+              "params": [],
+              "error": "validator.16"
+            }
+          ],
+          "isLongValue": true,
+          "deletedAt": null,
+          "createdAt": 1479220924771,
+          "updatedAt": 1486571865954,
+          "id": "000000000000000000000020"
+        },
+        "module": "58593af24587971100a8b0f2",
+        "name": "adgs",
+        "format": {
+          "values": [
+            "1",
+            "2",
+            "4",
+            "6",
+            "87",
+            "34",
+            "23",
+            "65",
+            "12",
+            "344",
+            "9",
+            "47",
+            "3447"
+          ],
+          "default": "2"
+        },
+        "customerId": 1,
+        "deletedAt": null,
+        "createdAt": 1482395420941,
+        "updatedAt": 1482395420941,
+        "id": "585b8f1cecb76412007f9e1a"
+      },
+      {
+        "fieldType": {
+          "name": "Multiple choice",
+          "rules": [
+            {
+              "rule": "custom||multipleChoiceValidator",
+              "params": [],
+              "error": "validator.15"
+            }
+          ],
+          "isLongValue": true,
+          "deletedAt": null,
+          "createdAt": 1479220924787,
+          "updatedAt": 1486571865951,
+          "id": "000000000000000000000017"
+        },
+        "module": "58593af24587971100a8b0f2",
+        "name": "afgzj",
+        "format": {
+          "values": [
+            "1",
+            "2",
+            "5",
+            "45",
+            "34",
+            "54",
+            "65",
+            "23",
+            "09",
+            "654"
+          ],
+          "default": null
+        },
+        "customerId": 1,
+        "deletedAt": null,
+        "createdAt": 1482395557541,
+        "updatedAt": 1482395557541,
+        "id": "585b8fa5db57881000c50a4e"
+      },
+      {
+        "fieldType": {
+          "name": "Single choice",
+          "rules": [
+            {
+              "rule": "custom||singleChoiceValidator",
+              "params": [],
+              "error": "validator.16"
+            }
+          ],
+          "isLongValue": true,
+          "deletedAt": null,
+          "createdAt": 1479220924797,
+          "updatedAt": 1486571865952,
+          "id": "000000000000000000000018"
+        },
+        "module": "58593af24587971100a8b0f2",
+        "name": "aghf",
+        "format": {
+          "values": [
+            "2",
+            "45",
+            "47",
+            "tyh"
+          ],
+          "default": "2"
+        },
+        "customerId": 1,
+        "deletedAt": null,
+        "createdAt": 1482330628676,
+        "updatedAt": 1482330628676,
+        "id": "585a920460ec3811009a7b32"
+      },
+      {
+        "fieldType": {
+          "name": "Single choice",
+          "rules": [
+            {
+              "rule": "custom||singleChoiceValidator",
+              "params": [],
+              "error": "validator.16"
+            }
+          ],
+          "isLongValue": true,
+          "deletedAt": null,
+          "createdAt": 1479220924797,
+          "updatedAt": 1486571865952,
+          "id": "000000000000000000000018"
+        },
+        "module": "58593af24587971100a8b0f2",
+        "name": "avbmc,as",
+        "format": {
+          "values": [
+            "2",
+            "43",
+            "12",
+            "76",
+            "23",
+            "56",
+            "45",
+            "98",
+            "433",
+            "122"
+          ],
+          "default": "2"
+        },
+        "customerId": 1,
+        "deletedAt": null,
+        "createdAt": 1482395622746,
+        "updatedAt": 1482395622746,
+        "id": "585b8fe630b3d0110017f13b"
+      },
+      {
+        "fieldType": {
+          "name": "Multiple choice",
+          "rules": [
+            {
+              "rule": "custom||multipleChoiceValidator",
+              "params": [],
+              "error": "validator.15"
+            }
+          ],
+          "isLongValue": true,
+          "deletedAt": null,
+          "createdAt": 1479220924787,
+          "updatedAt": 1486571865951,
+          "id": "000000000000000000000017"
+        },
+        "module": "58593af24587971100a8b0f2",
+        "name": "bvefwjkla",
+        "format": {
+          "values": [
+            "45",
+            "67",
+            "1",
+            "2",
+            "45rtf",
+            "56",
+            "62",
+            "\\36",
+            "36w",
+            "64"
+          ],
+          "default": null
+        },
+        "customerId": 1,
+        "deletedAt": null,
+        "createdAt": 1482331639709,
+        "updatedAt": 1482331639709,
+        "id": "585a95f76f76f0100013a412"
+      },
+      {
+        "fieldType": {
+          "name": "Localized text",
+          "rules": [
+            {
+              "rule": "custom||isJSONObject",
+              "params": [],
+              "error": "validator.11"
+            },
+            {
+              "rule": "custom||hasAllKeyLanguage",
+              "params": [],
+              "error": "validator.13"
+            },
+            {
+              "rule": "custom||allObjectValuesAreStringValidator",
+              "params": [],
+              "error": "validator.14"
+            }
+          ],
+          "isLongValue": true,
+          "deletedAt": null,
+          "createdAt": 1479220924770,
+          "updatedAt": 1486571865940,
+          "id": "000000000000000000000015"
+        },
+        "module": "58593af24587971100a8b0f2",
+        "name": "def",
+        "format": {
+          "default": "translation not set"
+        },
+        "customerId": 1,
+        "deletedAt": null,
+        "createdAt": 1482316321257,
+        "updatedAt": 1482316321257,
+        "id": "585a5a2185e4bb0f007c8ceb"
+      },
+      {
+        "fieldType": {
+          "name": "Video",
+          "rules": [
+            {
+              "rule": "matches",
+              "params": [
+                "^(?:(?:https?|ftp)://)(?:S+(?::S*)?@)?(?:(?!10(?:.d{1,3}){3})(?!127(?:.d{1,3}){3})(?!169.254(?:.d{1,3}){2})(?!192.168(?:.d{1,3}){2})(?!172.(?:1[6-9]|2d|3[0-1])(?:.d{1,3}){2})(?:[1-9]d?|1dd|2[01]d|22[0-3])(?:.(?:1?d{1,2}|2[0-4]d|25[0-5])){2}(?:.(?:[1-9]d?|1dd|2[0-4]d|25[0-4]))|(?:(?:[a-z¡-￿0-9]+-?)*[a-z¡-￿0-9]+)(?:.(?:[a-z¡-￿0-9]+-?)*[a-z¡-￿0-9]+)*(?:.(?:[a-z¡-￿]{2,})))(?::d{2,5})?(?:/[^s]*)?"
+              ],
+              "error": "validator.1"
+            }
+          ],
+          "isLongValue": true,
+          "deletedAt": null,
+          "createdAt": 1479220924784,
+          "updatedAt": 1486571865944,
+          "id": "000000000000000000000016"
+        },
+        "module": "58593af24587971100a8b0f2",
+        "name": "dghjk",
+        "format": {},
+        "customerId": 1,
+        "deletedAt": null,
+        "createdAt": 1482333396129,
+        "updatedAt": 1482333396129,
+        "id": "585a9cd4ba2fa91000fe023b"
+      },
+      {
+        "fieldType": {
+          "name": "Text",
+          "rules": [
+            {
+              "rule": "custom||isString",
+              "params": [],
+              "error": "validator.8"
+            },
+            {
+              "rule": "isLength",
+              "params": [
+                0,
+                1000
+              ],
+              "error": "validator.10"
+            }
+          ],
+          "isLongValue": false,
+          "deletedAt": null,
+          "createdAt": 1479220924781,
+          "updatedAt": 1486571865860,
+          "id": "000000000000000000000001"
+        },
+        "module": "58593af24587971100a8b0f2",
+        "name": "dhej",
+        "format": {},
+        "customerId": 1,
+        "deletedAt": null,
+        "createdAt": 1482316503523,
+        "updatedAt": 1482316503523,
+        "id": "585a5ad70c5a5e11002048a3"
+      },
+      {
+        "fieldType": {
+          "name": "Date",
+          "rules": [
+            {
+              "rule": "custom||isTimestamp",
+              "params": [],
+              "error": "validator.4"
+            }
+          ],
+          "isLongValue": false,
+          "deletedAt": null,
+          "createdAt": 1479220924782,
+          "updatedAt": 1486571865905,
+          "id": "000000000000000000000006"
+        },
+        "module": "58593af24587971100a8b0f2",
+        "name": "fgfj",
+        "format": {},
+        "customerId": 1,
+        "deletedAt": null,
+        "createdAt": 1482316517297,
+        "updatedAt": 1482316517297,
+        "id": "585a5ae585e4bb0f007c8cec"
+      },
+      {
+        "fieldType": {
+          "name": "Multiple relation",
+          "rules": [
+            {
+              "rule": "custom||isRelation",
+              "params": [],
+              "error": "validator.9"
+            }
+          ],
+          "isLongValue": false,
+          "deletedAt": null,
+          "createdAt": 1479220924764,
+          "updatedAt": 1486571865920,
+          "id": "000000000000000000000010"
+        },
+        "module": "58593af24587971100a8b0f2",
+        "name": "fghh",
+        "format": {},
+        "customerId": 1,
+        "deletedAt": null,
+        "createdAt": 1482316768635,
+        "updatedAt": 1482316768635,
+        "id": "585a5be00c5a5e11002048a4"
+      },
+      {
+        "fieldType": {
+          "name": "Single select dropdown",
+          "rules": [
+            {
+              "rule": "custom||singleChoiceValidator",
+              "params": [],
+              "error": "validator.16"
+            }
+          ],
+          "isLongValue": true,
+          "deletedAt": null,
+          "createdAt": 1479220924771,
+          "updatedAt": 1486571865954,
+          "id": "000000000000000000000020"
+        },
+        "module": "58593af24587971100a8b0f2",
+        "name": "fghjk",
+        "format": {
+          "values": [
+            "12",
+            "34",
+            "344",
+            "4251",
+            "rwf",
+            "3672",
+            "32112",
+            "432",
+            "2123",
+            "2",
+            "4"
+          ],
+          "default": "2"
+        },
+        "customerId": 1,
+        "deletedAt": null,
+        "createdAt": 1482332238539,
+        "updatedAt": 1482332238539,
+        "id": "585a984e6f76f0100013a413"
+      },
+      {
+        "fieldType": {
+          "name": "Multiple choice",
+          "rules": [
+            {
+              "rule": "custom||multipleChoiceValidator",
+              "params": [],
+              "error": "validator.15"
+            }
+          ],
+          "isLongValue": true,
+          "deletedAt": null,
+          "createdAt": 1479220924787,
+          "updatedAt": 1486571865951,
+          "id": "000000000000000000000017"
+        },
+        "module": "58593af24587971100a8b0f2",
+        "name": "fgj",
+        "format": {
+          "values": [
+            "45",
+            "37",
+            "28",
+            "6",
+            "4",
+            "ruo"
+          ],
+          "default": null
+        },
+        "customerId": 1,
+        "deletedAt": null,
+        "createdAt": 1482329101738,
+        "updatedAt": 1482329260916,
+        "id": "585a8c0dba2fa91000fe0232"
+      },
+      {
+        "fieldType": {
+          "name": "Single select dropdown",
+          "rules": [
+            {
+              "rule": "custom||singleChoiceValidator",
+              "params": [],
+              "error": "validator.16"
+            }
+          ],
+          "isLongValue": true,
+          "deletedAt": null,
+          "createdAt": 1479220924771,
+          "updatedAt": 1486571865954,
+          "id": "000000000000000000000020"
+        },
+        "module": "58593af24587971100a8b0f2",
+        "name": "ggjkl",
+        "format": {
+          "values": [
+            "4",
+            "78",
+            "94"
+          ],
+          "default": "94"
+        },
+        "customerId": 1,
+        "deletedAt": null,
+        "createdAt": 1482328515836,
+        "updatedAt": 1482328515836,
+        "id": "585a89c3ba2fa91000fe0231"
+      },
+      {
+        "fieldType": {
+          "name": "Single choice",
+          "rules": [
+            {
+              "rule": "custom||singleChoiceValidator",
+              "params": [],
+              "error": "validator.16"
+            }
+          ],
+          "isLongValue": true,
+          "deletedAt": null,
+          "createdAt": 1479220924797,
+          "updatedAt": 1486571865952,
+          "id": "000000000000000000000018"
+        },
+        "module": "58593af24587971100a8b0f2",
+        "name": "ghjkl",
+        "format": {
+          "values": [
+            "36",
+            "35",
+            "56",
+            "28",
+            "29",
+            "5",
+            "10",
+            "46",
+            "63",
+            "58"
+          ],
+          "default": "5"
+        },
+        "customerId": 1,
+        "deletedAt": null,
+        "createdAt": 1482330355687,
+        "updatedAt": 1482330355687,
+        "id": "585a90f3a00abf0f005008ee"
+      },
+      {
+        "fieldType": {
+          "name": "Localized text",
+          "rules": [
+            {
+              "rule": "custom||isJSONObject",
+              "params": [],
+              "error": "validator.11"
+            },
+            {
+              "rule": "custom||hasAllKeyLanguage",
+              "params": [],
+              "error": "validator.13"
+            },
+            {
+              "rule": "custom||allObjectValuesAreStringValidator",
+              "params": [],
+              "error": "validator.14"
+            }
+          ],
+          "isLongValue": true,
+          "deletedAt": null,
+          "createdAt": 1479220924770,
+          "updatedAt": 1486571865940,
+          "id": "000000000000000000000015"
+        },
+        "module": "58593af24587971100a8b0f2",
+        "name": "ghjl",
+        "format": {
+          "default": "translation not set"
+        },
+        "customerId": 1,
+        "deletedAt": null,
+        "createdAt": 1482316781530,
+        "updatedAt": 1482316781530,
+        "id": "585a5bed98bf5f0f0038c7e6"
+      },
+      {
+        "fieldType": {
+          "name": "Single choice",
+          "rules": [
+            {
+              "rule": "custom||singleChoiceValidator",
+              "params": [],
+              "error": "validator.16"
+            }
+          ],
+          "isLongValue": true,
+          "deletedAt": null,
+          "createdAt": 1479220924797,
+          "updatedAt": 1486571865952,
+          "id": "000000000000000000000018"
+        },
+        "module": "58593af24587971100a8b0f2",
+        "name": "ghkl",
+        "format": {
+          "values": [
+            "45",
+            "2",
+            "34",
+            "455",
+            "1",
+            "23",
+            "345",
+            "21",
+            "454",
+            "7"
+          ],
+          "default": "2"
+        },
+        "customerId": 1,
+        "deletedAt": null,
+        "createdAt": 1482332609003,
+        "updatedAt": 1482332609003,
+        "id": "585a99c1ba2fa91000fe0236"
+      },
+      {
+        "fieldType": {
+          "name": "Image",
+          "rules": [
+            {
+              "rule": "matches",
+              "params": [
+                "^(?:(?:https?|ftp)://)(?:S+(?::S*)?@)?(?:(?!10(?:.d{1,3}){3})(?!127(?:.d{1,3}){3})(?!169.254(?:.d{1,3}){2})(?!192.168(?:.d{1,3}){2})(?!172.(?:1[6-9]|2d|3[0-1])(?:.d{1,3}){2})(?:[1-9]d?|1dd|2[01]d|22[0-3])(?:.(?:1?d{1,2}|2[0-4]d|25[0-5])){2}(?:.(?:[1-9]d?|1dd|2[0-4]d|25[0-4]))|(?:(?:[a-z¡-￿0-9]+-?)*[a-z¡-￿0-9]+)(?:.(?:[a-z¡-￿0-9]+-?)*[a-z¡-￿0-9]+)*(?:.(?:[a-z¡-￿]{2,})))(?::d{2,5})?(?:/[^s]*)?"
+              ],
+              "error": "validator.1"
+            }
+          ],
+          "isLongValue": true,
+          "deletedAt": null,
+          "createdAt": 1479220924763,
+          "updatedAt": 1486571865904,
+          "id": "000000000000000000000005"
+        },
+        "module": "58593af24587971100a8b0f2",
+        "name": "hjkl;",
+        "format": {},
+        "customerId": 1,
+        "deletedAt": null,
+        "createdAt": 1482316793885,
+        "updatedAt": 1482322631289,
+        "id": "585a5bf9b393c51100e438fc"
+      },
+      {
+        "fieldType": {
+          "name": "Single choice",
+          "rules": [
+            {
+              "rule": "custom||singleChoiceValidator",
+              "params": [],
+              "error": "validator.16"
+            }
+          ],
+          "isLongValue": true,
+          "deletedAt": null,
+          "createdAt": 1479220924797,
+          "updatedAt": 1486571865952,
+          "id": "000000000000000000000018"
+        },
+        "module": "58593af24587971100a8b0f2",
+        "name": "rhgrk",
+        "format": {
+          "values": [
+            "tyg5@",
+            "rgdjkf",
+            "56",
+            "8",
+            "10",
+            "45\\",
+            "127139",
+            "rt",
+            "1",
+            "67"
+          ],
+          "default": "1"
+        },
+        "customerId": 1,
+        "deletedAt": null,
+        "createdAt": 1482330740024,
+        "updatedAt": 1482330989232,
+        "id": "585a92746f76f0100013a410"
+      },
+      {
+        "fieldType": {
+          "name": "Multiple choice",
+          "rules": [
+            {
+              "rule": "custom||multipleChoiceValidator",
+              "params": [],
+              "error": "validator.15"
+            }
+          ],
+          "isLongValue": true,
+          "deletedAt": null,
+          "createdAt": 1479220924787,
+          "updatedAt": 1486571865951,
+          "id": "000000000000000000000017"
+        },
+        "module": "58593af24587971100a8b0f2",
+        "name": "saghzx",
+        "format": {
+          "values": [
+            "12",
+            "13",
+            "2",
+            "312",
+            "232",
+            "455",
+            "14",
+            "134",
+            "§§3",
+            "34"
+          ],
+          "default": null
+        },
+        "customerId": 1,
+        "deletedAt": null,
+        "createdAt": 1482332140392,
+        "updatedAt": 1482332808981,
+        "id": "585a97eca00abf0f005008f3"
+      },
+      {
+        "fieldType": {
+          "name": "Multiple select dropdown",
+          "rules": [
+            {
+              "rule": "custom||multipleChoiceValidator",
+              "params": [],
+              "error": "validator.15"
+            }
+          ],
+          "isLongValue": true,
+          "deletedAt": null,
+          "createdAt": 1479220924800,
+          "updatedAt": 1486571865953,
+          "id": "000000000000000000000019"
+        },
+        "module": "58593af24587971100a8b0f2",
+        "name": "ttuio",
+        "format": {
+          "values": [
+            "12",
+            "34",
+            "1",
+            "2",
+            "6",
+            "5",
+            "67",
+            "8",
+            "76",
+            "45",
+            "453"
+          ],
+          "default": null
+        },
+        "customerId": 1,
+        "deletedAt": null,
+        "createdAt": 1482332785287,
+        "updatedAt": 1482332785287,
+        "id": "585a9a7160ec3811009a7b33"
+      },
+      {
+        "fieldType": {
+          "name": "Multiple choice",
+          "rules": [
+            {
+              "rule": "custom||multipleChoiceValidator",
+              "params": [],
+              "error": "validator.15"
+            }
+          ],
+          "isLongValue": true,
+          "deletedAt": null,
+          "createdAt": 1479220924787,
+          "updatedAt": 1486571865951,
+          "id": "000000000000000000000017"
+        },
+        "module": "58593af24587971100a8b0f2",
+        "name": "tynj",
+        "format": {
+          "values": [
+            "67",
+            "100",
+            "907"
+          ],
+          "default": null
+        },
+        "customerId": 1,
+        "deletedAt": null,
+        "createdAt": 1482329702989,
+        "updatedAt": 1482329702989,
+        "id": "585a8e66a00abf0f005008ed"
+      },
+      {
+        "fieldType": {
+          "name": "Multiple choice",
+          "rules": [
+            {
+              "rule": "custom||multipleChoiceValidator",
+              "params": [],
+              "error": "validator.15"
+            }
+          ],
+          "isLongValue": true,
+          "deletedAt": null,
+          "createdAt": 1479220924787,
+          "updatedAt": 1486571865951,
+          "id": "000000000000000000000017"
+        },
+        "module": "58593af24587971100a8b0f2",
+        "name": "tyuk,",
+        "format": {
+          "values": [
+            "6",
+            "8",
+            "90"
+          ],
+          "default": null
+        },
+        "customerId": 1,
+        "deletedAt": null,
+        "createdAt": 1482329405227,
+        "updatedAt": 1482329424666,
+        "id": "585a8d3d6f76f0100013a40e"
+      }
+    ]
+  },
+  {
+    "name": "News",
+    "externalId": 4,
+    "isSingle": false,
+    "customerId": 1,
+    "createdBy": "Admin",
+    "tags": [
+      {
+        "id": "58590fe6c292ac10000bfd09",
+        "name": "mycustom",
+        "value": "true",
+        "tagType": "000000000000000000000002"
+      }
+    ],
+    "pushTemplates": [
+      "5859108f05833d11008137ef"
+    ],
+    "deletedAt": null,
+    "updatedBy": "Admin Admin",
+    "deletedBy": null,
+    "createdAt": 1479227407582,
+    "updatedAt": 1482236892097,
+    "id": "000000000000000000000004",
+    "fields": [
+      {
+        "fieldType": {
+          "name": "Text",
+          "rules": [
+            {
+              "rule": "custom||isString",
+              "params": [],
+              "error": "validator.8"
+            },
+            {
+              "rule": "isLength",
+              "params": [
+                0,
+                1000
+              ],
+              "error": "validator.10"
+            }
+          ],
+          "isLongValue": false,
+          "deletedAt": null,
+          "createdAt": 1479220924781,
+          "updatedAt": 1486571865860,
+          "id": "000000000000000000000001"
+        },
+        "module": "000000000000000000000004",
+        "name": "Title",
+        "format": {},
+        "customerId": 1,
+        "deletedAt": null,
+        "createdAt": 1482143872101,
+        "updatedAt": 1482143872101,
+        "id": "5857b8800c84891000419816"
+      }
+    ]
+  },
+  {
+    "isSingle": false,
+    "name": "Transitions",
+    "tags": [
+      {
+        "id": "000000000000000000000400",
+        "name": "Afar Djibouti",
+        "value": "aa-DJ",
+        "tagType": "000000000000000000000004"
+      },
+      {
+        "id": "000000000000000000000401",
+        "name": "Afar Eritrea",
+        "value": "aa-ER",
+        "tagType": "000000000000000000000004"
+      },
+      {
+        "id": "000000000000000000000402",
+        "name": "Afar Ethiopia",
+        "value": "aa-ET",
+        "tagType": "000000000000000000000004"
+      }
+    ],
+    "pushTemplates": [
+      "000000000000000000000001",
+      "000000000000000000000002"
+    ],
+    "customerId": 1,
+    "createdBy": "Name selfupdated Admin",
+    "updatedBy": "Name selfupdated Admin",
+    "externalId": null,
+    "deletedAt": null,
+    "deletedBy": null,
+    "createdAt": 1480416963989,
+    "updatedAt": 1480431732349,
+    "id": "583d5ec394c09e0f00c1007a",
+    "fields": [
+      {
+        "fieldType": {
+          "name": "Localized text",
+          "rules": [
+            {
+              "rule": "custom||isJSONObject",
+              "params": [],
+              "error": "validator.11"
+            },
+            {
+              "rule": "custom||hasAllKeyLanguage",
+              "params": [],
+              "error": "validator.13"
+            },
+            {
+              "rule": "custom||allObjectValuesAreStringValidator",
+              "params": [],
+              "error": "validator.14"
+            }
+          ],
+          "isLongValue": true,
+          "deletedAt": null,
+          "createdAt": 1479220924770,
+          "updatedAt": 1486571865940,
+          "id": "000000000000000000000015"
+        },
+        "module": "583d5ec394c09e0f00c1007a",
+        "name": "1",
+        "format": {
+          "default": "translation not set"
+        },
+        "customerId": 1,
+        "deletedAt": null,
+        "createdAt": 1480416964003,
+        "updatedAt": 1480416964003,
+        "id": "583d5ec494c09e0f00c1007b"
+      },
+      {
+        "fieldType": {
+          "name": "Color",
+          "rules": [
+            {
+              "rule": "isHexColor",
+              "params": [],
+              "error": "validator.7"
+            }
+          ],
+          "isLongValue": false,
+          "deletedAt": null,
+          "createdAt": 1479220924798,
+          "updatedAt": 1486571865915,
+          "id": "000000000000000000000009"
+        },
+        "module": "583d5ec394c09e0f00c1007a",
+        "name": "dTLDjNc",
+        "description": "random dTLDjNc description ",
+        "format": "",
+        "customerId": 1,
+        "deletedAt": null,
+        "createdAt": 1485358981345,
+        "updatedAt": 1485358981345,
+        "id": "5888c78542342210005bb9bd"
+      },
+      {
+        "fieldType": {
+          "name": "List",
+          "rules": [
+            {
+              "rule": "custom||isJSONArray",
+              "params": [],
+              "error": "validator.12"
+            }
+          ],
+          "isLongValue": true,
+          "deletedAt": null,
+          "createdAt": 1479220924799,
+          "updatedAt": 1486571865940,
+          "id": "000000000000000000000014"
+        },
+        "module": "583d5ec394c09e0f00c1007a",
+        "name": "list",
+        "format": {},
+        "customerId": 1,
+        "deletedAt": null,
+        "createdAt": 1480416964004,
+        "updatedAt": 1480416964004,
+        "id": "583d5ec494c09e0f00c1007c"
+      },
+      {
+        "fieldType": {
+          "name": "Object",
+          "rules": [
+            {
+              "rule": "custom||isJSONObject",
+              "params": [],
+              "error": "validator.11"
+            }
+          ],
+          "isLongValue": true,
+          "deletedAt": null,
+          "createdAt": 1479220924795,
+          "updatedAt": 1486571865937,
+          "id": "000000000000000000000013"
+        },
+        "module": "583d5ec394c09e0f00c1007a",
+        "name": "object",
+        "format": {},
+        "customerId": 1,
+        "deletedAt": null,
+        "createdAt": 1480416964005,
+        "updatedAt": 1480416964005,
+        "id": "583d5ec494c09e0f00c1007d"
+      }
+    ]
+  },
+  {
+    "isSingle": false,
+    "name": "matus fullStack module",
+    "tags": [
+      {
+        "id": "000000000000000000000400",
+        "name": "Afar Djibouti",
+        "value": "aa-DJ",
+        "tagType": "000000000000000000000004"
+      },
+      {
+        "id": "000000000000000000000401",
+        "name": "Afar Eritrea",
+        "value": "aa-ER",
+        "tagType": "000000000000000000000004"
+      },
+      {
+        "id": "000000000000000000000402",
+        "name": "Afar Ethiopia",
+        "value": "aa-ET",
+        "tagType": "000000000000000000000004"
+      }
+    ],
+    "pushTemplates": [
+      "000000000000000000000001",
+      "000000000000000000000002"
+    ],
+    "customerId": 1,
+    "createdBy": "Name selfupdated Admin",
+    "updatedBy": "Name selfupdated Admin",
+    "externalId": null,
+    "deletedAt": null,
+    "deletedBy": null,
+    "createdAt": 1479285266068,
+    "updatedAt": 1480416810403,
+    "id": "582c1a12fd9bfa12002b3802",
+    "fields": [
+      {
+        "fieldType": {
+          "name": "Localized text",
+          "rules": [
+            {
+              "rule": "custom||isJSONObject",
+              "params": [],
+              "error": "validator.11"
+            },
+            {
+              "rule": "custom||hasAllKeyLanguage",
+              "params": [],
+              "error": "validator.13"
+            },
+            {
+              "rule": "custom||allObjectValuesAreStringValidator",
+              "params": [],
+              "error": "validator.14"
+            }
+          ],
+          "isLongValue": true,
+          "deletedAt": null,
+          "createdAt": 1479220924770,
+          "updatedAt": 1486571865940,
+          "id": "000000000000000000000015"
+        },
+        "module": "582c1a12fd9bfa12002b3802",
+        "name": "1",
+        "format": {
+          "default": "translation not set"
+        },
+        "customerId": 1,
+        "deletedAt": null,
+        "createdAt": 1479303220189,
+        "updatedAt": 1479303220189,
+        "id": "582c60347fc1e5100032f840"
+      },
+      {
+        "fieldType": {
+          "name": "List",
+          "rules": [
+            {
+              "rule": "custom||isJSONArray",
+              "params": [],
+              "error": "validator.12"
+            }
+          ],
+          "isLongValue": true,
+          "deletedAt": null,
+          "createdAt": 1479220924799,
+          "updatedAt": 1486571865940,
+          "id": "000000000000000000000014"
+        },
+        "module": "582c1a12fd9bfa12002b3802",
+        "name": "list",
+        "format": {},
+        "customerId": 1,
+        "deletedAt": null,
+        "createdAt": 1479303899728,
+        "updatedAt": 1479303899728,
+        "id": "582c62dbfd9bfa12002b381d"
+      },
+      {
+        "fieldType": {
+          "name": "Object",
+          "rules": [
+            {
+              "rule": "custom||isJSONObject",
+              "params": [],
+              "error": "validator.11"
+            }
+          ],
+          "isLongValue": true,
+          "deletedAt": null,
+          "createdAt": 1479220924795,
+          "updatedAt": 1486571865937,
+          "id": "000000000000000000000013"
+        },
+        "module": "582c1a12fd9bfa12002b3802",
+        "name": "object",
+        "format": {},
+        "customerId": 1,
+        "deletedAt": null,
+        "createdAt": 1479303905761,
+        "updatedAt": 1479303905761,
+        "id": "582c62e1fd9bfa12002b381e"
+      }
+    ]
+  },
+  {
+    "isSingle": false,
+    "name": "Batch testing (DO NOT DELETE!)",
+    "tags": [],
+    "pushTemplates": [],
+    "customerId": 1,
+    "createdBy": "Name selfupdated Admin",
+    "updatedBy": "Name selfupdated Admin",
+    "externalId": null,
+    "deletedAt": null,
+    "deletedBy": null,
+    "createdAt": 1479896339578,
+    "updatedAt": 1479896339578,
+    "id": "58356d13b4e6c80f00ca34e1",
+    "fields": []
+  },
+  {
+    "name": "Configuration",
+    "externalId": 5,
+    "isSingle": false,
+    "customerId": 1,
+    "createdBy": "Admin",
+    "tags": [],
+    "pushTemplates": [],
+    "deletedAt": null,
+    "updatedBy": null,
+    "deletedBy": null,
+    "createdAt": 1479227407583,
+    "updatedAt": 1479227410488,
+    "id": "000000000000000000000005",
+    "fields": [
+      {
+        "fieldType": {
+          "name": "Number",
+          "rules": [
+            {
+              "rule": "custom||isNumber",
+              "params": [],
+              "error": "validator.3"
+            }
+          ],
+          "isLongValue": false,
+          "deletedAt": null,
+          "createdAt": 1479220924785,
+          "updatedAt": 1486571865871,
+          "id": "000000000000000000000002"
+        },
+        "module": "000000000000000000000005",
+        "name": "amount",
+        "format": "",
+        "description": "enter the total here",
+        "customerId": 1,
+        "deletedAt": null,
+        "createdAt": 1479227407293,
+        "updatedAt": 1479227407293,
+        "id": "000000000000000000000008"
+      },
+      {
+        "fieldType": {
+          "name": "Color",
+          "rules": [
+            {
+              "rule": "isHexColor",
+              "params": [],
+              "error": "validator.7"
+            }
+          ],
+          "isLongValue": false,
+          "deletedAt": null,
+          "createdAt": 1479220924798,
+          "updatedAt": 1486571865915,
+          "id": "000000000000000000000009"
+        },
+        "module": "000000000000000000000005",
+        "name": "color",
+        "format": "",
+        "description": "enter the color here",
+        "customerId": 1,
+        "deletedAt": null,
+        "createdAt": 1479227407306,
+        "updatedAt": 1479227407306,
+        "id": "000000000000000000000015"
+      },
+      {
+        "fieldType": {
+          "name": "Date",
+          "rules": [
+            {
+              "rule": "custom||isTimestamp",
+              "params": [],
+              "error": "validator.4"
+            }
+          ],
+          "isLongValue": false,
+          "deletedAt": null,
+          "createdAt": 1479220924782,
+          "updatedAt": 1486571865905,
+          "id": "000000000000000000000006"
+        },
+        "module": "000000000000000000000005",
+        "name": "date",
+        "format": "",
+        "description": "enter the date here",
+        "customerId": 1,
+        "deletedAt": null,
+        "createdAt": 1479227407284,
+        "updatedAt": 1479227407284,
+        "id": "000000000000000000000012"
+      },
+      {
+        "fieldType": {
+          "name": "Boolean",
+          "rules": [
+            {
+              "rule": "custom||isStrictBoolean",
+              "params": [],
+              "error": "validator.6"
+            }
+          ],
+          "isLongValue": false,
+          "deletedAt": null,
+          "createdAt": 1479220924794,
+          "updatedAt": 1486571865914,
+          "id": "000000000000000000000008"
+        },
+        "module": "000000000000000000000005",
+        "name": "flag",
+        "format": "",
+        "description": "enter the flag here",
+        "customerId": 1,
+        "deletedAt": null,
+        "createdAt": 1479227407301,
+        "updatedAt": 1479227407301,
+        "id": "000000000000000000000014"
+      },
+      {
+        "fieldType": {
+          "name": "Image",
+          "rules": [
+            {
+              "rule": "matches",
+              "params": [
+                "^(?:(?:https?|ftp)://)(?:S+(?::S*)?@)?(?:(?!10(?:.d{1,3}){3})(?!127(?:.d{1,3}){3})(?!169.254(?:.d{1,3}){2})(?!192.168(?:.d{1,3}){2})(?!172.(?:1[6-9]|2d|3[0-1])(?:.d{1,3}){2})(?:[1-9]d?|1dd|2[01]d|22[0-3])(?:.(?:1?d{1,2}|2[0-4]d|25[0-5])){2}(?:.(?:[1-9]d?|1dd|2[0-4]d|25[0-4]))|(?:(?:[a-z¡-￿0-9]+-?)*[a-z¡-￿0-9]+)(?:.(?:[a-z¡-￿0-9]+-?)*[a-z¡-￿0-9]+)*(?:.(?:[a-z¡-￿]{2,})))(?::d{2,5})?(?:/[^s]*)?"
+              ],
+              "error": "validator.1"
+            }
+          ],
+          "isLongValue": true,
+          "deletedAt": null,
+          "createdAt": 1479220924763,
+          "updatedAt": 1486571865904,
+          "id": "000000000000000000000005"
+        },
+        "module": "000000000000000000000005",
+        "name": "image",
+        "format": "",
+        "description": "enter the image url here",
+        "customerId": 1,
+        "deletedAt": null,
+        "createdAt": 1479227407280,
+        "updatedAt": 1479227407280,
+        "id": "000000000000000000000011"
+      },
+      {
+        "fieldType": {
+          "name": "Text",
+          "rules": [
+            {
+              "rule": "custom||isString",
+              "params": [],
+              "error": "validator.8"
+            },
+            {
+              "rule": "isLength",
+              "params": [
+                0,
+                1000
+              ],
+              "error": "validator.10"
+            }
+          ],
+          "isLongValue": false,
+          "deletedAt": null,
+          "createdAt": 1479220924781,
+          "updatedAt": 1486571865860,
+          "id": "000000000000000000000001"
+        },
+        "module": "000000000000000000000005",
+        "name": "name",
+        "format": "",
+        "description": "enter the name here",
+        "customerId": 1,
+        "deletedAt": null,
+        "createdAt": 1479227407284,
+        "updatedAt": 1479227407284,
+        "id": "000000000000000000000007"
+      },
+      {
+        "fieldType": {
+          "name": "Text",
+          "rules": [
+            {
+              "rule": "custom||isString",
+              "params": [],
+              "error": "validator.8"
+            },
+            {
+              "rule": "isLength",
+              "params": [
+                0,
+                1000
+              ],
+              "error": "validator.10"
+            }
+          ],
+          "isLongValue": false,
+          "deletedAt": null,
+          "createdAt": 1479220924781,
+          "updatedAt": 1486571865860,
+          "id": "000000000000000000000001"
+        },
+        "module": "000000000000000000000005",
+        "name": "subtitle",
+        "format": "",
+        "description": "enter the name here",
+        "customerId": 1,
+        "deletedAt": null,
+        "createdAt": 1479227407390,
+        "updatedAt": 1479227407390,
+        "id": "000000000000000000000018"
+      },
+      {
+        "fieldType": {
+          "name": "Text",
+          "rules": [
+            {
+              "rule": "custom||isString",
+              "params": [],
+              "error": "validator.8"
+            },
+            {
+              "rule": "isLength",
+              "params": [
+                0,
+                1000
+              ],
+              "error": "validator.10"
+            }
+          ],
+          "isLongValue": false,
+          "deletedAt": null,
+          "createdAt": 1479220924781,
+          "updatedAt": 1486571865860,
+          "id": "000000000000000000000001"
+        },
+        "module": "000000000000000000000005",
+        "name": "text",
+        "format": "",
+        "description": "enter the text here",
+        "customerId": 1,
+        "deletedAt": null,
+        "createdAt": 1479227407384,
+        "updatedAt": 1479227407384,
+        "id": "000000000000000000000016"
+      },
+      {
+        "fieldType": {
+          "name": "Time",
+          "rules": [
+            {
+              "rule": "custom||isTimestamp",
+              "params": [],
+              "error": "validator.4"
+            }
+          ],
+          "isLongValue": false,
+          "deletedAt": null,
+          "createdAt": 1479220924786,
+          "updatedAt": 1486571865914,
+          "id": "000000000000000000000007"
+        },
+        "module": "000000000000000000000005",
+        "name": "time",
+        "format": "",
+        "description": "enter the time here",
+        "customerId": 1,
+        "deletedAt": null,
+        "createdAt": 1479227407294,
+        "updatedAt": 1479227407294,
+        "id": "000000000000000000000013"
+      },
+      {
+        "fieldType": {
+          "name": "Text",
+          "rules": [
+            {
+              "rule": "custom||isString",
+              "params": [],
+              "error": "validator.8"
+            },
+            {
+              "rule": "isLength",
+              "params": [
+                0,
+                1000
+              ],
+              "error": "validator.10"
+            }
+          ],
+          "isLongValue": false,
+          "deletedAt": null,
+          "createdAt": 1479220924781,
+          "updatedAt": 1486571865860,
+          "id": "000000000000000000000001"
+        },
+        "module": "000000000000000000000005",
+        "name": "title",
+        "format": "",
+        "description": "enter the name here",
+        "customerId": 1,
+        "deletedAt": null,
+        "createdAt": 1479227407357,
+        "updatedAt": 1479227407357,
+        "id": "000000000000000000000017"
+      },
+      {
+        "fieldType": {
+          "name": "Website",
+          "rules": [
+            {
+              "rule": "matches",
+              "params": [
+                "^(?:(?:https?|ftp)://)(?:S+(?::S*)?@)?(?:(?!10(?:.d{1,3}){3})(?!127(?:.d{1,3}){3})(?!169.254(?:.d{1,3}){2})(?!192.168(?:.d{1,3}){2})(?!172.(?:1[6-9]|2d|3[0-1])(?:.d{1,3}){2})(?:[1-9]d?|1dd|2[01]d|22[0-3])(?:.(?:1?d{1,2}|2[0-4]d|25[0-5])){2}(?:.(?:[1-9]d?|1dd|2[0-4]d|25[0-4]))|(?:(?:[a-z¡-￿0-9]+-?)*[a-z¡-￿0-9]+)(?:.(?:[a-z¡-￿0-9]+-?)*[a-z¡-￿0-9]+)*(?:.(?:[a-z¡-￿]{2,})))(?::d{2,5})?(?:/[^s]*)?"
+              ],
+              "error": "validator.1"
+            }
+          ],
+          "isLongValue": true,
+          "deletedAt": null,
+          "createdAt": 1479220924788,
+          "updatedAt": 1486571865890,
+          "id": "000000000000000000000003"
+        },
+        "module": "000000000000000000000005",
+        "name": "website",
+        "format": "",
+        "description": "enter the web here",
+        "customerId": 1,
+        "deletedAt": null,
+        "createdAt": 1479227407300,
+        "updatedAt": 1479227407300,
+        "id": "000000000000000000000009"
+      },
+      {
+        "fieldType": {
+          "name": "Youtube",
+          "rules": [
+            {
+              "rule": "matches",
+              "params": [
+                "^(?:https?:\\/\\/)?(?:www\\.)?(?:youtu\\.be\\/|youtube\\.com\\/(?:embed\\/|v\\/|watch\\?v=|watch\\?.+&v=))((\\w|-){11})(?:\\S+)?$"
+              ],
+              "error": "validator.2"
+            }
+          ],
+          "isLongValue": true,
+          "deletedAt": null,
+          "createdAt": 1479220924798,
+          "updatedAt": 1486571865891,
+          "id": "000000000000000000000004"
+        },
+        "module": "000000000000000000000005",
+        "name": "youtube",
+        "format": "",
+        "description": "enter the youtube url here",
+        "customerId": 1,
+        "deletedAt": null,
+        "createdAt": 1479227407305,
+        "updatedAt": 1479227407305,
+        "id": "000000000000000000000010"
+      }
+    ]
+  },
+  {
+    "name": "Comment",
+    "externalId": 6,
+    "isSingle": true,
+    "customerId": 1,
+    "createdBy": "Admin",
+    "tags": [],
+    "pushTemplates": [],
+    "deletedAt": null,
+    "updatedBy": null,
+    "deletedBy": null,
+    "createdAt": 1479227407593,
+    "updatedAt": 1479227410488,
+    "id": "000000000000000000000006",
+    "fields": [
+      {
+        "fieldType": {
+          "name": "Website",
+          "rules": [
+            {
+              "rule": "matches",
+              "params": [
+                "^(?:(?:https?|ftp)://)(?:S+(?::S*)?@)?(?:(?!10(?:.d{1,3}){3})(?!127(?:.d{1,3}){3})(?!169.254(?:.d{1,3}){2})(?!192.168(?:.d{1,3}){2})(?!172.(?:1[6-9]|2d|3[0-1])(?:.d{1,3}){2})(?:[1-9]d?|1dd|2[01]d|22[0-3])(?:.(?:1?d{1,2}|2[0-4]d|25[0-5])){2}(?:.(?:[1-9]d?|1dd|2[0-4]d|25[0-4]))|(?:(?:[a-z¡-￿0-9]+-?)*[a-z¡-￿0-9]+)(?:.(?:[a-z¡-￿0-9]+-?)*[a-z¡-￿0-9]+)*(?:.(?:[a-z¡-￿]{2,})))(?::d{2,5})?(?:/[^s]*)?"
+              ],
+              "error": "validator.1"
+            }
+          ],
+          "isLongValue": true,
+          "deletedAt": null,
+          "createdAt": 1479220924788,
+          "updatedAt": 1486571865890,
+          "id": "000000000000000000000003"
+        },
+        "module": "000000000000000000000006",
+        "name": "api url",
+        "format": "",
+        "description": "enter the api url here",
+        "customerId": 1,
+        "deletedAt": null,
+        "createdAt": 1479227407387,
+        "updatedAt": 1479227407387,
+        "id": "000000000000000000000019"
+      },
+      {
+        "fieldType": {
+          "name": "Date",
+          "rules": [
+            {
+              "rule": "custom||isTimestamp",
+              "params": [],
+              "error": "validator.4"
+            }
+          ],
+          "isLongValue": false,
+          "deletedAt": null,
+          "createdAt": 1479220924782,
+          "updatedAt": 1486571865905,
+          "id": "000000000000000000000006"
+        },
+        "module": "000000000000000000000006",
+        "name": "release date",
+        "format": "",
+        "description": "enter the release date here",
+        "customerId": 1,
+        "deletedAt": null,
+        "createdAt": 1479227407385,
+        "updatedAt": 1479227407385,
+        "id": "000000000000000000000021"
+      },
+      {
+        "fieldType": {
+          "name": "Text",
+          "rules": [
+            {
+              "rule": "custom||isString",
+              "params": [],
+              "error": "validator.8"
+            },
+            {
+              "rule": "isLength",
+              "params": [
+                0,
+                1000
+              ],
+              "error": "validator.10"
+            }
+          ],
+          "isLongValue": false,
+          "deletedAt": null,
+          "createdAt": 1479220924781,
+          "updatedAt": 1486571865860,
+          "id": "000000000000000000000001"
+        },
+        "module": "000000000000000000000006",
+        "name": "version",
+        "format": "",
+        "description": "enter the version here",
+        "customerId": 1,
+        "deletedAt": null,
+        "createdAt": 1479227407373,
+        "updatedAt": 1479227407373,
+        "id": "000000000000000000000020"
+      }
+    ]
+  },
+  {
+    "name": "My Offers",
+    "externalId": 3,
+    "isSingle": false,
+    "customerId": 1,
+    "createdBy": "Admin",
+    "tags": [],
+    "pushTemplates": [],
+    "deletedAt": null,
+    "updatedBy": null,
+    "deletedBy": null,
+    "createdAt": 1479227407577,
+    "updatedAt": 1479227410486,
+    "id": "000000000000000000000003",
+    "fields": []
+  }
+]

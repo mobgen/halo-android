@@ -1,5 +1,6 @@
 package com.mobgen.halo.android.app.ui.settings;
 
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -9,6 +10,7 @@ import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.mobgen.halo.android.app.BuildConfig;
 import com.mobgen.halo.android.app.R;
@@ -27,7 +29,7 @@ import com.mobgen.halo.android.translations.spec.HaloTranslationsContract;
 /**
  * The settings activity for halo.
  */
-public class SettingsActivity extends MobgenHaloActivity {
+public class SettingsActivity extends MobgenHaloActivity implements  View.OnClickListener{
 
     /**
      * Preferences name for this the current halo environment.
@@ -37,6 +39,12 @@ public class SettingsActivity extends MobgenHaloActivity {
     private SettingsViewHolder mViewHolder;
 
     private AlertDialog mPreviousDialog;
+
+    private TextView userAlias;
+
+    private TextView notificationToken;
+
+    private Context mContext;
 
     /**
      * Starts this activity.
@@ -52,7 +60,20 @@ public class SettingsActivity extends MobgenHaloActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_environment);
+
+        mContext = this;
+
         mViewHolder = new SettingsViewHolder(getWindow().getDecorView());
+
+        userAlias = (TextView) findViewById(R.id.tv_user_alias);
+        notificationToken = (TextView) findViewById(R.id.tv_gcm);
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        userAlias.setOnClickListener(this);
+        notificationToken.setOnClickListener(this);
     }
 
     @Override
@@ -163,6 +184,17 @@ public class SettingsActivity extends MobgenHaloActivity {
         if (mPreviousDialog != null) {
             mPreviousDialog.cancel();
         }
+    }
+
+    @Override
+    public void onClick(View v) {
+        ClipboardManager cm = (ClipboardManager)mContext.getSystemService(Context.CLIPBOARD_SERVICE);
+        if (v.getId() == R.id.tv_gcm) {
+            cm.setText(notificationToken.getText());
+        } else if(v.getId() == R.id.tv_user_alias) {
+            cm.setText(userAlias.getText());
+        }
+        Toast.makeText(mContext, "Copied to clipboard", Toast.LENGTH_SHORT).show();
     }
 
     private static class SettingsViewHolder {
