@@ -44,17 +44,26 @@ public class HaloPlugin implements Plugin<Project> {
             void beforeResolve(ResolvableDependencies resolvableDependencies) {
                 addGlobalDependencies()
                 extensionV2.configureDependencies()
-                project.getGradle().removeListener(this)
             }
 
             @Override
-            void afterResolve(ResolvableDependencies resolvableDependencies) {}
+            void afterResolve(ResolvableDependencies resolvableDependencies) {
+                project.getGradle().removeListener(this)
+            }
         })
 
-        project.afterEvaluate {
-            extensionV2.validateConfiguration()
-            extensionV2.configureTasks()
-        }
+        project.getGradle().addProjectEvaluationListener( new ProjectEvaluationListener() {
+            @Override
+            void beforeEvaluate(Project project1) {
+            }
+
+            @Override
+            void afterEvaluate(Project project1, ProjectState projectState) {
+                extensionV2.validateConfiguration()
+                extensionV2.configureTasks()
+                project.getGradle().removeListener(this)
+            }
+        })
     }
 
     private void addGlobalDependencies() {
