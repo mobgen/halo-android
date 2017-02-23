@@ -53,8 +53,14 @@ public class HaloContentInstance implements Parcelable {
 
         @Override
         public JSONObject parse(JsonParser jsonParser) throws IOException {
+            //convert map to json string to create the object due to problems on pre 4.3 devices
+            //See https://mobgen.atlassian.net/browse/HALO-2918
             Map map = (Map) mapper.parse(jsonParser);
-            return map != null ? new JSONObject(map) : null;
+            try {
+                return new JSONObject(LoganSquare.serialize(map));
+            } catch (JSONException e) {
+               return null;
+            }
         }
 
         @Override
