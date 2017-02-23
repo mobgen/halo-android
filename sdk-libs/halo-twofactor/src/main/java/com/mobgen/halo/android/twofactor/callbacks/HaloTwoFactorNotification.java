@@ -10,19 +10,33 @@ import com.mobgen.halo.android.twofactor.HaloTwoFactorApi;
 import com.mobgen.halo.android.twofactor.models.TwoFactorCode;
 
 /**
- * Created by fernando souto on 20/2/17.
+ * Listerner to receive updates with two fator push notification codes.
  */
-
 public class HaloTwoFactorNotification implements HaloNotificationListener {
 
+    /**
+     * The halo two factor attemp listener to notify.
+     */
+    @NonNull
     private HaloTwoFactorAttemptListener mHaloTwoFactorAttemptListener;
 
-    public HaloTwoFactorNotification(HaloTwoFactorAttemptListener haloTwoFactorAttemptListener){
+    /**
+     * The key to extract the code from received bundle.
+     */
+    @NonNull
+    private static final String KEY_FROM_BUNDLE = "code";
+
+    /**
+     * Construcotr for halo two factor push notification.
+     *
+     * @param haloTwoFactorAttemptListener
+     */
+    public HaloTwoFactorNotification(@NonNull HaloTwoFactorAttemptListener haloTwoFactorAttemptListener){
         mHaloTwoFactorAttemptListener = haloTwoFactorAttemptListener;
     }
 
     @Override
     public void onNotificationReceived(@NonNull Context context, @NonNull String s, @NonNull Bundle bundle, @Nullable Bundle bundle1) {
-        mHaloTwoFactorAttemptListener.onTwoFactorReceived(new TwoFactorCode(bundle.getString("code"), HaloTwoFactorApi.TWO_FACTOR_NOTIFICATION_ISSUER));
+        mHaloTwoFactorAttemptListener.onTwoFactorReceived(new TwoFactorCode(bundle.getString(KEY_FROM_BUNDLE), HaloTwoFactorApi.TWO_FACTOR_NOTIFICATION_ISSUER));
     }
 }

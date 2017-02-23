@@ -113,7 +113,7 @@ public class NotificationService extends FirebaseMessagingService {
             //Let the silent handle manage it
             NotificationEmitter.emitSilent(this, from, dataBundle);
         } else if(isTwoFactor(dataBundle)) {
-            //Let the silent handle manage it
+            //Let the two factor handle it
             NotificationEmitter.emitTwoFactor(this, from, dataBundle);
         } else {
             //Build notification based on decorators

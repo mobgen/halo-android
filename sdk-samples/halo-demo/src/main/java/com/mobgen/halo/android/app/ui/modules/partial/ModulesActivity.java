@@ -192,7 +192,7 @@ public class ModulesActivity extends MobgenHaloActivity {
         MobgenHaloApplication.getTwoFactorApi().listenTwoFactorAttempt(new HaloTwoFactorAttemptListener() {
             @Override
             public void onTwoFactorReceived(@NonNull TwoFactorCode twoFactorCode) {
-                Toast.makeText(ModulesActivity.this, "This is the code received: "+twoFactorCode.getCode()+" from a: "+twoFactorCode.getIssuer(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(ModulesActivity.this, "This is the code received: " + twoFactorCode.getCode() + " from a: " + twoFactorCode.getIssuer(), Toast.LENGTH_LONG).show();
             }
         });
     }

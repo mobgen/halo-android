@@ -6,13 +6,19 @@ import android.support.annotation.NonNull;
 import com.mobgen.halo.android.twofactor.models.TwoFactorCode;
 
 /**
- * Created by mobgenimac on 20/2/17.
+ * Listerner to receive updates with two fator sms codes.
  */
-
 public class HaloTwoFactorSMS implements HaloSMSListener {
-
+    /**
+     * The halo two factor attemp listener to notify.
+     */
+    @NonNull
     private HaloTwoFactorAttemptListener mHaloTwoFactorAttemptListener;
 
+    /**
+     * Constructor for halo two factor sms notification.
+     * @param haloTwoFactorAttemptListener
+     */
     public HaloTwoFactorSMS(HaloTwoFactorAttemptListener haloTwoFactorAttemptListener){
         mHaloTwoFactorAttemptListener = haloTwoFactorAttemptListener;
     }

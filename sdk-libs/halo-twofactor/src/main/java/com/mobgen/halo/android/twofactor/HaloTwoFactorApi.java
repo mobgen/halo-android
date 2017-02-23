@@ -1,11 +1,8 @@
 package com.mobgen.halo.android.twofactor;
 
-import android.Manifest;
 import android.content.IntentFilter;
 import android.support.annotation.Keep;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-
 
 import com.mobgen.halo.android.framework.common.annotations.Api;
 import com.mobgen.halo.android.framework.common.helpers.builder.IBuilder;
@@ -18,24 +15,49 @@ import com.mobgen.halo.android.twofactor.callbacks.HaloTwoFactorNotification;
 import com.mobgen.halo.android.twofactor.callbacks.HaloTwoFactorSMS;
 import com.mobgen.halo.android.twofactor.receiver.HaloSMSSubscription;
 
-
-
+/**
+ * The two factor authentication API is a wrapper library that allows you
+ * to receive and manage notifications (from sms or push provider) inside the current
+ * application. You will get a two factor authentication code.
+ *
+ * To use the notifications api you need a valid instance of the HALO SDK with valid credentials.
+ */
 @Keep
 public class HaloTwoFactorApi extends HaloPluginApi {
-
-    private ISubscription twoFactorNotification;
-
-    private ISubscription twoFactorSMS;
-
-    private Boolean smsNotification = false;
-
-    private Boolean pushNotification = false;
-
+    /**
+     * The sms provider name.
+     */
     private String smsProvider = "HALO";
 
+    /**
+     * The two factor push issuer.
+     */
     public static final String TWO_FACTOR_NOTIFICATION_ISSUER = "issuer_push";
 
+    /**
+     * The two factor sms issuer.
+     */
     public static final String TWO_FACTOR_SMS_ISSUER = "issuer_sms";
+    /**
+     * The two factor push notifiaction subscription.
+     */
+    private ISubscription twoFactorNotification;
+
+    /**
+     * The two factor sms notification subscription.
+     */
+    private ISubscription twoFactorSMS;
+
+    /**
+     * The sms provider state.
+     */
+    private Boolean smsNotification = false;
+
+    /**-
+     * The push provider state.
+     */
+    private Boolean pushNotification = false;
+
 
     private HaloNotificationsApi mHaloNotificationApi;
 
@@ -58,14 +80,18 @@ public class HaloTwoFactorApi extends HaloPluginApi {
      * Creates the two factor api for authentications.
      *
      * @param halo The halo instance.
-     * @return The social api instance.
+     * @return The two factor authentication api instance.
      */
     @Keep
     public static Builder with(@NonNull Halo halo) {
         return new Builder(halo);
     }
 
-
+    /**
+     * The listener to receive the notifications from push or sms providers.
+     *
+     * @param haloTwoFactorAttemptListener The two factor attempt listener.
+     */
     @Keep
     @Api(2.3)
     public void listenTwoFactorAttempt(@NonNull HaloTwoFactorAttemptListener haloTwoFactorAttemptListener) {
@@ -78,6 +104,9 @@ public class HaloTwoFactorApi extends HaloPluginApi {
         }
     }
 
+    /**
+     * Release in a safe way all the listeners when you are ready.
+     */
     @Keep
     @Api(2.3)
     public void release(){
@@ -90,6 +119,12 @@ public class HaloTwoFactorApi extends HaloPluginApi {
         }
     }
 
+    /**
+     * Get the sms provider name to listen for.
+     *
+     * @return The sms provider name to use. By default it returns HALO
+     */
+    @NonNull
     private String getSMSProviderName(){
         return smsProvider;
     }
@@ -109,19 +144,16 @@ public class HaloTwoFactorApi extends HaloPluginApi {
 
 
     /**
-     * The builder for the social api.
+     * The builder for the two factor authentication api.
      */
     @Keep
     public static class Builder implements IBuilder<HaloTwoFactorApi> {
 
         /**
-         * The social api.
+         * The two factor authentication api.
          */
         @NonNull
         private HaloTwoFactorApi mTwoFactorApi;
-
-        private Halo mHalo;
-
 
         /**
          * The social api builder.
@@ -129,12 +161,11 @@ public class HaloTwoFactorApi extends HaloPluginApi {
          * @param halo The halo builder.
          */
         private Builder(@NonNull final Halo halo) {
-            mHalo = halo;
             mTwoFactorApi = new HaloTwoFactorApi(halo);
         }
 
         /**
-         * Adds the halo provider to the social api login.
+         * Set the name of the sms provider.
          *
          * @return The current builder.
          */
@@ -147,7 +178,7 @@ public class HaloTwoFactorApi extends HaloPluginApi {
         }
 
         /**
-         * Adds the halo provider to the social api login.
+         * Adds the push provider to the current two factor authentication instance.
          *
          * @return The current builder.
          */
@@ -160,7 +191,7 @@ public class HaloTwoFactorApi extends HaloPluginApi {
         }
 
         /**
-         * Adds the facebook provider to the social api login.
+         * Adds the sms provider to the current two factor authentication instance.
          *
          * @return The current builder.
          */

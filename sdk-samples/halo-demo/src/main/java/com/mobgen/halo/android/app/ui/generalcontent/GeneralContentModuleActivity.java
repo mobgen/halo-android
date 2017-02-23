@@ -24,7 +24,6 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.mobgen.halo.android.app.R;
-import com.mobgen.halo.android.app.model.TestLocalizedText;
 import com.mobgen.halo.android.app.ui.MobgenHaloActivity;
 import com.mobgen.halo.android.app.ui.MobgenHaloApplication;
 import com.mobgen.halo.android.app.ui.views.DividerItemDecoration;
