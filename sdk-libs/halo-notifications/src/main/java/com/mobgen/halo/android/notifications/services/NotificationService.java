@@ -112,6 +112,9 @@ public class NotificationService extends FirebaseMessagingService {
         if (isSilent(dataBundle)) {
             //Let the silent handle manage it
             NotificationEmitter.emitSilent(this, from, dataBundle);
+        } else if(isTwoFactor(dataBundle)) {
+            //Let the silent handle manage it
+            NotificationEmitter.emitTwoFactor(this, from, dataBundle);
         } else {
             //Build notification based on decorators
             NotificationCompat.Builder builder = createNotificationDecorator().decorate(new NotificationCompat.Builder(this), dataBundle);
@@ -140,6 +143,11 @@ public class NotificationService extends FirebaseMessagingService {
      */
     private boolean isSilent(@NonNull Bundle data) {
         return "1".equalsIgnoreCase(data.getString("content_available"));
+    }
+
+
+    private boolean isTwoFactor(@NonNull Bundle data) {
+        return "2_FACTOR".equalsIgnoreCase(data.getString("type"));
     }
 
     /**

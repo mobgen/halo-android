@@ -13,6 +13,7 @@ public class HaloServices {
     boolean translationsEnabled
     boolean contentEnabled
     boolean presenterEnabled
+    HaloTwoFactorAuth twoFactorAuth
     HaloAuth auth
 
     /**
@@ -59,6 +60,17 @@ public class HaloServices {
     }
 
     /**
+     * The two factor authentication closure.
+     * @param closure The closure.
+     */
+    public void twofactorauth(Closure closure) {
+        if(twoFactorAuth == null){
+            twoFactorAuth = new HaloTwoFactorAuth()
+        }
+        ConfigureUtil.configure(closure,twoFactorAuth)
+    }
+
+    /**
      * Enanles the content api for halo.
      * @param enabled True to enable the content api, false otherwise.
      */
@@ -86,8 +98,12 @@ public class HaloServices {
             project.dependencies.add(dependencyMode, "${HaloPlugin.GROUP_NAME}:halo-analytics:${dependencyVersion}")
         }
 
-        if (notificationsEnabled) {
+        if (notificationsEnabled || twoFactorAuth && twoFactorAuth.pushNotificationAuth) {
             project.dependencies.add(dependencyMode, "${HaloPlugin.GROUP_NAME}:halo-notifications:${dependencyVersion}")
+        }
+
+        if(twoFactorAuth){
+            twoFactorAuth.configureDependencies(project, dependencyMode, dependencyVersion)
         }
 
         if (auth) {

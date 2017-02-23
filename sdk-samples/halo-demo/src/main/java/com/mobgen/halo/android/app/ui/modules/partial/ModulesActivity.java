@@ -1,11 +1,14 @@
 package com.mobgen.halo.android.app.ui.modules.partial;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -17,6 +20,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.mobgen.halo.android.app.R;
 import com.mobgen.halo.android.app.model.MockAppConfiguration;
@@ -26,6 +30,8 @@ import com.mobgen.halo.android.app.ui.social.SocialLoginActivity;
 import com.mobgen.halo.android.framework.common.utils.HaloUtils;
 import com.mobgen.halo.android.framework.toolbox.data.CallbackV2;
 import com.mobgen.halo.android.framework.toolbox.data.HaloResultV2;
+import com.mobgen.halo.android.twofactor.callbacks.HaloTwoFactorAttemptListener;
+import com.mobgen.halo.android.twofactor.models.TwoFactorCode;
 
 /**
  * This activity contains and displays in a left panel menu all the modules active for the current
@@ -46,6 +52,11 @@ public class ModulesActivity extends MobgenHaloActivity {
      * The info dialog.
      */
     private AlertDialog mInfoDialog;
+
+    /**
+     * Request permission code.
+     */
+    private static final int REQUEST_PERMISSION = 11;
 
     public static void start(Context context, boolean clearTop) {
         Intent intent = new Intent(context, ModulesActivity.class);
@@ -85,6 +96,24 @@ public class ModulesActivity extends MobgenHaloActivity {
         mNavigationDrawer = (NavigationView) findViewById(R.id.nv_drawer);
         drawer.addDrawerListener(mToggle);
         mToggle.syncState();
+
+        //Show what it is needed
+        if (!hasReadSMSPermissions()) {
+            openNoPermissions();
+        } else {
+            setTwoFactorListener();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_PERMISSION: {
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    setTwoFactorListener();
+                }
+            }
+        }
     }
 
     @Override
@@ -157,5 +186,30 @@ public class ModulesActivity extends MobgenHaloActivity {
         if (!TextUtils.isEmpty(config.getMenuColor())) {
             mNavigationDrawer.setBackgroundColor(HaloUtils.getArgb(config.getMenuColor()));
         }
+    }
+
+    private void setTwoFactorListener() {
+        MobgenHaloApplication.getTwoFactorApi().listenTwoFactorAttempt(new HaloTwoFactorAttemptListener() {
+            @Override
+            public void onTwoFactorReceived(@NonNull TwoFactorCode twoFactorCode) {
+                Toast.makeText(ModulesActivity.this, "This is the code received: "+twoFactorCode.getCode()+" from a: "+twoFactorCode.getIssuer(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    /**
+     * Opens the dialog to request permissions
+     */
+    private void openNoPermissions() {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            requestPermissions(new String[]{Manifest.permission.RECEIVE_SMS}, REQUEST_PERMISSION);
+        }
+    }
+
+    /**
+     * Determines if the application has enough permissions to read sms
+     */
+    private boolean hasReadSMSPermissions() {
+        return ContextCompat.checkSelfPermission(this, Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_GRANTED;
     }
 }

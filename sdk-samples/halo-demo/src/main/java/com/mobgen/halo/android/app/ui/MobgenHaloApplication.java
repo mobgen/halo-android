@@ -24,6 +24,7 @@ import com.mobgen.halo.android.sdk.core.internal.storage.HaloManagerContract;
 import com.mobgen.halo.android.sdk.core.management.segmentation.HaloLocale;
 import com.mobgen.halo.android.translations.HaloTranslationsApi;
 import com.squareup.leakcanary.LeakCanary;
+import com.mobgen.halo.android.twofactor.HaloTwoFactorApi;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -76,8 +77,15 @@ public class MobgenHaloApplication extends HaloApplication {
      * Social api.
      */
     private static HaloAuthApi mAuthApi;
-
+    /**
+     * Silent listen notifications
+     */
     private static ISubscription mSilentHaloNotificationListener;
+
+    /**
+     * Two factor authentication api
+     */
+    private static HaloTwoFactorApi mTwoFactorApi;
 
     @Override
     public void onCreate() {
@@ -207,6 +215,17 @@ public class MobgenHaloApplication extends HaloApplication {
         mNotificationsApi = HaloNotificationsApi.with(halo);
         mSilentHaloNotificationListener = mNotificationsApi.listenSilentNotifications(new SilentNotificationDispatcher());
         mNotificationsApi.setNotificationDecorator(new DeeplinkDecorator(this));
+
+        if(mTwoFactorApi!=null){
+            mTwoFactorApi.release();
+            mTwoFactorApi = null;
+        }
+        mTwoFactorApi = HaloTwoFactorApi.with(halo)
+                .smsProvider("6505551212")
+                .withNotifications()
+                .withSMS()
+                .build();
+
         return super.onHaloCreated(halo);
     }
 
@@ -216,5 +235,9 @@ public class MobgenHaloApplication extends HaloApplication {
 
     public static HaloAuthApi getHaloAuthApi() {
         return mAuthApi;
+    }
+
+    public static HaloTwoFactorApi getTwoFactorApi() {
+        return mTwoFactorApi;
     }
 }

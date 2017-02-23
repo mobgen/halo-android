@@ -1,6 +1,7 @@
 package com.mobgen.halo.android.gradle
 
 import com.mobgen.halo.android.gradle.tasks.HaloNotificationsManifestTask
+import com.mobgen.halo.android.gradle.tasks.HaloSMSManifestTask
 import com.mobgen.halo.android.gradle.tasks.HaloResourceGenerationTask
 import org.gradle.api.GradleException
 import org.gradle.api.NamedDomainObjectContainer
@@ -101,6 +102,7 @@ public class HaloExtensionV2 {
 
     protected void configureTasks() {
         configureNotificationsManifestTask()
+        configureSMSManifestTask()
         configureResourceGenerationTask()
     }
 
@@ -113,12 +115,30 @@ public class HaloExtensionV2 {
     private void configureNotificationsManifestTask() {
         Utils.getVariants(project).all { variant ->
             HaloConfiguration config = getConfigurationForName(variant.getName())
-            if (config.haloServices && config.haloServices.notificationsEnabled) {
+            if (config.haloServices && config.haloServices.notificationsEnabled || config.haloServices.twoFactorAuth && config.haloServices.twoFactorAuth.pushNotificationAuth) {
                 //Create push notifications task to add to the manifest the permissions
                 Task task = project.tasks.create("${variant.getName()}PushManifest", HaloNotificationsManifestTask, {
                     androidVariant = variant
                     group = HaloPlugin.PLUGIN_NAME
                     description = "Process the manifest to inject the push information for Halo"
+                })
+                //Inject the task
+                project.tasks.getByName("process${variant.getName().capitalize()}Manifest") << {
+                    task.execute()
+                }
+            }
+        }
+    }
+
+    private void configureSMSManifestTask() {
+        Utils.getVariants(project).all { variant ->
+            HaloConfiguration config = getConfigurationForName(variant.getName())
+            if (config.haloServices && config.haloServices.twoFactorAuth && config.haloServices.twoFactorAuth.smsNotificationAuth) {
+                //Create push notifications task to add to the manifest the permissions
+                Task task = project.tasks.create("${variant.getName()}PushManifestSMS", HaloSMSManifestTask, {
+                    androidVariant = variant
+                    group = HaloPlugin.PLUGIN_NAME
+                    description = "Process the manifest to inject the sms information"
                 })
                 //Inject the task
                 project.tasks.getByName("process${variant.getName().capitalize()}Manifest") << {
