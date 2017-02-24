@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.crittercism.app.Crittercism;
 import com.facebook.stetho.Stetho;
@@ -29,6 +30,8 @@ import com.mobgen.halo.android.twofactor.HaloTwoFactorApi;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
+import static android.telecom.DisconnectCause.LOCAL;
+
 /**
  * The halo application that contains the Halo initialization and other framework initializes just to make it easy to
  * debug and check.
@@ -39,31 +42,41 @@ public class MobgenHaloApplication extends HaloApplication {
     /**
      * Annotation name for the environment definition.
      */
-    @IntDef({QA, INT, STAGE, PROD, UAT})
+    @IntDef({CUSTOM,LOCAL,QA, INT, STAGE, PROD, UAT})
     @Retention(RetentionPolicy.SOURCE)
     public @interface Environment {
     }
 
     /**
+     * Local environment definition.
+     */
+    public static final int CUSTOM = 0;
+
+    /**
+     * Local environment definition.
+     */
+    public static final int LOCAL = 1;
+
+    /**
      * QA environment definition.
      */
-    public static final int QA = 0;
+    public static final int QA = 2;
     /**
      * Int environment definition.
      */
-    public static final int INT = 1;
+    public static final int INT = 3;
     /**
      * Stage environment definition.
      */
-    public static final int STAGE = 2;
+    public static final int STAGE = 4;
     /**
      * Production environment definition.
      */
-    public static final int PROD = 3;
+    public static final int PROD = 5;
     /**
      * UAT environment definition.
      */
-    public static final int UAT = 4;
+    public static final int UAT = 6;
 
     /**
      * Translations api.
@@ -122,6 +135,13 @@ public class MobgenHaloApplication extends HaloApplication {
     public static Halo.Installer createHaloInstaller(Context context, @Environment int environment) {
         String environmentUrl;
         switch (environment) {
+            case CUSTOM:
+                SharedPreferences preferences = context.getSharedPreferences(HaloManagerContract.HALO_MANAGER_STORAGE, MODE_PRIVATE);
+                environmentUrl = preferences.getString(SettingsActivity.PREFERENCES_HALO_ENVIRONMENT_CUSTOM_URL, "https://halo-new-int.mobgen.com");
+                break;
+            case LOCAL:
+                environmentUrl = "http://halo-local.mobgen.com";
+                break;
             case STAGE:
                 environmentUrl = "https://halo-stage.mobgen.com";
                 break;

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/default_padding">
+
+    <com.mobgen.halo.android.app.ui.views.HaloTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:textSize="@dimen/text_size_big"
+        android:hint="@string/environment_select"
+        android:lines="1"
+        android:maxLines="1" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/default_margin"
+        android:background="@color/cardview_dark_background"></View>
+    <com.mobgen.halo.android.app.ui.views.HaloTextView
+        android:id="@+id/tv_custom_server_hint"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:layout_marginTop="@dimen/default_margin"
+        android:textSize="@dimen/text_size_small"
+        android:hint="@string/custom_environment_url_tip"
+        android:lines="1"
+        android:maxLines="1"/>
+    <EditText
+        android:id="@+id/et_custom_server"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:inputType="textWebEmailAddress"
+        android:hint="@string/custom_environment_url"
+        android:lines="1"
+        android:maxLines="1"/>
+
+
+</LinearLayout>

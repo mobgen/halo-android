@@ -6,6 +6,10 @@
 
     <!-- Settings  -->
     <string name="environment_title">Environment</string>
+    <string name="custom_environment">Custom</string>
+    <string name="custom_environment_url_tip">Please provide a url if you select custom environment</string>
+    <string name="custom_environment_url">https://halo-new-int.mobgen.com</string>
+    <string name="local_environment">Local</string>
     <string name="int_environment">Int</string>
     <string name="qa_environment">QA</string>
     <string name="stage_environment">Stage</string>

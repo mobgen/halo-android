@@ -7,7 +7,9 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.mobgen.halo.android.app.BuildConfig;
@@ -15,6 +17,7 @@ import com.mobgen.halo.android.app.R;
 import com.mobgen.halo.android.app.ui.MobgenHaloActivity;
 import com.mobgen.halo.android.app.ui.MobgenHaloApplication;
 import com.mobgen.halo.android.app.ui.modules.partial.ModulesActivity;
+import com.mobgen.halo.android.app.ui.views.HaloTextView;
 import com.mobgen.halo.android.content.spec.HaloContentContract;
 import com.mobgen.halo.android.framework.api.HaloStorageApi;
 import com.mobgen.halo.android.framework.common.helpers.logger.Halog;
@@ -33,6 +36,11 @@ public class SettingsActivity extends MobgenHaloActivity {
      * Preferences name for this the current halo environment.
      */
     public static final String PREFERENCES_HALO_ENVIRONMENT = "environment";
+
+    /**
+     * Preferences name for this the current halo environment.
+     */
+    public static final String PREFERENCES_HALO_ENVIRONMENT_CUSTOM_URL = "custom_environment_url";
 
     private SettingsViewHolder mViewHolder;
 
@@ -60,6 +68,8 @@ public class SettingsActivity extends MobgenHaloActivity {
         super.onPresenterInitialized();
         //The String for the environment
         final String[] environmentNames = new String[]{
+                getString(R.string.custom_environment),
+                getString(R.string.local_environment),
                 getString(R.string.qa_environment),
                 getString(R.string.int_environment),
                 getString(R.string.stage_environment),
@@ -81,29 +91,54 @@ public class SettingsActivity extends MobgenHaloActivity {
             public void onClick(View v) {
                 ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(SettingsActivity.this, android.R.layout.select_dialog_singlechoice, environmentNames);
                 int selectedItem = env != null ? env : 0;
+                View headerView = getLayoutInflater().inflate(R.layout.dialog_prefrences_title, null);
+                final HaloTextView hintTextCustomUrl = (HaloTextView)headerView.findViewById(R.id.tv_custom_server_hint);
+                final EditText customUrl = (EditText)headerView.findViewById(R.id.et_custom_server);
+                customUrl.setText(storage.prefs().getString(PREFERENCES_HALO_ENVIRONMENT_CUSTOM_URL, customUrl.getText().toString()));
+                customUrl.setVisibility(View.GONE);
+                hintTextCustomUrl.setVisibility(View.GONE);
                 mPreviousDialog = new AlertDialog.Builder(SettingsActivity.this)
                         .setSingleChoiceItems(arrayAdapter, selectedItem, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, @MobgenHaloApplication.Environment int env1) {
-                                storage.prefs().edit().clear().putInt(PREFERENCES_HALO_ENVIRONMENT, env1).commit();
-                                //Remove the databases for the current environment
-                                storage.db().deleteDatabase();
-                                if(storageContent!=null) {
-                                    storageContent.db().deleteDatabase();
-                                    storageContent.prefs().edit().clear().commit();
+                                storage.prefs().edit().clear().apply();
+                                if(hintTextCustomUrl.getVisibility()==View.GONE && env1==MobgenHaloApplication.CUSTOM){
+                                    customUrl.setVisibility(View.VISIBLE);
+                                    hintTextCustomUrl.setVisibility(View.VISIBLE);
+                                    mPreviousDialog.getListView().setItemChecked(0,false);
+                                } else {
+                                    if (env1 == MobgenHaloApplication.CUSTOM) {
+                                        storage.prefs().edit().putString(PREFERENCES_HALO_ENVIRONMENT_CUSTOM_URL, customUrl.getText().toString()).commit();
+                                    }
+
+                                    if(hintTextCustomUrl.getVisibility()==View.GONE){
+                                        customUrl.setVisibility(View.GONE);
+                                        hintTextCustomUrl.setVisibility(View.GONE);
+                                    }
+
+                                    storage.prefs().edit().putInt(PREFERENCES_HALO_ENVIRONMENT, env1).commit();
+                                    //Remove the databases for the current environment
+                                    storage.db().deleteDatabase();
+                                    if (storageContent != null) {
+                                        storageContent.db().deleteDatabase();
+                                        storageContent.prefs().edit().clear().commit();
+                                    }
+                                    if (storageTranslation != null) {
+                                        storageTranslation.db().deleteDatabase();
+                                        storageTranslation.prefs().edit().clear().commit();
+                                    }
+                                    Halo.instance().uninstall();
+                                    ((HaloApplication) getApplication()).installHalo();
+                                    ModulesActivity.start(SettingsActivity.this, true);
                                 }
-                                if(storageTranslation!=null) {
-                                    storageTranslation.db().deleteDatabase();
-                                    storageTranslation.prefs().edit().clear().commit();
-                                }
-                                Halo.instance().uninstall();
-                                ((HaloApplication) getApplication()).installHalo();
-                                ModulesActivity.start(SettingsActivity.this, true);
                             }
                         })
-                        .setTitle(getString(R.string.environment_select))
+                        //.setTitle(getString(R.string.environment_select))
+                        .setCustomTitle(headerView)
                         .setCancelable(true)
                         .show();
+                mPreviousDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE  | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
+                mPreviousDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
             }
         });
 
