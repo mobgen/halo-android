@@ -14,6 +14,7 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeSpec;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
@@ -431,13 +432,17 @@ public class HaloContentDatabaseProcessor extends AbstractProcessor {
                 .build();
 
         try {
+            File fileSource = new File(PACKAGE_GENERATED+className);
+            if(fileSource.exists()){
+                fileSource.delete();
+            }
             JavaFileObject source = processingEnv.getFiler().createSourceFile(CLASS_NAME_GENERATED + className);
             Writer writer = source.openWriter();
             writer.write(javaFile.toString());
             writer.flush();
             writer.close();
         } catch (IOException e) {
-            e.printStackTrace();
+
         }
     }
 

@@ -3,7 +3,6 @@ package com.mobgen.halo.android.app.ui.news;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -11,7 +10,6 @@ import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.text.TextUtils;
 import android.transition.TransitionInflater;
-import android.util.Log;
 import android.view.View;
 import android.webkit.WebView;
 import android.widget.ImageView;
@@ -21,7 +19,6 @@ import android.widget.Toast;
 import com.mobgen.halo.android.app.R;
 import com.mobgen.halo.android.app.generated.HaloContentQueryApi;
 import com.mobgen.halo.android.app.model.Article;
-import com.mobgen.halo.android.app.model.QROffer;
 import com.mobgen.halo.android.app.ui.MobgenHaloActivity;
 import com.mobgen.halo.android.app.ui.MobgenHaloApplication;
 import com.mobgen.halo.android.app.ui.modules.partial.ModulesActivity;
@@ -33,10 +30,8 @@ import com.mobgen.halo.android.framework.toolbox.data.CallbackV2;
 import com.mobgen.halo.android.framework.toolbox.data.Data;
 import com.mobgen.halo.android.framework.toolbox.data.HaloResultV2;
 import com.mobgen.halo.android.framework.toolbox.data.HaloStatus;
-import com.mobgen.halo.android.sdk.api.Halo;
 import com.squareup.picasso.Picasso;
 
-import java.util.Date;
 import java.util.List;
 
 public class ArticleActivity extends MobgenHaloActivity {
