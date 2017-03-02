@@ -48,6 +48,11 @@ public class NotificationService extends FirebaseMessagingService {
     private static final String TWO_FACTOR_CODE = "2_FACTOR";
 
     /**
+     * The silent notification key
+     */
+    private static final String SILENT_KEY = "1";
+
+    /**
      * The custom decorator that the user can set just to add some behaviour on the notifications. This decorator
      * will be set as a leaf, so there is no need to call to {@link HaloNotificationDecorator#chain(NotificationCompat.Builder, Bundle) chain} unless
      * you set other decorators dependant on this.
@@ -147,7 +152,7 @@ public class NotificationService extends FirebaseMessagingService {
      * @return True if it is a silent notification. False otherwise.
      */
     private boolean isSilent(@NonNull Bundle data) {
-        return "1".equalsIgnoreCase(data.getString("content_available"));
+        return SILENT_KEY.equalsIgnoreCase(data.getString("content_available"));
     }
 
     /**
@@ -156,7 +161,7 @@ public class NotificationService extends FirebaseMessagingService {
      * @return True if it is a silent notification. False otherwise.
      */
     private boolean isTwoFactor(@NonNull Bundle data) {
-        return data.getString("type").equalsIgnoreCase(TWO_FACTOR_CODE);
+        return TWO_FACTOR_CODE.equalsIgnoreCase(data.getString("type"));
     }
 
     /**
