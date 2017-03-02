@@ -43,6 +43,11 @@ public class NotificationService extends FirebaseMessagingService {
     private static final AtomicInteger mNotificationId = new AtomicInteger(0);
 
     /**
+     * The two factor key
+     */
+    private static final String TWO_FACTOR_CODE = "2_FACTOR";
+
+    /**
      * The custom decorator that the user can set just to add some behaviour on the notifications. This decorator
      * will be set as a leaf, so there is no need to call to {@link HaloNotificationDecorator#chain(NotificationCompat.Builder, Bundle) chain} unless
      * you set other decorators dependant on this.
@@ -145,9 +150,13 @@ public class NotificationService extends FirebaseMessagingService {
         return "1".equalsIgnoreCase(data.getString("content_available"));
     }
 
-
+    /**
+     * A notification is considered Two Factor Authentiaction if comes with the 2_FACTOR code.
+     * @param data
+     * @return True if it is a silent notification. False otherwise.
+     */
     private boolean isTwoFactor(@NonNull Bundle data) {
-        return "2_FACTOR".equalsIgnoreCase(data.getString("type"));
+        return data.getString("type").equalsIgnoreCase(TWO_FACTOR_CODE);
     }
 
     /**
