@@ -96,8 +96,7 @@ public class HaloGeneratedContentTest extends HaloRobolectricTest {
     @Test
     public void thatHaloTableCreationIsCorrect() throws ClassNotFoundException {
         int numberOfHaloTableFields = HaloTable$$DummyItem.class.getDeclaredFields().length;
-        int numberOfModelFields = DummyItem.class.getDeclaredFields().length;
-        assertThat(numberOfHaloTableFields).isEqualTo(numberOfModelFields);
+        assertThat(numberOfHaloTableFields).isEqualTo(5);
     }
 
     @Test

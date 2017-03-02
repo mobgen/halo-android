@@ -432,7 +432,7 @@ public class HaloContentDatabaseProcessor extends AbstractProcessor {
                 .build();
 
         try {
-            File fileSource = new File(PACKAGE_GENERATED+className);
+            File fileSource = new File(PACKAGE_GENERATED + className);
             if(fileSource.exists()){
                 fileSource.delete();
             }
