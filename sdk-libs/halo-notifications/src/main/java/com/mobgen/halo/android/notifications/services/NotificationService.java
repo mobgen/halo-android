@@ -118,14 +118,13 @@ public class NotificationService extends FirebaseMessagingService {
         String from = message.getFrom();
 
         Bundle dataBundle = messageToBundle(message);
-
-        if (isSilent(dataBundle)) {
-            //Let the silent handle manage it
-            NotificationEmitter.emitSilent(this, from, dataBundle);
-        } else if(isTwoFactor(dataBundle)) {
+        if(isTwoFactor(dataBundle)) {
             //Let the two factor handle it
             NotificationEmitter.emitTwoFactor(this, from, dataBundle);
-        } else {
+        } else if (isSilent(dataBundle)) {
+            //Let the silent handle manage it
+            NotificationEmitter.emitSilent(this, from, dataBundle);
+        }  else {
             //Build notification based on decorators
             NotificationCompat.Builder builder = createNotificationDecorator().decorate(new NotificationCompat.Builder(this), dataBundle);
             //Notify if available and the decorator provides a builder. If a custom decorator provides a null builder

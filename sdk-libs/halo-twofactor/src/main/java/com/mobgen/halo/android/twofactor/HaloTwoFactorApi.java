@@ -32,11 +32,13 @@ public class HaloTwoFactorApi extends HaloPluginApi {
     /**
      * The two factor push issuer.
      */
+    @Keep
     public static final String TWO_FACTOR_NOTIFICATION_ISSUER = "issuer_push";
 
     /**
      * The two factor sms issuer.
      */
+    @Keep
     public static final String TWO_FACTOR_SMS_ISSUER = "issuer_sms";
     /**
      * The two factor push notifiaction subscription.

@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Keep;
 import android.support.annotation.NonNull;
@@ -81,7 +82,13 @@ public class HaloSMSSubscription extends BroadcastReceiver implements ISubscript
         if (bundle != null) {
             final Object[] pdusObj = (Object[]) bundle.get("pdus");
             for (int i = 0; i < pdusObj.length; i++) {
-                SmsMessage smsMessage = SmsMessage.createFromPdu((byte[]) pdusObj[i]);
+                SmsMessage smsMessage;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    String format = bundle.getString("format");
+                    smsMessage = SmsMessage.createFromPdu((byte[]) pdusObj[i],format);
+                } else {
+                    smsMessage = SmsMessage.createFromPdu((byte[]) pdusObj[i]);
+                }
                 String senderNumber = smsMessage.getDisplayOriginatingAddress();
                 if (senderNumber.equals(mProviderName)) {
                     String message = smsMessage.getDisplayMessageBody();
@@ -91,7 +98,7 @@ public class HaloSMSSubscription extends BroadcastReceiver implements ISubscript
                 }
             }
         } else {
-            mListener.onSMSReceived(context,ERROR_CODE , HaloTwoFactorApi.TWO_FACTOR_SMS_ISSUER);
+            mListener.onSMSReceived(context, ERROR_CODE , HaloTwoFactorApi.TWO_FACTOR_SMS_ISSUER);
         }
     }
 

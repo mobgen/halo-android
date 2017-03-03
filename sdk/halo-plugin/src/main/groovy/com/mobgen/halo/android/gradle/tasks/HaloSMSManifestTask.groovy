@@ -17,7 +17,6 @@ public class HaloSMSManifestTask extends DefaultTask {
         String manifestLocation = getManifestLocation()
         def xml = new XmlParser().parse(manifestLocation)
         appendPermissions(xml)
-//        appendReceiver(xml)
 
         //Add the permissions
         XmlNodePrinter printer = new XmlNodePrinter(new PrintWriter(new FileWriter(manifestLocation)))
@@ -52,19 +51,4 @@ public class HaloSMSManifestTask extends DefaultTask {
             }
         }
     }
-
-//    static def appendReceiver(Node xml) {
-////        if (xml.application && xml.application[0]) {
-////            String smsReceiver = "<receiver " +
-////                    "xmlns:android=\"http://schemas.android.com/apk/res/android\"\n" +
-////                    "            android:name=\"com.mobgen.halo.android.twofactor.receiver.HaloSMSSubscription\"\n" +
-////                    "            android:permission=\"android.permission.BROADCAST_SMS\"\n"+
-////                    "            android:exported=\"true\" >\n" +
-////                    "            <intent-filter android:priority=\"1000\">\n" +
-////                    "                <action android:name=\"android.provider.Telephony.SMS_RECEIVED\" />\n" +
-////                    "            </intent-filter>\n" +
-////                    "        </receiver>"
-////            xml.application[0].append(new XmlParser().parseText(smsReceiver))
-////        }
-//    }
 }

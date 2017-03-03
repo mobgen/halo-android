@@ -2,11 +2,15 @@ package com.mobgen.halo.android.twofactor.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.Keep;
 import android.support.annotation.NonNull;
+
+import com.mobgen.halo.android.framework.common.annotations.Api;
 
 /**
  * Model with the information of a two factor authentication code.
  */
+@Keep
 public class TwoFactorCode implements Parcelable {
     /**
      * The two factor authentication code.
@@ -18,11 +22,14 @@ public class TwoFactorCode implements Parcelable {
      */
     String mIssuer;
 
+
     /**
      * Constructor for the two factor code.
      * @param code
      * @param issuer
      */
+    @Keep
+    @Api(2.3)
     public TwoFactorCode(@NonNull String code,@NonNull String issuer){
         mCode = code;
         mIssuer = issuer;
@@ -33,7 +40,9 @@ public class TwoFactorCode implements Parcelable {
      *
      * @return The code of the two factor authentication.
      */
+    @Keep
     @NonNull
+    @Api(2.3)
     public String getCode(){
         return mCode;
     }
@@ -42,10 +51,14 @@ public class TwoFactorCode implements Parcelable {
      * Get the name of the provider of the service.
      * @return The name of the provider.
      */
+    @Keep
+    @NonNull
+    @Api(2.3)
     public String getIssuer(){
         return mIssuer;
     }
 
+    @Keep
     public static final Creator<TwoFactorCode> CREATOR = new Creator<TwoFactorCode>() {
         @Override
         public TwoFactorCode createFromParcel(Parcel in) {
