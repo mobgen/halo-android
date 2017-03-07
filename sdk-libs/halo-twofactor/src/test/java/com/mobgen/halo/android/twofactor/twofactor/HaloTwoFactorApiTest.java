@@ -4,6 +4,7 @@ import android.content.Intent;
 
 import com.google.firebase.messaging.RemoteMessage;
 import com.mobgen.halo.android.framework.common.exceptions.HaloParsingException;
+import com.mobgen.halo.android.notifications.HaloNotificationsApi;
 import com.mobgen.halo.android.notifications.services.NotificationService;
 import com.mobgen.halo.android.sdk.api.Halo;
 import com.mobgen.halo.android.testing.CallbackFlag;
@@ -43,11 +44,13 @@ public class HaloTwoFactorApiTest extends HaloRobolectricTest {
     private Halo mHalo;
     private CallbackFlag mCallbackFlag;
     private NotificationService mNotificationService;
+    private HaloNotificationsApi mHaloNotificationApi;
 
     @Override
     public void onStart() throws IOException, HaloParsingException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
         initFirebase(RuntimeEnvironment.application);
         mHalo = givenADefaultHalo("mockendpoint");
+        mHaloNotificationApi = HaloNotificationsApi.with(mHalo);
         mCallbackFlag = newCallbackFlag();
         mNotificationService = givenANotificationService(RuntimeEnvironment.application);
 
@@ -60,14 +63,14 @@ public class HaloTwoFactorApiTest extends HaloRobolectricTest {
 
     @Test
     public void thatCreateAHaloTwoFactorApi() {
-        HaloTwoFactorApi haloTwoFactorApi = givenAHaloTwoFactorApi(mHalo);
+        HaloTwoFactorApi haloTwoFactorApi = givenAHaloTwoFactorApi(mHalo,mHaloNotificationApi);
         assertThat(haloTwoFactorApi).isNotNull();
     }
 
     @Test
     public void thatCanRegisterToListenForUpdates() throws NoSuchFieldException, IllegalAccessException {
         RemoteMessage notification = givenANotification(withTwoFactorData());
-        HaloTwoFactorApi haloTwoFactorApi = givenAHaloTwoFactorApi(mHalo);
+        HaloTwoFactorApi haloTwoFactorApi = givenAHaloTwoFactorApi(mHalo,mHaloNotificationApi);
         haloTwoFactorApi.listenTwoFactorAttempt(givenATwoFactorAttemptListenerForNotifications(mCallbackFlag));
         mNotificationService.onMessageReceived(notification);
         assertThat(mCallbackFlag.isFlagged()).isTrue();
@@ -76,7 +79,7 @@ public class HaloTwoFactorApiTest extends HaloRobolectricTest {
     @Test
     public void thatCanRealeaseResourceAndUnsusbcribeFromReceivers() {
         Intent smsIntent = givenAReceivedSMSErroneousIntent();
-        HaloTwoFactorApi haloTwoFactorApi = givenAHaloTwoFactorApi(mHalo);
+        HaloTwoFactorApi haloTwoFactorApi = givenAHaloTwoFactorApi(mHalo,mHaloNotificationApi);
         haloTwoFactorApi.listenTwoFactorAttempt(givenATwoFactorAttemptListenerForNotifications(mCallbackFlag));
         haloTwoFactorApi.release();
         mHalo.context().sendBroadcast(smsIntent);
@@ -86,7 +89,7 @@ public class HaloTwoFactorApiTest extends HaloRobolectricTest {
     @Test
     public void thatListenToPushNotificationsUpdates() throws NoSuchFieldException, IllegalAccessException {
         RemoteMessage notification = givenANotification(withTwoFactorData());
-        HaloTwoFactorApi haloTwoFactorApi = givenAHaloTwoFactorApiForNotifications(mHalo);
+        HaloTwoFactorApi haloTwoFactorApi = givenAHaloTwoFactorApiForNotifications(mHalo,mHaloNotificationApi);
         haloTwoFactorApi.listenTwoFactorAttempt(givenATwoFactorAttemptListenerForNotifications(mCallbackFlag));
         mNotificationService.onMessageReceived(notification);
         assertThat(mCallbackFlag.isFlagged()).isTrue();

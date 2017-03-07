@@ -2,6 +2,7 @@ package com.mobgen.halo.android.twofactor.mock.instrumentation;
 
 import android.support.annotation.NonNull;
 
+import com.mobgen.halo.android.notifications.HaloNotificationsApi;
 import com.mobgen.halo.android.sdk.api.Halo;
 import com.mobgen.halo.android.testing.CallbackFlag;
 import com.mobgen.halo.android.twofactor.HaloTwoFactorApi;
@@ -16,16 +17,16 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 
 public class HaloTwoFactorInstrument {
 
-    public static HaloTwoFactorApi givenAHaloTwoFactorApi(Halo halo){
+    public static HaloTwoFactorApi givenAHaloTwoFactorApi(Halo halo, HaloNotificationsApi haloNotificationsApi){
         return HaloTwoFactorApi.with(halo)
-                .withNotifications()
+                .withNotifications(haloNotificationsApi)
                 .withSMS()
                 .build();
     }
 
-    public static HaloTwoFactorApi givenAHaloTwoFactorApiForNotifications(Halo halo){
+    public static HaloTwoFactorApi givenAHaloTwoFactorApiForNotifications(Halo halo, HaloNotificationsApi haloNotificationsApi){
         return HaloTwoFactorApi.with(halo)
-                .withNotifications()
+                .withNotifications(haloNotificationsApi)
                 .build();
     }
 

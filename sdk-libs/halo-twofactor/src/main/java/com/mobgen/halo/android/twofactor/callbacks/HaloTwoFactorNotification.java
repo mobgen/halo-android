@@ -15,16 +15,16 @@ import com.mobgen.halo.android.twofactor.models.TwoFactorCode;
 public class HaloTwoFactorNotification implements HaloNotificationListener {
 
     /**
-     * The halo two factor attemp listener to notify.
-     */
-    @NonNull
-    private HaloTwoFactorAttemptListener mHaloTwoFactorAttemptListener;
-
-    /**
      * The key to extract the code from received bundle.
      */
     @NonNull
     private static final String KEY_FROM_BUNDLE = "code";
+
+    /**
+     * The halo two factor attemp listener to notify.
+     */
+    @NonNull
+    private HaloTwoFactorAttemptListener mHaloTwoFactorAttemptListener;
 
     /**
      * Construcotr for halo two factor push notification.

@@ -6,6 +6,7 @@ import android.support.annotation.Keep;
 import android.support.annotation.NonNull;
 
 import com.mobgen.halo.android.framework.common.annotations.Api;
+import com.mobgen.halo.android.twofactor.HaloTwoFactorApi;
 
 /**
  * Model with the information of a two factor authentication code.
@@ -15,12 +16,12 @@ public class TwoFactorCode implements Parcelable {
     /**
      * The two factor authentication code.
      */
-    String mCode;
+    private String mCode;
 
     /**
      * The provider name of the servide.
      */
-    String mIssuer;
+    private String mIssuer;
 
 
     /**
@@ -54,7 +55,7 @@ public class TwoFactorCode implements Parcelable {
     @Keep
     @NonNull
     @Api(2.3)
-    public String getIssuer(){
+    public @HaloTwoFactorApi.IssuerType String getIssuer(){
         return mIssuer;
     }
 

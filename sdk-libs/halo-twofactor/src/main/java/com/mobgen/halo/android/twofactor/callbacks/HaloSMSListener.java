@@ -15,6 +15,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.mobgen.halo.android.framework.common.annotations.Api;
+import com.mobgen.halo.android.twofactor.HaloTwoFactorApi;
 
 /**
  * Provides a callback to make some operation over every notification item.
@@ -29,5 +30,5 @@ public interface HaloSMSListener {
          */
         @Keep
         @Api(2.3)
-        void onSMSReceived(@NonNull Context context, @NonNull String code, @NonNull String issuer);
+        void onSMSReceived(@NonNull Context context, @NonNull String code, @NonNull @HaloTwoFactorApi.IssuerType String issuer);
 }

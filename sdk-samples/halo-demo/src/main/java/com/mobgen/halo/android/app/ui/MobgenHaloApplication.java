@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.crittercism.app.Crittercism;
 import com.facebook.stetho.Stetho;
@@ -29,8 +28,6 @@ import com.mobgen.halo.android.twofactor.HaloTwoFactorApi;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-
-import static android.telecom.DisconnectCause.LOCAL;
 
 /**
  * The halo application that contains the Halo initialization and other framework initializes just to make it easy to
@@ -102,6 +99,7 @@ public class MobgenHaloApplication extends HaloApplication {
 
     @Override
     public void onCreate() {
+
         super.onCreate();
 
         //Leak canary
@@ -242,7 +240,7 @@ public class MobgenHaloApplication extends HaloApplication {
         }
         mTwoFactorApi = HaloTwoFactorApi.with(halo)
                 .smsProvider("6505551212")
-                .withNotifications()
+                .withNotifications(mNotificationsApi)
                 .withSMS()
                 .build();
 

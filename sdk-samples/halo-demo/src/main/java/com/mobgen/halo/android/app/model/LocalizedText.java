@@ -15,32 +15,32 @@ public class LocalizedText implements Parcelable {
 
 
     @JsonField(name = "en-GB")
-    public String enGB;
+    public String mEnGB;
 
     @JsonField(name = "es-ES")
-    public String esEs;
+    public String mEsEs;
 
     @JsonField(name = "zh-CN")
-    public String zhCn;
+    public String mZhCn;
 
     @JsonField(name = "nl-NL")
-    public String nlNl;
+    public String mNlNl;
 
     public LocalizedText() {
     }
 
     public LocalizedText(String enGB, String esEs, String zhCn, String nlNl) {
-        this.enGB = enGB;
-        this.esEs = esEs;
-        this.zhCn = zhCn;
-        this.nlNl = nlNl;
+        this.mEnGB = enGB;
+        this.mEsEs = esEs;
+        this.mZhCn = zhCn;
+        this.mNlNl = nlNl;
     }
 
     protected LocalizedText(Parcel in) {
-        enGB = in.readString();
-        esEs = in.readString();
-        zhCn = in.readString();
-        nlNl = in.readString();
+        mEnGB = in.readString();
+        mEsEs = in.readString();
+        mZhCn = in.readString();
+        mNlNl = in.readString();
     }
 
     public static final Creator<LocalizedText> CREATOR = new Creator<LocalizedText>() {
@@ -56,35 +56,35 @@ public class LocalizedText implements Parcelable {
     };
 
     public String getEnGB() {
-        return enGB;
+        return mEnGB;
     }
 
     public void setEnGB(String enGB) {
-        this.enGB = enGB;
+        this.mEnGB = enGB;
     }
 
     public String getEsEs() {
-        return esEs;
+        return mEsEs;
     }
 
     public void setEsEs(String esEs) {
-        this.esEs = esEs;
+        this.mEsEs = esEs;
     }
 
     public String getZhCn() {
-        return zhCn;
+        return mZhCn;
     }
 
     public void setZhCn(String zhCn) {
-        this.zhCn = zhCn;
+        this.mZhCn = zhCn;
     }
 
     public String getNlNl() {
-        return nlNl;
+        return mNlNl;
     }
 
     public void setNlNl(String nlNl) {
-        this.nlNl = nlNl;
+        this.mNlNl = nlNl;
     }
 
     @Override
@@ -94,9 +94,9 @@ public class LocalizedText implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(enGB);
-        dest.writeString(esEs);
-        dest.writeString(zhCn);
-        dest.writeString(nlNl);
+        dest.writeString(mEnGB);
+        dest.writeString(mEsEs);
+        dest.writeString(mZhCn);
+        dest.writeString(mNlNl);
     }
 }

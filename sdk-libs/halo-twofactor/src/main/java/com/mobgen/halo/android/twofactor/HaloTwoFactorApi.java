@@ -1,8 +1,10 @@
 package com.mobgen.halo.android.twofactor;
 
 import android.content.IntentFilter;
+import android.support.annotation.IntDef;
 import android.support.annotation.Keep;
 import android.support.annotation.NonNull;
+import android.support.annotation.StringDef;
 
 import com.mobgen.halo.android.framework.common.annotations.Api;
 import com.mobgen.halo.android.framework.common.helpers.builder.IBuilder;
@@ -14,6 +16,11 @@ import com.mobgen.halo.android.twofactor.callbacks.HaloTwoFactorAttemptListener;
 import com.mobgen.halo.android.twofactor.callbacks.HaloTwoFactorNotification;
 import com.mobgen.halo.android.twofactor.callbacks.HaloTwoFactorSMS;
 import com.mobgen.halo.android.twofactor.receiver.HaloSMSSubscription;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
+import static java.lang.annotation.RetentionPolicy.SOURCE;
 
 /**
  * The two factor authentication API is a wrapper library that allows you
@@ -28,6 +35,15 @@ public class HaloTwoFactorApi extends HaloPluginApi {
      * The sms provider name.
      */
     private String smsProvider = "HALO";
+
+    /**
+     * Determines the issuer type of the notification code.
+     */
+    @Keep
+    @StringDef({TWO_FACTOR_NOTIFICATION_ISSUER, TWO_FACTOR_SMS_ISSUER})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface IssuerType {
+    }
 
     /**
      * The two factor push issuer.
@@ -98,7 +114,6 @@ public class HaloTwoFactorApi extends HaloPluginApi {
     @Api(2.3)
     public void listenTwoFactorAttempt(@NonNull HaloTwoFactorAttemptListener haloTwoFactorAttemptListener) {
         if(pushNotification) {
-            mHaloNotificationApi = HaloNotificationsApi.with(halo());
             twoFactorNotification = mHaloNotificationApi.listenTwoFactorNotifications(new HaloTwoFactorNotification(haloTwoFactorAttemptListener));
         }
         if(smsNotification){
@@ -113,7 +128,6 @@ public class HaloTwoFactorApi extends HaloPluginApi {
     @Api(2.3)
     public void release(){
         if(twoFactorNotification!=null) {
-            mHaloNotificationApi.release();
             twoFactorNotification.unsubscribe();
         }
         if(twoFactorSMS!=null) {
@@ -187,7 +201,8 @@ public class HaloTwoFactorApi extends HaloPluginApi {
         @Keep
         @Api(2.3)
         @NonNull
-        public Builder withNotifications() {
+        public Builder withNotifications(HaloNotificationsApi haloNotificationsApi) {
+            mTwoFactorApi.mHaloNotificationApi = haloNotificationsApi;
             mTwoFactorApi.pushNotification = true;
             return this;
         }

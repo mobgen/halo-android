@@ -3,6 +3,7 @@ package com.mobgen.halo.android.twofactor.callbacks;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+import com.mobgen.halo.android.twofactor.HaloTwoFactorApi;
 import com.mobgen.halo.android.twofactor.models.TwoFactorCode;
 
 /**
@@ -24,7 +25,7 @@ public class HaloTwoFactorSMS implements HaloSMSListener {
     }
 
     @Override
-    public void onSMSReceived(@NonNull Context context, @NonNull String code, @NonNull String issuer) {
+    public void onSMSReceived(@NonNull Context context, @NonNull String code, @NonNull @HaloTwoFactorApi.IssuerType String issuer) {
         mHaloTwoFactorAttemptListener.onTwoFactorReceived(new TwoFactorCode(code,issuer));
     }
 }

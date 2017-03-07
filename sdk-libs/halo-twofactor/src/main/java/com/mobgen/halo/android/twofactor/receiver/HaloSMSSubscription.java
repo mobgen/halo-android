@@ -28,6 +28,10 @@ import java.util.regex.Pattern;
 public class HaloSMSSubscription extends BroadcastReceiver implements ISubscription {
 
     /**
+     *  The error code to return if sms was not correct.
+     */
+    private static String ERROR_CODE = "-1";
+    /**
      * The context.
      */
     @NonNull
@@ -43,11 +47,6 @@ public class HaloSMSSubscription extends BroadcastReceiver implements ISubscript
      */
     @NonNull
     private String mProviderName;
-
-    /**
-     *  The error code to return if sms was not correct.
-     */
-    private static String ERROR_CODE = "-1";
 
     /**
      * Empty constuctor.
@@ -80,7 +79,7 @@ public class HaloSMSSubscription extends BroadcastReceiver implements ISubscript
         Bundle bundle = intent.getExtras();
         String code = "";
         if (bundle != null) {
-            final Object[] pdusObj = (Object[]) bundle.get("pdus");
+            Object[] pdusObj = (Object[]) bundle.get("pdus");
             for (int i = 0; i < pdusObj.length; i++) {
                 SmsMessage smsMessage;
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -120,6 +119,7 @@ public class HaloSMSSubscription extends BroadcastReceiver implements ISubscript
         for(int i=0;i<numberGroup.size();i++){
             if(numberGroup.get(i).length()==6){
                 codeFromMessage = numberGroup.get(i);
+                break;
             }
         }
         return codeFromMessage;
