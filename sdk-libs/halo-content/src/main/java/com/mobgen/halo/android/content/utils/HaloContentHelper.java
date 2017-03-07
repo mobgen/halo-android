@@ -6,6 +6,8 @@ import android.support.annotation.Keep;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.mobgen.halo.android.content.annotations.HaloConstructor;
+import com.mobgen.halo.android.content.models.GeneratedContent;
 import com.mobgen.halo.android.content.models.HaloContentInstance;
 import com.mobgen.halo.android.content.models.Paginated;
 import com.mobgen.halo.android.content.spec.HaloContentContract;
@@ -18,6 +20,7 @@ import com.mobgen.halo.android.framework.network.client.response.TypeReference;
 import com.mobgen.halo.android.framework.storage.exceptions.HaloStorageGeneralException;
 import com.mobgen.halo.android.framework.storage.exceptions.HaloStorageParseException;
 import com.mobgen.halo.android.framework.toolbox.data.HaloResultV2;
+import com.mobgen.halo.android.sdk.api.Halo;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -25,6 +28,8 @@ import org.json.JSONObject;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -100,6 +105,74 @@ public final class HaloContentHelper {
     }
 
     /**
+     *  Factory to fromCursorToModel a model given from a raw item
+     *
+     * @param cursor The raw used.
+     * @param clazz The class to convert the content.
+     * @param <T>
+     * @return The instance of the object of clazz type; otherwise null
+     */
+    @Nullable
+    public static <T> Object fromCursorToModel(@NonNull Cursor cursor, @NonNull Class<T> clazz) {
+        int sizeCursorColumns = cursor.getColumnNames().length;
+        //get the constructor of the object
+        Constructor<?> constructor = null;
+        for(int p=0;p<clazz.getConstructors().length;p++){
+            if(clazz.getConstructors()[p].getAnnotation(HaloConstructor.class)!=null) {
+                constructor = clazz.getConstructors()[p];
+            }
+        }
+        Object[] values = new Object[sizeCursorColumns];
+        for(int i=0;i<sizeCursorColumns;i++){
+            int type = cursor.getType(cursor.getColumnIndex(cursor.getColumnNames()[i]));
+            int indexParam = i;
+            //Look for index on constructor paramters
+            for(int j=0;j<constructor.getAnnotation(HaloConstructor.class).columnNames().length;j++){
+                if(constructor.getAnnotation(HaloConstructor.class).columnNames()[j].toLowerCase().equals(cursor.getColumnName(i).toLowerCase())){
+                    indexParam = j;
+                    break;
+                }
+            }
+            if (type == Cursor.FIELD_TYPE_NULL) {
+                values[indexParam] = null;
+            } else if (type == Cursor.FIELD_TYPE_INTEGER) {
+                try{
+                    Date date = new Date(Long.parseLong(cursor.getString(cursor.getColumnIndex(cursor.getColumnNames()[i]))));
+                    values[indexParam] = date;
+                } catch (NumberFormatException e){
+                    values[indexParam] = cursor.getInt(cursor.getColumnIndex(cursor.getColumnNames()[i]));
+                }
+            } else if (type == Cursor.FIELD_TYPE_STRING) {
+
+                if(cursor.getString(cursor.getColumnIndex(cursor.getColumnNames()[i])).equals("false")){
+                    values[indexParam] = false;
+                } else if(cursor.getString(cursor.getColumnIndex(cursor.getColumnNames()[i])).equals("true")){
+                    values[indexParam] = true;
+                } else{
+                    try {
+                        String objectSerialized = cursor.getString(cursor.getColumnIndex(cursor.getColumnNames()[i]));
+                        values[indexParam] = GeneratedContent.deserialize(objectSerialized, Halo.instance().framework().parser(),constructor.getParameterTypes()[indexParam]);
+                    } catch (HaloParsingException | NullPointerException e) {
+                        values[indexParam] = cursor.getString(cursor.getColumnIndex(cursor.getColumnNames()[i]));
+                    }
+                }
+            }
+        }
+        Object instance = null;
+        try {
+            instance = constructor.newInstance(values);
+        } catch (IllegalAccessException e) {
+            return instance;
+        } catch (InstantiationException e) {
+            return instance;
+        } catch (InvocationTargetException e) {
+            return instance;
+        }
+
+        return instance;
+    }
+
+    /**
      * Factory to fromCursor a general content instance from a raw item.
      *
      * @param cursor The raw used to fromCursor the item.
@@ -160,6 +233,31 @@ public final class HaloContentHelper {
             } while (cursor.moveToNext());
         }
         if (shouldClose) {
+            cursor.close();
+        }
+        return instances;
+    }
+
+
+    /**
+     * Creates a list of model generated elements from a raw.
+     *
+     * @param cursor      The raw that will be used to fromCursor the items.
+     * @return The list of elements.
+     * @throws HaloStorageParseException while parsing the content as json.
+     */
+    @NonNull
+    public static <T> List<T> createList(Cursor cursor,@NonNull Class<T> clazz) throws HaloStorageParseException {
+        List<T> instances = new ArrayList<>(cursor.getCount());
+        if (cursor.moveToFirst()) {
+            do {
+                Object instance = fromCursorToModel(cursor,clazz);
+                if(instance!=null) {
+                    instances.add((T) instance);
+                }
+            } while (cursor.moveToNext());
+        }
+        if (cursor!=null && !cursor.isClosed()) {
             cursor.close();
         }
         return instances;

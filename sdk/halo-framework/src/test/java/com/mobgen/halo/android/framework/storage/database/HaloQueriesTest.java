@@ -2,11 +2,13 @@ package com.mobgen.halo.android.framework.storage.database;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.mobgen.halo.android.framework.mock.instrumentation.HaloManagerContractInstrument;
 import com.mobgen.halo.android.framework.storage.database.dsl.queries.Create;
 import com.mobgen.halo.android.framework.storage.database.dsl.queries.Delete;
+import com.mobgen.halo.android.framework.storage.database.dsl.queries.Drop;
 import com.mobgen.halo.android.framework.storage.database.dsl.queries.Select;
 import com.mobgen.halo.android.framework.storage.exceptions.HaloStorageGeneralException;
 import com.mobgen.halo.android.testing.CallbackFlag;
@@ -18,6 +20,7 @@ import org.junit.Test;
 
 import static com.mobgen.halo.android.framework.mock.instrumentation.HaloDatabaseInstrument.givenAHaloDataLite;
 import static com.mobgen.halo.android.framework.mock.instrumentation.HaloDatabaseInstrument.givenATransactionCallbackDelete;
+import static com.mobgen.halo.android.framework.mock.instrumentation.HaloDatabaseInstrument.givenATransactionCallbackDrop;
 import static com.mobgen.halo.android.framework.mock.instrumentation.HaloDatabaseInstrument.givenATransactionCallbackSelect;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
@@ -171,5 +174,22 @@ public class HaloQueriesTest extends HaloRobolectricTest {
         cursor.moveToFirst();
         assertThat(cursor).isNotNull();
         assertThat(cursor.getString(0)).isEqualTo("1");
+    }
+
+    @Test(expected=HaloStorageGeneralException.class)
+    public void thatDropDslWork() throws HaloStorageGeneralException {
+        HaloDataLite.HaloDataLiteTransaction transactionCallback = givenATransactionCallbackDrop(mCallbackFlag);
+        mHaloDatabase.transaction(transactionCallback);
+        assertThat(mCallbackFlag.isFlagged()).isTrue();
+    }
+
+    @Test(expected=SQLException.class)
+    public void thatDropTableWorkWithoutTransactionCallback(){
+        SQLiteDatabase database = mHaloDatabase.getDatabase();
+        Create.table(HaloManagerContractInstrument
+                .HaloTableContentTest.class).on(database,"create table");
+        Drop.table(HaloManagerContractInstrument
+                .HaloTableContentTest.class).on(database,"drop table");
+        database.rawQuery("SELECT * FROM halotable",new String[]{null});
     }
 }

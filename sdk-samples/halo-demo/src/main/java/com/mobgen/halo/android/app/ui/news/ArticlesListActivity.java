@@ -2,7 +2,6 @@ package com.mobgen.halo.android.app.ui.news;
 
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
@@ -18,8 +17,6 @@ import com.mobgen.halo.android.app.ui.MobgenHaloActivity;
 import com.mobgen.halo.android.app.ui.MobgenHaloApplication;
 import com.mobgen.halo.android.app.ui.views.DividerItemDecoration;
 import com.mobgen.halo.android.app.utils.ViewUtils;
-import com.mobgen.halo.android.content.models.HaloContentInstance;
-import com.mobgen.halo.android.content.models.Paginated;
 import com.mobgen.halo.android.content.models.SearchQuery;
 import com.mobgen.halo.android.content.search.SearchQueryBuilderFactory;
 import com.mobgen.halo.android.framework.toolbox.data.CallbackV2;

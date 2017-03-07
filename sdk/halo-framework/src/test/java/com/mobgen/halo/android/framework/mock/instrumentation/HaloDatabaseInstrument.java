@@ -10,6 +10,7 @@ import com.mobgen.halo.android.framework.storage.database.HaloDatabaseMigration;
 import com.mobgen.halo.android.framework.storage.database.HaloDatabaseVersionManager;
 import com.mobgen.halo.android.framework.storage.database.dsl.queries.Create;
 import com.mobgen.halo.android.framework.storage.database.dsl.queries.Delete;
+import com.mobgen.halo.android.framework.storage.database.dsl.queries.Drop;
 import com.mobgen.halo.android.framework.storage.database.dsl.queries.Select;
 import com.mobgen.halo.android.framework.storage.exceptions.HaloStorageException;
 import com.mobgen.halo.android.testing.CallbackFlag;
@@ -157,6 +158,20 @@ public class HaloDatabaseInstrument {
                 cursor.moveToFirst();
                 assertThat(cursor).isNotNull();
                 assertThat(cursor.getString(0)).isEqualTo("1");
+            }
+        };
+    }
+
+    public static HaloDataLite.HaloDataLiteTransaction givenATransactionCallbackDrop(final CallbackFlag flag){
+        return new HaloDataLite.HaloDataLiteTransaction() {
+            @Override
+            public void onTransaction(@NonNull SQLiteDatabase database) throws HaloStorageException {
+                flag.flagExecuted();
+                Create.table(HaloManagerContractInstrument
+                        .HaloTableContentTest.class).on(database,"create table");
+                Drop.table(HaloManagerContractInstrument
+                        .HaloTableContentTest.class).on(database,"drop table");
+                database.rawQuery("SELECT * FROM halotable",new String[]{null});
             }
         };
     }

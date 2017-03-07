@@ -5,6 +5,11 @@ import android.os.Parcelable;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
+import com.mobgen.halo.android.content.annotations.HaloConstructor;
+import com.mobgen.halo.android.content.annotations.HaloField;
+import com.mobgen.halo.android.content.annotations.HaloQueries;
+import com.mobgen.halo.android.content.annotations.HaloQuery;
+import com.mobgen.halo.android.content.annotations.HaloSearchable;
 
 import java.util.Date;
 
@@ -12,8 +17,13 @@ import java.util.Date;
  * Created by javierdepedrolopez on 9/11/15.
  */
 @JsonObject
+@HaloSearchable(version = 13 , tableName = "Article")
+@HaloQueries(queries = {@HaloQuery(name="deleteByTitle", query=("delete from Article where Title = @{mTitle:String}")),
+        @HaloQuery(name="selectTitle",query="select * from Article where Title = @{mTitle:String}"),
+        @HaloQuery(name="insertArticle",query="insert into Article(Title,Date,ContentHtml,Summary,Thumbnail,Image) VALUES (@{mTitle:String},@{mDate:Date},@{mArticle:String},@{mSummary:String},@{mThumbnail:String},@{mImage:String});")
+})
 public class Article implements Parcelable {
-
+    @HaloField(index = true,columnName = "Title")
     @JsonField(name = "Title")
     String mTitle;
 
@@ -29,6 +39,7 @@ public class Article implements Parcelable {
     @JsonField(name = "Thumbnail")
     String mThumbnail;
 
+    @HaloField(index = true,columnName = "Image")
     @JsonField(name = "Image")
     String mImage;
 
@@ -36,13 +47,16 @@ public class Article implements Parcelable {
 
     }
 
-    public Article(String title, Date date, String article, String thumnail, String image) {
+    @HaloConstructor( columnNames = {"Title","Date","ContentHtml","Summary","Thumbnail","Image"})
+    public Article(String title, Date date, String article, String summary, String thumnail, String image) {
         mTitle = title;
         mDate = date;
         mArticle = article;
+        mSummary = summary;
         mThumbnail = thumnail;
         mImage = image;
     }
+
 
     public String getTitle() {
         return mTitle;
