@@ -21,7 +21,7 @@ public class VersionRemoteDatasource {
     /**
      * The url of the server version.
      */
-    public static final String URL_VERSION = "api/authentication/version?current=true";
+    public static final String URL_VERSION = "api/authentication/version/current";
 
     /**
      * The client Api.

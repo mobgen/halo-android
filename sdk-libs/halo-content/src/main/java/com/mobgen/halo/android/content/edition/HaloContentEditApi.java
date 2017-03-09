@@ -56,7 +56,7 @@ public class HaloContentEditApi extends HaloPluginApi {
     public HaloInteractorExecutor<HaloContentInstance> addContent(@NonNull HaloContentInstance haloContentInstance) {
         AssertionUtils.notNull(haloContentInstance, "haloContentInstance");
         return new HaloInteractorExecutor<>(halo(),
-                "Sign in with halo",
+                "Create content",
                 new ContentManipulationInteractor(new ContentManipulationRepository(HaloContentApi.with(halo()),new ContentManipulationRemoteDataSource(halo().framework().network())),
                         haloContentInstance, HaloRequestMethod.POST)
         );
@@ -75,7 +75,7 @@ public class HaloContentEditApi extends HaloPluginApi {
     public HaloInteractorExecutor<HaloContentInstance> updateContent(@NonNull HaloContentInstance haloContentInstance) {
         AssertionUtils.notNull(haloContentInstance, "haloContentInstance");
         return new HaloInteractorExecutor<>(halo(),
-                "Sign in with halo",
+                "Update content",
                 new ContentManipulationInteractor(new ContentManipulationRepository(HaloContentApi.with(halo()),new ContentManipulationRemoteDataSource(halo().framework().network()))
                         , haloContentInstance, HaloRequestMethod.PUT)
         );
@@ -94,7 +94,7 @@ public class HaloContentEditApi extends HaloPluginApi {
     public HaloInteractorExecutor<HaloContentInstance> deleteContent(@NonNull HaloContentInstance haloContentInstance) {
         AssertionUtils.notNull(haloContentInstance, "haloContentInstance");
         return new HaloInteractorExecutor<>(halo(),
-                "Sign in with halo",
+                "Delete content",
                 new ContentManipulationInteractor(new ContentManipulationRepository(HaloContentApi.with(halo()),new ContentManipulationRemoteDataSource(halo().framework().network())),
                         haloContentInstance, HaloRequestMethod.DELETE)
         );

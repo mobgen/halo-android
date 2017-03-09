@@ -37,7 +37,7 @@ public class HaloModule implements Parcelable {
     /**
      * The id of the customer that created this middleware.
      */
-    @JsonField(name = "customer")
+    @JsonField(name = "customerId")
     Integer mCustomerId;
     /**
      * The unique id of this middleware.
