@@ -26,6 +26,7 @@ import com.mobgen.halo.android.sdk.core.internal.storage.HaloManagerContract;
 import com.mobgen.halo.android.sdk.core.management.segmentation.HaloLocale;
 import com.mobgen.halo.android.translations.HaloTranslationsApi;
 import com.squareup.leakcanary.LeakCanary;
+import com.mobgen.halo.android.twofactor.HaloTwoFactorApi;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -40,31 +41,41 @@ public class MobgenHaloApplication extends HaloApplication {
     /**
      * Annotation name for the environment definition.
      */
-    @IntDef({QA, INT, STAGE, PROD, UAT})
+    @IntDef({CUSTOM,LOCAL,QA, INT, STAGE, PROD, UAT})
     @Retention(RetentionPolicy.SOURCE)
     public @interface Environment {
     }
 
     /**
+     * Local environment definition.
+     */
+    public static final int CUSTOM = 0;
+
+    /**
+     * Local environment definition.
+     */
+    public static final int LOCAL = 1;
+
+    /**
      * QA environment definition.
      */
-    public static final int QA = 0;
+    public static final int QA = 2;
     /**
      * Int environment definition.
      */
-    public static final int INT = 1;
+    public static final int INT = 3;
     /**
      * Stage environment definition.
      */
-    public static final int STAGE = 2;
+    public static final int STAGE = 4;
     /**
      * Production environment definition.
      */
-    public static final int PROD = 3;
+    public static final int PROD = 5;
     /**
      * UAT environment definition.
      */
-    public static final int UAT = 4;
+    public static final int UAT = 6;
 
     /**
      * Translations api.
@@ -78,11 +89,19 @@ public class MobgenHaloApplication extends HaloApplication {
      * Social api.
      */
     private static HaloAuthApi mAuthApi;
-
+    /**
+     * Silent listen notifications
+     */
     private static ISubscription mSilentHaloNotificationListener;
+
+    /**
+     * Two factor authentication api
+     */
+    private static HaloTwoFactorApi mTwoFactorApi;
 
     @Override
     public void onCreate() {
+
         super.onCreate();
 
         //Leak canary
@@ -116,6 +135,13 @@ public class MobgenHaloApplication extends HaloApplication {
     public static Halo.Installer createHaloInstaller(Context context, @Environment int environment) {
         String environmentUrl;
         switch (environment) {
+            case CUSTOM:
+                SharedPreferences preferences = context.getSharedPreferences(HaloManagerContract.HALO_MANAGER_STORAGE, MODE_PRIVATE);
+                environmentUrl = preferences.getString(SettingsActivity.PREFERENCES_HALO_ENVIRONMENT_CUSTOM_URL, "https://halo-new-int.mobgen.com");
+                break;
+            case LOCAL:
+                environmentUrl = "http://halo-local.mobgen.com";
+                break;
             case STAGE:
                 environmentUrl = "https://halo-stage.mobgen.com";
                 break;
@@ -211,6 +237,17 @@ public class MobgenHaloApplication extends HaloApplication {
         mNotificationsApi = HaloNotificationsApi.with(halo);
         mSilentHaloNotificationListener = mNotificationsApi.listenSilentNotifications(new SilentNotificationDispatcher());
         mNotificationsApi.setNotificationDecorator(new DeeplinkDecorator(this));
+
+        if(mTwoFactorApi!=null){
+            mTwoFactorApi.release();
+            mTwoFactorApi = null;
+        }
+        mTwoFactorApi = HaloTwoFactorApi.with(halo)
+                .smsProvider("6505551212")
+                .withNotifications(mNotificationsApi)
+                .withSMS()
+                .build();
+
         return super.onHaloCreated(halo);
     }
 
@@ -220,5 +257,9 @@ public class MobgenHaloApplication extends HaloApplication {
 
     public static HaloAuthApi getHaloAuthApi() {
         return mAuthApi;
+    }
+
+    public static HaloTwoFactorApi getTwoFactorApi() {
+        return mTwoFactorApi;
     }
 }

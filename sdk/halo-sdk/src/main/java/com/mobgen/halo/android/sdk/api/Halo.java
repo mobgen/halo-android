@@ -2,9 +2,11 @@ package com.mobgen.halo.android.sdk.api;
 
 import android.app.ActivityManager;
 import android.content.Context;
+import android.os.Build;
 import android.support.annotation.Keep;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 
 import com.mobgen.halo.android.framework.api.HaloConfig;
 import com.mobgen.halo.android.framework.api.HaloFramework;
@@ -28,6 +30,7 @@ import com.mobgen.halo.android.sdk.core.management.models.Credentials;
 import com.mobgen.halo.android.sdk.core.management.segmentation.DefaultCollectorFactory;
 import com.mobgen.halo.android.sdk.core.management.segmentation.TagCollector;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -110,19 +113,30 @@ public class Halo {
     /**
      * Prints in the log the halo footprint.
      */
+    /***
+     *    __/\\\________/\\\______/\\\\\\\\\______/\\\____________________/\\\\\______
+     *     _\/\\\_______\/\\\____/\\\\\\\\\\\\\___\/\\\__________________/\\\///\\\____
+     *      _\/\\\_______\/\\\___/\\\/////////\\\__\/\\\________________/\\\/__\///\\\__
+     *       _\/\\\\\\\\\\\\\\\__\/\\\_______\/\\\__\/\\\_______________/\\\______\//\\\_
+     *        _\/\\\/////////\\\__\/\\\\\\\\\\\\\\\__\/\\\______________\/\\\_______\/\\\_
+     *         _\/\\\_______\/\\\__\/\\\/////////\\\__\/\\\______________\//\\\______/\\\__
+     *          _\/\\\_______\/\\\__\/\\\_______\/\\\__\/\\\_______________\///\\\__/\\\____
+     *           _\/\\\_______\/\\\__\/\\\_______\/\\\__\/\\\\\\\\\\\\\\\_____\///\\\\\/_____
+     *            _\///________\///___\///________\///___\///////////////________\/////_______
+     */
     private void printHaloFootPrint() {
-        Halog.d(getClass(), "------------------------------------------");
-        Halog.d(getClass(), "|            HALO IS STARTING            |");
-        Halog.d(getClass(), "|                                        |");
-        Halog.d(getClass(), "|                 %% % %%                |");
-        Halog.d(getClass(), "|               %%       %%              |");
-        Halog.d(getClass(), "|             %%           %%            |");
-        Halog.d(getClass(), "|            %%   H A L O   %%           |");
-        Halog.d(getClass(), "|             %%           %%            |");
-        Halog.d(getClass(), "|               %%       %%              |");
-        Halog.d(getClass(), "|                 %% % %%                |");
-        Halog.d(getClass(), "|                                        |");
-        Halog.d(getClass(), "------------------------------------------");
+        String footprint = "\n /************************************ HALO IS STARTING ************************************/\n" +
+                " /*    __/\\\\\\________/\\\\\\______/\\\\\\\\\\\\\\\\\\______/\\\\\\____________________/\\\\\\\\\\______        */\n" +
+                " /*     _\\/\\\\\\_______\\/\\\\\\____/\\\\\\\\\\\\\\\\\\\\\\\\\\___\\/\\\\\\__________________/\\\\\\///\\\\\\____       */\n" +
+                " /*      _\\/\\\\\\_______\\/\\\\\\___/\\\\\\/////////\\\\\\__\\/\\\\\\________________/\\\\\\/__\\///\\\\\\__      */\n" +
+                " /*       _\\/\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\__\\/\\\\\\_______\\/\\\\\\__\\/\\\\\\_______________/\\\\\\______\\//\\\\\\_     */\n" +
+                " /*        _\\/\\\\\\/////////\\\\\\__\\/\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\__\\/\\\\\\______________\\/\\\\\\_______\\/\\\\\\_    */\n" +
+                " /*         _\\/\\\\\\_______\\/\\\\\\__\\/\\\\\\/////////\\\\\\__\\/\\\\\\______________\\//\\\\\\______/\\\\\\__   */\n" +
+                " /*          _\\/\\\\\\_______\\/\\\\\\__\\/\\\\\\_______\\/\\\\\\__\\/\\\\\\_______________\\///\\\\\\__/\\\\\\____  */\n" +
+                " /*           _\\/\\\\\\_______\\/\\\\\\__\\/\\\\\\_______\\/\\\\\\__\\/\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\_____\\///\\\\\\\\\\/_____ */\n" +
+                " /*            _\\///________\\///___\\///________\\///___\\///////////////________\\/////_______*/\n" +
+                " /******************************************************************************************/\n";
+        Halog.d(getClass(),footprint);
     }
 
     /**
@@ -304,17 +318,20 @@ public class Halo {
          *
          * @param ctx The context of this installer.
          */
+        @RequiresApi(api = Build.VERSION_CODES.N)
         @Keep
         Installer(@NonNull Context ctx) {
             //Add a cache with the needed size
             int memClass = ((ActivityManager) ctx.getSystemService(Context.ACTIVITY_SERVICE)).getMemoryClass();
             int cacheSize = 1024 * 1024 * memClass / 8;
             long timeout = 1;
+            File cacheDir = new File(ctx.getApplicationInfo().dataDir, "cache");
+
             //This is using the default builder that will be used for normal execution
             mConfigurationBuilder = HaloConfig.builder(ctx)
                     .setParser(LoganSquareParserFactory.create())
                     .setOkClient(new OkHttpClient.Builder()
-                            .cache(new Cache(ctx.getCacheDir(), cacheSize))
+                            .cache(new Cache(cacheDir, cacheSize))
                             .connectTimeout(timeout, TimeUnit.MINUTES)
                             .readTimeout(timeout, TimeUnit.MINUTES)
                             .writeTimeout(timeout, TimeUnit.MINUTES));

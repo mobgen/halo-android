@@ -4,5 +4,6 @@ include ":halo-content-annotations"
 include ":halo-notifications"
 include ":halo-translations"
 include ":halo-presenter"
-include ':halo-auth'
+include ":halo-auth"
 include ":halo-analytics"
+include ":halo-twofactor"

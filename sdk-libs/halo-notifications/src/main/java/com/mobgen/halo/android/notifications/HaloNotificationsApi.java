@@ -179,6 +179,22 @@ public class HaloNotificationsApi extends HaloPluginApi {
         AssertionUtils.notNull(listener, "listener");
         return NotificationEmitter.createSilentNotificationSubscription(context(), listener);
     }
+    /**
+     * Sets a notification listener that listens for two factor authentication code notifications received from HALO.
+     * You can attach as many listeners as you want, but make
+     * sure you remove the listener by calling <code>subscription.unsubscribe();</code>
+     *
+     * @param listener The listener that will be attached.
+     * @return A subscription for the listener provided.
+     */
+    @Keep
+    @NonNull
+    @Api(2.3)
+    @CheckResult(suggest = "Subscription.unsubscribe() to avoid memory leaks")
+    public ISubscription listenTwoFactorNotifications(@NonNull HaloNotificationListener listener) {
+        AssertionUtils.notNull(listener, "listener");
+        return NotificationEmitter.createTwoFActorSubscription(context(), listener);
+    }
 
     /**
      * Sets the custom notification decorator. A decorator allows the user to

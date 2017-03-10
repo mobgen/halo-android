@@ -95,10 +95,14 @@ halo {
     clientIdDebug "halotestappclient"
     clientSecretDebug "halotestapppass"
     services {
+        twofactorauth {
+            push true
+            sms true
+        }
         notifications true
         translations true
         content true
-//        analytics false
+        analytics false
         auth {
             google "270833877774-o2e4nmcr4i3gu4e6nbf3a9bvnd92k5gk.apps.googleusercontent.com"
             facebook "519176818273005"

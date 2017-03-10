@@ -43,6 +43,16 @@ public class NotificationService extends FirebaseMessagingService {
     private static final AtomicInteger mNotificationId = new AtomicInteger(0);
 
     /**
+     * The two factor key
+     */
+    private static final String TWO_FACTOR_CODE = "2_FACTOR";
+
+    /**
+     * The silent notification key
+     */
+    private static final String SILENT_KEY = "1";
+
+    /**
      * The custom decorator that the user can set just to add some behaviour on the notifications. This decorator
      * will be set as a leaf, so there is no need to call to {@link HaloNotificationDecorator#chain(NotificationCompat.Builder, Bundle) chain} unless
      * you set other decorators dependant on this.
@@ -108,11 +118,13 @@ public class NotificationService extends FirebaseMessagingService {
         String from = message.getFrom();
 
         Bundle dataBundle = messageToBundle(message);
-
-        if (isSilent(dataBundle)) {
+        if(isTwoFactor(dataBundle)) {
+            //Let the two factor handle it
+            NotificationEmitter.emitTwoFactor(this, from, dataBundle);
+        } else if (isSilent(dataBundle)) {
             //Let the silent handle manage it
             NotificationEmitter.emitSilent(this, from, dataBundle);
-        } else {
+        }  else {
             //Build notification based on decorators
             NotificationCompat.Builder builder = createNotificationDecorator().decorate(new NotificationCompat.Builder(this), dataBundle);
             //Notify if available and the decorator provides a builder. If a custom decorator provides a null builder
@@ -139,7 +151,16 @@ public class NotificationService extends FirebaseMessagingService {
      * @return True if it is a silent notification. False otherwise.
      */
     private boolean isSilent(@NonNull Bundle data) {
-        return "1".equalsIgnoreCase(data.getString("content_available"));
+        return SILENT_KEY.equalsIgnoreCase(data.getString("content_available"));
+    }
+
+    /**
+     * A notification is considered Two Factor Authentiaction if comes with the 2_FACTOR code.
+     * @param data
+     * @return True if it is a silent notification. False otherwise.
+     */
+    private boolean isTwoFactor(@NonNull Bundle data) {
+        return TWO_FACTOR_CODE.equalsIgnoreCase(data.getString("type"));
     }
 
     /**

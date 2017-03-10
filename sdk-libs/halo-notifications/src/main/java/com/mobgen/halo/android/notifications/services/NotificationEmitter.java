@@ -29,6 +29,10 @@ public final class NotificationEmitter {
     /**
      * Intent filter to refresh the token.
      */
+    private static final String NOTIFICATION_TWO_FACTOR = ":halo:notifications:two_factor";
+    /**
+     * Intent filter to refresh the token.
+     */
     private static final String NOTIFICATION_SILENT_NOTIFICATIONS = ":halo:notifications:silent";
     /**
      * Intent filter to refresh the token.
@@ -126,6 +130,29 @@ public final class NotificationEmitter {
      */
     public static void emitNotSilent(@NonNull Context context, @NonNull String from, @NonNull Bundle data) {
         context.sendBroadcast(getIntentFor(context, from, data, NOTIFICATION_NOT_SILENT_NOTIFICATIONS));
+    }
+
+    /**
+     * Listen for two factor authentication notifications.
+     *
+     * @param context  The context.
+     * @param listener The listener.
+     * @return The subscription created.
+     */
+    @NonNull
+    @CheckResult(suggest = "Keep a reference to unsubscribe.")
+    public static ISubscription createTwoFActorSubscription(@NonNull Context context, @NonNull HaloNotificationListener listener) {
+        return new ReceiverSubscription(context, listener, getFilterFor(context, NOTIFICATION_TWO_FACTOR));
+    }
+
+    /**
+     * Emit a broadcast for the notification provided.
+     * @param context The context.
+     * @param from    The source of the notification.
+     * @param data    The data created.
+     */
+    public static void emitTwoFactor(@NonNull Context context, @NonNull String from, @NonNull Bundle data) {
+        context.sendBroadcast(getIntentFor(context, from, data, NOTIFICATION_TWO_FACTOR));
     }
 
     /**

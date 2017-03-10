@@ -1,6 +1,5 @@
 package com.mobgen.halo.android.framework.common.helpers.logger;
 
-import android.content.Context;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -218,7 +217,7 @@ public class Halog {
      * @param haloFramework The halo framework instance
      */
     @NonNull
-    @Api(2.2)
+    @Api(2.3)
     public static void setupPrintLogToFile(@NonNull HaloFramework haloFramework) {
         AssertionUtils.notNull(haloFramework,"haloFramework");
         if (mPrintDebug) {
@@ -231,21 +230,28 @@ public class Halog {
                 Timestamp timestamp = new Timestamp(now.getTime());
                 filename = String.format(filename, timestamp.toString());
             }
-            if (mPrintLogToFilePolicy != PrintLog.NO_FILE_POLICY) {
-                mLogFile = new File(haloFramework.context().getExternalFilesDir(null).getAbsolutePath() + filename);
-                try {
-                    //create directory
-                    File directory = mLogFile.getParentFile();
-                    if (!directory.exists()) {
-                        directory.mkdirs();
+
+            //run on background thread
+            mHaloFramework.toolbox().queue().enqueue(Threading.SINGLE_QUEUE_POLICY, new Runnable() {
+                @Override
+                public void run() {
+                    if (mPrintLogToFilePolicy != PrintLog.NO_FILE_POLICY) {
+                        mLogFile = new File(mHaloFramework.context().getExternalFilesDir(null).getAbsolutePath() + filename);
+                        try {
+                            //create directory
+                            File directory = mLogFile.getParentFile();
+                            if (!directory.exists()) {
+                                directory.mkdirs();
+                            }
+                            if (mLogFile.exists()) {
+                                mLogFile.delete();
+                            }
+                            mLogFile.createNewFile();
+                        } catch (IOException e) {
+                        }
                     }
-                    if (mLogFile.exists()) {
-                        mLogFile.delete();
-                    }
-                    mLogFile.createNewFile();
-                } catch (IOException e) {
                 }
-            }
+            });
         }
     }
 
