@@ -9,7 +9,7 @@ apply from: "common.gradle"
 /**
  * Sdk
  */
- task cleanSdk(type: GradleBuild) {
+task cleanSdk(type: GradleBuild) {
     group = "halo"
     description = "Cleans the sdk"
     buildFile = file('sdk/build.gradle')

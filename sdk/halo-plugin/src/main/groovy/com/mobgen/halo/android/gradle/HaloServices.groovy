@@ -113,6 +113,8 @@ public class HaloServices {
         if (contentEnabled) {
             String loganVersion = "1.3.6";
             project.dependencies.add("apt", "com.bluelinelabs:logansquare-compiler:${loganVersion}")
+            project.dependencies.add("compile", "${HaloPlugin.GROUP_NAME}:halo-content-annotations:${dependencyVersion}")
+            project.dependencies.add("apt", "${HaloPlugin.GROUP_NAME}:halo-content-processor:${dependencyVersion}")
             project.dependencies.add(dependencyMode, "${HaloPlugin.GROUP_NAME}:halo-content:${dependencyVersion}")
         }
     }

@@ -10,11 +10,13 @@ import com.facebook.stetho.Stetho;
 import com.joanzapata.iconify.Iconify;
 import com.joanzapata.iconify.fonts.FontAwesomeModule;
 import com.mobgen.halo.android.app.BuildConfig;
+import com.mobgen.halo.android.app.generated.GeneratedDatabaseFromModel;
 import com.mobgen.halo.android.app.module.ConfigurationModule;
 import com.mobgen.halo.android.app.notifications.DeeplinkDecorator;
 import com.mobgen.halo.android.app.notifications.SilentNotificationDispatcher;
 import com.mobgen.halo.android.app.ui.settings.SettingsActivity;
 import com.mobgen.halo.android.auth.HaloAuthApi;
+import com.mobgen.halo.android.content.HaloContentApi;
 import com.mobgen.halo.android.framework.common.helpers.logger.PrintLog;
 import com.mobgen.halo.android.framework.common.helpers.subscription.ISubscription;
 import com.mobgen.halo.android.notifications.HaloNotificationsApi;
@@ -223,6 +225,8 @@ public class MobgenHaloApplication extends HaloApplication {
                 .withFacebook()
                 .withGoogle()
                 .build();
+        //Generated content api
+        HaloContentApi.with(MobgenHaloApplication.halo(), null, new GeneratedDatabaseFromModel());
         //notifications
         if (mNotificationsApi != null) {
             mNotificationsApi.release();

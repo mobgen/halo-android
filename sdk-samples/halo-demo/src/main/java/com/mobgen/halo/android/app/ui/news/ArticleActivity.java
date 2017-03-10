@@ -17,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mobgen.halo.android.app.R;
+import com.mobgen.halo.android.app.generated.HaloContentQueryApi;
 import com.mobgen.halo.android.app.model.Article;
 import com.mobgen.halo.android.app.ui.MobgenHaloActivity;
 import com.mobgen.halo.android.app.ui.MobgenHaloApplication;
@@ -95,6 +96,23 @@ public class ArticleActivity extends MobgenHaloActivity {
         } else {
             finish();
         }
+
+        HaloContentQueryApi.with(MobgenHaloApplication.halo()).selectTitle(mArticle.getTitle())
+                .asContent(Article.class)
+                .execute(new CallbackV2<List<Article>>() {
+                    @Override
+                    public void onFinish(@NonNull HaloResultV2<List<Article>> result) {
+                        if(result.data().size()==0){
+                            insertArticle();
+                        }
+                    }
+                });
+    }
+
+    private void insertArticle(){
+        HaloContentQueryApi.with(MobgenHaloApplication.halo()).insertArticle(mArticle.getTitle(),mArticle.getDate(),mArticle.getArticle(),mArticle.getSummary(),mArticle.getThumbnail(),mArticle.getImage())
+                .asContent(Article.class)
+                .execute();
     }
 
     @Override
@@ -136,13 +154,13 @@ public class ArticleActivity extends MobgenHaloActivity {
      * @param instanceId The instance id.
      */
     private void loadNewsInstanceDeepLink(String instanceId) {
+
         SearchQuery options = SearchQuery.builder()
                 .onePage(true)
                 .instanceIds(instanceId)
                 .searchTag(instanceId)
                 .segmentWithDevice()
                 .build();
-
         HaloContentApi.with(MobgenHaloApplication.halo())
                 .search(Data.NETWORK_AND_STORAGE, options)
                 .asContent(Article.class)

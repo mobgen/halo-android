@@ -58,17 +58,15 @@ public class InternetBroadcastListener extends BroadcastReceiver {
     /**
      * Stops listening the context.
      *
-     * @param listener The broadcast listener.
      */
-    @Api(2.0)
-    public void unlisten(@NonNull InternetBroadcastListener listener) {
-        mContext.unregisterReceiver(listener);
+    @Api(2.3)
+    public void unlisten() {
+        mContext.unregisterReceiver(this);
     }
 
     @Override
     public void onReceive(Context context, Intent intent) {
         if (HaloUtils.isNetworkConnected(context)) {
-            context.unregisterReceiver(this);
             mListener.onInternetReady();
         }
     }
