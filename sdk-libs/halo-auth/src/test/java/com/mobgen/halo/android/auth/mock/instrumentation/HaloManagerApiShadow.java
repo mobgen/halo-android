@@ -12,7 +12,7 @@ public class HaloManagerApiShadow {
 
     @Implementation
     public Device getDevice() {
-        Device device = new Device("myTestUser","57fb592ff53f3f002aa99d78","email@test.com","notificationtoken");
+        Device device = new Device("myTestUser","57fb592ff53f3f002aa99d78","email@test.com","notificationtoken","5");
         return device;
     }
 
