@@ -28,7 +28,7 @@ ext {
     targetSdkVersion = 24
 
     //Google
-    appcompatVersion = '24.2.1'
+    appcompatVersion = '25.0.0'
     firebaseVersion = '10.0.1'
 
     //Facebook

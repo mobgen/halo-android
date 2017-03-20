@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/srl_generic"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_generic"
+            android:layout_above="@+id/ll_text"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <LinearLayout
+            android:id="@+id/ll_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="1.0"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:background="@color/cardview_light_background"
+            android:orientation="horizontal"
+            android:paddingBottom="2dp" >
+
+
+            <EditText
+                android:id="@+id/et_send_message"
+                android:layout_weight="0.9"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:ems="10" />
+
+            <RelativeLayout
+                android:layout_weight="0.1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent">
+
+                <ImageButton
+                    android:id="@+id/im_send"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_centerInParent="true"
+                    android:background="@drawable/ic_send_black_24dp" />
+            </RelativeLayout>
+        </LinearLayout>
+    </RelativeLayout>
+
+</android.support.v4.widget.SwipeRefreshLayout>

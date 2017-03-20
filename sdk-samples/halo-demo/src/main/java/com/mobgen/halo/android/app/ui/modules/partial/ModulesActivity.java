@@ -26,12 +26,16 @@ import com.mobgen.halo.android.app.R;
 import com.mobgen.halo.android.app.model.MockAppConfiguration;
 import com.mobgen.halo.android.app.ui.MobgenHaloActivity;
 import com.mobgen.halo.android.app.ui.MobgenHaloApplication;
+import com.mobgen.halo.android.app.ui.chat.ChatRoomActivity;
 import com.mobgen.halo.android.app.ui.social.SocialLoginActivity;
+import com.mobgen.halo.android.framework.common.helpers.logger.Halog;
 import com.mobgen.halo.android.framework.common.utils.HaloUtils;
 import com.mobgen.halo.android.framework.toolbox.data.CallbackV2;
 import com.mobgen.halo.android.framework.toolbox.data.HaloResultV2;
 import com.mobgen.halo.android.twofactor.callbacks.HaloTwoFactorAttemptListener;
 import com.mobgen.halo.android.twofactor.models.TwoFactorCode;
+
+import java.io.File;
 
 /**
  * This activity contains and displays in a left panel menu all the modules active for the current
@@ -75,6 +79,7 @@ public class ModulesActivity extends MobgenHaloActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_modules);
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.dl_modules);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -143,6 +148,9 @@ public class ModulesActivity extends MobgenHaloActivity {
                         public void onFinish(@NonNull HaloResultV2<Boolean> result) {
                             if(result.data()){
                                 createInfoDialog("See you soon ;)");
+                                //remove the chat qr image
+                                File chatImage =  new File(MobgenHaloApplication.halo().context().getExternalFilesDir(null).getAbsolutePath().toString() + "/qr/profile.jpg");
+                                chatImage.delete();
                             } else {
                                 createInfoDialog("You must signin or login");
                             }
@@ -152,6 +160,9 @@ public class ModulesActivity extends MobgenHaloActivity {
             return true;
         } else if (item.getItemId() == R.id.menu_login) {
             SocialLoginActivity.startActivity(this);
+            return true;
+        } else if (item.getItemId() == R.id.menu_chatroom) {
+            ChatRoomActivity.startActivity(this);
             return true;
         } else {
             return mToggle.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);

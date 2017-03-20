@@ -430,6 +430,22 @@ public class HaloManagerApi extends HaloPluginApi {
     }
 
     /**
+     * Provides the current app id. This can be null if halo is not initialized yet.
+     *
+     * @return The application id info.
+     */
+    @Keep
+    @Api(2.3)
+    @Nullable
+    public String getAppId() {
+        if(mDeviceRepository.getDeviceInMemory()!=null){
+            return mDeviceRepository.getDeviceInMemory().getAppId();
+        } else {
+            return null;
+        }
+    }
+
+    /**
      * Provides a callback to emit the device update.
      *
      * @return The callback that will emit the update.

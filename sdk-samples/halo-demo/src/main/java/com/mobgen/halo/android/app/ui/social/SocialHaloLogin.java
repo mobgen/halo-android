@@ -2,6 +2,7 @@ package com.mobgen.halo.android.app.ui.social;
 
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -9,7 +10,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.google.zxing.WriterException;
 import com.mobgen.halo.android.app.R;
+import com.mobgen.halo.android.app.generated.HaloContentQueryApi;
+import com.mobgen.halo.android.app.model.chat.QRContact;
 import com.mobgen.halo.android.app.ui.MobgenHaloActivity;
 import com.mobgen.halo.android.app.ui.MobgenHaloApplication;
 import com.mobgen.halo.android.auth.HaloAuthApi;
@@ -20,6 +24,14 @@ import com.mobgen.halo.android.auth.HaloAuthApi;
 import com.mobgen.halo.android.auth.models.HaloAuthProfile;
 import com.mobgen.halo.android.auth.models.IdentifiedUser;
 import com.mobgen.halo.android.auth.providers.SocialNotAvailableException;
+import com.mobgen.halo.android.framework.toolbox.threading.Threading;
+
+import java.io.File;
+import java.util.List;
+
+import androidmads.library.qrgenearator.QRGContents;
+import androidmads.library.qrgenearator.QRGEncoder;
+import androidmads.library.qrgenearator.QRGSaver;
 
 public class SocialHaloLogin extends MobgenHaloActivity implements View.OnClickListener, CallbackV2<IdentifiedUser> {
 
@@ -36,6 +48,11 @@ public class SocialHaloLogin extends MobgenHaloActivity implements View.OnClickL
      */
     private Button mLoginWithHalo;
 
+    /**
+     * The QR file
+     */
+    private File mQrFile;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,6 +60,8 @@ public class SocialHaloLogin extends MobgenHaloActivity implements View.OnClickL
         mContext = this;
         mAuthApi = MobgenHaloApplication.getHaloAuthApi();
         mLoginWithHalo = (Button) findViewById(R.id.halo_login);
+
+        mQrFile =  new File(MobgenHaloApplication.halo().context().getExternalFilesDir(null).getAbsolutePath().toString() + "/qr/");
 
     }
 
@@ -74,6 +93,31 @@ public class SocialHaloLogin extends MobgenHaloActivity implements View.OnClickL
     @Override
     public void onFinish(@NonNull HaloResultV2<IdentifiedUser> result) {
         if (result.status().isOk()) { // Ok
+            // Initializing the QR Encoder with your value to be encoded, type you required and Dimension
+            String alias = MobgenHaloApplication.halo().getCore().manager().getDevice().getAlias();
+            String appId = MobgenHaloApplication.halo().getCore().manager().getAppId();
+            String userName = result.data().getUser().getName();
+            String qrText = "halo://chat?alias=" + alias + "&appId="+ appId + "&userName=" + userName;
+            QRGEncoder qrgEncoder = new QRGEncoder(qrText, null, QRGContents.Type.TEXT, 200);
+            try {
+                // Getting QR-Code as Bitmap
+                Bitmap bitmap = qrgEncoder.encodeAsBitmap();
+                QRGSaver.save(mQrFile.toString(), "/profile", bitmap, QRGContents.ImageType.IMAGE_JPEG);
+                //save contact data into storage
+                HaloContentQueryApi.with(MobgenHaloApplication.halo())
+                        .insertContact(alias,userName,mQrFile.toString() + "/profile.jpg")
+                        .asContent(QRContact.class)
+                        .threadPolicy(Threading.POOL_QUEUE_POLICY)
+                        .execute(new CallbackV2<List<QRContact>>() {
+                            @Override
+                            public void onFinish(@NonNull HaloResultV2<List<QRContact>> result) {
+
+                            }
+                        });
+            } catch (WriterException e) {
+            }
+            Halog.d(getClass(), result.data().toString());
+
             Snackbar.make(getWindow().getDecorView(), result.data().getUser().getName(), Snackbar.LENGTH_LONG).show();
         } else { // Error
             Halog.d(getClass(), result.status().exception().toString());

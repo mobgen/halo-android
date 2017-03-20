@@ -2,8 +2,11 @@ package com.mobgen.halo.android.app.ui;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.crittercism.app.Crittercism;
 import com.facebook.stetho.Stetho;
@@ -20,9 +23,11 @@ import com.mobgen.halo.android.content.HaloContentApi;
 import com.mobgen.halo.android.framework.common.helpers.logger.PrintLog;
 import com.mobgen.halo.android.framework.common.helpers.subscription.ISubscription;
 import com.mobgen.halo.android.notifications.HaloNotificationsApi;
+import com.mobgen.halo.android.notifications.callbacks.HaloNotificationListener;
 import com.mobgen.halo.android.sdk.api.Halo;
 import com.mobgen.halo.android.sdk.api.HaloApplication;
 import com.mobgen.halo.android.sdk.core.internal.storage.HaloManagerContract;
+import com.mobgen.halo.android.sdk.core.management.models.Credentials;
 import com.mobgen.halo.android.sdk.core.management.segmentation.HaloLocale;
 import com.mobgen.halo.android.translations.HaloTranslationsApi;
 import com.squareup.leakcanary.LeakCanary;
@@ -93,7 +98,6 @@ public class MobgenHaloApplication extends HaloApplication {
      * Silent listen notifications
      */
     private static ISubscription mSilentHaloNotificationListener;
-
     /**
      * Two factor authentication api
      */
@@ -247,6 +251,11 @@ public class MobgenHaloApplication extends HaloApplication {
                 .withNotifications(mNotificationsApi)
                 .withSMS()
                 .build();
+
+        //change to editor credential
+        if(mAuthApi.isAccountStored()) {
+            Halo.instance().core().credentials(Credentials.createUser("editor@mobgen.com", "H4L0$editor"));
+        }
 
         return super.onHaloCreated(halo);
     }

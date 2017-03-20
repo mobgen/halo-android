@@ -11,6 +11,13 @@
         android:layout_height="wrap_content"
         android:padding="@dimen/default_padding">
 
+        <ImageView
+            android:visibility="gone"
+            android:layout_gravity="center_horizontal"
+            android:id="@+id/im_qr_credential"
+            android:layout_width="250dp"
+            android:layout_height="250dp" />
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

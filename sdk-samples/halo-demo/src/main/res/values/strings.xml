@@ -157,4 +157,17 @@
     <string name="social_halo_token">Socail Halo Token</string>
     <string name="social_google_token">Social Google Token</string>
     <string name="social_facebook_token">Social Facebook Token</string>
+
+    <!-- Chat -->
+    <string name="chat_room_title">Conversations</string>
+    <string name="chat_username">Username</string>
+    <string name="chat_message">Message</string>
+    <string name="chat_image">Chat image</string>
+    <string name="chat_today">Today</string>
+    <string name="chat_yesterday">Yesterday</string>
+    <string name="chat_add_contact">Add contact</string>
+    <string name="chat_new_contact_title">Congrats you have a new contact: </string>
+    <string name="chat_new_contact_msg">Start the conversation</string>
+    <string name="chat_new_msg_title">New message from: </string>
+
 </resources>
