@@ -160,6 +160,10 @@
 
     <!-- Chat -->
     <string name="chat_room_title">Conversations</string>
+    <string name="chat_scan_contact">Scan a QR code contact...</string>
+    <string name="chat_empty_contacts_title">Start the conversation.</string>
+    <string name="chat_empty_contacts">Its like  a desert in here. You need to scan some contacts.</string>
+    <string name="chat_multiple_room">All contacts</string>
     <string name="chat_username">Username</string>
     <string name="chat_message">Message</string>
     <string name="chat_image">Chat image</string>
@@ -169,5 +173,6 @@
     <string name="chat_new_contact_title">Congrats you have a new contact: </string>
     <string name="chat_new_contact_msg">Start the conversation</string>
     <string name="chat_new_msg_title">New message from: </string>
+    <string name="chat_new_msg_title_multiple">New broadacst message from: </string>
 
 </resources>

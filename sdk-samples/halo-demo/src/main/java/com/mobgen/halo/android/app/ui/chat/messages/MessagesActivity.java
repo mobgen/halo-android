@@ -49,6 +49,8 @@ import okhttp3.RequestBody;
  * Conversation with a user
  */
 public class MessagesActivity extends MobgenHaloActivity implements MessagesNotificationReceiver.MessageReceiveListener,View.OnClickListener,SwipeRefreshLayout.OnRefreshListener, MessagesAdapter.MessagesCallback {
+
+    public static final String MULTIPLE_ROOM = "multiple";
     /**
      * The user name.
      */
@@ -57,6 +59,10 @@ public class MessagesActivity extends MobgenHaloActivity implements MessagesNoti
      * The user alias.
      */
     public static final String BUNDLE_USER_ALIAS = "bundle_user_alias";
+    /**
+     * Idenfified if conversation is multiple for broadcasting
+     */
+    public static final String BUNDLE_MULTIPLE = "bundle_user_alias";
     /**
      * The intent filter to handle push notification with new messages
      */
@@ -80,6 +86,11 @@ public class MessagesActivity extends MobgenHaloActivity implements MessagesNoti
      */
     private RecyclerView mRecyclerView;
     /**
+     *
+     * Chat room name
+     */
+    private String mMessageRoomName;
+    /**
      * The messages adapter
      */
     private MessagesAdapter mAdapter;
@@ -91,6 +102,10 @@ public class MessagesActivity extends MobgenHaloActivity implements MessagesNoti
      * The contact alias
      */
     private String mContactAlias;
+    /**
+     * Identified if conversation is for broadcast
+     */
+    private boolean mIsMultiple;
     /**
      * My user name
      */
@@ -110,6 +125,8 @@ public class MessagesActivity extends MobgenHaloActivity implements MessagesNoti
 
     private Intent mChatService;
 
+    private String[] broadcastAlias;
+
     /**
      * Starts the activity.
      *
@@ -128,6 +145,13 @@ public class MessagesActivity extends MobgenHaloActivity implements MessagesNoti
     protected void onCreate(Bundle savedInstanceState) {
         mContactUserName = getIntent().getExtras().getString(BUNDLE_USER_NAME);
         mContactAlias = getIntent().getExtras().getString(BUNDLE_USER_ALIAS);
+        if(mContactAlias.equals(MessagesActivity.MULTIPLE_ROOM)){
+            mIsMultiple = true;
+            mMessageRoomName = getString(R.string.chat_multiple_room);
+        } else {
+            mIsMultiple = false;
+            mMessageRoomName = mContactUserName;
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.chat_recycler);
 
@@ -136,7 +160,7 @@ public class MessagesActivity extends MobgenHaloActivity implements MessagesNoti
 
         mRecyclerView = (RecyclerView) findViewById(R.id.rv_generic);
         mRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.srl_generic);
-        mAdapter = new MessagesAdapter(this, this);
+        mAdapter = new MessagesAdapter(this, this,mIsMultiple);
 
         mLinearLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLinearLayoutManager);
@@ -157,6 +181,22 @@ public class MessagesActivity extends MobgenHaloActivity implements MessagesNoti
         super.onPostCreate(savedInstanceState);
         requestChatMessages();
         mSendButton.setOnClickListener(this);
+
+        //get all contacts
+        HaloContentQueryApi.with(MobgenHaloApplication.halo())
+                .getContacts(MobgenHaloApplication.halo().getCore().manager().getDevice().getAlias(),MessagesActivity.MULTIPLE_ROOM)
+                .asContent(QRContact.class)
+                .execute(new CallbackV2<List<QRContact>>() {
+                    @Override
+                    public void onFinish(@NonNull HaloResultV2<List<QRContact>> result) {
+                        if(result.data().size()>0) {
+                            broadcastAlias = new String[result.data().size()];
+                            for (int i=0;i<result.data().size();i++){
+                                broadcastAlias[i] = result.data().get(i).getAlias();
+                            }
+                        }
+                    }
+                });
 
         if (Build.VERSION.SDK_INT >= 11) {
             mRecyclerView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
@@ -206,9 +246,20 @@ public class MessagesActivity extends MobgenHaloActivity implements MessagesNoti
             //save local the message and send the push
             String message = mMessageField.getText().toString();
             if(!message.isEmpty()) {
-                final ChatMessage chatMessageToStore = new ChatMessage(mContactAlias, mContactUserName, message, new Date(), false, false);
-                String senderAlias = MobgenHaloApplication.halo().getCore().manager().getDevice().getAlias();
-                final ChatMessage chatMessageToSend = new ChatMessage(senderAlias, mUserName, message, new Date(), false, true);
+                String storeUserName;
+                String storeAlias;
+                String senderAlias;
+                if(mIsMultiple){
+                    storeAlias = MessagesActivity.MULTIPLE_ROOM;
+                    storeUserName = mUserName;
+                    senderAlias = MessagesActivity.MULTIPLE_ROOM;
+                } else {
+                    storeAlias = mContactAlias;
+                    storeUserName = mContactUserName;
+                    senderAlias = MobgenHaloApplication.halo().getCore().manager().getDevice().getAlias();
+                }
+                final ChatMessage chatMessageToStore = new ChatMessage(storeAlias, storeUserName, message, new Date(), mIsMultiple, false);
+                final ChatMessage chatMessageToSend = new ChatMessage(senderAlias, mUserName, message, new Date(), mIsMultiple, true);
                 HaloContentQueryApi.with(MobgenHaloApplication.halo())
                         .insertMessage(chatMessageToStore.getAlias(), chatMessageToStore.getUserName(), chatMessageToStore.getMessage(),
                                 chatMessageToStore.getCreationDate(), chatMessageToStore.getIsMultiple(), chatMessageToStore.getIsFromSender())
@@ -258,11 +309,32 @@ public class MessagesActivity extends MobgenHaloActivity implements MessagesNoti
      */
     public Schedule createAliasNotification(ChatMessage chatMessage, String senderAlias) {
         int appId = Integer.parseInt(MobgenHaloApplication.halo().getCore().manager().getAppId());
+        String pushtTitle;
+        if(mIsMultiple){
+            pushtTitle = mContext.getString(R.string.chat_new_msg_title_multiple);
+        } else {
+            pushtTitle = mContext.getString(R.string.chat_new_msg_title);
+        }
         Payload payload = new Payload(Notification.builder()
-                .setTitle(mContext.getString(R.string.chat_new_msg_title)+ chatMessage.getUserName())
+                .setTitle(pushtTitle + chatMessage.getUserName())
                 .setBody(chatMessage.getMessage())
                 .build(), false , chatMessage);
-        return new Schedule("Chat message",appId , new String[]{senderAlias}, null, payload, false);
+        return new Schedule("Chat message",appId , getAlias(senderAlias), null, payload, false);
+    }
+
+    /**
+     * Get a array with contacts
+     *
+     * @param senderAlias The alias to notify if its
+     * @return If true Alias array with all contacts; Otherwise the alias
+     */
+    @NonNull
+    private String[] getAlias(String senderAlias) {
+        if(mIsMultiple){
+            return broadcastAlias;
+        } else {
+            return new String[]{senderAlias};
+        }
     }
 
     /**
@@ -284,30 +356,57 @@ public class MessagesActivity extends MobgenHaloActivity implements MessagesNoti
      *
      */
     private void requestChatMessages(){
-        HaloContentQueryApi.with(MobgenHaloApplication.halo())
-                .getUserName(MobgenHaloApplication.halo().getCore().manager().getDevice().getAlias())
-                .asContent(QRContact.class)
-                .execute(new CallbackV2<List<QRContact>>() {
-                    @Override
-                    public void onFinish(@NonNull HaloResultV2<List<QRContact>> result) {
-                        if(result.data().size()>0) {
-                            mUserName = result.data().get(0).getName();
+        if(mIsMultiple){//load the room for multiple chats
+            HaloContentQueryApi.with(MobgenHaloApplication.halo())
+                    .getUserName(MobgenHaloApplication.halo().getCore().manager().getDevice().getAlias())
+                    .asContent(QRContact.class)
+                    .execute(new CallbackV2<List<QRContact>>() {
+                        @Override
+                        public void onFinish(@NonNull HaloResultV2<List<QRContact>> result) {
+                            if (result.data().size() > 0) {
+                                mUserName = result.data().get(0).getName();
+                            }
+                            HaloContentQueryApi.with(MobgenHaloApplication.halo())
+                                    .getMessagesMultipleRoom(true)
+                                    .asContent(ChatMessage.class)
+                                    .execute(new CallbackV2<List<ChatMessage>>() {
+                                        @Override
+                                        public void onFinish(@NonNull HaloResultV2<List<ChatMessage>> result) {
+                                            ViewUtils.refreshing(mRefreshLayout, false);
+                                            mAdapter.setChatMessage(result);
+                                            mAdapter.notifyDataSetChanged();
+                                            //scroll to bottom
+                                            scrollToBottom(100);
+                                        }
+                                    });
                         }
-                        HaloContentQueryApi.with(MobgenHaloApplication.halo())
-                                .getMessages(mContactAlias,false)
-                                .asContent(ChatMessage.class)
-                                .execute(new CallbackV2<List<ChatMessage>>() {
-                                    @Override
-                                    public void onFinish(@NonNull HaloResultV2<List<ChatMessage>> result) {
-                                        ViewUtils.refreshing(mRefreshLayout, false);
-                                        mAdapter.setChatMessage(result);
-                                        mAdapter.notifyDataSetChanged();
-                                        //scroll to bottom
-                                        scrollToBottom(100);
-                                    }
-                                });
-                    }
-                });
+                    });
+        } else {
+            HaloContentQueryApi.with(MobgenHaloApplication.halo())
+                    .getUserName(MobgenHaloApplication.halo().getCore().manager().getDevice().getAlias())
+                    .asContent(QRContact.class)
+                    .execute(new CallbackV2<List<QRContact>>() {
+                        @Override
+                        public void onFinish(@NonNull HaloResultV2<List<QRContact>> result) {
+                            if (result.data().size() > 0) {
+                                mUserName = result.data().get(0).getName();
+                            }
+                            HaloContentQueryApi.with(MobgenHaloApplication.halo())
+                                    .getMessages(mContactAlias, false)
+                                    .asContent(ChatMessage.class)
+                                    .execute(new CallbackV2<List<ChatMessage>>() {
+                                        @Override
+                                        public void onFinish(@NonNull HaloResultV2<List<ChatMessage>> result) {
+                                            ViewUtils.refreshing(mRefreshLayout, false);
+                                            mAdapter.setChatMessage(result);
+                                            mAdapter.notifyDataSetChanged();
+                                            //scroll to bottom
+                                            scrollToBottom(100);
+                                        }
+                                    });
+                        }
+                    });
+        }
 
     }
 

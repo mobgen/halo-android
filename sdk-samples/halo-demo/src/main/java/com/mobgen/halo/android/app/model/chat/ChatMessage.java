@@ -24,7 +24,7 @@ import java.util.List;
  */
 
 @JsonObject
-@HaloSearchable(version = 7 , tableName = "ChatMessage")
+@HaloSearchable(version = 8 , tableName = "ChatMessage")
 @HaloQueries(queries = {@HaloQuery(name = "getMessages" ,  query = "SELECT * from ChatMessage where alias = @{alias:String} AND isMultiple = @{isMultiple:Boolean} ORDER BY createdate ASC"),
                         @HaloQuery(name = "getMessagesMultipleRoom" ,  query = "SELECT * from ChatMessage where isMultiple = @{isMultiple:Boolean} ORDER BY createdate ASC"),
                         @HaloQuery(name = "insertMessage" , query = "INSERT INTO ChatMessage(alias,username,message,createdate,isMultiple,isFromSender) VALUES (@{alias:String},@{username:String},@{message:String},@{createdate:Date},@{isMultiple:Boolean},@{isFromSender:Boolean})")})

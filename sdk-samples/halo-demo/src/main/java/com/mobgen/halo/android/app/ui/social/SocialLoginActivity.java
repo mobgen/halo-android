@@ -17,6 +17,7 @@ import com.mobgen.halo.android.app.generated.HaloContentQueryApi;
 import com.mobgen.halo.android.app.model.chat.QRContact;
 import com.mobgen.halo.android.app.ui.MobgenHaloActivity;
 import com.mobgen.halo.android.app.ui.MobgenHaloApplication;
+import com.mobgen.halo.android.app.ui.chat.messages.MessagesActivity;
 import com.mobgen.halo.android.framework.common.helpers.logger.Halog;
 import com.mobgen.halo.android.framework.toolbox.data.CallbackV2;
 import com.mobgen.halo.android.framework.toolbox.data.HaloResultV2;
@@ -178,7 +179,11 @@ public class SocialLoginActivity extends MobgenHaloActivity implements View.OnCl
                             .execute(new CallbackV2<List<QRContact>>() {
                                 @Override
                                 public void onFinish(@NonNull HaloResultV2<List<QRContact>> result) {
-
+                                    //create multichannel
+                                    HaloContentQueryApi.with(MobgenHaloApplication.halo())
+                                            .insertContact(MessagesActivity.MULTIPLE_ROOM,mContext.getString(R.string.chat_multiple_room),mQrFile.toString() + "/profile.jpg")
+                                            .asContent(QRContact.class)
+                                            .execute();
                                 }
                             });
                 } catch (WriterException e) {

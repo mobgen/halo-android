@@ -21,15 +21,17 @@ public class MessagesAdapter extends DataStatusRecyclerAdapter<MessagesViewHolde
     private Context mContext;
     private MessagesCallback mCallback;
     private List<ChatMessage> mChatMessage;
+    private boolean mIsMultiple;
 
     public interface MessagesCallback {
         void onMessageSelected(ChatMessage chatMessage, MessagesViewHolder viewHolder);
     }
 
-    public MessagesAdapter(Context context, MessagesCallback callback) {
+    public MessagesAdapter(Context context, MessagesCallback callback, boolean isMultiple) {
         super(context);
         mContext = context;
         mCallback = callback;
+        mIsMultiple = isMultiple;
     }
 
     public void setChatMessage(HaloResultV2<List<ChatMessage>> chatMessages) {
@@ -57,7 +59,10 @@ public class MessagesAdapter extends DataStatusRecyclerAdapter<MessagesViewHolde
             holder.mContainerLayout.setBackgroundResource(R.drawable.out_msg);
             holder.mParentLayout.setGravity(Gravity.RIGHT);
         }
-
+        if(mIsMultiple){
+            holder.mName.setVisibility(View.VISIBLE);
+            holder.mName.setText(chatMessage.getUserName());
+        }
         holder.mDate.setText(getMinifyDate(chatMessage.getCreationDate()));
         holder.mMessage.setText(chatMessage.getMessage());
 

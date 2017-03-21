@@ -21,10 +21,11 @@ import java.io.InputStream;
  * Created by mobgenimac on 14/3/17.
  */
 @JsonObject
-@HaloSearchable(version = 10 , tableName = "QRContact")
+@HaloSearchable(version = 11 , tableName = "QRContact")
 @HaloQueries(queries = {@HaloQuery(name = "getContactImage" ,  query = "SELECT * from QRContact where Alias = @{mAlias:String}"),
                         @HaloQuery(name = "getUserName" ,  query = "SELECT * from QRContact where Alias = @{mAlias:String}"),
-                        @HaloQuery(name = "getContacts" ,  query = "SELECT * from QRContact where Alias != @{mAlias:String}"),
+                        @HaloQuery(name = "getContacts" ,  query = "SELECT * from QRContact where Alias != @{mAlias:String} AND Alias!=@{mMultiple:String}"),
+                        @HaloQuery(name = "getConversations" ,  query = "SELECT * from QRContact where Alias != @{mAlias:String} ORDER BY Name ASC"),
                         @HaloQuery(name = "insertContact", query = "INSERT OR REPLACE INTO QRContact(Alias,Name,Image) VALUES (@{mAlias:String},@{mName:String},@{mImage:String})")})
 public class QRContact {
     @HaloField(index = true, columnName = "Alias")

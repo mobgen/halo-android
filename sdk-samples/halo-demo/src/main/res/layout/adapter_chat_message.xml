@@ -20,6 +20,16 @@
         android:layout_marginEnd="@dimen/default_margin">
 
         <com.mobgen.halo.android.app.ui.views.HaloTextView
+            android:id="@+id/tv_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:visibility="gone"
+            android:textColor="@color/black"
+            android:ellipsize="end"
+            tools:text="name" />
+
+        <com.mobgen.halo.android.app.ui.views.HaloTextView
             android:id="@+id/tv_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

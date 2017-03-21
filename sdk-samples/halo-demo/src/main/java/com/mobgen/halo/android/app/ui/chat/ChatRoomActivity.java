@@ -8,21 +8,31 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Point;
+import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ceylonlabs.imageviewpopup.ImagePopup;
+import com.getkeepsafe.taptargetview.TapTarget;
+import com.getkeepsafe.taptargetview.TapTargetView;
 import com.google.zxing.WriterException;
 import com.mobgen.halo.android.app.R;
 import com.mobgen.halo.android.app.generated.HaloContentQueryApi;
@@ -235,20 +245,58 @@ public class ChatRoomActivity extends MobgenHaloActivity implements SwipeRefresh
                             mUserName = result.data().get(0).getName();
                         }
                         HaloContentQueryApi.with(MobgenHaloApplication.halo())
-                                .getContacts(mAlias)
+                                .getConversations(mAlias)
                                 .asContent(QRContact.class)
                                 .execute(new CallbackV2<List<QRContact>>() {
                                     @Override
                                     public void onFinish(@NonNull HaloResultV2<List<QRContact>> result) {
                                         ViewUtils.refreshing(mRefreshLayout, false);
-                                        mAdapter.setQRContact(result);
-                                        mAdapter.notifyDataSetChanged();
+                                        if(result.data().size()==1 && result.data().get(0).getAlias().equals(MessagesActivity.MULTIPLE_ROOM)){
+                                            showEmptyState();
+                                        } else {
+                                            mAdapter.setQRContact(result);
+                                            mAdapter.notifyDataSetChanged();
+                                        }
                                     }
                                 });
                     }
                 });
 
 
+    }
+
+    /**
+     * Show a tutorial for new users to scan a qr contact
+     */
+    private void showEmptyState() {
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int width = size.x;
+        Rect bounds = new Rect(width*2-240,180,0,0);
+        TapTargetView.showFor((ChatRoomActivity)mContext,
+                TapTarget.forBounds(bounds, getString(R.string.chat_empty_contacts_title), getString(R.string.chat_empty_contacts))
+                        .outerCircleColor(R.color.orange_mobgen)
+                        .targetCircleColor(R.color.white)
+                        .titleTextSize(25)
+                        .titleTextColor(R.color.white)
+                        .descriptionTextSize(20)
+                        .descriptionTextColor(R.color.white)
+                        .textColor(R.color.white)
+                        .textTypeface(Typeface.createFromAsset(mContext.getAssets(), "fonts/Lab-Medium.ttf"))
+                        .dimColor(R.color.black)
+                        .drawShadow(true)
+                        .cancelable(false)
+                        .tintTarget(true)
+                        .transparentTarget(false)
+                        .targetRadius(60),
+                new TapTargetView.Listener() {
+                    @Override
+                    public void onTargetClick(TapTargetView view) {
+                        super.onTargetClick(view);      // This call is optional
+                        QRScanActivity.startActivityForResult((ChatRoomActivity)mContext,CODE_SCAN_ACTIVITY);
+                    }
+                });
     }
 
 
@@ -394,7 +442,7 @@ public class ChatRoomActivity extends MobgenHaloActivity implements SwipeRefresh
             imagePopup.setImageOnClickClose(true);
             imagePopup.initiatePopup(viewHolder.mThumbnail.getDrawable());
         } else {
-            MessagesActivity.startActivity(this,qrContact.getName(),qrContact.getAlias());
+            MessagesActivity.startActivity(this, qrContact.getName(), qrContact.getAlias());
         }
     }
 }

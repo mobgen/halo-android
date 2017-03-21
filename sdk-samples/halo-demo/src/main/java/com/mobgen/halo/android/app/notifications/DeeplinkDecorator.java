@@ -65,9 +65,14 @@ public class DeeplinkDecorator extends HaloNotificationDecorator {
             try {
                 ChatMessage chatMessage = ChatMessage.deserialize(custom.toString(), Halo.instance().framework().parser());
                 if(chatMessage.getAlias()!=null) {//this is a new message
+                    if(chatMessage.getAlias().equals(MessagesActivity.MULTIPLE_ROOM)){
+                        chatMessage.setIsMultiple(true);
+                    } else {
+                        chatMessage.setIsMultiple(false);
+                    }
                     HaloContentQueryApi.with(MobgenHaloApplication.halo())
                             .insertMessage(chatMessage.getAlias(), chatMessage.getUserName(), chatMessage.getMessage(),
-                                    chatMessage.getCreationDate(), false, true)
+                                    chatMessage.getCreationDate(), chatMessage.getIsMultiple(), true)
                             .asContent(ChatMessage.class)
                             .execute();
                     Bundle data = new Bundle();
