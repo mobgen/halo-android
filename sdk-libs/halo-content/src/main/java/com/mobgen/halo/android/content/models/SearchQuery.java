@@ -70,6 +70,13 @@ public class SearchQuery implements Parcelable {
     List<String> mInstanceIds;
 
     /**
+     * The instace ids with relation by field
+     */
+    @Nullable
+    @JsonField(name="relatedTo")
+    List<Relationship> mRelationship;
+
+    /**
      * The field names that will be brought.
      */
     @Nullable
@@ -188,6 +195,7 @@ public class SearchQuery implements Parcelable {
         this.mModuleName = in.readString();
         this.mSegmentMode = in.readString();
         this.mSearchTag = in.readString();
+        this.mRelationship = in.readParcelable(Relationship.class.getClassLoader());
     }
 
     /**
@@ -212,6 +220,7 @@ public class SearchQuery implements Parcelable {
         mModuleName = builder.mModuleName;
         mSegmentMode = builder.mSegmentMode;
         mSearchTag = builder.mSearchTag;
+        mRelationship = builder.mRelationship;
     }
 
     /**
@@ -545,6 +554,12 @@ public class SearchQuery implements Parcelable {
         private String mSegmentMode;
 
         /**
+         * The instace ids with relation by field
+         */
+        @Nullable
+        List<Relationship> mRelationship;
+
+        /**
          * Tells the content api if the call should be segmented using the current device.
          * The action options.
          */
@@ -579,6 +594,9 @@ public class SearchQuery implements Parcelable {
             }
             if (currentOptions.mPagination != null) {
                 mPagination = new PaginationCriteria(currentOptions.mPagination);
+            }
+            if (currentOptions.mRelationship != null) {
+                mRelationship = new ArrayList<>(currentOptions.mRelationship);
             }
             mSearch = currentOptions.mSearch;
             mMetaSearch = currentOptions.mMetaSearch;
@@ -615,6 +633,54 @@ public class SearchQuery implements Parcelable {
         @NonNull
         public Builder instanceIds(@Nullable String... ids) {
             mInstanceIds = addToList(mInstanceIds, ids);
+            return this;
+        }
+
+        /**
+         * The relationships to filter
+         *
+         * @param relationships The relationship to filter
+         * @return The current builder.
+         */
+        @Keep
+        @Api(2.22)
+        @NonNull
+        public Builder relatedInstances(@NonNull Relationship... relationships) {
+            mRelationship = addToList(mRelationship,relationships);
+            return this;
+        }
+
+        /**
+         * The relationship to filter
+         *
+         * @param relationship The relationship to filter
+         * @return The current builder.
+         */
+        @Keep
+        @Api(2.22)
+        @NonNull
+        public Builder addRelatedInstances(@NonNull Relationship relationship) {
+            if(mRelationship!=null){
+                mRelationship.add(relationship);
+            } else {
+                mRelationship = new ArrayList<>();
+                mRelationship.add(relationship);
+            }
+            return this;
+        }
+
+        /**
+         * All related instances
+         *
+         * @param fieldName The fieldname
+         * @return The current builder.
+         */
+        @Keep
+        @Api(2.22)
+        @NonNull
+        public Builder allRelatedInstances(@NonNull String fieldName) {
+            Relationship relationship =  new Relationship(fieldName, Relationship.ALL_RELATED_INSTANCES);
+            mRelationship = addToList(mRelationship, new Relationship[]{relationship});
             return this;
         }
 
