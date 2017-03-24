@@ -2,22 +2,25 @@ package com.mobgen.halo.android.app.ui.chat;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.view.Display;
 import android.view.SurfaceView;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.google.android.gms.vision.barcode.Barcode;
+import com.google.android.gms.vision.barcode.BarcodeDetector;
 import com.mobgen.halo.android.app.R;
 import com.mobgen.halo.android.app.ui.MobgenHaloActivity;
+import com.mobgen.halo.android.app.utils.QReader;
 
-import github.nisrulz.qreader.QRDataListener;
-import github.nisrulz.qreader.QREader;
 
 /**
  * Scan qr activity
  */
-public class QRScanActivity extends MobgenHaloActivity implements QRDataListener{
+public class QRScanActivity extends MobgenHaloActivity implements QReader.QRScanListener {
     /**
      * The scan result
      */
@@ -25,11 +28,11 @@ public class QRScanActivity extends MobgenHaloActivity implements QRDataListener
     /**
      * The surface view to show the camera
      */
-    private SurfaceView mySurfaceView;
+    private SurfaceView mSurfaceView;
     /**
      * The qr reader.
      */
-    private QREader qrEader;
+    private QReader mQReader;
 
     /**
      * Starts the activity.
@@ -52,12 +55,22 @@ public class QRScanActivity extends MobgenHaloActivity implements QRDataListener
         setContentView(R.layout.activity_scan_qr);
         getSupportActionBar().hide();
 
-        mySurfaceView = (SurfaceView) findViewById(R.id.camera_view);
-        qrEader = new QREader.Builder(this, mySurfaceView, this)
-                .facing(QREader.BACK_CAM)
-                .enableAutofocus(true)
-                .height(mySurfaceView.getHeight())
-                .width(mySurfaceView.getWidth())
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+
+        mSurfaceView = (SurfaceView) findViewById(R.id.camera_view);
+        BarcodeDetector barcodeDetector = new BarcodeDetector.Builder(getApplicationContext())
+                .setBarcodeFormats(Barcode.QR_CODE)
+                .build();
+
+        mQReader = new QReader.Builder(this, mSurfaceView, this)
+                .withBarcodeDetector(barcodeDetector)
+                .withAutoFocus(true)
+                .withCamera(QReader.BACK_CAMERA)
+                .withAutoFocus(true)
+                .withHeight(size.y)
+                .withWidth(size.x)
                 .build();
     }
 
@@ -70,13 +83,13 @@ public class QRScanActivity extends MobgenHaloActivity implements QRDataListener
     @Override
     protected void onResume() {
         super.onResume();
-        qrEader.initAndStart(mySurfaceView);
+        mQReader.startDetector(mSurfaceView);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        qrEader.releaseAndCleanup();
+        mQReader.stopDetector();
     }
 
     @Override
@@ -92,6 +105,16 @@ public class QRScanActivity extends MobgenHaloActivity implements QRDataListener
         Intent intent = new Intent();
         intent.putExtras(data);
         setResult(RESULT_OK,intent);
+        finish();
+    }
+
+    @Override
+    public void onScanError(String errorMsg) {
+        Bundle data = new Bundle();
+        data.putString(BUNDLE_SCAN_RESULT, errorMsg);
+        Intent intent = new Intent();
+        intent.putExtras(data);
+        setResult(RESULT_CANCELED,intent);
         finish();
     }
 }

@@ -7,11 +7,15 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -28,6 +32,7 @@ import com.mobgen.halo.android.app.notifications.MessagesNotificationReceiver;
 import com.mobgen.halo.android.app.ui.MobgenHaloActivity;
 import com.mobgen.halo.android.app.ui.MobgenHaloApplication;
 import com.mobgen.halo.android.app.ui.chat.ChatMessageService;
+import com.mobgen.halo.android.app.ui.chat.ChatRoomActivity;
 import com.mobgen.halo.android.app.utils.ViewUtils;
 import com.mobgen.halo.android.framework.network.client.body.HaloMediaType;
 import com.mobgen.halo.android.framework.network.client.request.HaloRequest;
@@ -44,6 +49,8 @@ import java.util.Date;
 import java.util.List;
 
 import okhttp3.RequestBody;
+
+import static com.mobgen.halo.android.app.notifications.DeeplinkDecorator.BUNDLE_NOTIFICATION_INAPP;
 
 /**
  * Conversation with a user
@@ -76,7 +83,10 @@ public class MessagesActivity extends MobgenHaloActivity implements MessagesNoti
      * The refresh layout
      */
     private SwipeRefreshLayout mRefreshLayout;
-
+    /**
+     * The coordinator layout parent
+     */
+    private CoordinatorLayout mCoordinatorParent;
     /**
      * The linear layout manager
      */
@@ -85,6 +95,10 @@ public class MessagesActivity extends MobgenHaloActivity implements MessagesNoti
      * The recyclerview.
      */
     private RecyclerView mRecyclerView;
+    /**
+     * The mSnackbar
+     */
+    private  Snackbar mSnackbar;
     /**
      *
      * Chat room name
@@ -155,6 +169,8 @@ public class MessagesActivity extends MobgenHaloActivity implements MessagesNoti
         super.onCreate(savedInstanceState);
         setContentView(R.layout.chat_recycler);
 
+        mCoordinatorParent = (CoordinatorLayout)findViewById(R.id.cl_parent);
+
         mMessageField = (EditText) findViewById(R.id.et_send_message);
         mSendButton = (ImageButton)findViewById(R.id.im_send);
 
@@ -212,8 +228,39 @@ public class MessagesActivity extends MobgenHaloActivity implements MessagesNoti
     }
 
     @Override
-    public void onNewMessage(Intent intent) {
-        requestChatMessages();
+    public void onNewMessage(final Intent intent) {
+        if(intent.getBundleExtra(BUNDLE_NOTIFICATION_INAPP).getString(BUNDLE_USER_ALIAS).equals(mContactAlias)) {
+            //handle notification
+            requestChatMessages();
+        } else {
+            //show notification from other user
+            String title;
+            if (intent.getBundleExtra(BUNDLE_NOTIFICATION_INAPP).getString(BUNDLE_USER_ALIAS).equals(MessagesActivity.MULTIPLE_ROOM)) {
+                title = mContext.getString(R.string.chat_new_msg_title_multiple);
+            } else {
+                title = mContext.getString(R.string.chat_new_msg_title);
+            }
+            title = title + intent.getBundleExtra(BUNDLE_NOTIFICATION_INAPP).getString(BUNDLE_USER_NAME);
+
+            mSnackbar = Snackbar
+                    .make(mCoordinatorParent, title, Snackbar.LENGTH_INDEFINITE)
+                    .setAction(getString(R.string.chat_new_message_inapp), new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            mSnackbar.dismiss();
+                            MessagesActivity.startActivity(mContext, intent.getBundleExtra(BUNDLE_NOTIFICATION_INAPP).getString(BUNDLE_USER_NAME),
+                                    intent.getBundleExtra(BUNDLE_NOTIFICATION_INAPP).getString(BUNDLE_USER_ALIAS));
+                            finish();
+                        }
+                    });
+            mSnackbar.setActionTextColor(getResources().getColor(R.color.dark_green));
+            View sbView = mSnackbar.getView();
+            sbView.setBackgroundColor(ContextCompat.getColor(mContext, R.color.orange_mobgen));
+            CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) sbView.getLayoutParams();
+            params.gravity = Gravity.TOP;
+            sbView.setLayoutParams(params);
+            mSnackbar.show();
+        }
     }
 
     /**

@@ -36,6 +36,7 @@ import com.mobgen.halo.android.twofactor.HaloTwoFactorApi;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
+
 /**
  * The halo application that contains the Halo initialization and other framework initializes just to make it easy to
  * debug and check.

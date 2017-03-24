@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="@dimen/default_padding"
-    tools:context=".ui.social.SocialHaloSignIn">
+    tools:mContext=".ui.social.SocialHaloSignIn">
 
     <TextView
         android:layout_width="match_parent"

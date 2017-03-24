@@ -1,6 +1,8 @@
 package com.mobgen.halo.android.app.ui.chat;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,13 +24,25 @@ public class ChatsAdapter extends DataStatusRecyclerAdapter<ChatRoomViewHolder> 
     private List<QRContact> mChatRooms;
 
     public interface ChatRoomsCallback {
-        void onChatRoomSelected(QRContact qrContact, ChatRoomViewHolder viewHolder, Boolean isFromImage);
+        void onChatRoomTap(QRContact qrContact, ChatRoomViewHolder viewHolder, Boolean isFromImage);
+        void onChatRoomSelected(QRContact qrContact);
     }
 
     public ChatsAdapter(Context context, ChatRoomsCallback callback) {
         super(context);
         mContext = context;
         mCallback = callback;
+    }
+
+    public void deteleItem(QRContact qrContact) {
+        if(mChatRooms.contains(qrContact)){
+            mChatRooms.remove(mChatRooms.indexOf(qrContact));
+            //delete multiple channel you must scan new contacts
+            if(mChatRooms.size()==1){
+                mChatRooms.remove(0);
+            }
+            notifyDataSetChanged();
+        }
     }
 
     public void setQRContact(HaloResultV2<List<QRContact>> qrContacts) {
@@ -46,6 +60,16 @@ public class ChatsAdapter extends DataStatusRecyclerAdapter<ChatRoomViewHolder> 
         final QRContact qrContact = mChatRooms.get(position);
         holder.mUserName.setText(qrContact.getName());
 
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if (mCallback != null) {
+                    mCallback.onChatRoomSelected(qrContact);
+                }
+                return true;
+            }
+        });
+
         if (!TextUtils.isEmpty(qrContact.getImage())) {
             Picasso.with(mContext).load(new File(qrContact.getImage())).into(holder.mThumbnail);
         }
@@ -54,7 +78,7 @@ public class ChatsAdapter extends DataStatusRecyclerAdapter<ChatRoomViewHolder> 
             @Override
             public void onClick(View v) {
                 if (mCallback != null) {
-                    mCallback.onChatRoomSelected(qrContact, holder,false);
+                    mCallback.onChatRoomTap(qrContact, holder,false);
                 }
             }
         });
@@ -63,7 +87,7 @@ public class ChatsAdapter extends DataStatusRecyclerAdapter<ChatRoomViewHolder> 
             @Override
             public void onClick(View v) {
                 if (mCallback != null) {
-                    mCallback.onChatRoomSelected(qrContact, holder,true);
+                    mCallback.onChatRoomTap(qrContact, holder,true);
                 }
             }
         });

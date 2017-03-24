@@ -30,6 +30,8 @@ import static com.mobgen.halo.android.app.ui.chat.messages.MessagesActivity.BUND
  */
 public class DeeplinkDecorator extends HaloNotificationDecorator {
 
+    public static final String BUNDLE_NOTIFICATION_INAPP = "bundle_notification";
+
     private static final String NEWS_ID_INT = "560539b8e81e3b0100ef6cbe";
     private static final String NEWS_ID_STAGE = "56161a166947b516009db5b8";
 
@@ -81,6 +83,7 @@ public class DeeplinkDecorator extends HaloNotificationDecorator {
                     pendingIntent = ChatRoomActivity.getDeeplinkMessage(mContext, data);
                     if (isMessageServiceRunning(ChatMessageService.class)) {
                         Intent newIntent = new Intent(MessagesActivity.CHAT_MESSAGE_FILTER);
+                        newIntent.putExtra(BUNDLE_NOTIFICATION_INAPP,data);
                         newIntent.putExtra("pendingIntent", pendingIntent);
                         LocalBroadcastManager.getInstance(mContext).sendBroadcast(newIntent);
                         return null;

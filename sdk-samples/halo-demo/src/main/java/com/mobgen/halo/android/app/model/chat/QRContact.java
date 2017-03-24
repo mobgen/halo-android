@@ -26,7 +26,8 @@ import java.io.InputStream;
                         @HaloQuery(name = "getUserName" ,  query = "SELECT * from QRContact where Alias = @{mAlias:String}"),
                         @HaloQuery(name = "getContacts" ,  query = "SELECT * from QRContact where Alias != @{mAlias:String} AND Alias!=@{mMultiple:String}"),
                         @HaloQuery(name = "getConversations" ,  query = "SELECT * from QRContact where Alias != @{mAlias:String} ORDER BY Name ASC"),
-                        @HaloQuery(name = "insertContact", query = "INSERT OR REPLACE INTO QRContact(Alias,Name,Image) VALUES (@{mAlias:String},@{mName:String},@{mImage:String})")})
+                        @HaloQuery(name = "insertContact", query = "INSERT OR REPLACE INTO QRContact(Alias,Name,Image) VALUES (@{mAlias:String},@{mName:String},@{mImage:String})"),
+                        @HaloQuery(name = "deleteContact", query = "DELETE FROM QRContact where Alias = @{mAlias:String}")})
 public class QRContact {
     @HaloField(index = true, columnName = "Alias")
     @JsonField(name = "Alias")

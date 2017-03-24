@@ -13,6 +13,7 @@ import android.support.annotation.Nullable;
  * Service to handle push notifications when the conversation is active.
  */
 public class ChatMessageService extends Service {
+
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {

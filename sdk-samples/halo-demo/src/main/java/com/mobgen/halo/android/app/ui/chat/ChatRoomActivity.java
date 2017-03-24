@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -16,18 +17,16 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ceylonlabs.imageviewpopup.ImagePopup;
@@ -47,6 +46,7 @@ import com.mobgen.halo.android.app.ui.chat.messages.MessagesActivity;
 import com.mobgen.halo.android.app.ui.modules.partial.ModulesActivity;
 import com.mobgen.halo.android.app.ui.views.DividerItemDecoration;
 import com.mobgen.halo.android.app.utils.ViewUtils;
+import com.mobgen.halo.android.framework.common.helpers.logger.Halog;
 import com.mobgen.halo.android.framework.network.client.body.HaloMediaType;
 import com.mobgen.halo.android.framework.network.client.request.HaloRequest;
 import com.mobgen.halo.android.framework.network.client.request.HaloRequestMethod;
@@ -224,7 +224,7 @@ public class ChatRoomActivity extends MobgenHaloActivity implements SwipeRefresh
                     saveContant(newContact);
                     sendPushToInviteOther(myContact, newContact.getAlias(), appId);
                 } else {
-                    Toast.makeText(ChatRoomActivity.this, "Sorry but QR is not well formed", Toast.LENGTH_LONG).show();
+                    Toast.makeText(ChatRoomActivity.this, getString(R.string.chat_scan_result_error), Toast.LENGTH_LONG).show();
                 }
             }
         }
@@ -432,7 +432,7 @@ public class ChatRoomActivity extends MobgenHaloActivity implements SwipeRefresh
     }
 
     @Override
-    public void onChatRoomSelected(QRContact qrContact, ChatRoomViewHolder viewHolder, Boolean isFromImage) {
+    public void onChatRoomTap(QRContact qrContact, ChatRoomViewHolder viewHolder, Boolean isFromImage) {
         if(isFromImage){
             final ImagePopup imagePopup = new ImagePopup(this);
             imagePopup.setBackgroundColor(Color.BLACK);
@@ -444,5 +444,38 @@ public class ChatRoomActivity extends MobgenHaloActivity implements SwipeRefresh
         } else {
             MessagesActivity.startActivity(this, qrContact.getName(), qrContact.getAlias());
         }
+    }
+
+    @Override
+    public void onChatRoomSelected(final QRContact qrContact) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(ChatRoomActivity.this); //alert for confirm to delete
+        builder.setMessage(getString(R.string.chat_delete_msg_title));    //set message
+
+        builder.setPositiveButton(getString(R.string.chat_delete_confirm), new DialogInterface.OnClickListener() { //when click on DELETE
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if(!qrContact.getAlias().equals(MessagesActivity.MULTIPLE_ROOM)) {
+                    HaloContentQueryApi.with(MobgenHaloApplication.halo())
+                            .deleteContact(qrContact.getAlias())
+                            .asContent(QRContact.class)
+                            .execute(new CallbackV2<List<QRContact>>() {
+                                @Override
+                                public void onFinish(@NonNull HaloResultV2<List<QRContact>> result) {
+                                    if (result.status().isOk()) {
+                                        mAdapter.deteleItem(qrContact);
+                                    }
+                                }
+                            });
+                } else {
+                    Toast.makeText(ChatRoomActivity.this, getString(R.string.chat_delete_channel_broadcast), Toast.LENGTH_LONG).show();
+                }
+                return;
+            }
+        }).setNegativeButton(getString(R.string.chat_delete_cancel), new DialogInterface.OnClickListener() {  //not removing items if cancel is done
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                return;
+            }
+        }).show();
     }
 }

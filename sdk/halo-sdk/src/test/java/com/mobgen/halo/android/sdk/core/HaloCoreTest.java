@@ -112,6 +112,7 @@ public class HaloCoreTest extends HaloRobolectricTest {
         assertThat(device).isNull();
     }
 
+    @Test
     public void thatCanGetTagCollectors() {
         HaloCore core = HaloMock.createCore(Credentials.createClient("myClient", "myPass"), null);
         assertThat(core.tagCollectors().size()).isEqualTo(0);

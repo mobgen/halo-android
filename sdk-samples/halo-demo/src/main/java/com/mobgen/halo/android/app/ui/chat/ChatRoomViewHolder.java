@@ -2,6 +2,7 @@ package com.mobgen.halo.android.app.ui.chat;
 
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.mobgen.halo.android.app.R;

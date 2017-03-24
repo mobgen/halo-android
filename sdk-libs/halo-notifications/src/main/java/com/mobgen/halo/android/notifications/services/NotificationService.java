@@ -11,6 +11,7 @@ import android.support.v4.app.NotificationCompat;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+import com.mobgen.halo.android.framework.common.annotations.Api;
 import com.mobgen.halo.android.framework.common.helpers.logger.Halog;
 import com.mobgen.halo.android.notifications.decorator.HaloNotificationDecorator;
 import com.mobgen.halo.android.notifications.decorator.NotificationActionDecorator;
@@ -187,8 +188,20 @@ public class NotificationService extends FirebaseMessagingService {
      *
      * @param decorator The custom decorator.
      */
+    @Api(2.0)
     public static void setNotificationDecorator(@Nullable HaloNotificationDecorator decorator) {
         mDecorator = decorator;
+    }
+
+    /**
+     * Get the custom decorator to be used when a notification is available
+     *
+     * @return The HaloNotificationDecorator
+     */
+    @Api(2.3)
+    @Nullable
+    public static HaloNotificationDecorator getNotificationDecorator(){
+        return mDecorator;
     }
 
     /**
