@@ -10,6 +10,7 @@ import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.mobgen.halo.android.framework.common.annotations.Api;
 import com.mobgen.halo.android.framework.common.helpers.builder.IBuilder;
+import com.mobgen.halo.android.sdk.core.management.models.Credentials;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,8 +22,10 @@ import java.util.List;
 @JsonObject
 @Keep
 public class Relationship implements Parcelable{
-
-    public static final String ALL_RELATED_INSTANCES = "*";
+    /**
+     * All related instances to field name
+     */
+    private static final String ALL_RELATED_INSTANCES = "*";
     /**
      * The field name with relationship
      */
@@ -37,7 +40,7 @@ public class Relationship implements Parcelable{
     @JsonField(name = "instanceIds")
     List<String> mInstanceIds;
 
-    public Relationship(){
+    protected Relationship(){
     }
 
     /**
@@ -50,9 +53,32 @@ public class Relationship implements Parcelable{
         mInstanceIds = builder.mInstanceIds;
     }
 
-    public Relationship(@NonNull String fieldName, @NonNull String ... instanceIds){
+    private Relationship(@NonNull String fieldName, @NonNull String ... instanceIds){
         mFieldName = fieldName;
         mInstanceIds = addToList(mInstanceIds,instanceIds);
+    }
+
+    /**
+     * Create a relationship for all
+     *
+     * @param fieldName The field name.
+     * @return
+     */
+    @Api(2.22)
+    public static Relationship createForAll(@NonNull String fieldName){
+        return new Relationship(fieldName, new String[]{ALL_RELATED_INSTANCES});
+    }
+
+    /**
+     * Create a relationship
+     *
+     * @param fieldName The field name.
+     * @param instanceIds The instance ids.
+     * @return
+     */
+    @Api(2.22)
+    public static Relationship create(@NonNull String fieldName, @NonNull String ... instanceIds) {
+        return new Relationship(fieldName, instanceIds);
     }
 
     protected Relationship(Parcel in) {
@@ -120,6 +146,7 @@ public class Relationship implements Parcelable{
      *
      * @return The field name
      */
+    @Api(2.22)
     @NonNull
     public String getFieldName() {
         return mFieldName;
@@ -130,6 +157,7 @@ public class Relationship implements Parcelable{
      *
      * @return The instances ids
      */
+    @Api(2.22)
     @NonNull
     public List<String> getInstanceIds() {
         return mInstanceIds;

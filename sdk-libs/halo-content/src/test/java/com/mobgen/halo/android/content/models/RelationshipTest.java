@@ -35,7 +35,7 @@ public class RelationshipTest extends HaloRobolectricTest {
                 .addInstanceIds("two")
                 .fieldName("fieldname")
                 .build();
-        Relationship relationship1 =  new Relationship("fieldname", new String[]{"one","two"});
+        Relationship relationship1 =  Relationship.create("fieldname", new String[]{"one","two"});
         assertThat(relationship1.getFieldName()).isEqualTo(relationship.getFieldName());
         assertThat(relationship1.getInstanceIds().size()).isEqualTo(relationship.getInstanceIds().size());
     }

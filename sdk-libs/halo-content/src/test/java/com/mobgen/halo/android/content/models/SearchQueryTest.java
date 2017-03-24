@@ -268,20 +268,20 @@ public class SearchQueryTest extends HaloRobolectricTest {
     @Test
     public void thatCanSearchToFilterTargetRelationships() {
         SearchQuery query = SearchQuery.builder()
-                .addRelatedInstances(new Relationship("fieldname","1"))
-                .addRelatedInstances(new Relationship("fieldname","2"))
+                .addRelatedInstances(Relationship.create("fieldname","1"))
+                .addRelatedInstances(Relationship.create("fieldname","2"))
                 .build();
-        assertThat(query.mRelationship.size()).isEqualTo(2);
-        assertTrue(query.mRelationship.get(0).getFieldName().equals("fieldname"));
+        assertThat(query.mRelationships.size()).isEqualTo(2);
+        assertTrue(query.mRelationships.get(0).getFieldName().equals("fieldname"));
     }
 
     @Test
     public void thatCanSearchToFilterTargetRelationshipsWithAArrayGiven() {
         SearchQuery query = SearchQuery.builder()
-                .relatedInstances(new Relationship[]{new Relationship("fieldname","1"),new Relationship("fieldname","2")})
+                .relatedInstances(new Relationship[]{Relationship.create("fieldname","1"),Relationship.create("fieldname","2")})
                 .build();
-        assertThat(query.mRelationship.size()).isEqualTo(2);
-        assertTrue(query.mRelationship.get(0).getFieldName().equals("fieldname"));
+        assertThat(query.mRelationships.size()).isEqualTo(2);
+        assertTrue(query.mRelationships.get(0).getFieldName().equals("fieldname"));
     }
 
     @Test
@@ -289,9 +289,9 @@ public class SearchQueryTest extends HaloRobolectricTest {
         SearchQuery query = SearchQuery.builder()
                 .allRelatedInstances("fieldname")
                 .build();
-        assertThat(query.mRelationship.size()).isEqualTo(1);
-        assertTrue(query.mRelationship.get(0).getFieldName().equals("fieldname"));
-        assertTrue(query.mRelationship.get(0).getInstanceIds().get(0).equals(Relationship.ALL_RELATED_INSTANCES));
+        assertThat(query.mRelationships.size()).isEqualTo(1);
+        assertTrue(query.mRelationships.get(0).getFieldName().equals("fieldname"));
+        assertTrue(query.mRelationships.get(0).getInstanceIds().get(0).equals("*"));
     }
 
     @Test

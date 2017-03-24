@@ -74,7 +74,7 @@ public class SearchQuery implements Parcelable {
      */
     @Nullable
     @JsonField(name="relatedTo")
-    List<Relationship> mRelationship;
+    List<Relationship> mRelationships;
 
     /**
      * The field names that will be brought.
@@ -195,7 +195,7 @@ public class SearchQuery implements Parcelable {
         this.mModuleName = in.readString();
         this.mSegmentMode = in.readString();
         this.mSearchTag = in.readString();
-        this.mRelationship = in.readParcelable(Relationship.class.getClassLoader());
+        this.mRelationships = in.readParcelable(Relationship.class.getClassLoader());
     }
 
     /**
@@ -220,7 +220,7 @@ public class SearchQuery implements Parcelable {
         mModuleName = builder.mModuleName;
         mSegmentMode = builder.mSegmentMode;
         mSearchTag = builder.mSearchTag;
-        mRelationship = builder.mRelationship;
+        mRelationships = builder.mRelationships;
     }
 
     /**
@@ -557,7 +557,7 @@ public class SearchQuery implements Parcelable {
          * The instace ids with relation by field
          */
         @Nullable
-        List<Relationship> mRelationship;
+        List<Relationship> mRelationships;
 
         /**
          * Tells the content api if the call should be segmented using the current device.
@@ -595,8 +595,8 @@ public class SearchQuery implements Parcelable {
             if (currentOptions.mPagination != null) {
                 mPagination = new PaginationCriteria(currentOptions.mPagination);
             }
-            if (currentOptions.mRelationship != null) {
-                mRelationship = new ArrayList<>(currentOptions.mRelationship);
+            if (currentOptions.mRelationships != null) {
+                mRelationships = new ArrayList<>(currentOptions.mRelationships);
             }
             mSearch = currentOptions.mSearch;
             mMetaSearch = currentOptions.mMetaSearch;
@@ -646,7 +646,7 @@ public class SearchQuery implements Parcelable {
         @Api(2.22)
         @NonNull
         public Builder relatedInstances(@NonNull Relationship... relationships) {
-            mRelationship = addToList(mRelationship,relationships);
+            mRelationships = addToList(mRelationships,relationships);
             return this;
         }
 
@@ -660,11 +660,11 @@ public class SearchQuery implements Parcelable {
         @Api(2.22)
         @NonNull
         public Builder addRelatedInstances(@NonNull Relationship relationship) {
-            if(mRelationship!=null){
-                mRelationship.add(relationship);
+            if(mRelationships != null){
+                mRelationships.add(relationship);
             } else {
-                mRelationship = new ArrayList<>();
-                mRelationship.add(relationship);
+                mRelationships = new ArrayList<>();
+                mRelationships.add(relationship);
             }
             return this;
         }
@@ -679,8 +679,7 @@ public class SearchQuery implements Parcelable {
         @Api(2.22)
         @NonNull
         public Builder allRelatedInstances(@NonNull String fieldName) {
-            Relationship relationship =  new Relationship(fieldName, Relationship.ALL_RELATED_INSTANCES);
-            mRelationship = addToList(mRelationship, new Relationship[]{relationship});
+            mRelationships = addToList(mRelationships, new Relationship[]{Relationship.createForAll(fieldName)});
             return this;
         }
 
