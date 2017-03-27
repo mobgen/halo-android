@@ -253,11 +253,6 @@ public class MobgenHaloApplication extends HaloApplication {
                 .withSMS()
                 .build();
 
-        //change to editor credential
-        if(mAuthApi.isAccountStored()) {
-            Halo.instance().core().credentials(Credentials.createUser("editor@mobgen.com", "H4L0$editor"));
-        }
-
         return super.onHaloCreated(halo);
     }
 

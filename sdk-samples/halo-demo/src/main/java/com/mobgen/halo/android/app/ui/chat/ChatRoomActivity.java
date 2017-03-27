@@ -56,7 +56,9 @@ import com.mobgen.halo.android.framework.toolbox.data.HaloResultV2;
 import com.mobgen.halo.android.framework.toolbox.threading.Threading;
 import com.mobgen.halo.android.sdk.api.Halo;
 import com.mobgen.halo.android.sdk.core.internal.network.HaloNetworkConstants;
+import com.mobgen.halo.android.sdk.core.management.HaloManagerApi;
 import com.mobgen.halo.android.sdk.core.management.models.Credentials;
+import com.mobgen.halo.android.sdk.core.management.models.Token;
 
 import java.io.File;
 import java.io.IOException;
@@ -187,8 +189,12 @@ public class ChatRoomActivity extends MobgenHaloActivity implements SwipeRefresh
         ViewUtils.refreshing(mRefreshLayout, true);
         mContext = this;
 
-        //change to editor credential
-        Halo.instance().core().credentials(Credentials.createClient("halotestappclient", "halotestapppass"));
+        //TODO Delete this code when APP+ credential is ready to send push
+        if(HaloManagerApi.with(MobgenHaloApplication.halo())
+                .isAppAuthentication()) {
+            Halo.instance().getCore().logout();
+            Halo.instance().core().credentials(Credentials.createUser("editor@mobgen.com", "H4L0$editor"));
+        }
     }
 
     @Override
@@ -371,7 +377,7 @@ public class ChatRoomActivity extends MobgenHaloActivity implements SwipeRefresh
     private Schedule createAliasNotification(QRContact qrContact, String senderAlias,String appid) {
         int appId = Integer.parseInt(appid);
         Payload payload = new Payload(Notification.builder()
-                .setTitle(mContext.getString(R.string.chat_new_contact_title)+ qrContact.getName())
+                .setTitle(mContext.getString(R.string.chat_new_contact_title) + " " + qrContact.getName())
                 .setBody(mContext.getString(R.string.chat_new_contact_msg))
                 .build(), false , qrContact);
         return new Schedule("Chat contact",appId , new String[]{senderAlias}, null, payload, false);

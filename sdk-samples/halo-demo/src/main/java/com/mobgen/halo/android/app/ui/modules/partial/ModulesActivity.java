@@ -28,10 +28,11 @@ import com.mobgen.halo.android.app.ui.MobgenHaloActivity;
 import com.mobgen.halo.android.app.ui.MobgenHaloApplication;
 import com.mobgen.halo.android.app.ui.chat.ChatRoomActivity;
 import com.mobgen.halo.android.app.ui.social.SocialLoginActivity;
-import com.mobgen.halo.android.framework.common.helpers.logger.Halog;
 import com.mobgen.halo.android.framework.common.utils.HaloUtils;
 import com.mobgen.halo.android.framework.toolbox.data.CallbackV2;
 import com.mobgen.halo.android.framework.toolbox.data.HaloResultV2;
+import com.mobgen.halo.android.sdk.api.Halo;
+import com.mobgen.halo.android.sdk.core.management.HaloManagerApi;
 import com.mobgen.halo.android.twofactor.callbacks.HaloTwoFactorAttemptListener;
 import com.mobgen.halo.android.twofactor.models.TwoFactorCode;
 
@@ -124,6 +125,12 @@ public class ModulesActivity extends MobgenHaloActivity {
     @Override
     public void onResume(){
         super.onResume();
+        //TODO Delete this code when APP+ credential is ready to send push
+        if(HaloManagerApi.with(MobgenHaloApplication.halo())
+                .isPasswordAuthentication()) {
+            Halo.instance().getCore().logout();
+        }
+
         supportInvalidateOptionsMenu();
     }
 

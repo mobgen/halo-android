@@ -40,8 +40,10 @@ import com.mobgen.halo.android.framework.network.client.request.HaloRequestMetho
 import com.mobgen.halo.android.framework.network.client.response.Parser;
 import com.mobgen.halo.android.framework.toolbox.data.CallbackV2;
 import com.mobgen.halo.android.framework.toolbox.data.HaloResultV2;
+import com.mobgen.halo.android.framework.toolbox.threading.Threading;
 import com.mobgen.halo.android.sdk.api.Halo;
 import com.mobgen.halo.android.sdk.core.internal.network.HaloNetworkConstants;
+import com.mobgen.halo.android.sdk.core.management.HaloManagerApi;
 import com.mobgen.halo.android.sdk.core.management.models.Credentials;
 
 import java.io.IOException;
@@ -186,8 +188,12 @@ public class MessagesActivity extends MobgenHaloActivity implements MessagesNoti
         ViewUtils.refreshing(mRefreshLayout, true);
         mContext = this;
 
-        //change to editor credential
-        Halo.instance().core().credentials(Credentials.createUser("editor@mobgen.com", "H4L0$editor"));
+        //TODO Delete this code when APP+ credential is ready to send push
+        if(HaloManagerApi.with(MobgenHaloApplication.halo())
+                .isAppAuthentication()) {
+            Halo.instance().getCore().logout();
+            Halo.instance().core().credentials(Credentials.createUser("editor@mobgen.com", "H4L0$editor"));
+        }
 
         listenToNewMessages();
     }
@@ -214,17 +220,15 @@ public class MessagesActivity extends MobgenHaloActivity implements MessagesNoti
                     }
                 });
 
-        if (Build.VERSION.SDK_INT >= 11) {
-            mRecyclerView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
-                @Override
-                public void onLayoutChange(View v, int left, int top, int right, int bottom,
-                                           int oldLeft, int oldTop, int oldRight, int oldBottom) {
-                    if (bottom < oldBottom) {
-                        scrollToBottom(10);
-                    }
+        mRecyclerView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+            @Override
+            public void onLayoutChange(View v, int left, int top, int right, int bottom,
+                                       int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                if (bottom < oldBottom) {
+                    scrollToBottom(10);
                 }
-            });
-        }
+            }
+        });
     }
 
     @Override
@@ -240,7 +244,7 @@ public class MessagesActivity extends MobgenHaloActivity implements MessagesNoti
             } else {
                 title = mContext.getString(R.string.chat_new_msg_title);
             }
-            title = title + intent.getBundleExtra(BUNDLE_NOTIFICATION_INAPP).getString(BUNDLE_USER_NAME);
+            title = title + " " + intent.getBundleExtra(BUNDLE_NOTIFICATION_INAPP).getString(BUNDLE_USER_NAME);
 
             mSnackbar = Snackbar
                     .make(mCoordinatorParent, title, Snackbar.LENGTH_INDEFINITE)
@@ -363,7 +367,7 @@ public class MessagesActivity extends MobgenHaloActivity implements MessagesNoti
             pushtTitle = mContext.getString(R.string.chat_new_msg_title);
         }
         Payload payload = new Payload(Notification.builder()
-                .setTitle(pushtTitle + chatMessage.getUserName())
+                .setTitle(pushtTitle + " " + chatMessage.getUserName())
                 .setBody(chatMessage.getMessage())
                 .build(), false , chatMessage);
         return new Schedule("Chat message",appId , getAlias(senderAlias), null, payload, false);
