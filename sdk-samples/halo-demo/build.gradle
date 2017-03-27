@@ -5,6 +5,9 @@ apply plugin: 'grill'
 description = 'Mock application for the HALO SDK'
 
 def bambooBuild = System.getenv("bamboo_buildNumber");
+def editorMail = System.getenv("HALO_EDITOR_EMAIL");
+def editorPass = System.getenv("HALO_EDITOR_PASS");
+
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
@@ -16,6 +19,9 @@ android {
         versionName "${rootProject.ext.haloVersion}-demo"
         buildConfigField "Integer", "BAMBOO_BUILD", "${bambooBuild}"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        buildConfigField "String", "EDITOR_EMAIL", "\"${editorMail}\""
+        buildConfigField "String", "EDITOR_PASS", "\"${editorPass}\""
     }
     signingConfigs {
         release {

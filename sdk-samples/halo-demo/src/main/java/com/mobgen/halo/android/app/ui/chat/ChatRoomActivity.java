@@ -33,6 +33,7 @@ import com.ceylonlabs.imageviewpopup.ImagePopup;
 import com.getkeepsafe.taptargetview.TapTarget;
 import com.getkeepsafe.taptargetview.TapTargetView;
 import com.google.zxing.WriterException;
+import com.mobgen.halo.android.app.BuildConfig;
 import com.mobgen.halo.android.app.R;
 import com.mobgen.halo.android.app.generated.HaloContentQueryApi;
 import com.mobgen.halo.android.app.model.chat.QRContact;
@@ -193,7 +194,7 @@ public class ChatRoomActivity extends MobgenHaloActivity implements SwipeRefresh
         if(HaloManagerApi.with(MobgenHaloApplication.halo())
                 .isAppAuthentication()) {
             Halo.instance().getCore().logout();
-            Halo.instance().core().credentials(Credentials.createUser("editor@mobgen.com", "H4L0$editor"));
+            Halo.instance().core().credentials(Credentials.createUser(BuildConfig.EDITOR_EMAIL,BuildConfig.EDITOR_PASS));
         }
     }
 

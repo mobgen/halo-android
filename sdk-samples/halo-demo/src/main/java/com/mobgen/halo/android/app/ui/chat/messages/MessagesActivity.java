@@ -20,6 +20,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
+import com.mobgen.halo.android.app.BuildConfig;
 import com.mobgen.halo.android.app.R;
 import com.mobgen.halo.android.app.generated.HaloContentQueryApi;
 import com.mobgen.halo.android.app.model.chat.ChatMessage;
@@ -192,7 +193,7 @@ public class MessagesActivity extends MobgenHaloActivity implements MessagesNoti
         if(HaloManagerApi.with(MobgenHaloApplication.halo())
                 .isAppAuthentication()) {
             Halo.instance().getCore().logout();
-            Halo.instance().core().credentials(Credentials.createUser("editor@mobgen.com", "H4L0$editor"));
+            Halo.instance().core().credentials(Credentials.createUser(BuildConfig.EDITOR_EMAIL,BuildConfig.EDITOR_PASS));
         }
 
         listenToNewMessages();
