@@ -60,6 +60,7 @@ repositories {
 }
 
 dependencies {
+    compile "com.android.support:customtabs:${rootProject.ext.appcompatVersion}"
     compile "com.android.support:appcompat-v7:${rootProject.ext.appcompatVersion}"
     compile "com.android.support:design:${rootProject.ext.appcompatVersion}"
     compile "com.android.support:cardview-v7:${rootProject.ext.appcompatVersion}"
