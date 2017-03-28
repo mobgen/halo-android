@@ -14,6 +14,7 @@ import com.mobgen.halo.android.framework.toolbox.bus.Event;
 import com.mobgen.halo.android.framework.toolbox.bus.Subscriber;
 import com.mobgen.halo.android.notifications.callbacks.HaloNotificationListener;
 import com.mobgen.halo.android.notifications.decorator.HaloNotificationDecorator;
+import com.mobgen.halo.android.notifications.services.CustomIdGeneration;
 import com.mobgen.halo.android.notifications.services.InstanceIDService;
 import com.mobgen.halo.android.notifications.services.NotificationEmitter;
 import com.mobgen.halo.android.notifications.services.NotificationService;
@@ -127,6 +128,14 @@ public class HaloNotificationsApi extends HaloPluginApi {
     @Api(2.0)
     public static HaloNotificationsApi with(@NonNull Halo halo) {
         return new HaloNotificationsApi(halo, FirebaseInstanceId.getInstance());
+    }
+
+
+    @Keep
+    @NonNull
+    @Api(2.3)
+    public void customIdGeneration(@NonNull CustomIdGeneration customIdGeneration) {
+        NotificationService.setCustomIdGenerator(customIdGeneration);
     }
 
     /**

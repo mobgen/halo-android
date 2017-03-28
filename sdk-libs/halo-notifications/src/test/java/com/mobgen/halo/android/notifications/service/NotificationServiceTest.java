@@ -221,4 +221,11 @@ public class NotificationServiceTest extends HaloRobolectricTest {
         assertThat(mCallbackFlag.timesExecuted()).isEqualTo(1);
         subscription.unsubscribe();
     }
+
+    @Test
+    public void thatCanSetCustomIDStrategy() {
+        HaloNotificationsApi api = HaloNotificationsApi.with(mHalo);
+        assertThat(api).isNotNull();
+        api.release();
+    }
 }
