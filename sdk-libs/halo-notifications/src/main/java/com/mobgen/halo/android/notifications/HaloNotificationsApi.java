@@ -130,12 +130,16 @@ public class HaloNotificationsApi extends HaloPluginApi {
         return new HaloNotificationsApi(halo, FirebaseInstanceId.getInstance());
     }
 
-
+    /**
+     * Create a custom id for notifications.
+     *
+     * @param customIdGenerator The custom id generator
+     */
     @Keep
-    @NonNull
     @Api(2.3)
-    public void customIdGeneration(@NonNull CustomIdGeneration customIdGeneration) {
-        NotificationService.setCustomIdGenerator(customIdGeneration);
+    public void customIdGeneration(@NonNull CustomIdGeneration customIdGenerator) {
+        AssertionUtils.notNull(customIdGenerator, "customIdGenerator");
+        NotificationService.setCustomIdGenerator(customIdGenerator);
     }
 
     /**

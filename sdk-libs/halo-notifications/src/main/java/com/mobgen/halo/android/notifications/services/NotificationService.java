@@ -43,7 +43,7 @@ public class NotificationService extends FirebaseMessagingService {
     private static final AtomicInteger mNotificationId = new AtomicInteger(0);
 
     /**
-     * The custom id generator strategy
+     * The custom id generator.
      */
     private static CustomIdGeneration mCustomIdGenerator;
 
@@ -137,13 +137,10 @@ public class NotificationService extends FirebaseMessagingService {
             if (builder != null) {
                 NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                 //Just notify
-                int notificationId = 0;
+                int notificationId = mNotificationId.getAndIncrement();
                 if(mCustomIdGenerator != null){
-                    notificationId = mCustomIdGenerator.getNextId();
-                } else {
-                    notificationId = mNotificationId.getAndIncrement();
+                    notificationId = mCustomIdGenerator.getNextNotificationId(dataBundle,notificationId);
                 }
-
                 notificationManager.notify(notificationId, builder.build());
                 dataBundle.putString(NOTIFICATION_ID, String.valueOf(notificationId));
             }
@@ -193,8 +190,12 @@ public class NotificationService extends FirebaseMessagingService {
                                                                 ))))))));
     }
 
-
-    public static void setCustomIdGenerator(@Nullable CustomIdGeneration customIdGenerator) {
+    /**
+     * Set the custom notification id generator.
+     *
+     * @param customIdGenerator The custom id generator.
+     */
+    public static void setCustomIdGenerator(@NonNull CustomIdGeneration customIdGenerator) {
         mCustomIdGenerator = customIdGenerator;
     }
 

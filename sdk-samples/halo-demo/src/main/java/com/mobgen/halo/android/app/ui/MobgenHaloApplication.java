@@ -2,6 +2,7 @@ package com.mobgen.halo.android.app.ui;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 
@@ -20,6 +21,7 @@ import com.mobgen.halo.android.content.HaloContentApi;
 import com.mobgen.halo.android.framework.common.helpers.logger.PrintLog;
 import com.mobgen.halo.android.framework.common.helpers.subscription.ISubscription;
 import com.mobgen.halo.android.notifications.HaloNotificationsApi;
+import com.mobgen.halo.android.notifications.services.CustomIdGeneration;
 import com.mobgen.halo.android.sdk.api.Halo;
 import com.mobgen.halo.android.sdk.api.HaloApplication;
 import com.mobgen.halo.android.sdk.core.internal.storage.HaloManagerContract;
@@ -237,6 +239,13 @@ public class MobgenHaloApplication extends HaloApplication {
         mNotificationsApi = HaloNotificationsApi.with(halo);
         mSilentHaloNotificationListener = mNotificationsApi.listenSilentNotifications(new SilentNotificationDispatcher());
         mNotificationsApi.setNotificationDecorator(new DeeplinkDecorator(this));
+        mNotificationsApi.customIdGeneration(new CustomIdGeneration() {
+            @Override
+            public int getNextNotificationId(@NonNull Bundle data, int currentId) {
+                data.putInt("MyCustomId",10);
+                return currentId;
+            }
+        });
 
         if(mTwoFactorApi!=null){
             mTwoFactorApi.release();
