@@ -19,10 +19,6 @@ import java.io.InputStream;
 import java.util.Date;
 import java.util.List;
 
-/**
- * Created by mobgenimac on 14/3/17.
- */
-
 @JsonObject
 @HaloSearchable(version = 8 , tableName = "ChatMessage")
 @HaloQueries(queries = {@HaloQuery(name = "getMessages" ,  query = "SELECT * from ChatMessage where alias = @{alias:String} AND isMultiple = @{isMultiple:Boolean} ORDER BY createdate ASC"),

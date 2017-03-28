@@ -1,8 +1,6 @@
 package com.mobgen.halo.android.app.ui.chat;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;

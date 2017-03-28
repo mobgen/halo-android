@@ -135,9 +135,9 @@ public class QReader {
     }
 
     /**
-     *
-     * @param v
-     * @param listener
+     * Remove global layout listener
+     * @param v the view
+     * @param listener The listener to remove
      */
     private static void removeOnGlobalLayoutListener(View v,
                                                      ViewTreeObserver.OnGlobalLayoutListener listener) {

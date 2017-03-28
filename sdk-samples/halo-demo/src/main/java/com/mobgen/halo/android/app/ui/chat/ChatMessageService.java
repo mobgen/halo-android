@@ -6,10 +6,6 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 
 /**
- * Created by mobgenimac on 17/3/17.
- */
-
-/**
  * Service to handle push notifications when the conversation is active.
  */
 public class ChatMessageService extends Service {
