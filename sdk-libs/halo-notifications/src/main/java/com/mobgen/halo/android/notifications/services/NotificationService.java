@@ -45,7 +45,7 @@ public class NotificationService extends FirebaseMessagingService {
     /**
      * The custom id generator.
      */
-    private static CustomIdGeneration mCustomIdGenerator;
+    private static NotificationIdGenerator mIdGenerator;
 
     /**
      * The two factor key
@@ -137,10 +137,7 @@ public class NotificationService extends FirebaseMessagingService {
             if (builder != null) {
                 NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                 //Just notify
-                int notificationId = mNotificationId.getAndIncrement();
-                if(mCustomIdGenerator != null){
-                    notificationId = mCustomIdGenerator.getNextNotificationId(dataBundle,notificationId);
-                }
+                int notificationId = mIdGenerator.getNextNotificationId(dataBundle,mNotificationId.getAndIncrement());
                 notificationManager.notify(notificationId, builder.build());
                 dataBundle.putString(NOTIFICATION_ID, String.valueOf(notificationId));
             }
@@ -191,12 +188,12 @@ public class NotificationService extends FirebaseMessagingService {
     }
 
     /**
-     * Set the custom notification id generator.
+     * Set the notification id generator.
      *
-     * @param customIdGenerator The custom id generator.
+     * @param idGenerator The id generator.
      */
-    public static void setCustomIdGenerator(@NonNull CustomIdGeneration customIdGenerator) {
-        mCustomIdGenerator = customIdGenerator;
+    public static void setIdGenerator(@NonNull NotificationIdGenerator idGenerator) {
+        mIdGenerator = idGenerator;
     }
 
     /**

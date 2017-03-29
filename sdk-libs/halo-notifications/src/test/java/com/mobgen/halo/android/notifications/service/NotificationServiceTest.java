@@ -7,7 +7,7 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.RemoteMessage;
 import com.mobgen.halo.android.framework.common.helpers.subscription.ISubscription;
 import com.mobgen.halo.android.notifications.HaloNotificationsApi;
-import com.mobgen.halo.android.notifications.services.CustomIdGeneration;
+import com.mobgen.halo.android.notifications.services.NotificationIdGenerator;
 import com.mobgen.halo.android.notifications.services.InstanceIDService;
 import com.mobgen.halo.android.notifications.services.NotificationEmitter;
 import com.mobgen.halo.android.notifications.services.NotificationService;
@@ -16,13 +16,11 @@ import com.mobgen.halo.android.testing.CallbackFlag;
 import com.mobgen.halo.android.testing.HaloRobolectricTest;
 import com.mobgen.halo.android.testing.TestUtils;
 
-import org.assertj.core.api.StringAssert;
 import org.junit.Test;
 import org.robolectric.RuntimeEnvironment;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.mobgen.halo.android.notifications.mock.instrumentation.HaloMock.givenADefaultHalo;
 import static com.mobgen.halo.android.notifications.mock.instrumentation.HaloNotificationsApiMock.givenAContentApi;
@@ -35,9 +33,12 @@ import static com.mobgen.halo.android.notifications.mock.instrumentation.Notific
 import static com.mobgen.halo.android.notifications.mock.instrumentation.NotificationInstruments.withNotSilentNotification;
 import static com.mobgen.halo.android.notifications.mock.instrumentation.NotificationInstruments.withNullExtraData;
 import static com.mobgen.halo.android.notifications.mock.instrumentation.NotificationInstruments.withSilentNotification;
+import static com.mobgen.halo.android.notifications.mock.instrumentation.NotificationInstruments.withTwoFactor;
 import static com.mobgen.halo.android.notifications.mock.instrumentation.NotificationListenerInstruments.givenANotificationListener;
+import static com.mobgen.halo.android.notifications.mock.instrumentation.NotificationListenerInstruments.givenATwoFactorListener;
 import static com.mobgen.halo.android.notifications.mock.instrumentation.NotificationListenerInstruments.givenAnAllNotificationListener;
 import static com.mobgen.halo.android.notifications.mock.instrumentation.NotificationListenerInstruments.givenAnNotificationListenerWithCustomId;
+import static com.mobgen.halo.android.notifications.mock.instrumentation.NotificationListenerInstruments.givenAnNotificationListenerWithHaloNotificationId;
 import static com.mobgen.halo.android.notifications.mock.instrumentation.NotificationServiceInstruments.givenANotificationService;
 import static com.mobgen.halo.android.notifications.mock.instrumentation.NotificationServiceInstruments.givenTheInstanceIDService;
 import static com.mobgen.halo.android.notifications.mock.instrumentation.NotificationServiceInstruments.initFirebase;
@@ -75,6 +76,18 @@ public class NotificationServiceTest extends HaloRobolectricTest {
     public void thatANotificationWithNullExtra() throws NoSuchFieldException, IllegalAccessException {
         RemoteMessage notification = givenANotification(withNullExtraData());
         ISubscription subscription = mNotificationsApi.listenNotSilentNotifications(givenANotificationListener(mNotificationsApi, mCallbackFlag, false));
+
+        mNotificationService.onMessageReceived(notification);
+
+        assertThat(subscription).isNotNull();
+        assertThat(mCallbackFlag.isFlagged()).isTrue();
+        subscription.unsubscribe();
+    }
+
+    @Test
+    public void thatANotificationWithTwoFactor() throws NoSuchFieldException, IllegalAccessException {
+        RemoteMessage notification = givenANotification(withTwoFactor());
+        ISubscription subscription = mNotificationsApi.listenTwoFactorNotifications(givenATwoFactorListener(mCallbackFlag));
 
         mNotificationService.onMessageReceived(notification);
 
@@ -230,11 +243,11 @@ public class NotificationServiceTest extends HaloRobolectricTest {
     }
 
     @Test
-    public void thatCanSetCustomIDStrategy() throws NoSuchFieldException, IllegalAccessException {
+    public void thatCanSetCustomIdGenerator() throws NoSuchFieldException, IllegalAccessException {
         RemoteMessage notification = givenANotification(withAnySourceNotification());
         final int customID = 13;
         ISubscription subscription = mNotificationsApi.listenAllNotifications(givenAnNotificationListenerWithCustomId(mCallbackFlag, String.valueOf(customID)));
-        mNotificationsApi.customIdGeneration(new CustomIdGeneration() {
+        mNotificationsApi.customIdGenerator(new NotificationIdGenerator() {
             @Override
             public int getNextNotificationId(@NonNull Bundle data, int currentId) {
                 data.putBoolean("modifyBundle",true);
@@ -242,6 +255,17 @@ public class NotificationServiceTest extends HaloRobolectricTest {
             }
         });
         mNotificationService.onMessageReceived(notification);
+        assertThat(mCallbackFlag.isFlagged()).isTrue();
+    }
+
+    @Test
+    public void thatCanListenToHaloNotificationIdGenerator() throws NoSuchFieldException, IllegalAccessException, NoSuchMethodException, InstantiationException, InvocationTargetException {
+        RemoteMessage notification = givenANotification(withAnySourceNotification());
+        final int customID = 6;//default halo first id
+        HaloNotificationsApi notificationApi = givenAContentApi(mHalo);
+        ISubscription subscription = notificationApi.listenAllNotifications(givenAnNotificationListenerWithHaloNotificationId(mCallbackFlag, String.valueOf(customID)));
+        mNotificationService.onMessageReceived(notification);
+
         assertThat(mCallbackFlag.isFlagged()).isTrue();
     }
 }

@@ -7,15 +7,11 @@ import android.support.annotation.NonNull;
 import com.mobgen.halo.android.framework.common.annotations.Api;
 
 /**
- * Created by fernandosouto on 28/03/17.
- */
-
-/**
- * Custom notification id generation.
+ * Custom notification id generation to provide a custom notification id. Also you can modify the data bundle of the notification.
  *
  */
 @Keep
-public interface CustomIdGeneration {
+public interface NotificationIdGenerator {
 
 
     /**
@@ -23,6 +19,7 @@ public interface CustomIdGeneration {
      *
      *
      * @param data The bundle data of the notification.
+     * @param currentId The current notification id.
      * @return The notification id.
      */
     @Keep

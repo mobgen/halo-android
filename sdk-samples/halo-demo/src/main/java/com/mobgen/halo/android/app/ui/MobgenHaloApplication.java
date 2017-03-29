@@ -21,7 +21,7 @@ import com.mobgen.halo.android.content.HaloContentApi;
 import com.mobgen.halo.android.framework.common.helpers.logger.PrintLog;
 import com.mobgen.halo.android.framework.common.helpers.subscription.ISubscription;
 import com.mobgen.halo.android.notifications.HaloNotificationsApi;
-import com.mobgen.halo.android.notifications.services.CustomIdGeneration;
+import com.mobgen.halo.android.notifications.services.NotificationIdGenerator;
 import com.mobgen.halo.android.sdk.api.Halo;
 import com.mobgen.halo.android.sdk.api.HaloApplication;
 import com.mobgen.halo.android.sdk.core.internal.storage.HaloManagerContract;
@@ -239,7 +239,7 @@ public class MobgenHaloApplication extends HaloApplication {
         mNotificationsApi = HaloNotificationsApi.with(halo);
         mSilentHaloNotificationListener = mNotificationsApi.listenSilentNotifications(new SilentNotificationDispatcher());
         mNotificationsApi.setNotificationDecorator(new DeeplinkDecorator(this));
-        mNotificationsApi.customIdGeneration(new CustomIdGeneration() {
+        mNotificationsApi.customIdGenerator(new NotificationIdGenerator() {
             @Override
             public int getNextNotificationId(@NonNull Bundle data, int currentId) {
                 data.putInt("MyCustomId",10);
