@@ -242,7 +242,7 @@ public class MobgenHaloApplication extends HaloApplication {
         mNotificationsApi.customIdGenerator(new NotificationIdGenerator() {
             @Override
             public int getNextNotificationId(@NonNull Bundle data, int currentId) {
-                data.putInt("MyCustomId",10);
+                data.putBoolean("stackNofitication", true);
                 return currentId;
             }
         });
