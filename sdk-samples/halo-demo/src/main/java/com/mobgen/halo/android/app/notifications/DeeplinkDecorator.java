@@ -10,6 +10,7 @@ import com.mobgen.halo.android.app.ui.generalcontent.GeneralContentItemActivity;
 import com.mobgen.halo.android.app.ui.news.ArticleActivity;
 import com.mobgen.halo.android.notifications.decorator.HaloNotificationDecorator;
 
+
 /**
  * Manages the deep linking if we recognize the module
  */

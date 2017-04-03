@@ -14,6 +14,8 @@ import com.mobgen.halo.android.framework.toolbox.bus.Event;
 import com.mobgen.halo.android.framework.toolbox.bus.Subscriber;
 import com.mobgen.halo.android.notifications.callbacks.HaloNotificationListener;
 import com.mobgen.halo.android.notifications.decorator.HaloNotificationDecorator;
+import com.mobgen.halo.android.notifications.services.NotificationIdGenerator;
+import com.mobgen.halo.android.notifications.services.HaloNotificationIdGenerator;
 import com.mobgen.halo.android.notifications.services.InstanceIDService;
 import com.mobgen.halo.android.notifications.services.NotificationEmitter;
 import com.mobgen.halo.android.notifications.services.NotificationService;
@@ -113,6 +115,8 @@ public class HaloNotificationsApi extends HaloPluginApi {
                 updateToken();
             }
         });
+
+        NotificationService.setIdGenerator(new HaloNotificationIdGenerator());
     }
 
     /**
@@ -127,6 +131,18 @@ public class HaloNotificationsApi extends HaloPluginApi {
     @Api(2.0)
     public static HaloNotificationsApi with(@NonNull Halo halo) {
         return new HaloNotificationsApi(halo, FirebaseInstanceId.getInstance());
+    }
+
+    /**
+     * Add a custom id generator for notifications.
+     *
+     * @param customIdGenerator The custom id generator
+     */
+    @Keep
+    @Api(2.3)
+    public void customIdGenerator(@NonNull NotificationIdGenerator customIdGenerator) {
+        AssertionUtils.notNull(customIdGenerator, "customIdGenerator");
+        NotificationService.setIdGenerator(customIdGenerator);
     }
 
     /**
