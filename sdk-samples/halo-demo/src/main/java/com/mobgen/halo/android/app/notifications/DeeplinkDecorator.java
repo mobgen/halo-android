@@ -93,8 +93,10 @@ public class DeeplinkDecorator extends HaloNotificationDecorator {
                     Bundle data = new Bundle();
                     data.putString(BUNDLE_USER_NAME, chatMessage.getUserName());
                     data.putString(BUNDLE_USER_ALIAS, chatMessage.getAlias());
+
+                    int notificationId = chatMessage.getAlias().hashCode();
                     if (!isMessageServiceRunning(ChatMessageService.class)) {
-                        data.putInt(BUNDLE_NOTIFICATION_ID,chatMessage.getAlias().hashCode());
+                        data.putInt(BUNDLE_NOTIFICATION_ID,notificationId);
                     }
                     pendingIntent = ChatRoomActivity.getDeeplinkMessage(mContext, data);
                     if (isMessageServiceRunning(ChatMessageService.class)) {
@@ -104,7 +106,7 @@ public class DeeplinkDecorator extends HaloNotificationDecorator {
                         LocalBroadcastManager.getInstance(mContext).sendBroadcast(newIntent);
                         return null;
                     } else {
-                        stackNotifications(builder, chatMessage,chatMessage.getAlias().hashCode());
+                        stackNotifications(builder, chatMessage, notificationId);
                     }
                 } else { // save the new contact
                     QRContact qrContact = QRContact.deserialize(custom.toString(), Halo.instance().framework().parser());
