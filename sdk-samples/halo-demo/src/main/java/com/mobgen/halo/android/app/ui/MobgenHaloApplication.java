@@ -242,6 +242,18 @@ public class MobgenHaloApplication extends HaloApplication {
         mNotificationsApi = HaloNotificationsApi.with(halo);
         mSilentHaloNotificationListener = mNotificationsApi.listenSilentNotifications(new SilentNotificationDispatcher());
         mNotificationsApi.setNotificationDecorator(new DeeplinkDecorator(this));
+//        mNotificationsApi.customIdGenerator(new NotificationIdGenerator() {
+//            @Override
+//            public int getNextNotificationId(@NonNull Bundle data, int currentId) {
+//                Object custom = data.get("custom");
+//                if(custom != null || true) {
+//                    data.putBoolean("stackNofitication", true);
+//                    return 5;
+//                } else {
+//                    return currentId;
+//                }
+//            }
+//        });
 
         if(mTwoFactorApi!=null){
             mTwoFactorApi.release();

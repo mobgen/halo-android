@@ -22,6 +22,7 @@ import android.widget.ImageButton;
 import com.mobgen.halo.android.app.BuildConfig;
 import com.mobgen.halo.android.app.R;
 import com.mobgen.halo.android.app.generated.HaloContentQueryApi;
+import com.mobgen.halo.android.app.model.PendingNotification;
 import com.mobgen.halo.android.app.model.chat.ChatMessage;
 import com.mobgen.halo.android.app.model.chat.QRContact;
 import com.mobgen.halo.android.app.model.notification.Notification;
@@ -39,6 +40,7 @@ import com.mobgen.halo.android.framework.network.client.request.HaloRequestMetho
 import com.mobgen.halo.android.framework.network.client.response.Parser;
 import com.mobgen.halo.android.framework.toolbox.data.CallbackV2;
 import com.mobgen.halo.android.framework.toolbox.data.HaloResultV2;
+import com.mobgen.halo.android.framework.toolbox.threading.Threading;
 import com.mobgen.halo.android.sdk.api.Halo;
 import com.mobgen.halo.android.sdk.core.internal.network.HaloNetworkConstants;
 import com.mobgen.halo.android.sdk.core.management.HaloManagerApi;
@@ -165,6 +167,14 @@ public class MessagesActivity extends MobgenHaloActivity implements MessagesNoti
         } else {
             mIsMultiple = false;
             mMessageRoomName = mContactUserName;
+        }
+        //delete all pending messages
+        int notificationId = getIntent().getExtras().getInt("notificaID",-1);
+        if(notificationId != -1){
+            HaloContentQueryApi.with(MobgenHaloApplication.halo())
+                    .deletePendingMessages(notificationId)
+                    .asContent(PendingNotification.class)
+                    .execute();
         }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.chat_recycler);

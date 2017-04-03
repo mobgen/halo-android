@@ -188,7 +188,6 @@ public class NotificationService extends FirebaseMessagingService {
      *
      * @param decorator The custom decorator.
      */
-    @Api(2.0)
     public static void setNotificationDecorator(@Nullable HaloNotificationDecorator decorator) {
         mDecorator = decorator;
     }
@@ -198,7 +197,6 @@ public class NotificationService extends FirebaseMessagingService {
      *
      * @return The HaloNotificationDecorator
      */
-    @Api(2.3)
     @Nullable
     public static HaloNotificationDecorator getNotificationDecorator(){
         return mDecorator;
