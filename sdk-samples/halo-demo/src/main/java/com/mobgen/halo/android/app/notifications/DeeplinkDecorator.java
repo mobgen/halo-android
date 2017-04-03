@@ -10,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 
+import com.mobgen.halo.android.app.R;
 import com.mobgen.halo.android.app.generated.HaloContentQueryApi;
 import com.mobgen.halo.android.app.model.PendingNotification;
 import com.mobgen.halo.android.app.model.chat.ChatMessage;
@@ -30,6 +31,7 @@ import com.mobgen.halo.android.sdk.api.Halo;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.mobgen.halo.android.app.ui.chat.messages.MessagesActivity.BUNDLE_NOTIFICATION_ID;
 import static com.mobgen.halo.android.app.ui.chat.messages.MessagesActivity.BUNDLE_USER_NAME;
 import static com.mobgen.halo.android.app.ui.chat.messages.MessagesActivity.BUNDLE_USER_ALIAS;
 
@@ -92,7 +94,7 @@ public class DeeplinkDecorator extends HaloNotificationDecorator {
                     data.putString(BUNDLE_USER_NAME, chatMessage.getUserName());
                     data.putString(BUNDLE_USER_ALIAS, chatMessage.getAlias());
                     if (!isMessageServiceRunning(ChatMessageService.class)) {
-                        data.putInt("notificaID",chatMessage.getUserName().hashCode());
+                        data.putInt(BUNDLE_NOTIFICATION_ID,chatMessage.getAlias().hashCode());
                     }
                     pendingIntent = ChatRoomActivity.getDeeplinkMessage(mContext, data);
                     if (isMessageServiceRunning(ChatMessageService.class)) {
@@ -102,38 +104,7 @@ public class DeeplinkDecorator extends HaloNotificationDecorator {
                         LocalBroadcastManager.getInstance(mContext).sendBroadcast(newIntent);
                         return null;
                     } else {
-                        //we must store messages
-                        int notificationId = chatMessage.getUserName().hashCode();
-                        //save current notification
-                        HaloContentQueryApi.with(MobgenHaloApplication.halo())
-                                .savePendingMessage(notificationId, chatMessage.getMessage())
-                                .asContent(PendingNotification.class)
-                                .threadPolicy(Threading.SAME_THREAD_POLICY)
-                                .execute();
-                        //get pending notifications
-                        HaloContentQueryApi.with(MobgenHaloApplication.halo())
-                                .getPendingMessages(notificationId)
-                                .asContent(PendingNotification.class)
-                                .threadPolicy(Threading.SAME_THREAD_POLICY)
-                                .execute(new CallbackV2<List<PendingNotification>>() {
-                                    @Override
-                                    public void onFinish(@NonNull HaloResultV2<List<PendingNotification>> result) {
-                                        notifications = result.data();
-                                    }
-                                });
-                        builder.setGroup("HALO");
-                        builder.setCategory(Notification.CATEGORY_MESSAGE);
-                        builder.setGroupSummary(true);
-                        NotificationCompat.InboxStyle inboxStyle =
-                                new NotificationCompat.InboxStyle();
-                        // Sets a title for the Inbox in expanded layout
-                        inboxStyle.setBigContentTitle("The title");
-                        inboxStyle.setSummaryText("You have " + notifications.size() + " Notifications.");
-                        // Moves events into the expanded layout
-                        for (int i = 0; i < notifications.size(); i++) {
-                            inboxStyle.addLine(notifications.get(i).getMessage());
-                        }
-                        builder.setStyle(inboxStyle);
+                        stackNotifications(builder, chatMessage,chatMessage.getAlias().hashCode());
                     }
                 } else { // save the new contact
                     QRContact qrContact = QRContact.deserialize(custom.toString(), Halo.instance().framework().parser());
@@ -157,7 +128,59 @@ public class DeeplinkDecorator extends HaloNotificationDecorator {
         return chain(builder, bundle);
     }
 
+    /**
+     * Stack notification by id.
+     *
+     * @param builder The builder of the notification
+     * @param chatMessage The chat message to stack
+     * @param notificationId The notification id.
+     */
+    private void stackNotifications(@NonNull NotificationCompat.Builder builder, ChatMessage chatMessage, int notificationId) {
+        //we must store messages
+        //save current notification
+        HaloContentQueryApi.with(MobgenHaloApplication.halo())
+                .savePendingMessage(notificationId, chatMessage.getMessage())
+                .asContent(PendingNotification.class)
+                .threadPolicy(Threading.SAME_THREAD_POLICY)
+                .execute();
+        //get pending notifications
+        HaloContentQueryApi.with(MobgenHaloApplication.halo())
+                .getPendingMessages(notificationId)
+                .asContent(PendingNotification.class)
+                .threadPolicy(Threading.SAME_THREAD_POLICY)
+                .execute(new CallbackV2<List<PendingNotification>>() {
+                    @Override
+                    public void onFinish(@NonNull HaloResultV2<List<PendingNotification>> result) {
+                        notifications = result.data();
+                    }
+                });
+        builder.setGroup("HALO");
+        builder.setCategory(Notification.CATEGORY_MESSAGE);
+        builder.setGroupSummary(true);
+        NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
+        // Sets a title for the Inbox in expanded layout
+        String title;
+        if (chatMessage.getAlias().equals(MessagesActivity.MULTIPLE_ROOM)) {
+            title = mContext.getString(R.string.chat_new_msg_title_multiple);
+        } else {
+            title = mContext.getString(R.string.chat_new_msg_title);
+        }
+        title = title + " " + chatMessage.getUserName();
+        inboxStyle.setBigContentTitle(title);
+        inboxStyle.setSummaryText(mContext.getString(R.string.chat_stack_summary_part1) + " " + notifications.size() + " " + mContext.getString(R.string.chat_stack_summary_part2));
+        // Moves events into the expanded layout
+        for (int i = 0; i < notifications.size(); i++) {
+            inboxStyle.addLine(notifications.get(i).getMessage());
+        }
+        builder.setStyle(inboxStyle);
+    }
 
+    /**
+     * Check if message service is running
+     *
+     * @param serviceClass The service class.
+     * @return True if its running; Otherwise false.
+     */
     private boolean isMessageServiceRunning(Class<?> serviceClass) {
         ActivityManager manager = (ActivityManager) mContext.getSystemService(Context.ACTIVITY_SERVICE);
         for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {

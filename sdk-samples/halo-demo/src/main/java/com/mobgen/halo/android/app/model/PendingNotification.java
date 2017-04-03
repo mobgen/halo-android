@@ -16,7 +16,7 @@ import com.mobgen.halo.android.content.annotations.HaloSearchable;
  * Created by fernandosouto on 30/03/17.
  */
 @JsonObject
-@HaloSearchable(version = 6 , tableName ="PendingNotification")
+@HaloSearchable(version = 7 , tableName ="PendingNotification")
 @HaloQueries(queries = {@HaloQuery(name="getPendingMessages", query="select * from PendingNotification where NotificationId = @{mNotificationID:Integer}"),
         @HaloQuery(name="savePendingMessage", query="insert into PendingNotification(NotificationId,Message) VALUES (@{mNotificationID:Integer},@{mMessage:String})"),
         @HaloQuery(name="deletePendingMessages", query="delete from PendingNotification where NotificationId = @{mNotificationID:Integer}")})

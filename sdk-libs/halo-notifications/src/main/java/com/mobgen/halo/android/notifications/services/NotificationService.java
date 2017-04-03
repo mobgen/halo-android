@@ -212,16 +212,6 @@ public class NotificationService extends FirebaseMessagingService {
     }
 
     /**
-     * Get the custom decorator to be used when a notification is available
-     *
-     * @return The HaloNotificationDecorator
-     */
-    @Nullable
-    public static HaloNotificationDecorator getNotificationDecorator(){
-        return mDecorator;
-    }
-
-    /**
      * Provides the notification id for the provided bundle.
      *
      * @param bundle The data inside of the bundle.

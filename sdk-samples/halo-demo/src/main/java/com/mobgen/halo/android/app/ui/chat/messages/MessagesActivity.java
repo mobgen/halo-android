@@ -69,6 +69,10 @@ public class MessagesActivity extends MobgenHaloActivity implements MessagesNoti
      */
     public static final String BUNDLE_USER_ALIAS = "bundle_user_alias";
     /**
+     * The notification id.
+     */
+    public static final String BUNDLE_NOTIFICATION_ID = "bundle_notification_id";
+    /**
      * Idenfified if conversation is multiple for broadcasting
      */
     public static final String BUNDLE_MULTIPLE = "bundle_user_alias";
@@ -169,7 +173,7 @@ public class MessagesActivity extends MobgenHaloActivity implements MessagesNoti
             mMessageRoomName = mContactUserName;
         }
         //delete all pending messages
-        int notificationId = getIntent().getExtras().getInt("notificaID",-1);
+        int notificationId = getIntent().getExtras().getInt(BUNDLE_NOTIFICATION_ID,-1);
         if(notificationId != -1){
             HaloContentQueryApi.with(MobgenHaloApplication.halo())
                     .deletePendingMessages(notificationId)
