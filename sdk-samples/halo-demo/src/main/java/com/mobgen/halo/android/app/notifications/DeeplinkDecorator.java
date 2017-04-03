@@ -33,6 +33,7 @@ import java.util.List;
 import static com.mobgen.halo.android.app.ui.chat.messages.MessagesActivity.BUNDLE_USER_NAME;
 import static com.mobgen.halo.android.app.ui.chat.messages.MessagesActivity.BUNDLE_USER_ALIAS;
 
+
 /**
  * Manages the deep linking if we recognize the module
  */

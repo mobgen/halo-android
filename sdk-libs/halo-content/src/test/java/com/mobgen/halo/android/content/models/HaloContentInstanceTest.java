@@ -1,5 +1,6 @@
 package com.mobgen.halo.android.content.models;
 
+import com.mobgen.halo.android.content.mock.dummy.DummyObjectModel;
 import com.mobgen.halo.android.framework.common.exceptions.HaloParsingException;
 import com.mobgen.halo.android.sdk.api.Halo;
 import com.mobgen.halo.android.sdk.core.management.segmentation.HaloSegmentationTag;
@@ -74,5 +75,35 @@ public class HaloContentInstanceTest extends HaloRobolectricTest {
         assertThat(instance.getRemoveDate()).isEqualTo(parcelInstance.getRemoveDate());
         assertThat(instance.describeContents()).isEqualTo(0);
         assertThat(instance.getArchivedDate()).isEqualTo(now);
+    }
+
+    @Test
+    public void thatAParcelOperationKeepsTheSameDataWithConstructorAndBuilder() throws JSONException {
+        Date now = new Date();
+        JSONObject json = new JSONObject("{foo: 'bar'}");
+        DummyObjectModel dummy = new DummyObjectModel("bar");
+        HaloContentInstance instance = new HaloContentInstance("fakeId", "fakeModuleName", "fakeModule", "fakeName", json,"fakeAuthor",now, now, now, now, now,new ArrayList<HaloSegmentationTag>());
+        HaloContentInstance instanceBuilder = new HaloContentInstance.Builder("fakeModuleName")
+                .withName("fakeName")
+                .withModuleId("fakeModule")
+                .withId("fakeId")
+                .withAuthor("fakeAuthor")
+                .withTags(new ArrayList<HaloSegmentationTag>())
+                .withContentData(dummy)
+                .withCreationDate(now)
+                .withLastUpdateDate(now)
+                .withPublishDate(now)
+                .withArchivedDate(now)
+                .withRemovalDate(now)
+                .build();
+        assertThat(instance.getItemId()).isEqualTo(instanceBuilder.getItemId());
+        assertThat(instance.getModuleName()).isEqualTo(instanceBuilder.getModuleName());
+        assertThat(instance.getModuleId()).isEqualTo(instanceBuilder.getModuleId());
+        assertThat(instance.getName()).isEqualTo(instanceBuilder.getName());
+        assertThat(instance.getValues().toString()).isEqualTo(instanceBuilder.getValues().toString());
+        assertThat(instance.getPublishedDate()).isEqualTo(instanceBuilder.getPublishedDate());
+        assertThat(instance.getRemoveDate()).isEqualTo(instanceBuilder.getRemoveDate());
+        assertThat(instance.describeContents()).isEqualTo(0);
+        assertThat(instance.getArchivedDate()).isEqualTo(instanceBuilder.getArchivedDate());
     }
 }

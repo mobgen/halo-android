@@ -38,6 +38,14 @@ public class NotificationInstruments {
     }
 
     @NonNull
+    public static Map<String, String> withTwoFactor() {
+        Map<String, String> map = new HashMap<>();
+        map.put("type", "2_FACTOR");
+        map.put("from", NOTIFICATION_FROM);
+        return map;
+    }
+
+    @NonNull
     public static Map<String, String> withAnySourceNotification() {
         Map<String, String> map = new HashMap<>();
         map.put("foo", "bar");

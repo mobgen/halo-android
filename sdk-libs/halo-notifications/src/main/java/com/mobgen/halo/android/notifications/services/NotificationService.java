@@ -3,6 +3,7 @@ package com.mobgen.halo.android.notifications.services;
 import android.annotation.SuppressLint;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Keep;
 import android.support.annotation.NonNull;
@@ -13,6 +14,7 @@ import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.mobgen.halo.android.framework.common.annotations.Api;
 import com.mobgen.halo.android.framework.common.helpers.logger.Halog;
+import com.mobgen.halo.android.framework.common.utils.AssertionUtils;
 import com.mobgen.halo.android.notifications.decorator.HaloNotificationDecorator;
 import com.mobgen.halo.android.notifications.decorator.NotificationActionDecorator;
 import com.mobgen.halo.android.notifications.decorator.NotificationBadgeDecorator;
@@ -42,6 +44,12 @@ public class NotificationService extends FirebaseMessagingService {
      * The atomic identifier to display every notification in a different view.
      */
     private static final AtomicInteger mNotificationId = new AtomicInteger(0);
+
+    /**
+     * The custom id generator.
+     */
+    @NonNull
+    private static NotificationIdGenerator mIdGenerator;
 
     /**
      * The two factor key
@@ -76,10 +84,10 @@ public class NotificationService extends FirebaseMessagingService {
         Bundle bundle = new Bundle();
 
         for (String key : data.keySet()) {
-            if(!key.equals("extra")) {
+            if (!key.equals("extra")) {
                 bundle.putString(key, data.get(key));
-            } else{
-                if(data.get(key)!=null) {
+            } else {
+                if (data.get(key) != null) {
                     bundle.putString(key, data.get(key));
                     extraJSONToBundle(bundle, data.get(key));
                 }
@@ -89,18 +97,17 @@ public class NotificationService extends FirebaseMessagingService {
     }
 
     /**
-     *
      * Parse extra json to bundle.
      *
-     * @param bundle Bundle
+     * @param bundle    Bundle
      * @param extraData String  with json extra data
      * @throws JSONException
      */
-    private void extraJSONToBundle(@NonNull Bundle bundle , @NonNull String extraData) {
+    private void extraJSONToBundle(@NonNull Bundle bundle, @NonNull String extraData) {
         JSONObject jsonObject = null;
-        try{
+        try {
             jsonObject = new JSONObject(extraData);
-            if(jsonObject!=null) {
+            if (jsonObject != null) {
                 Iterator iter = jsonObject.keys();
                 while (iter.hasNext()) {
                     String key = (String) iter.next();
@@ -108,7 +115,7 @@ public class NotificationService extends FirebaseMessagingService {
                     bundle.putString(key, value);
                 }
             }
-        } catch (JSONException jsonException){
+        } catch (JSONException jsonException) {
         }
     }
 
@@ -119,13 +126,15 @@ public class NotificationService extends FirebaseMessagingService {
         String from = message.getFrom();
 
         Bundle dataBundle = messageToBundle(message);
-        if(isTwoFactor(dataBundle)) {
+        if (isTwoFactor(dataBundle)) {
             //Let the two factor handle it
             NotificationEmitter.emitTwoFactor(this, from, dataBundle);
         } else if (isSilent(dataBundle)) {
             //Let the silent handle manage it
             NotificationEmitter.emitSilent(this, from, dataBundle);
-        }  else {
+        } else {
+            //set the notification id
+            int notificationId = mIdGenerator.getNextNotificationId(dataBundle, mNotificationId.getAndIncrement());
             //Build notification based on decorators
             NotificationCompat.Builder builder = createNotificationDecorator().decorate(new NotificationCompat.Builder(this), dataBundle);
             //Notify if available and the decorator provides a builder. If a custom decorator provides a null builder
@@ -133,7 +142,6 @@ public class NotificationService extends FirebaseMessagingService {
             if (builder != null) {
                 NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                 //Just notify
-                int notificationId = mNotificationId.getAndIncrement();
                 notificationManager.notify(notificationId, builder.build());
                 dataBundle.putString(NOTIFICATION_ID, String.valueOf(notificationId));
             }
@@ -157,6 +165,7 @@ public class NotificationService extends FirebaseMessagingService {
 
     /**
      * A notification is considered Two Factor Authentiaction if comes with the 2_FACTOR code.
+     *
      * @param data
      * @return True if it is a silent notification. False otherwise.
      */
@@ -181,6 +190,16 @@ public class NotificationService extends FirebaseMessagingService {
                                                                 new NotificationTitleDecorator(
                                                                         mDecorator
                                                                 ))))))));
+    }
+
+    /**
+     * Set the notification id generator.
+     *
+     * @param idGenerator The id generator.
+     */
+    public static void setIdGenerator(@NonNull NotificationIdGenerator idGenerator) {
+        AssertionUtils.notNull(idGenerator, "idGenerator");
+        mIdGenerator = idGenerator;
     }
 
     /**

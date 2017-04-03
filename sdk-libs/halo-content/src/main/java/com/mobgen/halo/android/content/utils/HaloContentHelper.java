@@ -146,6 +146,7 @@ public final class HaloContentHelper {
                         values[indexParam] = 0;
                     }
                 }
+
             } else if (type == Cursor.FIELD_TYPE_STRING) {
 
                 if(cursor.getString(cursor.getColumnIndex(cursor.getColumnNames()[i])).equals("false")){
