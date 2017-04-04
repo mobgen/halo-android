@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    tools:mContext=".ui.social.SocialLoginActivity">
+    tools:context=".ui.social.SocialLoginActivity">
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"

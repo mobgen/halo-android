@@ -79,7 +79,7 @@ public class DeeplinkDecorator extends HaloNotificationDecorator {
             //extract from notification bundle the data
             try {
                 ChatMessage chatMessage = ChatMessage.deserialize(custom.toString(), Halo.instance().framework().parser());
-                if(chatMessage.getAlias()!=null) {//this is a new message
+                if(chatMessage.getAlias()!=null && chatMessage.getMessage() != null) {//this is a new message
                     if(chatMessage.getAlias().equals(MessagesActivity.MULTIPLE_ROOM)){
                         chatMessage.setIsMultiple(true);
                     } else {

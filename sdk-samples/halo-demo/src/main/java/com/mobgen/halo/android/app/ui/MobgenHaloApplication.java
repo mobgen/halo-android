@@ -248,7 +248,11 @@ public class MobgenHaloApplication extends HaloApplication {
                 if(custom != null) {
                     try {
                         ChatMessage chatMessage = ChatMessage.deserialize(custom.toString(), Halo.instance().framework().parser());
-                        return chatMessage.getAlias().hashCode();
+                        if(chatMessage.getMessage() != null) {
+                            return chatMessage.getAlias().hashCode();
+                        } else {
+                            return currentId;
+                        }
                     } catch (HaloParsingException e) {
                         return currentId;
                     }

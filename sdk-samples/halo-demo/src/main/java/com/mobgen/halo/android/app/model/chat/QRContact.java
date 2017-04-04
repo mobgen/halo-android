@@ -21,29 +21,29 @@ import java.io.InputStream;
  * Created by mobgenimac on 14/3/17.
  */
 @JsonObject
-@HaloSearchable(version = 11 , tableName = "QRContact")
-@HaloQueries(queries = {@HaloQuery(name = "getContactImage" ,  query = "SELECT * from QRContact where Alias = @{mAlias:String}"),
-                        @HaloQuery(name = "getUserName" ,  query = "SELECT * from QRContact where Alias = @{mAlias:String}"),
-                        @HaloQuery(name = "getContacts" ,  query = "SELECT * from QRContact where Alias != @{mAlias:String} AND Alias!=@{mMultiple:String}"),
-                        @HaloQuery(name = "getConversations" ,  query = "SELECT * from QRContact where Alias != @{mAlias:String} ORDER BY Name ASC"),
-                        @HaloQuery(name = "insertContact", query = "INSERT OR REPLACE INTO QRContact(Alias,Name,Image) VALUES (@{mAlias:String},@{mName:String},@{mImage:String})"),
-                        @HaloQuery(name = "deleteContact", query = "DELETE FROM QRContact where Alias = @{mAlias:String}")})
+@HaloSearchable(version = 12 , tableName = "QRContact")
+@HaloQueries(queries = {@HaloQuery(name = "getContactImage" ,  query = "SELECT * from QRContact where alias = @{mAlias:String}"),
+                        @HaloQuery(name = "getUserName" ,  query = "SELECT * from QRContact where alias = @{mAlias:String}"),
+                        @HaloQuery(name = "getContacts" ,  query = "SELECT * from QRContact where alias != @{mAlias:String} AND alias!=@{mMultiple:String}"),
+                        @HaloQuery(name = "getConversations" ,  query = "SELECT * from QRContact where alias != @{mAlias:String} ORDER BY Name ASC"),
+                        @HaloQuery(name = "insertContact", query = "INSERT OR REPLACE INTO QRContact(alias,name,image) VALUES (@{mAlias:String},@{mName:String},@{mImage:String})"),
+                        @HaloQuery(name = "deleteContact", query = "DELETE FROM QRContact where alias = @{mAlias:String}")})
 public class QRContact {
     @HaloField(index = true, columnName = "Alias")
-    @JsonField(name = "Alias")
+    @JsonField(name = "alias")
     String mAlias;
 
-    @JsonField(name = "Name")
+    @JsonField(name = "name")
     String mName;
 
-    @JsonField(name = "Image")
+    @JsonField(name = "image")
     String mImage;
 
     public QRContact(){
 
     }
 
-    @HaloConstructor(columnNames = {"Alias","Name","Image"})
+    @HaloConstructor(columnNames = {"alias","name","image"})
     public QRContact(@NonNull String alias, @NonNull String name, @NonNull String image){
         mImage = image;
         mName = name;
