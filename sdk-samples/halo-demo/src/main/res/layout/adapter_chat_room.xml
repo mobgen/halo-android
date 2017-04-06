@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/default_padding"
+    android:background="?attr/selectableItemBackground">
+
+    <ImageView
+        android:id="@+id/iv_thumbnail"
+        android:contentDescription="@string/chat_image"
+        android:layout_width="@dimen/thumbnail_image"
+        android:layout_height="@dimen/thumbnail_image"
+        android:scaleType="fitXY"
+        tools:src="@drawable/myicon" />
+
+    <com.mobgen.halo.android.app.ui.views.HaloTextView
+        android:id="@+id/tv_title"
+        android:layout_margin="@dimen/default_margin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:singleLine="false"
+        android:layout_gravity="center_vertical"
+        android:textSize="@dimen/text_size"
+        android:textColor="@color/black"
+        android:maxLines="2"
+        android:ellipsize="end"
+        tools:text="@string/chat_username" />
+
+</LinearLayout>

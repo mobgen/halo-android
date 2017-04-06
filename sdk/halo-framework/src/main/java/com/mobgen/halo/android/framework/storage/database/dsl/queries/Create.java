@@ -127,7 +127,7 @@ public class Create extends Query {
          * @param columns   The columns.
          */
         private IndexSyntax(@NonNull Class<? extends HaloTable> table, @NonNull String indexName, @NonNull String[] columns) {
-            builder().append("INDEX IF NOT EXISTS ");
+            builder().append("UNIQUE INDEX ");
             builder().append(indexName).append(" ");
             builder().append("ON ").append(ORMUtils.getTableName(table)).append(" ");
             builder().append("(");

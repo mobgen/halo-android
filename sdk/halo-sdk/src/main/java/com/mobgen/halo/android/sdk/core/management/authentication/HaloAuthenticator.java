@@ -124,9 +124,12 @@ public class HaloAuthenticator implements Authenticator {
 
         //The request authentication finished successfully
         if (session != null) {
-            //recover from logged user if there is a halo auth api
-            if (mAuthenticationRecover != null && !mAuthenticationRecover.recoverStatus()) {
-                mAuthenticationRecover.recoverAccount();
+            //check if its a client based login to recover account
+            if(getCredentials().getLoginType()==Credentials.CLIENT_BASED_LOGIN) {
+                //recover from logged user if there is a halo auth api
+                if (mAuthenticationRecover != null && !mAuthenticationRecover.recoverStatus()) {
+                    mAuthenticationRecover.recoverAccount();
+                }
             }
             //Store the session
             mSessionManager.setSession(HALO_SESSION_NAME, session);
