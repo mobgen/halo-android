@@ -146,9 +146,10 @@ public class HaloContentEditApi extends HaloPluginApi {
     }
 
     /**
-     * Subscribe to receive updates from batch operations.
+     * Subscribe to receive updates from batch operations. You can receive conflicts or batch operations after gain
+     * net access.
      *
-     * @param listener Listener when batch finishes
+     * @param listener Listener when batch finishes.
      * @return Subscription to event.
      */
     @Keep
@@ -161,13 +162,12 @@ public class HaloContentEditApi extends HaloPluginApi {
             @Override
             public void onEventReceived(@NonNull Event event) {
                 if (event.getData() != null) {
-                    //launch batch error o finnish getting info
                     if (BatchBundleizeHelper.isBatchOperation(event.getData())) {
-                        Pair<HaloStatus, BatchOperations> result = BatchBundleizeHelper.debundleizeBatchOperations(event.getData());
-                        listener.onBatchError(result.first, result.second);
+                        BatchOperations result = BatchBundleizeHelper.debundleizeBatchOperations(event.getData());
+                        listener.onBatchConflict(result);
                     } else {
                         Pair<HaloStatus, BatchOperationResults> result = BatchBundleizeHelper.debundleizeBatchOperationsResults(event.getData());
-                        listener.onBatchFinish(result.first, result.second);
+                        listener.onBatchRetrySuccess(result.first, result.second);
                     }
                 }
             }
@@ -182,14 +182,13 @@ public class HaloContentEditApi extends HaloPluginApi {
     public interface HaloBatchListener {
 
         /**
-         * Notifies when the batch process has finished with errors so the user can perform any action.
+         * Notifies when the batch process has some conflicts.
          *
-         * @param status     The status of the data received.
-         * @param operations The operation pending.
+         * @param operations The operations with conflicts.
          */
         @Keep
         @Api(2.3)
-        void onBatchError(@NonNull HaloStatus status, @Nullable BatchOperations operations);
+        void onBatchConflict(@Nullable BatchOperations operations);
 
         /**
          * Notifies when the batch process has finished so the user can perform any action.
@@ -199,7 +198,7 @@ public class HaloContentEditApi extends HaloPluginApi {
          */
         @Keep
         @Api(2.3)
-        void onBatchFinish(@NonNull HaloStatus status, @Nullable BatchOperationResults operations);
+        void onBatchRetrySuccess(@NonNull HaloStatus status, @Nullable BatchOperationResults operations);
     }
 
 

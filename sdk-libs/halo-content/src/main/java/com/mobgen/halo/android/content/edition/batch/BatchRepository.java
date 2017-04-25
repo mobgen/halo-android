@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 
 import com.mobgen.halo.android.content.HaloContentApi;
+import com.mobgen.halo.android.content.models.BatchErrorInfo;
+import com.mobgen.halo.android.content.models.BatchOperationResult;
 import com.mobgen.halo.android.content.models.BatchOperationResults;
 import com.mobgen.halo.android.content.models.BatchOperations;
 import com.mobgen.halo.android.content.models.HaloContentInstance;
@@ -19,13 +21,23 @@ import com.mobgen.halo.android.framework.toolbox.scheduler.Job;
 import com.mobgen.halo.android.framework.toolbox.threading.Threading;
 import com.mobgen.halo.android.sdk.api.Halo;
 
+import java.util.List;
+
 import static com.mobgen.halo.android.content.edition.HaloContentEditApi.BATCH_FINISHED_EVENT;
+import static com.mobgen.halo.android.content.models.BatchOperator.CREATEORUPDATE;
+import static com.mobgen.halo.android.content.models.BatchOperator.DELETE;
+import static com.mobgen.halo.android.content.models.BatchOperator.UPDATE;
 import static com.mobgen.halo.android.sdk.api.HaloApplication.halo;
 
 /**
  * General content instance content manipulation reporsitory
  */
 public class BatchRepository {
+
+    /**
+     * The job name to retry request.
+     */
+    private static final String JOB_NAME = "batchOperation";
 
     /**
      * Remote data source.
@@ -41,6 +53,11 @@ public class BatchRepository {
      * The halo content api.
      */
     private HaloContentApi mHaloContentApi;
+
+    /**
+     * The conflict policy to apply.
+     */
+    private int mConflictPolicy;
 
     /**
      * Constructor for the repository.
@@ -68,30 +85,63 @@ public class BatchRepository {
      * @throws HaloParsingException
      */
     @NonNull
-    public HaloResultV2<BatchOperationResults> batchOperation(@NonNull BatchOperations batchOperations) throws HaloStorageGeneralException {
+    public HaloResultV2<BatchOperationResults> batchOperation(@NonNull final BatchOperations batchOperations) throws HaloStorageGeneralException {
         HaloStatus.Builder status = HaloStatus.builder();
         BatchOperationResults response = null;
         try {
             response = mRemoteDatasource.batchOperation(batchOperations);
-            removeOperations();
+            checkAndNofifyConflicts(response);
         } catch (HaloNetException haloException) {
             //net error so we need to store data when we have connection
             status.error(haloException);
             mLocalDataSource.saveErrors(batchOperations);
-            //emit onError result to all listeners
-            Bundle batchResult = BatchBundleizeHelper.bundleizeBatchOperations(new HaloResultV2<>(status.build(), batchOperations));
-            Halo.instance().framework().emit(new Event(EventId.create(BATCH_FINISHED_EVENT), batchResult));
             //schedule a job to execute when network works again
             Job.Builder job = Job.builder(new BatchSchedule(halo(), this))
                     .persist(true)
                     .thread(Threading.SINGLE_QUEUE_POLICY)
-                    .tag("batchOperation")
+                    .tag(JOB_NAME)
                     .needsNetwork(Job.NETWORK_TYPE_ANY);
             halo().framework().toolbox().schedule(job.build());
+
         } catch (HaloParsingException haloParsingException) {
             status.error(haloParsingException);
         }
         return new HaloResultV2<>(status.build(), response);
+    }
+
+    /**
+     * Verify all instances looking for conflicts. It will notify via subscription a solution to the conflicts
+     * and remove this conflict from the results.
+     *
+     * @param batchOperationResults The batch operations to perfom.
+     */
+    private void checkAndNofifyConflicts(@NonNull final BatchOperationResults batchOperationResults) {
+        final BatchOperations.Builder conflictBuilder = new BatchOperations.Builder();
+        List<BatchOperationResult> batchResult =  batchOperationResults.getContentResult();
+        for (int i = 0; i < batchResult.size(); i++) {
+            if(batchResult.get(i).getOperation().equals(DELETE)
+                    && !batchResult.get(i).isSuccess()
+                    && batchResult.get(i).getDataError().getError().getStatus() == BatchErrorInfo.CONFLICT_STATUS){
+                conflictBuilder.delete(batchResult.get(i).getDataError().getError().getExtraInstance());
+            }
+            if(batchResult.get(i).getOperation().equals(UPDATE)
+                    && !batchResult.get(i).isSuccess()
+                    && batchResult.get(i).getDataError().getError().getStatus() == BatchErrorInfo.CONFLICT_STATUS){
+                conflictBuilder.update(batchResult.get(i).getDataError().getError().getExtraInstance());
+            }
+            if(batchResult.get(i).getOperation().equals(CREATEORUPDATE)
+                    && !batchResult.get(i).isSuccess()
+                    && batchResult.get(i).getDataError().getError().getStatus() == BatchErrorInfo.CONFLICT_STATUS){
+                conflictBuilder.createOrUpdate(batchResult.get(i).getDataError().getError().getExtraInstance());
+            }
+        }
+        //Notify the user the conflicts on delete, createorupdate or update operations
+        BatchOperations conflictOperations = conflictBuilder.build();
+        if (conflictOperations.getDeleted() != null || conflictOperations.getUpdated() != null
+                || conflictOperations.getCreatedOrUpdated() != null) {
+            Bundle batchConflict = BatchBundleizeHelper.bundleizeBatchOperations(conflictOperations);
+            Halo.instance().framework().emit(new Event(EventId.create(BATCH_FINISHED_EVENT), batchConflict));
+        }
     }
 
     /**
@@ -107,22 +157,11 @@ public class BatchRepository {
     }
 
     /**
-     * Get all pending batch operations from local data source.
-     *
-     * @return The pending batch operations to perfom.
-     * @throws HaloStorageGeneralException
-     */
-    @NonNull
-    public boolean removePendingOperations(HaloContentInstance... instances) throws HaloStorageGeneralException {
-        return mLocalDataSource.deleteErrors(instances);
-    }
-
-    /**
      * Remove all pending operations to restore status.
      *
      * @throws HaloStorageGeneralException
      */
-    private void removeOperations() throws HaloStorageGeneralException {
+    public void removeOperations() throws HaloStorageGeneralException {
         //remove pending tasks if batchOperation works on remote data source
         BatchOperations instances = mLocalDataSource.getBatchOperations();
         if (instances.getTruncate() != null && instances.getTruncate().size() > 0) {
@@ -140,6 +179,17 @@ public class BatchRepository {
         if (instances.getDeleted() != null && instances.getDeleted().size() > 0) {
             removePendingOperations(instances.getDeleted().toArray(new HaloContentInstance[instances.getDeleted().size()]));
         }
+    }
+
+    /**
+     * Remove all pending batch operations from local data source.
+     *
+     * @return The pending batch operations to perfom.
+     * @throws HaloStorageGeneralException
+     */
+    @NonNull
+    private boolean removePendingOperations(HaloContentInstance... instances) throws HaloStorageGeneralException {
+        return mLocalDataSource.deleteErrors(instances);
     }
 
 }

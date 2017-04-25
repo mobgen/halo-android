@@ -12,8 +12,8 @@ import com.mobgen.halo.android.framework.toolbox.bus.Event;
 import com.mobgen.halo.android.framework.toolbox.bus.EventId;
 import com.mobgen.halo.android.framework.toolbox.data.HaloResultV2;
 import com.mobgen.halo.android.sdk.api.Halo;
-import com.mobgen.halo.android.sdk.core.management.segmentation.HaloLocale;
 import com.mobgen.halo.android.sdk.core.threading.HaloSchedule;
+
 
 import static com.mobgen.halo.android.content.edition.HaloContentEditApi.BATCH_FINISHED_EVENT;
 
@@ -47,7 +47,10 @@ public class BatchSchedule extends HaloSchedule {
         HaloResultV2<BatchOperationResults> result = null;
         try {
             //get all operations from database
-            result = mBatchRepository.batchOperation(mBatchRepository.getPendingOperations());
+            BatchOperations pendingOperations = mBatchRepository.getPendingOperations();
+            //remove pending operations from database
+            mBatchRepository.removeOperations();
+            result = mBatchRepository.batchOperation(pendingOperations);
             //notify the user with response
             Bundle batchResult = BatchBundleizeHelper.bundleizeBatchOperationsResults(new HaloResultV2<>(result.status(), result.data()));
             Halo.instance().framework().emit(new Event(EventId.create(BATCH_FINISHED_EVENT), batchResult));

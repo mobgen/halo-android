@@ -16,6 +16,7 @@ public class ServerFixtures {
 
     //content edit
     public static final String CONTENT_EDIT_API = "contentManipulation.json";
+    public static final String CONTENT_BATCH_API = "batchManipulation.json";
 
     public static void enqueueServerFile(MockServer server, String file) throws IOException {
         server.enqueueFile(200, file);

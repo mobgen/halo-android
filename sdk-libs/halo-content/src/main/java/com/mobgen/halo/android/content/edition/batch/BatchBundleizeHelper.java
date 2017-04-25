@@ -22,7 +22,7 @@ public final class BatchBundleizeHelper {
     /**
      * The batch operations.
      */
-    private static final String BUNDLE_BATH_OPERATIONS = "halo_batch_opertions";
+    private static final String BUNDLE_BATH_OPERATIONS = "halo_batch_operations";
 
     /**
      * The private constructor for the helper.
@@ -31,6 +31,12 @@ public final class BatchBundleizeHelper {
         //Private constructor to avoid instances for this helper.
     }
 
+    /**
+     * Check if is a result of a conflict or batch operation after recover connection.
+     *
+     * @param data The data.
+     * @return True if its a conflict resolution notification; Otherwise false.
+     */
     public static boolean isBatchOperation(Bundle data){
         if(data.getParcelable(BUNDLE_BATH_OPERATIONS).getClass().equals(BatchOperations.class)){
             return true;
@@ -44,11 +50,10 @@ public final class BatchBundleizeHelper {
      * @param batchOperations The batch operation.
      * @return The bundle created.
      */
-    public static Bundle bundleizeBatchOperations(HaloResultV2<BatchOperations> batchOperations) {
+    public static Bundle bundleizeBatchOperations(BatchOperations batchOperations) {
         AssertionUtils.notNull(batchOperations, "batchOperations");
         Bundle bundle = new Bundle();
-        bundle.putParcelable(BUNDLE_STATUS, batchOperations.status());
-        bundle.putParcelable(BUNDLE_BATH_OPERATIONS, batchOperations.data());
+        bundle.putParcelable(BUNDLE_BATH_OPERATIONS, batchOperations);
         return bundle;
     }
 
@@ -59,11 +64,10 @@ public final class BatchBundleizeHelper {
      * @return The pair of status and batch operation.
      */
     @NonNull
-    public static Pair<HaloStatus, BatchOperations> debundleizeBatchOperations(@NonNull Bundle bundle) {
+    public static BatchOperations debundleizeBatchOperations(@NonNull Bundle bundle) {
         AssertionUtils.notNull(bundle, "bundle");
-        HaloStatus status = bundle.getParcelable(BUNDLE_STATUS);
         BatchOperations operations = bundle.getParcelable(BUNDLE_BATH_OPERATIONS);
-        return new Pair<>(status, operations);
+        return operations;
     }
 
     /**

@@ -218,12 +218,12 @@ public class GeneralContentModuleActivity extends MobgenHaloActivity implements 
         ISubscription a = HaloContentEditApi.with(MobgenHaloApplication.halo())
                 .subscribeToBatch(new HaloContentEditApi.HaloBatchListener() {
                     @Override
-                    public void onBatchError(@NonNull HaloStatus status, @Nullable BatchOperations operations) {
-                        Halog.d(GeneralContentModuleActivity.class,"fallo el batching quedo guardado");
+                    public void onBatchConflict(@Nullable BatchOperations operations) {
+                        Halog.d(GeneralContentModuleActivity.class,"hay conflicto en las operations");
                     }
 
                     @Override
-                    public void onBatchFinish(@NonNull HaloStatus status, @Nullable BatchOperationResults operations) {
+                    public void onBatchRetrySuccess(@NonNull HaloStatus status, @Nullable BatchOperationResults operations) {
                         Halog.d(GeneralContentModuleActivity.class,"volvio inet y lo ejecuto feten");
                     }
                 });
@@ -299,9 +299,9 @@ public class GeneralContentModuleActivity extends MobgenHaloActivity implements 
                                 HaloContentInstance newinstance = new HaloContentInstance(null,theinstance.getModuleName(), mModule.getId(), theinstance.getName(), theinstance.getValues(),null, null, new Date(), null, new Date(), null, null);
                                 List<HaloContentInstance> creation = new ArrayList<HaloContentInstance>(Arrays.asList(newinstance));
                                 List<HaloContentInstance> deleteion = new ArrayList<HaloContentInstance>(Arrays.asList(theinstance));
+                                //"58f71545af013400107b9385"
                                 HaloContentInstance newinstanceUpdated = new HaloContentInstance(theinstance.getItemId(),theinstance.getModuleName(), mModule.getId(), "createdAndUpdated", theinstance.getValues(),null, null, new Date(), new Date(), new Date(), null, null);
                                 List<HaloContentInstance> update = new ArrayList<HaloContentInstance>(Arrays.asList(newinstanceUpdated));
-
                                 HaloContentEditApi.with(MobgenHaloApplication.halo())
                                         .batch(new BatchOperations.Builder().create(newinstance).delete(theinstance).build())
                                         .execute();

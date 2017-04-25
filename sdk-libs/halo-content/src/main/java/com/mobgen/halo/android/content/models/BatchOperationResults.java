@@ -2,6 +2,7 @@ package com.mobgen.halo.android.content.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.Keep;
 import android.support.annotation.NonNull;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
@@ -18,6 +19,7 @@ import java.util.List;
  * Results from remote data source for a batch operation.
  */
 @JsonObject
+@Keep
 public class BatchOperationResults implements Parcelable {
 
     @JsonField(name = "operations")
