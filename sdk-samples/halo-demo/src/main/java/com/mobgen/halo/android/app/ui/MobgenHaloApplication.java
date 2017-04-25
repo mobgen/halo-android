@@ -25,7 +25,6 @@ import com.mobgen.halo.android.notifications.services.NotificationIdGenerator;
 import com.mobgen.halo.android.sdk.api.Halo;
 import com.mobgen.halo.android.sdk.api.HaloApplication;
 import com.mobgen.halo.android.sdk.core.internal.storage.HaloManagerContract;
-import com.mobgen.halo.android.sdk.core.management.models.Credentials;
 import com.mobgen.halo.android.sdk.core.management.segmentation.HaloLocale;
 import com.mobgen.halo.android.translations.HaloTranslationsApi;
 import com.squareup.leakcanary.LeakCanary;
@@ -257,11 +256,6 @@ public class MobgenHaloApplication extends HaloApplication {
                 .withNotifications(mNotificationsApi)
                 .withSMS()
                 .build();
-
-
-        //TODO REMOVE THIS
-        Halo.instance().getCore().logout();
-        Halo.instance().core().credentials(Credentials.createUser("editor@mobgen.com","H4L0$editor"));
 
         return super.onHaloCreated(halo);
     }

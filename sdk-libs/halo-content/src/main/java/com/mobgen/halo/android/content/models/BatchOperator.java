@@ -16,6 +16,7 @@ import java.lang.annotation.RetentionPolicy;
  * Defines the batch operations.
  *
  */
+@Keep
 public class BatchOperator {
 
     private BatchOperator() {

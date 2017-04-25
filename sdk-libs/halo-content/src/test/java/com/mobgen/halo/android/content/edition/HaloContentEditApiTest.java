@@ -137,7 +137,7 @@ public class HaloContentEditApiTest extends HaloRobolectricTest {
                 .update(instanceUpdate)
                 .build();
         HaloContentEditApi.with(mHalo)
-                .batch(batchOperations)
+                .batch(batchOperations, true)
                 .execute(callback);
 
         assertThat(mCallbackFlag.isFlagged()).isTrue();
@@ -157,7 +157,7 @@ public class HaloContentEditApiTest extends HaloRobolectricTest {
                 .build();
         ISubscription eventSubscription = givenABatchOperationsEventSubscription(mHalo, true);
         HaloContentEditApi.with(mHalo)
-                .batch(batchOperations)
+                .batch(batchOperations, true)
                 .execute(callback);
 
         assertThat(eventSubscription).isNotNull();
@@ -199,7 +199,7 @@ public class HaloContentEditApiTest extends HaloRobolectricTest {
                 .build();
         ISubscription eventSubscription = givenABatchOperationsEventSubscriptionScheduled(mHalo);
         HaloContentEditApi.with(mHalo)
-                .batch(batchOperations)
+                .batch(batchOperations, true)
                 .execute(callback);
 
         assertThat(eventSubscription).isNotNull();
@@ -223,7 +223,7 @@ public class HaloContentEditApiTest extends HaloRobolectricTest {
                 .build();
         ISubscription eventSubscription = givenABatchOperationsEventSubscriptionScheduled(mHalo);
         HaloContentEditApi.with(mHalo)
-                .batch(batchOperations)
+                .batch(batchOperations, true)
                 .execute(callback);
 
         assertThat(eventSubscription).isNotNull();

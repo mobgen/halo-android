@@ -128,19 +128,20 @@ public class HaloContentEditApi extends HaloPluginApi {
      * Advanced batch operations to create, delete or update content.
      *
      * @param batchOperations The batch operations to perfom.
+     * @param syncResults     Flag to perfom sync after batch.
      * @@return HaloInteractorExecutor
      */
     @Api(2.3)
     @Keep
     @NonNull
     @CheckResult(suggest = "You may want to call execute() to run the task")
-    public HaloInteractorExecutor<BatchOperationResults> batch(@NonNull BatchOperations batchOperations) {
+    public HaloInteractorExecutor<BatchOperationResults> batch(@NonNull BatchOperations batchOperations, boolean syncResults) {
         AssertionUtils.notNull(batchOperations, "batchOperations");
-        return new HaloInteractorExecutor<BatchOperationResults>(halo(),
+        return new HaloInteractorExecutor<>(halo(),
                 "Batch content manipulation operations",
                 new BatchInteractor(new BatchRepository(HaloContentApi.with(halo()), new
                         BatchRemoteDataSource(halo().framework().network()),
-                        new BatchLocalDataSource(halo().framework().storage(HaloContentContract.HALO_CONTENT_STORAGE))),
+                        new BatchLocalDataSource(halo().framework().storage(HaloContentContract.HALO_CONTENT_STORAGE)), syncResults),
                         batchOperations)
         );
     }

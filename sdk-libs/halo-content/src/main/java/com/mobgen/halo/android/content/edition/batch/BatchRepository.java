@@ -9,6 +9,7 @@ import com.mobgen.halo.android.content.models.BatchOperationResult;
 import com.mobgen.halo.android.content.models.BatchOperationResults;
 import com.mobgen.halo.android.content.models.BatchOperations;
 import com.mobgen.halo.android.content.models.HaloContentInstance;
+import com.mobgen.halo.android.content.models.SyncQuery;
 import com.mobgen.halo.android.framework.common.exceptions.HaloParsingException;
 import com.mobgen.halo.android.framework.common.utils.AssertionUtils;
 import com.mobgen.halo.android.framework.network.exceptions.HaloNetException;
@@ -55,9 +56,9 @@ public class BatchRepository {
     private HaloContentApi mHaloContentApi;
 
     /**
-     * The conflict policy to apply.
+     * Flag to force sync of module.
      */
-    private int mConflictPolicy;
+    private boolean mSyncResults;
 
     /**
      * Constructor for the repository.
@@ -65,16 +66,19 @@ public class BatchRepository {
      * @param batchRemoteDataSource The remote data source.
      * @param haloContentApi        The halo content api.
      * @param batchLocalDataSource  The local data source.
+     * @param syncResults           Flag to perfom sync after batch.
      */
     public BatchRepository(@NonNull HaloContentApi haloContentApi,
                            @NonNull BatchRemoteDataSource batchRemoteDataSource,
-                           @NonNull BatchLocalDataSource batchLocalDataSource) {
+                           @NonNull BatchLocalDataSource batchLocalDataSource,
+                           boolean syncResults) {
         AssertionUtils.notNull(haloContentApi, "haloContentApi");
         AssertionUtils.notNull(batchRemoteDataSource, "batchRemoteDataSource");
         AssertionUtils.notNull(batchLocalDataSource, "batchLocalDataSource");
         mRemoteDatasource = batchRemoteDataSource;
         mLocalDataSource = batchLocalDataSource;
         mHaloContentApi = haloContentApi;
+        mSyncResults = syncResults;
     }
 
     /**
@@ -90,7 +94,7 @@ public class BatchRepository {
         BatchOperationResults response = null;
         try {
             response = mRemoteDatasource.batchOperation(batchOperations);
-            checkAndNofifyConflicts(response);
+            syncAndNofifyConflicts(response);
         } catch (HaloNetException haloException) {
             //net error so we need to store data when we have connection
             status.error(haloException);
@@ -110,28 +114,36 @@ public class BatchRepository {
     }
 
     /**
-     * Verify all instances looking for conflicts. It will notify via subscription a solution to the conflicts
-     * and remove this conflict from the results.
+     * Sync every module that contains success operations and verify all instances looking for conflicts.
+     * It will notify via subscription a solution to the conflicts.
      *
-     * @param batchOperationResults The batch operations to perfom.
+     * @param batchOperationResults The batch operations.
      */
-    private void checkAndNofifyConflicts(@NonNull final BatchOperationResults batchOperationResults) {
+    private void syncAndNofifyConflicts(@NonNull final BatchOperationResults batchOperationResults) {
         final BatchOperations.Builder conflictBuilder = new BatchOperations.Builder();
-        List<BatchOperationResult> batchResult =  batchOperationResults.getContentResult();
+        List<BatchOperationResult> batchResult = batchOperationResults.getContentResult();
         for (int i = 0; i < batchResult.size(); i++) {
-            if(batchResult.get(i).getOperation().equals(DELETE)
+            //sync every success module which contains the instance
+            if (mSyncResults) {
+                HaloContentInstance instance = batchResult.get(i).getData();
+                if (instance != null && instance.getModuleName() != null && batchResult.get(i).isSuccess()) {
+                    mHaloContentApi.sync(SyncQuery.create(instance.getModuleName(), Threading.POOL_QUEUE_POLICY), true);
+                }
+            }
+            //look for conflict operations
+            if (batchResult.get(i).getOperation().equals(DELETE)
                     && !batchResult.get(i).isSuccess()
-                    && batchResult.get(i).getDataError().getError().getStatus() == BatchErrorInfo.CONFLICT_STATUS){
+                    && batchResult.get(i).getDataError().getError().getStatus() == BatchErrorInfo.CONFLICT_STATUS) {
                 conflictBuilder.delete(batchResult.get(i).getDataError().getError().getExtraInstance());
             }
-            if(batchResult.get(i).getOperation().equals(UPDATE)
+            if (batchResult.get(i).getOperation().equals(UPDATE)
                     && !batchResult.get(i).isSuccess()
-                    && batchResult.get(i).getDataError().getError().getStatus() == BatchErrorInfo.CONFLICT_STATUS){
+                    && batchResult.get(i).getDataError().getError().getStatus() == BatchErrorInfo.CONFLICT_STATUS) {
                 conflictBuilder.update(batchResult.get(i).getDataError().getError().getExtraInstance());
             }
-            if(batchResult.get(i).getOperation().equals(CREATEORUPDATE)
+            if (batchResult.get(i).getOperation().equals(CREATEORUPDATE)
                     && !batchResult.get(i).isSuccess()
-                    && batchResult.get(i).getDataError().getError().getStatus() == BatchErrorInfo.CONFLICT_STATUS){
+                    && batchResult.get(i).getDataError().getError().getStatus() == BatchErrorInfo.CONFLICT_STATUS) {
                 conflictBuilder.createOrUpdate(batchResult.get(i).getDataError().getError().getExtraInstance());
             }
         }

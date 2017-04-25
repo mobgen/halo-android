@@ -9,7 +9,6 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -30,15 +29,10 @@ import com.mobgen.halo.android.app.ui.MobgenHaloApplication;
 import com.mobgen.halo.android.app.ui.views.DividerItemDecoration;
 import com.mobgen.halo.android.app.utils.ViewUtils;
 import com.mobgen.halo.android.content.HaloContentApi;
-import com.mobgen.halo.android.content.edition.HaloContentEditApi;
-import com.mobgen.halo.android.content.models.BatchOperationResults;
-import com.mobgen.halo.android.content.models.BatchOperations;
 import com.mobgen.halo.android.content.models.HaloContentInstance;
 import com.mobgen.halo.android.content.models.Paginated;
 import com.mobgen.halo.android.content.models.SearchQuery;
 import com.mobgen.halo.android.content.search.SearchQueryBuilderFactory;
-import com.mobgen.halo.android.framework.common.helpers.logger.Halog;
-import com.mobgen.halo.android.framework.common.helpers.subscription.ISubscription;
 import com.mobgen.halo.android.framework.toolbox.data.CallbackV2;
 import com.mobgen.halo.android.framework.toolbox.data.Data;
 import com.mobgen.halo.android.framework.toolbox.data.HaloResultV2;
@@ -213,20 +207,6 @@ public class GeneralContentModuleActivity extends MobgenHaloActivity implements 
 
         mRefreshReceiver = new RefreshBroadcastReceiver();
         LocalBroadcastManager.getInstance(this).registerReceiver(mRefreshReceiver, new IntentFilter("generalcontent-notification"));
-
-        //TODO DELETE
-        ISubscription a = HaloContentEditApi.with(MobgenHaloApplication.halo())
-                .subscribeToBatch(new HaloContentEditApi.HaloBatchListener() {
-                    @Override
-                    public void onBatchConflict(@Nullable BatchOperations operations) {
-                        Halog.d(GeneralContentModuleActivity.class,"hay conflicto en las operations");
-                    }
-
-                    @Override
-                    public void onBatchRetrySuccess(@NonNull HaloStatus status, @Nullable BatchOperationResults operations) {
-                        Halog.d(GeneralContentModuleActivity.class,"volvio inet y lo ejecuto feten");
-                    }
-                });
     }
 
     @Override
@@ -294,18 +274,6 @@ public class GeneralContentModuleActivity extends MobgenHaloActivity implements 
                         public void onFinish(@NonNull HaloResultV2<Paginated<HaloContentInstance>> result) {
                             ViewUtils.refreshing(mSwipeRefreshLayout, false);
                             if (result.status().isOk()) {
-                                //TODO BEGIN THIS IS ONLY TO TEST BATCH
-                                HaloContentInstance theinstance = result.data().data().get(0);
-                                HaloContentInstance newinstance = new HaloContentInstance(null,theinstance.getModuleName(), mModule.getId(), theinstance.getName(), theinstance.getValues(),null, null, new Date(), null, new Date(), null, null);
-                                List<HaloContentInstance> creation = new ArrayList<HaloContentInstance>(Arrays.asList(newinstance));
-                                List<HaloContentInstance> deleteion = new ArrayList<HaloContentInstance>(Arrays.asList(theinstance));
-                                //"58f71545af013400107b9385"
-                                HaloContentInstance newinstanceUpdated = new HaloContentInstance(theinstance.getItemId(),theinstance.getModuleName(), mModule.getId(), "createdAndUpdated", theinstance.getValues(),null, null, new Date(), new Date(), new Date(), null, null);
-                                List<HaloContentInstance> update = new ArrayList<HaloContentInstance>(Arrays.asList(newinstanceUpdated));
-                                HaloContentEditApi.with(MobgenHaloApplication.halo())
-                                        .batch(new BatchOperations.Builder().create(newinstance).delete(theinstance).build())
-                                        .execute();
-                                //TODO END
                                 if (result.data() != null) {
                                     mAdapter.setModuleDataItems(new HaloResultV2<>(result.status(), result.data().data()));
                                     mAdapter.notifyDataSetChanged();
