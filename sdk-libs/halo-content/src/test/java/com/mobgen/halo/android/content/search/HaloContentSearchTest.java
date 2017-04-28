@@ -1,6 +1,7 @@
 package com.mobgen.halo.android.content.search;
 
 import android.database.Cursor;
+import android.support.annotation.NonNull;
 
 import com.mobgen.halo.android.content.HaloContentApi;
 import com.mobgen.halo.android.content.mock.dummy.DummyItem;
@@ -9,6 +10,7 @@ import com.mobgen.halo.android.content.models.Paginated;
 import com.mobgen.halo.android.content.models.SearchQuery;
 import com.mobgen.halo.android.framework.toolbox.data.CallbackV2;
 import com.mobgen.halo.android.framework.toolbox.data.Data;
+import com.mobgen.halo.android.framework.toolbox.data.HaloResultV2;
 import com.mobgen.halo.android.sdk.api.Halo;
 import com.mobgen.halo.android.sdk.core.threading.ICancellable;
 import com.mobgen.halo.android.testing.CallbackFlag;
@@ -18,6 +20,8 @@ import com.mobgen.halo.android.testing.MockServer;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static com.mobgen.halo.android.content.mock.fixtures.ServerFixtures.SEARCH_NOT_PAGINATED_RESPONSE;
@@ -302,4 +306,45 @@ public class HaloContentSearchTest extends HaloRobolectricTest {
 
         assertThat(mCallbackFlag.isFlagged()).isTrue();
     }
+
+    @Test
+    public void thatCanSearchWithInOperatorArraySet() throws IOException {
+        enqueueServerFile(mMockServer, SEARCH_PAGINATED_RESPONSE);
+        Date now = new Date();
+        List<String> ids = new ArrayList<>();
+        ids.add("1");
+        ids.add("2");
+        ids.add("3");
+        SearchQuery query = SearchQuery.builder()
+                .beginMetaSearch()
+                .lte("publishedAt", now)
+                .and()
+                .eq("deletedAt", null)
+                .and()
+                .beginGroup()
+                .gt("removedAt", now)
+                .or()
+                .eq("removedAt", null)
+                .endGroup()
+                .end()
+                .populate("Artist", "Venue", "Artwork Category")
+                .beginSearch()
+                .in("Artwork ID", ids)
+                .end()
+                .moduleIds("myAwesomeID")
+                .onePage(true)
+                .build();
+
+        HaloContentApi.with(mHalo)
+                .search(Data.NETWORK_AND_STORAGE, query)
+                .asContent()
+                .execute(new CallbackV2<Paginated<HaloContentInstance>>() {
+                    @Override
+                    public void onFinish(@NonNull HaloResultV2<Paginated<HaloContentInstance>> result) {
+                        assertThat(result.status().isOk()).isTrue();
+                    }
+                });
+
+    }
+
 }
