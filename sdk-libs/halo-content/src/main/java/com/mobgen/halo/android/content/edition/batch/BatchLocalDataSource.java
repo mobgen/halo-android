@@ -55,7 +55,7 @@ public class BatchLocalDataSource {
     @NonNull
     public BatchOperations getPendingBatchOperations() throws HaloStorageGeneralException {
         Cursor cursor = null;
-        BatchOperations.Builder advancedBatchBuilder = new BatchOperations.Builder();
+        BatchOperations.Builder advancedBatchBuilder = BatchOperations.builder();
         try {
             cursor = Select.columns(HaloContentContract.Batch.CONTENT_INSTANCE, HaloContentContract.Batch.OPERATION)
                     .from(HaloContentContract.Batch.class)
@@ -139,8 +139,13 @@ public class BatchLocalDataSource {
             @Override
             public void onTransaction(@NonNull SQLiteDatabase database) throws HaloStorageException {
                 Halog.d(getClass(), "Delete from Batch in progress...");
-                queryManager.delete(instances);
-                result[0] = true;
+                try {
+                    queryManager.delete(instances);
+                    result[0] = true;
+                } catch (HaloParsingException e) {
+                    Halog.d(getClass(), "Parsing instance error");
+                    result[0] = false;
+                }
             }
         });
         queryManager.release();
@@ -246,7 +251,7 @@ public class BatchLocalDataSource {
          *
          * @param instances The instances.
          */
-        private void delete(@NonNull HaloContentInstance... instances) {
+        private void delete(@NonNull HaloContentInstance... instances) throws HaloParsingException {
             AssertionUtils.notNull(instances, "instances");
             if (mDeleteStatement == null) {
                 mDeleteStatement = mDatabase.compileStatement(DELETE_STATEMENT);
@@ -257,7 +262,7 @@ public class BatchLocalDataSource {
                 try {
                     hashId = HaloUtils.sha1(instance.toString());
                 } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
-                    hashId = null;
+                    throw new HaloParsingException("Cannot convert instance to string",e);
                 }
                 ORMUtils.bindStringOrNull(mDeleteStatement, 1, hashId);
                 mDeleteStatement.executeUpdateDelete();
@@ -281,7 +286,7 @@ public class BatchLocalDataSource {
             try {
                 hashId = HaloUtils.sha1(instance.toString());
             } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
-                hashId = null;
+                throw new HaloParsingException("Cannot convert instance to string",e);
             }
             ORMUtils.bindStringOrNull(statement, 1, hashId);
             ORMUtils.bindDateOrNull(statement, 2, lastAttempt);

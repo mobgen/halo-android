@@ -1,5 +1,6 @@
 package com.mobgen.halo.android.content.models;
 
+import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.Keep;
@@ -165,6 +166,17 @@ public class BatchOperations implements Parcelable {
     }
 
     /**
+     * Creates a new batch operations builder.
+     *
+     * @return The betch operation builder.
+     */
+    @NonNull
+    @Api(2.3)
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    /**
      * The builder class.
      */
     @Keep
@@ -194,6 +206,13 @@ public class BatchOperations implements Parcelable {
          * The delete operations.
          */
         List<HaloContentInstance> mDeleted;
+
+        /**
+         * The builder constructor.
+         */
+        private Builder(){
+
+        }
 
         /**
          * Add truncate operations.

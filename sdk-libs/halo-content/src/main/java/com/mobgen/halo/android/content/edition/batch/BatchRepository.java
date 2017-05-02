@@ -119,7 +119,7 @@ public class BatchRepository {
      * @param batchOperationResults The batch operations.
      */
     private void syncAndNofifyConflicts(@NonNull final BatchOperationResults batchOperationResults) {
-        final BatchOperations.Builder conflictBuilder = new BatchOperations.Builder();
+        final BatchOperations.Builder conflictBuilder = BatchOperations.builder();
         List<BatchOperationResult> batchResult = batchOperationResults.getContentResult();
         for (int i = 0; i < batchResult.size(); i++) {
             //sync every success module which contains the instance

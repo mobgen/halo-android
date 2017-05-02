@@ -32,8 +32,8 @@ public class BatchOperationTest extends HaloRobolectricTest {
 
     @Test
     public void thatAParcelOperationKeepsTheSameDataWithBuilder() throws JSONException {
-        HaloContentInstance haloContentInstance = new HaloContentInstance(null,"the name","1", "dummy", null,null, null, new Date(), null, new Date(), null, null);
-        BatchOperations.Builder operationsBuilder = new BatchOperations.Builder()
+        HaloContentInstance haloContentInstance = new HaloContentInstance(null, "the name", "1", "dummy", null, null, null, new Date(), null, new Date(), null, null);
+        BatchOperations.Builder operationsBuilder = BatchOperations.builder()
                 .create(haloContentInstance)
                 .createOrUpdate(haloContentInstance)
                 .createOrUpdate(haloContentInstance);

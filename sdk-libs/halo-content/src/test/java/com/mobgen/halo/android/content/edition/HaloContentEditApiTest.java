@@ -131,7 +131,7 @@ public class HaloContentEditApiTest extends HaloRobolectricTest {
         HaloContentInstance instanceDelete = givenANewHaloContentEditOptions();
         HaloContentInstance instanceUpdate = givenANewHaloContentEditOptions();
         HaloContentInstance instanceCreate = givenAUpdateHaloContentEditOptions();
-        BatchOperations batchOperations = new BatchOperations.Builder()
+        BatchOperations batchOperations = BatchOperations.builder()
                 .delete(instanceDelete)
                 .create(instanceCreate)
                 .update(instanceUpdate)
@@ -150,7 +150,7 @@ public class HaloContentEditApiTest extends HaloRobolectricTest {
         HaloContentInstance instanceDelete = givenANewHaloContentEditOptions();
         HaloContentInstance instanceUpdate = givenANewHaloContentEditOptions();
         HaloContentInstance instanceCreate = givenAUpdateHaloContentEditOptions();
-        BatchOperations batchOperations = new BatchOperations.Builder()
+        BatchOperations batchOperations = BatchOperations.builder()
                 .delete(instanceDelete)
                 .create(instanceCreate)
                 .update(instanceUpdate)
@@ -169,7 +169,7 @@ public class HaloContentEditApiTest extends HaloRobolectricTest {
         HaloContentInstance instanceDelete = givenAUpdateHaloContentEditOptions();
         HaloContentInstance instanceUpdate = givenAUpdateHaloContentEditOptions();
         HaloContentInstance instanceCreate = givenANewHaloContentEditOptions();
-        BatchOperations conflictOperations = new BatchOperations.Builder()
+        BatchOperations conflictOperations = BatchOperations.builder()
                 .delete(instanceDelete)
                 .create(instanceCreate)
                 .update(instanceUpdate)
@@ -192,7 +192,7 @@ public class HaloContentEditApiTest extends HaloRobolectricTest {
         HaloContentInstance instanceDelete = givenAUpdateHaloContentEditOptions();
         HaloContentInstance instanceUpdate = givenAUpdateHaloContentEditOptions();
         HaloContentInstance instanceCreate = givenANewHaloContentEditOptions();
-        BatchOperations batchOperations = new BatchOperations.Builder()
+        BatchOperations batchOperations = BatchOperations.builder()
                 .delete(instanceDelete)
                 .create(instanceCreate)
                 .update(instanceUpdate)
@@ -214,7 +214,7 @@ public class HaloContentEditApiTest extends HaloRobolectricTest {
         HaloContentInstance instanceDelete = givenAUpdateHaloContentEditOptions();
         HaloContentInstance instanceUpdate = givenAUpdateHaloContentEditOptions();
         HaloContentInstance instanceCreate = givenANewHaloContentEditOptions();
-        BatchOperations batchOperations = new BatchOperations.Builder()
+        BatchOperations batchOperations = BatchOperations.builder()
                 .delete(instanceDelete)
                 .create(instanceCreate)
                 .update(instanceUpdate)
