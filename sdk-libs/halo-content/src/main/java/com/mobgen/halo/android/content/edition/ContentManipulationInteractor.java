@@ -15,7 +15,7 @@ import com.mobgen.halo.android.sdk.core.threading.HaloInteractorExecutor;
 public class ContentManipulationInteractor implements HaloInteractorExecutor.Interactor<HaloContentInstance>{
 
     /**
-     * BatchOperation repository.
+     * Operation repository.
      */
     private ContentManipulationRepository mContentManipulationRepository;
     /**
