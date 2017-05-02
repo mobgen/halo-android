@@ -28,7 +28,7 @@ public class BatchOperator {
     @Keep
     @StringDef({TRUNCATE, CREATE, CREATEORUPDATE, UPDATE, DELETE})
     @Retention(RetentionPolicy.SOURCE)
-    public @interface Operation {
+    public @interface BatchOperation {
     }
 
     /**

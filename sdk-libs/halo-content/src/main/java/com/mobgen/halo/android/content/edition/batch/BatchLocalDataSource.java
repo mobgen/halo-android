@@ -53,7 +53,7 @@ public class BatchLocalDataSource {
      * @throws HaloStorageGeneralException
      */
     @NonNull
-    public BatchOperations getBatchOperations() throws HaloStorageGeneralException {
+    public BatchOperations getPendingBatchOperations() throws HaloStorageGeneralException {
         Cursor cursor = null;
         BatchOperations.Builder advancedBatchBuilder = new BatchOperations.Builder();
         try {
@@ -107,8 +107,8 @@ public class BatchLocalDataSource {
      * @param batchOperations The batch operations to store.
      * @throws HaloStorageGeneralException
      */
-    public void saveErrors(final BatchOperations batchOperations) throws HaloStorageGeneralException {
-
+    public void saveErrors(@NonNull final BatchOperations batchOperations) throws HaloStorageGeneralException {
+        AssertionUtils.notNull(batchOperations, "batchOperations");
         final BatchLocalDataSource.HaloContentBatchQueryManager queryManager = new BatchLocalDataSource.HaloContentBatchQueryManager(mStorage.db().getDatabase());
         mStorage.db().transaction(new HaloDataLite.HaloDataLiteTransaction() {
             @Override
@@ -131,7 +131,8 @@ public class BatchLocalDataSource {
      * @param instances The instances to remove from database.
      * @throws HaloStorageGeneralException
      */
-    public boolean deleteErrors(final HaloContentInstance... instances) throws HaloStorageGeneralException {
+    public boolean deleteErrors(@NonNull final HaloContentInstance... instances) throws HaloStorageGeneralException {
+        AssertionUtils.notNull(instances, "instances");
         final boolean[] result = {false};
         final BatchLocalDataSource.HaloContentBatchQueryManager queryManager = new BatchLocalDataSource.HaloContentBatchQueryManager(mStorage.db().getDatabase());
         mStorage.db().transaction(new HaloDataLite.HaloDataLiteTransaction() {
@@ -208,6 +209,7 @@ public class BatchLocalDataSource {
          * @throws HaloParsingException
          */
         private void insertOrReplace(@NonNull BatchOperations batchOperations) throws HaloStorageGeneralException, HaloParsingException {
+            AssertionUtils.notNull(batchOperations, "batchOperations");
             if (mInsertOrReplaceStatement == null) {
                 mInsertOrReplaceStatement = mDatabase.compileStatement(INSERT_REPLACE_STATEMENT);
             }
@@ -244,7 +246,8 @@ public class BatchLocalDataSource {
          *
          * @param instances The instances.
          */
-        private void delete(HaloContentInstance... instances) {
+        private void delete(@NonNull HaloContentInstance... instances) {
+            AssertionUtils.notNull(instances, "instances");
             if (mDeleteStatement == null) {
                 mDeleteStatement = mDatabase.compileStatement(DELETE_STATEMENT);
             }
@@ -272,7 +275,7 @@ public class BatchLocalDataSource {
          * @throws HaloStorageGeneralException
          * @throws HaloParsingException
          */
-        private long insert(@NonNull SQLiteStatement statement, @NonNull HaloContentInstance instance, @BatchOperator.Operation String operation, @NonNull Date lastAttempt) throws HaloStorageGeneralException, HaloParsingException {
+        private long insert(@NonNull SQLiteStatement statement, @NonNull HaloContentInstance instance, @BatchOperator.BatchOperation String operation, @NonNull Date lastAttempt) throws HaloStorageGeneralException, HaloParsingException {
             statement.clearBindings();
             String hashId;
             try {

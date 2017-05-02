@@ -168,7 +168,7 @@ public class HaloContentEditApi extends HaloPluginApi {
                         listener.onBatchConflict(result);
                     } else {
                         Pair<HaloStatus, BatchOperationResults> result = BatchBundleizeHelper.debundleizeBatchOperationsResults(event.getData());
-                        listener.onBatchRetrySuccess(result.first, result.second);
+                        listener.onBatchRetryCompleted(result.first, result.second);
                     }
                 }
             }
@@ -199,7 +199,7 @@ public class HaloContentEditApi extends HaloPluginApi {
          */
         @Keep
         @Api(2.3)
-        void onBatchRetrySuccess(@NonNull HaloStatus status, @Nullable BatchOperationResults operations);
+        void onBatchRetryCompleted(@NonNull HaloStatus status, @Nullable BatchOperationResults operations);
     }
 
 

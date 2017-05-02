@@ -32,6 +32,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -367,5 +368,24 @@ public final class HaloContentHelper {
             items = pages.data();
         }
         return new HaloResultV2<>(data.status(), items);
+    }
+
+    /**
+     * Adds something to the given list or creates it returning as a result.
+     *
+     * @param list  The list of items.
+     * @param items The items.
+     * @return The list returned or created.
+     */
+    @NonNull
+    public static <T> List<T> addToList(@Nullable List<T> list, @Nullable T[] items) {
+        List<T> finalList = list;
+        if (items != null && items.length > 0) {
+            if (finalList == null) {
+                finalList = new ArrayList<>();
+            }
+            finalList.addAll(Arrays.asList(items));
+        }
+        return finalList;
     }
 }

@@ -106,7 +106,6 @@ public class BatchRepository {
                     .tag(JOB_NAME)
                     .needsNetwork(Job.NETWORK_TYPE_ANY);
             halo().framework().toolbox().schedule(job.build());
-
         } catch (HaloParsingException haloParsingException) {
             status.error(haloParsingException);
         }
@@ -164,8 +163,7 @@ public class BatchRepository {
      */
     @NonNull
     public BatchOperations getPendingOperations() throws HaloStorageGeneralException {
-        BatchOperations instances = mLocalDataSource.getBatchOperations();
-        return instances;
+        return mLocalDataSource.getPendingBatchOperations();
     }
 
     /**
@@ -173,9 +171,9 @@ public class BatchRepository {
      *
      * @throws HaloStorageGeneralException
      */
-    public void removeOperations() throws HaloStorageGeneralException {
+    public void removePendingOperations() throws HaloStorageGeneralException {
         //remove pending tasks if batchOperation works on remote data source
-        BatchOperations instances = mLocalDataSource.getBatchOperations();
+        BatchOperations instances = mLocalDataSource.getPendingBatchOperations();
         if (instances.getTruncate() != null && instances.getTruncate().size() > 0) {
             removePendingOperations(instances.getTruncate().toArray(new HaloContentInstance[instances.getTruncate().size()]));
         }

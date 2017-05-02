@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
+import com.mobgen.halo.android.content.utils.HaloContentHelper;
 import com.mobgen.halo.android.framework.common.annotations.Api;
 import com.mobgen.halo.android.framework.common.exceptions.HaloParsingException;
 import com.mobgen.halo.android.framework.common.helpers.builder.IBuilder;
@@ -44,7 +45,7 @@ public class BatchOperations implements Parcelable {
     /**
      * Constructor for the advanced batch operation
      */
-    public BatchOperations() {
+    BatchOperations() {
         //Constructor for the class.
     }
 
@@ -206,7 +207,7 @@ public class BatchOperations implements Parcelable {
             if (mTruncate == null) {
                 mTruncate = new ArrayList<>();
             }
-            mTruncate = addToList(mTruncate, truncate);
+            mTruncate = HaloContentHelper.addToList(mTruncate, truncate);
             return this;
         }
 
@@ -222,7 +223,7 @@ public class BatchOperations implements Parcelable {
             if (mCreated == null) {
                 mCreated = new ArrayList<>();
             }
-            mCreated = addToList(mCreated, create);
+            mCreated = HaloContentHelper.addToList(mCreated, create);
             return this;
         }
 
@@ -238,7 +239,7 @@ public class BatchOperations implements Parcelable {
             if (mUpdated == null) {
                 mUpdated = new ArrayList<>();
             }
-            mUpdated = addToList(mUpdated, update);
+            mUpdated = HaloContentHelper.addToList(mUpdated, update);
             return this;
         }
 
@@ -254,7 +255,7 @@ public class BatchOperations implements Parcelable {
             if (mCreatedOrUpdated == null) {
                 mCreatedOrUpdated = new ArrayList<>();
             }
-            mCreatedOrUpdated = addToList(mCreatedOrUpdated, createOrUpdate);
+            mCreatedOrUpdated = HaloContentHelper.addToList(mCreatedOrUpdated, createOrUpdate);
             return this;
         }
 
@@ -270,7 +271,7 @@ public class BatchOperations implements Parcelable {
             if (mDeleted == null) {
                 mDeleted = new ArrayList<>();
             }
-            mDeleted = addToList(mDeleted, delete);
+            mDeleted = HaloContentHelper.addToList(mDeleted, delete);
             return this;
         }
 
@@ -280,23 +281,4 @@ public class BatchOperations implements Parcelable {
             return new BatchOperations(this);
         }
     }
-
-    /**
-     * Adds something to the given list or creates it returning as a result.
-     *
-     * @param list  The list of items.
-     * @param items The items.
-     * @return The list returned or created.
-     */
-    private static <T> List<T> addToList(@Nullable List<T> list, @Nullable T[] items) {
-        List<T> finalList = list;
-        if (items != null && items.length > 0) {
-            if (finalList == null) {
-                finalList = new ArrayList<>();
-            }
-            finalList.addAll(Arrays.asList(items));
-        }
-        return finalList;
-    }
-
 }

@@ -72,7 +72,7 @@ public class HaloEditContentInstruments {
                     }
 
                     @Override
-                    public void onBatchRetrySuccess(@NonNull HaloStatus status, @Nullable BatchOperationResults operations) {
+                    public void onBatchRetryCompleted(@NonNull HaloStatus status, @Nullable BatchOperationResults operations) {
                         if (status.isOk()) {
                             assertThat(BatchOperator.TRUNCATE).isEqualTo(operations.getContentResult().get(0).getOperation());
                             assertThat(BatchOperator.TRUNCATE).isEqualTo(operations.getContentResult().get(1).getOperation());
@@ -102,7 +102,7 @@ public class HaloEditContentInstruments {
                     }
 
                     @Override
-                    public void onBatchRetrySuccess(@NonNull HaloStatus status, @Nullable BatchOperationResults operations) {
+                    public void onBatchRetryCompleted(@NonNull HaloStatus status, @Nullable BatchOperationResults operations) {
                         assertThat(BatchOperator.TRUNCATE).isEqualTo(operations.getContentResult().get(0).getOperation());
                     }
                 });

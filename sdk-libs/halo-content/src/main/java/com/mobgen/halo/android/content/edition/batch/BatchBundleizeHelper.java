@@ -37,12 +37,9 @@ public final class BatchBundleizeHelper {
      * @param data The data.
      * @return True if its a conflict resolution notification; Otherwise false.
      */
-    public static boolean isBatchOperation(Bundle data){
-        if(data.getParcelable(BUNDLE_BATH_OPERATIONS).getClass().equals(BatchOperations.class)){
-            return true;
-        } else {
-            return false;
-        }
+    public static boolean isBatchOperation(@NonNull Bundle data){
+        AssertionUtils.notNull(data, "data");
+        return data.getParcelable(BUNDLE_BATH_OPERATIONS).getClass().equals(BatchOperations.class);
     }
     /**
      * Creates a bundle given the batch operation.
@@ -50,7 +47,7 @@ public final class BatchBundleizeHelper {
      * @param batchOperations The batch operation.
      * @return The bundle created.
      */
-    public static Bundle bundleizeBatchOperations(BatchOperations batchOperations) {
+    public static Bundle bundleizeBatchOperations(@NonNull BatchOperations batchOperations) {
         AssertionUtils.notNull(batchOperations, "batchOperations");
         Bundle bundle = new Bundle();
         bundle.putParcelable(BUNDLE_BATH_OPERATIONS, batchOperations);
@@ -76,7 +73,7 @@ public final class BatchBundleizeHelper {
      * @param batchOperationsResults The batch operation result.
      * @return The bundle created.
      */
-    public static Bundle bundleizeBatchOperationsResults(HaloResultV2<BatchOperationResults> batchOperationsResults) {
+    public static Bundle bundleizeBatchOperationsResults(@NonNull HaloResultV2<BatchOperationResults> batchOperationsResults) {
         AssertionUtils.notNull(batchOperationsResults, "batchOperations");
         Bundle bundle = new Bundle();
         bundle.putParcelable(BUNDLE_STATUS, batchOperationsResults.status());

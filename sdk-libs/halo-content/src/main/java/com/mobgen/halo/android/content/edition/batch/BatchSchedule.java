@@ -49,7 +49,7 @@ public class BatchSchedule extends HaloSchedule {
             //get all operations from database
             BatchOperations pendingOperations = mBatchRepository.getPendingOperations();
             //remove pending operations from database
-            mBatchRepository.removeOperations();
+            mBatchRepository.removePendingOperations();
             result = mBatchRepository.batchOperation(pendingOperations);
             //notify the user with response
             Bundle batchResult = BatchBundleizeHelper.bundleizeBatchOperationsResults(new HaloResultV2<>(result.status(), result.data()));

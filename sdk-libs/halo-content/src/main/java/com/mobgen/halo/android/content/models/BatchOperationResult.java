@@ -218,7 +218,7 @@ public class BatchOperationResult implements Parcelable {
     @NonNull
     @Api(2.3)
     public
-    @BatchOperator.Operation
+    @BatchOperator.BatchOperation
     String getOperation() {
         return mOperation;
     }
