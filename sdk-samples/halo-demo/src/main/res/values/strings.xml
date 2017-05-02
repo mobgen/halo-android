@@ -157,4 +157,30 @@
     <string name="social_halo_token">Socail Halo Token</string>
     <string name="social_google_token">Social Google Token</string>
     <string name="social_facebook_token">Social Facebook Token</string>
+
+    <!-- Chat -->
+    <string name="chat_room_title">Conversations</string>
+    <string name="chat_scan_result_error">Sorry but QR is not well formed</string>
+    <string name="chat_scan_contact">Scan a QR code contact...</string>
+    <string name="chat_empty_contacts_title">Start the conversation.</string>
+    <string name="chat_empty_contacts">Its like  a desert in here. You need to scan some contacts.</string>
+    <string name="chat_multiple_room">All contacts</string>
+    <string name="chat_username">Username</string>
+    <string name="chat_message">Message</string>
+    <string name="chat_image">Chat image</string>
+    <string name="chat_today">Today</string>
+    <string name="chat_yesterday">Yesterday</string>
+    <string name="chat_add_contact">Add contact</string>
+    <string name="chat_new_contact_title">Congrats you have a new contact: </string>
+    <string name="chat_new_contact_msg">Start the conversation</string>
+    <string name="chat_new_msg_title">New message from: </string>
+    <string name="chat_stack_summary_part1">You have </string>
+    <string name="chat_stack_summary_part2"> messages.</string>
+    <string name="chat_delete_channel_broadcast">Sorry but you cannot  delete this broadcast channel</string>
+    <string name="chat_new_msg_title_multiple">New broadacst message from: </string>
+    <string name="chat_delete_msg_title">Do you want to delete this contact?</string>
+    <string name="chat_delete_confirm">Yes, sure</string>
+    <string name="chat_delete_cancel">No please</string>
+    <string name="chat_new_message_inapp">Read now</string>
+
 </resources>

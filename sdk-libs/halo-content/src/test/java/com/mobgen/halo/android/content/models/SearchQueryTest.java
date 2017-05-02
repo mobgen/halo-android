@@ -5,6 +5,7 @@ import com.mobgen.halo.android.framework.common.exceptions.HaloParsingException;
 import com.mobgen.halo.android.framework.network.client.response.Parser;
 import com.mobgen.halo.android.framework.storage.exceptions.HaloStorageGeneralException;
 import com.mobgen.halo.android.sdk.core.internal.parser.LoganSquareParserFactory;
+import com.mobgen.halo.android.sdk.core.management.models.Device;
 import com.mobgen.halo.android.sdk.core.management.segmentation.HaloLocale;
 import com.mobgen.halo.android.sdk.core.management.segmentation.HaloSegmentationTag;
 import com.mobgen.halo.android.testing.HaloRobolectricTest;
@@ -12,11 +13,14 @@ import com.mobgen.halo.android.testing.TestUtils;
 
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static com.mobgen.halo.android.content.mock.instrumentation.SearchInstruments.givenAFullQuery;
+import static com.mobgen.halo.android.content.models.SearchQuery.PARTIAL_MATCH;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNotNull;
@@ -260,6 +264,58 @@ public class SearchQueryTest extends HaloRobolectricTest {
         assertOperator((Operator) or.getItems().get(1), "field1", "value1", "!=");
         assertOperator((Operator) ((Condition) query.getSearch()).getItems().get(1), "field1", "value1", "=");
     }
+
+    @Test
+    public void thatCanSearchToFilterTargetRelationships() {
+        SearchQuery query = SearchQuery.builder()
+                .addRelatedInstances(Relationship.create("fieldname","1"))
+                .addRelatedInstances(Relationship.create("fieldname","2"))
+                .build();
+        assertThat(query.mRelationships.size()).isEqualTo(2);
+        assertTrue(query.mRelationships.get(0).getFieldName().equals("fieldname"));
+    }
+
+    @Test
+    public void thatCanSearchToFilterTargetRelationshipsWithAArrayGiven() {
+        SearchQuery query = SearchQuery.builder()
+                .relatedInstances(new Relationship[]{Relationship.create("fieldname","1"),Relationship.create("fieldname","2")})
+                .build();
+        assertThat(query.mRelationships.size()).isEqualTo(2);
+        assertTrue(query.mRelationships.get(0).getFieldName().equals("fieldname"));
+    }
+
+    @Test
+    public void thatCanSearchToFilterAllTargetRelationships() {
+        SearchQuery query = SearchQuery.builder()
+                .allRelatedInstances("fieldname")
+                .build();
+        assertThat(query.mRelationships.size()).isEqualTo(1);
+        assertTrue(query.mRelationships.get(0).getFieldName().equals("fieldname"));
+        assertTrue(query.mRelationships.get(0).getInstanceIds().get(0).equals("*"));
+    }
+
+    @Test
+    public void thatCanSearchWithSegmentMode() {
+        SearchQuery query = SearchQuery.builder()
+                .segmentMode(PARTIAL_MATCH)
+                .build();
+        assertThat(query.getSegmentMode()).isEqualTo(PARTIAL_MATCH);
+    }
+
+    @Test
+    public void thatCanSetADevice() {
+        SearchQuery query = SearchQuery.builder()
+                .segmentWithDevice()
+                .build();
+        Device device = new Device("alias","1","a@mobgen.com","token","5");
+        List<HaloSegmentationTag> listTags = new ArrayList<HaloSegmentationTag>();
+        listTags.add(new HaloSegmentationTag("name","value"));
+        device.addTags(listTags);
+        query.setDevice(device);
+        assertThat(query.getTags().get(0).getName()).isEqualTo(listTags.get(0).getName());
+        assertThat(query.getTags().get(0).getValue()).isEqualTo(listTags.get(0).getValue());
+    }
+
 
     private void assertFullquery(SearchQuery query) {
         // query

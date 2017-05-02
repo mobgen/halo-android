@@ -278,7 +278,6 @@ public class GeneralContentModuleActivity extends MobgenHaloActivity implements 
                                     mAdapter.setModuleDataItems(new HaloResultV2<>(result.status(), result.data().data()));
                                     mAdapter.notifyDataSetChanged();
                                     //create generic object of the instance to push a new one
-                                    //create generic object of the instance to push a new one
                                     if (result.data().data().size() > 0) {
                                         HaloContentInstance instance = result.data().data().get(0);
                                         setGenericHaloContentInstance(instance);

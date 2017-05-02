@@ -51,4 +51,37 @@ public class NotificationListenerInstruments {
             }
         };
     }
+
+    public static HaloNotificationListener givenATwoFactorListener(@NonNull final CallbackFlag flag) {
+        return new HaloNotificationListener() {
+            @Override
+            public void onNotificationReceived(@NonNull Context context, @NonNull String from, @NonNull Bundle data, @Nullable Bundle extra) {
+                flag.flagExecuted();
+                assertThat(from).isNotNull();
+            }
+        };
+    }
+
+    public static HaloNotificationListener givenAnNotificationListenerWithHaloNotificationId(@NonNull final CallbackFlag flag, final String notificationId) {
+        return new HaloNotificationListener() {
+            @Override
+            public void onNotificationReceived(@NonNull Context context, @NonNull String from, @NonNull Bundle data, @Nullable Bundle extra) {
+                flag.flagExecuted();
+                assertThat(from).isNotNull();
+                assertThat(data.getString("halo_ui_notification_id")).isEqualTo(notificationId);
+            }
+        };
+    }
+
+    public static HaloNotificationListener givenAnNotificationListenerWithCustomId(@NonNull final CallbackFlag flag, final String notificationId) {
+        return new HaloNotificationListener() {
+            @Override
+            public void onNotificationReceived(@NonNull Context context, @NonNull String from, @NonNull Bundle data, @Nullable Bundle extra) {
+                flag.flagExecuted();
+                assertThat(from).isNotNull();
+                assertThat(data.getBoolean("modifyBundle")).isTrue();
+                assertThat(data.getString("halo_ui_notification_id")).isEqualTo(notificationId);
+            }
+        };
+    }
 }

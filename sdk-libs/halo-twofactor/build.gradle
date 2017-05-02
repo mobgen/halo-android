@@ -46,8 +46,8 @@ android {
 }
 
 dependencies {
+    compile project(":halo-notifications")
     compile "com.mobgen.halo.android:halo-sdk:${rootProject.ext.haloVersion}"
-    compile "com.mobgen.halo.android:halo-notifications:${rootProject.ext.haloVersion}"
     apt "com.bluelinelabs:logansquare-compiler:${rootProject.ext.loganSquareVersion}"
 
     //Testing dependencies

@@ -64,6 +64,11 @@ public class Device implements Parcelable {
     boolean mReplaceToken = true;
 
     /**
+     * the application id
+     */
+    @JsonField(name = "appId")
+    String mAppId;
+    /**
      * The creator.
      */
     public static final Creator<Device> CREATOR = new Creator<Device>() {
@@ -91,11 +96,12 @@ public class Device implements Parcelable {
      * @param email             The email for the device.
      * @param notificationToken The notification token.
      */
-    public Device(@Nullable String alias, @Nullable String id, @Nullable String email, @Nullable String notificationToken) {
+    public Device(@Nullable String alias, @Nullable String id, @Nullable String email, @Nullable String notificationToken, @Nullable String appId) {
         this();
         mAlias = alias;
         mId = id;
         mEmail = email;
+        mAppId = appId;
         setNotificationsToken(notificationToken);
     }
 
@@ -108,8 +114,20 @@ public class Device implements Parcelable {
         this.mAlias = in.readString();
         this.mId = in.readString();
         this.mEmail = in.readString();
+        this.mAppId = in.readString();
         this.mDeviceInfo = in.createTypedArrayList(DeviceInfo.CREATOR);
         this.mTags = in.createTypedArrayList(HaloSegmentationTag.CREATOR);
+    }
+
+    /**
+     * Provides the app id.
+     *
+     * @return The application id.
+     */
+    @Api(2.3)
+    @Nullable
+    public String getAppId() {
+        return mAppId;
     }
 
     /**
@@ -306,6 +324,7 @@ public class Device implements Parcelable {
         dest.writeString(this.mAlias);
         dest.writeString(this.mId);
         dest.writeString(this.mEmail);
+        dest.writeString(this.mAppId);
         dest.writeTypedList(mDeviceInfo);
         dest.writeTypedList(mTags);
     }
