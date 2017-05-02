@@ -11,6 +11,7 @@ import android.text.TextUtils;
 import com.bluelinelabs.logansquare.LoganSquare;
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
+import com.mobgen.halo.android.content.utils.HaloContentHelper;
 import com.mobgen.halo.android.framework.common.annotations.Api;
 import com.mobgen.halo.android.framework.common.exceptions.HaloConfigurationException;
 import com.mobgen.halo.android.framework.common.exceptions.HaloParsingException;
@@ -339,7 +340,7 @@ public class SearchQuery implements Parcelable {
     @Api(2.0)
     public void setDevice(@Nullable Device device) {
         if (device != null) {
-            mTags = addToList(mTags, device.getTags().toArray(new HaloSegmentationTag[device.getTags().size()]));
+            mTags = HaloContentHelper.addToList(mTags, device.getTags().toArray(new HaloSegmentationTag[device.getTags().size()]));
             if (mSegmentMode == null) {
                 mSegmentMode = PARTIAL_MATCH;
             }
@@ -618,7 +619,7 @@ public class SearchQuery implements Parcelable {
         @Api(2.0)
         @NonNull
         public Builder moduleIds(@Nullable String... ids) {
-            mModuleIds = addToList(mModuleIds, ids);
+            mModuleIds = HaloContentHelper.addToList(mModuleIds, ids);
             return this;
         }
 
@@ -632,7 +633,7 @@ public class SearchQuery implements Parcelable {
         @Api(2.0)
         @NonNull
         public Builder instanceIds(@Nullable String... ids) {
-            mInstanceIds = addToList(mInstanceIds, ids);
+            mInstanceIds = HaloContentHelper.addToList(mInstanceIds, ids);
             return this;
         }
 
@@ -646,7 +647,7 @@ public class SearchQuery implements Parcelable {
         @Api(2.22)
         @NonNull
         public Builder relatedInstances(@NonNull Relationship... relationships) {
-            mRelationships = addToList(mRelationships,relationships);
+            mRelationships = HaloContentHelper.addToList(mRelationships,relationships);
             return this;
         }
 
@@ -679,7 +680,7 @@ public class SearchQuery implements Parcelable {
         @Api(2.22)
         @NonNull
         public Builder allRelatedInstances(@NonNull String fieldName) {
-            mRelationships = addToList(mRelationships, new Relationship[]{Relationship.createForAll(fieldName)});
+            mRelationships = HaloContentHelper.addToList(mRelationships, new Relationship[]{Relationship.createForAll(fieldName)});
             return this;
         }
 
@@ -701,7 +702,7 @@ public class SearchQuery implements Parcelable {
                     finalFields[i] = "values." + field;
                     i++;
                 }
-                mFieldNames = addToList(mFieldNames, finalFields);
+                mFieldNames = HaloContentHelper.addToList(mFieldNames, finalFields);
             }
             return this;
         }
@@ -716,7 +717,7 @@ public class SearchQuery implements Parcelable {
         @Api(2.0)
         @NonNull
         public Builder tags(@Nullable HaloSegmentationTag... tags) {
-            mTags = addToList(mTags, tags);
+            mTags = HaloContentHelper.addToList(mTags, tags);
             return this;
         }
 
@@ -757,7 +758,7 @@ public class SearchQuery implements Parcelable {
         @Api(2.0)
         @NonNull
         public Builder populateAll() {
-            mPopulateNames = addToList(mPopulateNames, new String[]{"all"});
+            mPopulateNames = HaloContentHelper.addToList(mPopulateNames, new String[]{"all"});
             return this;
         }
 
@@ -772,7 +773,7 @@ public class SearchQuery implements Parcelable {
         @Api(2.0)
         @NonNull
         public Builder populate(@Nullable String... fields) {
-            mPopulateNames = addToList(mPopulateNames, fields);
+            mPopulateNames = HaloContentHelper.addToList(mPopulateNames, fields);
             return this;
         }
 
@@ -920,24 +921,6 @@ public class SearchQuery implements Parcelable {
         public SearchQuery build() {
             return new SearchQuery(this);
         }
-    }
-
-    /**
-     * Adds something to the given list or creates it returning as a result.
-     *
-     * @param list  The list of items.
-     * @param items The items.
-     * @return The list returned or created.
-     */
-    private static <T> List<T> addToList(@Nullable List<T> list, @Nullable T[] items) {
-        List<T> finalList = list;
-        if (items != null && items.length > 0) {
-            if (finalList == null) {
-                finalList = new ArrayList<>();
-            }
-            finalList.addAll(Arrays.asList(items));
-        }
-        return finalList;
     }
 
     @Override

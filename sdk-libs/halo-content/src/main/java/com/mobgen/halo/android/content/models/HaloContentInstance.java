@@ -375,6 +375,7 @@ public class HaloContentInstance implements Parcelable {
 
     @Override
     public String toString() {
+        String tags =  mTags != null ? mTags.toString() : null;
         return "ContentInstance{" +
                 "mItemId='" + mItemId + '\'' +
                 ", mModuleName='" + mModuleName + '\'' +
@@ -382,7 +383,7 @@ public class HaloContentInstance implements Parcelable {
                 ", mName='" + mName + '\'' +
                 ", mValues=" + mValues +
                 ", mAuthor='" + mAuthor + '\'' +
-                ", mTags=" + mTags.toString() +
+                ", mTags=" + tags +
                 ", mCreatedDate=" + mCreatedDate +
                 ", mArchivedAt=" + mArchived +
                 ", mLastUpdate=" + mLastUpdate +

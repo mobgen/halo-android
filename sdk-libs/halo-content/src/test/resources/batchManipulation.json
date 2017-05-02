@@ -1,0 +1,149 @@
+{
+  "operations": [
+    {
+      "operation": "truncate",
+      "position": 0,
+      "success": true,
+      "module": "000000000000000000000003",
+      "data": [
+        {
+          "id": "58f73971af013400107b93c4"
+        }
+      ]
+    },
+    {
+      "operation": "truncate",
+      "position": 1,
+      "success": true,
+      "module": "000000000000000000000005",
+      "data": []
+    },
+    {
+      "operation": "create",
+      "position": 0,
+      "success": true,
+      "data": {
+        "name": "From Android SDK",
+        "module": "586a47f836a6b01300ec9f00",
+        "tags": [],
+        "archivedAt": null,
+        "removedAt": null,
+        "publishedAt": null,
+        "createdBy": "Editor Editor",
+        "customerId": 1,
+        "values": {},
+        "pushSchedule": null,
+        "externalId": null,
+        "revision": 0,
+        "createdAt": 1492610860696,
+        "updatedAt": null,
+        "deletedAt": null,
+        "updatedBy": null,
+        "deletedBy": null,
+        "id": "5874c5f06a3a0d1e00c8039d"
+      }
+    },
+    {
+      "operation": "update",
+      "position": 0,
+      "success": false,
+      "data": {
+        "error": {
+          "status": 409,
+          "message": "The specified instance was updated after your data retrieval. Please, resolve the conflict and try again.",
+          "extra": {
+            "module": "58f8992d9bf39e000fc7d1d4",
+            "name": "News1 updated",
+            "tags": [],
+            "archivedAt": null,
+            "removedAt": null,
+            "publishedAt": null,
+            "createdBy": "James Admin",
+            "customerId": 1,
+            "updatedAt": 1492782728392,
+            "values": {},
+            "pushSchedule": null,
+            "externalId": null,
+            "revision": 0,
+            "createdAt": 1492782721248,
+            "deletedAt": null,
+            "updatedBy": "James Admin",
+            "deletedBy": null,
+            "id": "58fa0e8173c4f5001031c5a8"
+          },
+          "type": "HaloError"
+        }
+      }
+    },
+    {
+      "operation": "createOrUpdate",
+      "position": 0,
+      "success": false,
+      "data": {
+        "error": {
+          "status": 400,
+          "message": "Error creating instance values",
+          "extra": {
+              "field": "amount",
+              "error": "validator.8",
+              "message": "Please check the text field, it should be a string"
+            },
+          "type": "HaloError"
+        }
+      }
+    },
+    {
+      "operation": "delete",
+      "position": 0,
+      "success": false,
+      "data": {
+        "error": {
+          "status": 404,
+          "message": "Instance not found",
+          "extra": {},
+          "type": "HaloError"
+        }
+      }
+    },
+    {
+      "operation": "delete",
+      "position": 1,
+      "success": false,
+      "data": {
+        "error": {
+          "status": 404,
+          "message": "Instance not found",
+          "extra": {},
+          "type": "HaloError"
+        }
+      }
+    }
+  ],
+  "results": {
+    "total": {
+      "total": 7,
+      "success": 3,
+      "failure": 4
+    },
+    "truncate": {
+      "success": 2,
+      "failure": 0
+    },
+    "create": {
+      "success": 1,
+      "failure": 0
+    },
+    "update": {
+      "success": 0,
+      "failure": 1
+    },
+    "createOrUpdate": {
+      "success": 0,
+      "failure": 1
+    },
+    "delete": {
+      "success": 0,
+      "failure": 2
+    }
+  }
+}

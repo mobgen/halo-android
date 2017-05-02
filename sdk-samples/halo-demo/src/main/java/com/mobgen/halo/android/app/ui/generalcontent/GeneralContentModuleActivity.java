@@ -43,6 +43,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -206,7 +207,6 @@ public class GeneralContentModuleActivity extends MobgenHaloActivity implements 
 
         mRefreshReceiver = new RefreshBroadcastReceiver();
         LocalBroadcastManager.getInstance(this).registerReceiver(mRefreshReceiver, new IntentFilter("generalcontent-notification"));
-
     }
 
     @Override

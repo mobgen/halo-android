@@ -247,4 +247,44 @@ public final class HaloContentContract {
         @Column(type = Column.Type.INTEGER)
         String DELETIONS = "SYNC_LOG_DELETIONS";
     }
+
+    /**
+     * Batch operation with error in the synchronization.
+     *
+     */
+    @Keep
+    @Table("HALO_GC_BATCH")
+    public interface Batch extends HaloTable {
+
+        /**
+         * Id of the item.
+         */
+        @Keep
+        @Column(type = Column.Type.TEXT, isPrimaryKey = true)
+        String ID = "BATCH_ID";
+
+        /**
+         * The operation produced during the execution.
+         */
+        @Keep
+        @Column(type = Column.Type.TEXT)
+        String OPERATION = "BATCH_OPERATION";
+
+        /**
+         * The values as a JSON String. This string can be used to build the
+         * full entity.
+         */
+        @Keep
+        @Column(type = Column.Type.TEXT)
+        String CONTENT_INSTANCE = "BATCH_CONTENT_INSTANCE";
+
+        /**
+         * Publication date.
+         */
+        @Keep
+        @Column(type = Column.Type.DATE)
+        String LAST_ATTEMPT = "BATCH_ATTEMPT_DATE";
+
+
+    }
 }

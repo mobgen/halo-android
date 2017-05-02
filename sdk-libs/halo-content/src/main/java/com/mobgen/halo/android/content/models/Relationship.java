@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
+import com.mobgen.halo.android.content.utils.HaloContentHelper;
 import com.mobgen.halo.android.framework.common.annotations.Api;
 import com.mobgen.halo.android.framework.common.helpers.builder.IBuilder;
 import com.mobgen.halo.android.sdk.core.management.models.Credentials;
@@ -55,7 +56,7 @@ public class Relationship implements Parcelable{
 
     private Relationship(@NonNull String fieldName, @NonNull String ... instanceIds){
         mFieldName = fieldName;
-        mInstanceIds = addToList(mInstanceIds,instanceIds);
+        mInstanceIds = HaloContentHelper.addToList(mInstanceIds,instanceIds);
     }
 
     /**
@@ -119,26 +120,6 @@ public class Relationship implements Parcelable{
     @NonNull
     public static Relationship.Builder builder() {
         return new Relationship.Builder();
-    }
-
-
-
-    /**
-     * Adds something to the given list or creates it returning as a result.
-     *
-     * @param list  The list of items.
-     * @param items The items.
-     * @return The list returned or created.
-     */
-    private static <T> List<T> addToList(@Nullable List<T> list, @Nullable T[] items) {
-        List<T> finalList = list;
-        if (items != null && items.length > 0) {
-            if (finalList == null) {
-                finalList = new ArrayList<>();
-            }
-            finalList.addAll(Arrays.asList(items));
-        }
-        return finalList;
     }
 
     /**
@@ -211,7 +192,7 @@ public class Relationship implements Parcelable{
         @Api(2.22)
         @NonNull
         public Relationship.Builder instanceIds(@Nullable String... ids) {
-            mInstanceIds = addToList(mInstanceIds, ids);
+            mInstanceIds = HaloContentHelper.addToList(mInstanceIds, ids);
             return this;
         }
 
