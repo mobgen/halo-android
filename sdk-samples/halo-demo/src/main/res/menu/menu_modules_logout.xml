@@ -8,4 +8,10 @@
         android:title="@string/social_loout_title"
         app:showAsAction="always" />
 
+    <item
+        android:id="@+id/menu_chatroom"
+        android:icon="@drawable/ic_chat_black_24dp"
+        android:title="@string/social_loout_title"
+        app:showAsAction="always" />
+
 </menu>

@@ -243,7 +243,7 @@ public class HaloManagerApiTest extends HaloRobolectricTest {
     @Test
     public void thatGetCurrentDevice() throws IOException, HaloParsingException {
         enqueueServerFile(mMockServer, GET_DEVICE);
-        Device device = new Device("myTestUser", "57fb592ff53f3f002aa99d78", null, null);
+        Device device = new Device("myTestUser", "57fb592ff53f3f002aa99d78", null, null, "5");
         DeviceLocalDatasource deviceLocalDatasource = new DeviceLocalDatasource(mHalo.getCore().manager().storage());
         deviceLocalDatasource.clearCurrentDevice();
         deviceLocalDatasource.cacheDevice(Device.serialize(device, mHalo.getCore().framework().parser()));
@@ -256,6 +256,23 @@ public class HaloManagerApiTest extends HaloRobolectricTest {
         assertThat(mCallbackFlag.isFlagged()).isTrue();
         assertThat(cancellable).isNotNull();
         assertThat(mHalo.getCore().manager().getDevice().getAlias()).isEqualTo(alias);
+    }
+
+    @Test
+    public void thatGetCurrentappVersion() throws IOException, HaloParsingException {
+        enqueueServerFile(mMockServer, GET_DEVICE);
+        Device device = new Device("myTestUser", "57fb592ff53f3f002aa99d78", null, null, "2");
+        DeviceLocalDatasource deviceLocalDatasource = new DeviceLocalDatasource(mHalo.getCore().manager().storage());
+        deviceLocalDatasource.clearCurrentDevice();
+        deviceLocalDatasource.cacheDevice(Device.serialize(device, mHalo.getCore().framework().parser()));
+        CallbackV2<Device> callback = givenCallbackWithGetDevice(mCallbackFlag);
+        ICancellable cancellable = mHalo.getCore().manager()
+                .fetchCurrentDevice()
+                .threadPolicy(Threading.SAME_THREAD_POLICY)
+                .execute(callback);
+        assertThat(mCallbackFlag.isFlagged()).isTrue();
+        assertThat(cancellable).isNotNull();
+        assertThat(mHalo.manager().getAppId()).isEqualTo("2");
     }
 
     @Test
@@ -273,7 +290,7 @@ public class HaloManagerApiTest extends HaloRobolectricTest {
     public void thatSyncDevice() throws IOException, HaloParsingException {
         enqueueServerFile(mMockServer, GET_DEVICE);
         enqueueServerFile(mMockServer, SYNC_DEVICE);
-        Device device = new Device("myTestUser", "57fb592ff53f3f002aa99d78", null, null);
+        Device device = new Device("myTestUser", "57fb592ff53f3f002aa99d78", null, null, "5");
         DeviceLocalDatasource deviceLocalDatasource = new DeviceLocalDatasource(mHalo.getCore().manager().storage());
         deviceLocalDatasource.clearCurrentDevice();
         deviceLocalDatasource.cacheDevice(Device.serialize(device, mHalo.getCore().framework().parser()));

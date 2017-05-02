@@ -307,7 +307,7 @@ public class SearchQueryTest extends HaloRobolectricTest {
         SearchQuery query = SearchQuery.builder()
                 .segmentWithDevice()
                 .build();
-        Device device = new Device("alias","1","a@mobgen.com","token");
+        Device device = new Device("alias","1","a@mobgen.com","token","5");
         List<HaloSegmentationTag> listTags = new ArrayList<HaloSegmentationTag>();
         listTags.add(new HaloSegmentationTag("name","value"));
         device.addTags(listTags);

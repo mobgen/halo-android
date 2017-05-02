@@ -17,6 +17,7 @@ import com.fasterxml.jackson.core.JsonParser;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -334,7 +335,18 @@ public class Operator implements SearchExpression {
                         }
                         mapper.serialize(object, jsonGenerator, true);
                     } catch (Exception e1) {
-                        jsonGenerator.writeObjectField(fieldName, object);
+                        //solve https://mobgen.atlassian.net/browse/HALO-3090 with certain devies parsing the in array
+                        if (object instanceof ArrayList) {
+                            int sizeArrayObject = ((ArrayList) object).size();
+                            jsonGenerator.writeArrayFieldStart(fieldName);
+                            for (int i = 0; i < sizeArrayObject; i++) {
+                                Object element = ((ArrayList) object).get(i);
+                                jsonGenerator.writeObject(element);
+                            }
+                            jsonGenerator.writeEndArray();
+                        } else {
+                            jsonGenerator.writeObjectField(fieldName, object);
+                        }
                     }
                 }
             } else {

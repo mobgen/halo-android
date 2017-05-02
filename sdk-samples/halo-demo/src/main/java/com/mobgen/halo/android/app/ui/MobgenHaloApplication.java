@@ -12,12 +12,14 @@ import com.joanzapata.iconify.Iconify;
 import com.joanzapata.iconify.fonts.FontAwesomeModule;
 import com.mobgen.halo.android.app.BuildConfig;
 import com.mobgen.halo.android.app.generated.GeneratedDatabaseFromModel;
+import com.mobgen.halo.android.app.model.chat.ChatMessage;
 import com.mobgen.halo.android.app.module.ConfigurationModule;
 import com.mobgen.halo.android.app.notifications.DeeplinkDecorator;
 import com.mobgen.halo.android.app.notifications.SilentNotificationDispatcher;
 import com.mobgen.halo.android.app.ui.settings.SettingsActivity;
 import com.mobgen.halo.android.auth.HaloAuthApi;
 import com.mobgen.halo.android.content.HaloContentApi;
+import com.mobgen.halo.android.framework.common.exceptions.HaloParsingException;
 import com.mobgen.halo.android.framework.common.helpers.logger.PrintLog;
 import com.mobgen.halo.android.framework.common.helpers.subscription.ISubscription;
 import com.mobgen.halo.android.notifications.HaloNotificationsApi;
@@ -32,6 +34,7 @@ import com.mobgen.halo.android.twofactor.HaloTwoFactorApi;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+
 
 /**
  * The halo application that contains the Halo initialization and other framework initializes just to make it easy to
@@ -95,7 +98,6 @@ public class MobgenHaloApplication extends HaloApplication {
      * Silent listen notifications
      */
     private static ISubscription mSilentHaloNotificationListener;
-
     /**
      * Two factor authentication api
      */
@@ -242,8 +244,21 @@ public class MobgenHaloApplication extends HaloApplication {
         mNotificationsApi.customIdGenerator(new NotificationIdGenerator() {
             @Override
             public int getNextNotificationId(@NonNull Bundle data, int currentId) {
-                data.putBoolean("stackNofitication", true);
-                return currentId;
+                Object custom = data.get("custom");
+                if(custom != null) {
+                    try {
+                        ChatMessage chatMessage = ChatMessage.deserialize(custom.toString(), Halo.instance().framework().parser());
+                        if(chatMessage.getMessage() != null) {
+                            return chatMessage.getAlias().hashCode();
+                        } else {
+                            return currentId;
+                        }
+                    } catch (HaloParsingException e) {
+                        return currentId;
+                    }
+                } else {
+                    return currentId;
+                }
             }
         });
 
