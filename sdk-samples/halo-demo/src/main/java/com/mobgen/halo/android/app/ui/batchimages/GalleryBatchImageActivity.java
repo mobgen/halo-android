@@ -49,6 +49,9 @@ public class GalleryBatchImageActivity extends MobgenHaloActivity implements Swi
     private static final String BUNDLE_MODULE_ID = "bundle_module_id";
     public static final int CODE_ACTIVITY = 41;
 
+    private static final String UNSPLASH_URL = "https://unsplash.it/800?image=";
+    private static final String UNSPLASH_AUTHOR = "unsplah.it";
+
     @State
     ArrayList<BatchImage> mGalleryImages;
     @State
@@ -90,6 +93,7 @@ public class GalleryBatchImageActivity extends MobgenHaloActivity implements Swi
     @Override
     public void onPresenterInitialized() {
         super.onPresenterInitialized();
+        mSwipeToRefresh.setOnRefreshListener(this);
         mRecyclerView.setAdapter(mAdapter);
         if (mGalleryImages == null) {
             loadGallery();
@@ -102,7 +106,7 @@ public class GalleryBatchImageActivity extends MobgenHaloActivity implements Swi
         //take random photos from unsplash
         mGalleryImages = new ArrayList<>();
         for (int i = 10; i < 500; i++) {
-            mGalleryImages.add(new BatchImage("https://unsplash.it/800?image=" + i, "unsplah.it"));
+            mGalleryImages.add(new BatchImage(UNSPLASH_URL + i, UNSPLASH_AUTHOR));
         }
         ViewUtils.refreshing(mSwipeToRefresh, false);
         updateGallery();

@@ -109,12 +109,7 @@ public class BatchImageActivity extends MobgenHaloActivity implements SwipeRefre
     }
 
     private void loadGallery() {
-        //refresh all status
-        if (mGalleryImages != null) {
-            for (BatchImage images : mGalleryImages) {
-                images.setSelected(false);
-            }
-        }
+        mGalleryImages = new ArrayList<>();
         ViewUtils.refreshing(mSwipeToRefresh, true);
         SearchQuery options = SearchQueryBuilderFactory.getPublishedItems(mModuleName, mModuleName)
                 .onePage(true)
@@ -131,7 +126,6 @@ public class BatchImageActivity extends MobgenHaloActivity implements SwipeRefre
                         mStatus = result.status();
                         if (mStatus.isOk()) {
                             List<HaloContentInstance> data = result.data().data();
-                            mGalleryImages = new ArrayList<>();
                             if (data != null) {
                                 JsonMapper<BatchImage> mapper = LoganSquare.mapperFor(BatchImage.class);
                                 for (int j = 0; j < data.size(); j++) {
