@@ -20,6 +20,7 @@ import com.mobgen.halo.android.app.ui.MobgenHaloApplication;
 import com.mobgen.halo.android.app.ui.MobgenHaloFragment;
 import com.mobgen.halo.android.app.ui.addons.SegmentationActivity;
 import com.mobgen.halo.android.app.ui.analytics.AnalyticsActivity;
+import com.mobgen.halo.android.app.ui.batchimages.BatchImageActivity;
 import com.mobgen.halo.android.app.ui.gallery.GalleryActivity;
 import com.mobgen.halo.android.app.ui.generalcontent.GeneralContentItemActivity;
 import com.mobgen.halo.android.app.ui.generalcontent.GeneralContentModuleActivity;
@@ -233,6 +234,8 @@ public class ModulesFragment extends MobgenHaloFragment implements SwipeRefreshL
             QRListActivity.start(getContext(), module.getName());
         } else if (module.getName().equalsIgnoreCase("gallery")) {
             GalleryActivity.start(getContext(), module.getName());
+        } else if (module.getName().equalsIgnoreCase("ImagesBatch")) {
+            BatchImageActivity.start(getContext(), module.getName(), module.getId());
         } else if (module.getName().equalsIgnoreCase("demo translations")) {
             TranslationsActivity.start(getContext());
         } else if (module.getName().equalsIgnoreCase("load tests")) {
