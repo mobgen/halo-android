@@ -4,12 +4,13 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -20,38 +21,41 @@ import com.mobgen.halo.android.app.R;
 import com.mobgen.halo.android.app.model.BatchImage;
 import com.mobgen.halo.android.app.ui.MobgenHaloActivity;
 import com.mobgen.halo.android.app.ui.MobgenHaloApplication;
-import com.mobgen.halo.android.app.ui.chat.ChatRoomActivity;
-import com.mobgen.halo.android.app.ui.chat.QRScanActivity;
-import com.mobgen.halo.android.app.ui.generalcontent.GeneralContentModuleActivity;
-import com.mobgen.halo.android.app.utils.StatusInterceptor;
 import com.mobgen.halo.android.app.utils.ViewUtils;
 import com.mobgen.halo.android.content.edition.HaloContentEditApi;
 import com.mobgen.halo.android.content.models.BatchOperationResults;
 import com.mobgen.halo.android.content.models.BatchOperations;
 import com.mobgen.halo.android.content.models.HaloContentInstance;
-import com.mobgen.halo.android.content.models.SearchQuery;
-import com.mobgen.halo.android.content.search.SearchQueryBuilderFactory;
 import com.mobgen.halo.android.framework.toolbox.data.CallbackV2;
 import com.mobgen.halo.android.framework.toolbox.data.HaloResultV2;
-import com.mobgen.halo.android.framework.toolbox.data.HaloStatus;
 
 import net.bohush.geometricprogressview.GeometricProgressView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 
 import icepick.Icepick;
 import icepick.State;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
-public class GalleryBatchImageActivity extends MobgenHaloActivity implements SwipeRefreshLayout.OnRefreshListener, BatchImageAdapter.ImageSelectionListener {
+public class GalleryBatchImageActivity extends MobgenHaloActivity implements SwipeRefreshLayout.OnRefreshListener {
 
     private static final String BUNDLE_MODULE_NAME = "bundle_module_name";
     private static final String BUNDLE_MODULE_ID = "bundle_module_id";
     public static final int CODE_ACTIVITY = 41;
 
-    private static final String UNSPLASH_URL = "https://unsplash.it/800?image=";
-    private static final String UNSPLASH_AUTHOR = "unsplah.it";
-
+    private static final String UNSPLASH_IMAGE_URL = "https://unsplash.it/800?image=";
+    private static final String UNSPLASH_AUTHOR = "author";
+    private static final String UNSPLASH_URL = "https://unsplash.it/list";
     @State
     ArrayList<BatchImage> mGalleryImages;
     @State
@@ -62,6 +66,7 @@ public class GalleryBatchImageActivity extends MobgenHaloActivity implements Swi
     private RecyclerView mRecyclerView;
     private BatchImageAdapter mAdapter;
     private GeometricProgressView mProgressView;
+    private Context mContext;
 
     public static void start(@NonNull Activity activity, @NonNull String moduleName, @NonNull String moduleId) {
         Bundle data = new Bundle();
@@ -80,11 +85,12 @@ public class GalleryBatchImageActivity extends MobgenHaloActivity implements Swi
         mModuleId = getIntent().getExtras().getString(BUNDLE_MODULE_ID);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mContext = this;
 
         Icepick.restoreInstanceState(this, savedInstanceState);
 
         mSwipeToRefresh = (SwipeRefreshLayout) findViewById(R.id.srl_generic);
-        mAdapter = new BatchImageAdapter(this, this);
+        mAdapter = new BatchImageAdapter(this, null);
         mRecyclerView = (RecyclerView) findViewById(R.id.rv_generic);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mProgressView = (GeometricProgressView) findViewById(R.id.gm_progress);
@@ -103,13 +109,45 @@ public class GalleryBatchImageActivity extends MobgenHaloActivity implements Swi
     }
 
     private void loadGallery() {
-        //take random photos from unsplash
+        //take photos from unsplash.it
         mGalleryImages = new ArrayList<>();
-        for (int i = 10; i < 500; i++) {
-            mGalleryImages.add(new BatchImage(UNSPLASH_URL + i, UNSPLASH_AUTHOR));
-        }
-        ViewUtils.refreshing(mSwipeToRefresh, false);
-        updateGallery();
+
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url(UNSPLASH_URL)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                try {
+                    JSONArray imageList = new JSONArray(response.body().string());
+                    for (int i = 10; i < 500; i++) {
+                        String author = ((JSONObject) imageList.get(i)).getString(UNSPLASH_AUTHOR);
+                        mGalleryImages.add(new BatchImage(UNSPLASH_IMAGE_URL + i, author));
+                    }
+                    //post result to main thread
+                    Handler mainThreadHandler = new Handler(Looper.getMainLooper());
+                    Runnable runnable = new Runnable() {
+                        @Override
+                        public void run() {
+                            ViewUtils.refreshing(mSwipeToRefresh, false);
+                            updateGallery();
+                        }
+                    };
+                    mainThreadHandler.post(runnable);
+
+                } catch (JSONException e) {
+                }
+
+            }
+        });
+
     }
 
     @Override
@@ -205,9 +243,5 @@ public class GalleryBatchImageActivity extends MobgenHaloActivity implements Swi
         } else {
             return null;
         }
-    }
-
-    public void onImageSelected(String originalUrl, String thumb) {
-        Log.v(originalUrl, thumb);
     }
 }

@@ -8,10 +8,12 @@ import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.bluelinelabs.logansquare.JsonMapper;
@@ -45,7 +47,7 @@ import icepick.State;
 
 import static com.mobgen.halo.android.app.ui.batchimages.GalleryBatchImageActivity.CODE_ACTIVITY;
 
-public class BatchImageActivity extends MobgenHaloActivity implements SwipeRefreshLayout.OnRefreshListener, BatchImageAdapter.ImageSelectionListener {
+public class BatchImageActivity extends MobgenHaloActivity implements SwipeRefreshLayout.OnRefreshListener, BatchImageAdapter.TextChangeListener {
 
     private static final String BUNDLE_MODULE_NAME = "bundle_module_name";
     private static final String BUNDLE_MODULE_ID = "bundle_module_id";
@@ -76,6 +78,9 @@ public class BatchImageActivity extends MobgenHaloActivity implements SwipeRefre
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallery);
         mModuleName = getIntent().getExtras().getString(BUNDLE_MODULE_NAME);
@@ -199,13 +204,37 @@ public class BatchImageActivity extends MobgenHaloActivity implements SwipeRefre
                 //open remote batch gallery to add elements
                 GalleryBatchImageActivity.start(this, mModuleName, mModuleId);
                 break;
+            case R.id.action_edit_batch:
+                //update instances on a batch operation
+                mProgressView.setVisibility(View.VISIBLE);
+                BatchOperations updateOperations = getAllInstancesToBatch();
+                if (updateOperations != null) {
+                    HaloContentEditApi.with(MobgenHaloApplication.halo())
+                            .batch(updateOperations, false)
+                            .execute(new CallbackV2<BatchOperationResults>() {
+                                @Override
+                                public void onFinish(@NonNull HaloResultV2<BatchOperationResults> result) {
+                                    mProgressView.setVisibility(View.GONE);
+                                    if (result.status().isOk()) {
+                                        //refresh the list
+                                        loadGallery();
+                                    } else {
+                                        Toast.makeText(BatchImageActivity.this, "We have some problems with the batch request", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
+                } else {
+                    mProgressView.setVisibility(View.GONE);
+                    Toast.makeText(BatchImageActivity.this, "Sorry we cannot make the operation", Toast.LENGTH_SHORT).show();
+                }
+                break;
             case R.id.action_delete_batch:
                 //delete instances on a batch operation
                 mProgressView.setVisibility(View.VISIBLE);
-                BatchOperations batchOperations = getInstancesToBatch();
-                if (batchOperations != null) {
+                BatchOperations deleteOperations = getInstancesToBatch();
+                if (deleteOperations != null) {
                     HaloContentEditApi.with(MobgenHaloApplication.halo())
-                            .batch(batchOperations, false)
+                            .batch(deleteOperations, false)
                             .execute(new CallbackV2<BatchOperationResults>() {
                                 @Override
                                 public void onFinish(@NonNull HaloResultV2<BatchOperationResults> result) {
@@ -225,6 +254,27 @@ public class BatchImageActivity extends MobgenHaloActivity implements SwipeRefre
                 break;
         }
         return true;
+    }
+
+    @Nullable
+    public BatchOperations getAllInstancesToBatch() {
+        if (mGalleryImages != null) {
+            BatchOperations.Builder operations = BatchOperations.builder();
+            for (int i = 0; i < mGalleryImages.size(); i++) {
+                //add one instance with every image which has been selected
+                HaloContentInstance instance = new HaloContentInstance.Builder(mModuleName)
+                        .withAuthor("Android SDK app")
+                        .withContentData(mGalleryImages.get(i))
+                        .withName("Create from batch request")
+                        .withId(mGalleryImages.get(i).getInstanceId())
+                        .withModuleId(mModuleId)
+                        .build();
+                operations.update(instance);
+            }
+            return operations.build();
+        } else {
+            return null;
+        }
     }
 
     @Nullable
@@ -250,6 +300,8 @@ public class BatchImageActivity extends MobgenHaloActivity implements SwipeRefre
         }
     }
 
-    public void onImageSelected(String originalUrl, String thumb) {
+    @Override
+    public void onTextChange(BatchImage batchImage, int position) {
+        Log.v("new name", batchImage.author());
     }
 }

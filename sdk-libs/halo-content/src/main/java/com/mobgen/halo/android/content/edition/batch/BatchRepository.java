@@ -93,8 +93,14 @@ public class BatchRepository {
         HaloStatus.Builder status = HaloStatus.builder();
         BatchOperationResults response = null;
         try {
-            response = mRemoteDatasource.batchOperation(batchOperations);
-            syncAndNofifyConflicts(response);
+            if (batchOperations.getCreatedOrUpdated() != null || batchOperations.getCreated() != null ||
+                    batchOperations.getDeleted() != null || batchOperations.getTruncate() != null ||
+                    batchOperations.getUpdated() != null) {
+                response = mRemoteDatasource.batchOperation(batchOperations);
+                syncAndNofifyConflicts(response);
+            } else {
+                throw new HaloParsingException("You must provide at least one operation to batch", new Exception());
+            }
         } catch (HaloNetException haloException) {
             //net error so we need to store data when we have connection
             status.error(haloException);

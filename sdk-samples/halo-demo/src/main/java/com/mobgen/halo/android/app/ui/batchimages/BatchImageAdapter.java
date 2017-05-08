@@ -6,9 +6,12 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.mobgen.halo.android.app.R;
@@ -23,9 +26,9 @@ public class BatchImageAdapter extends RecyclerView.Adapter<BatchImageAdapter.Ga
     private static final int CHUNK_SIZE = 2;
     private List<List<BatchImage>> mImageChunks;
     private Context mContext;
-    private ImageSelectionListener mListener;
+    private TextChangeListener mListener;
 
-    public BatchImageAdapter(@NonNull Context context, @Nullable ImageSelectionListener listener) {
+    public BatchImageAdapter(@NonNull Context context, @Nullable TextChangeListener listener) {
         mContext = context;
         mListener = listener;
     }
@@ -54,8 +57,7 @@ public class BatchImageAdapter extends RecyclerView.Adapter<BatchImageAdapter.Ga
                 public void onClick(View v) {
                     int adapterPosition = viewHolder.getAdapterPosition();
                     List<BatchImage> images = mImageChunks.get(adapterPosition);
-                    if (finalIndex < images.size() && mListener != null) {
-                        mListener.onImageSelected(images.get(finalIndex).image(), (String) view.getTag());
+                    if (finalIndex < images.size()) {
                         if (images.get(finalIndex).isSelected()) {
                             view.setBackgroundColor(Color.TRANSPARENT);
                             images.get(finalIndex).setSelected(false);
@@ -66,6 +68,35 @@ public class BatchImageAdapter extends RecyclerView.Adapter<BatchImageAdapter.Ga
                     }
                 }
             });
+            index++;
+        }
+
+        index = 0;
+        for (final EditText view : viewHolder.mEditTextViews) {
+            final int finalIndex = index;
+            view.clearFocus();
+            if (mListener != null) {
+                view.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable s) {
+                        int adapterPosition = viewHolder.getAdapterPosition();
+                        int arrayindex = (CHUNK_SIZE * adapterPosition) + finalIndex;
+                        List<BatchImage> batchImages = mImageChunks.get(adapterPosition);
+                        batchImages.get(finalIndex).author(s.toString());
+                        mListener.onTextChange(batchImages.get(finalIndex), arrayindex);
+                    }
+                });
+            } else {
+                view.setVisibility(View.GONE);
+            }
             index++;
         }
         return viewHolder;
@@ -92,12 +123,17 @@ public class BatchImageAdapter extends RecyclerView.Adapter<BatchImageAdapter.Ga
     public static class GalleryViewHolder extends RecyclerView.ViewHolder {
 
         private ImageView[] mImageViews;
+        private EditText[] mEditTextViews;
 
         public GalleryViewHolder(View itemView) {
             super(itemView);
             mImageViews = new ImageView[]{
                     (ImageView) itemView.findViewById(R.id.iv_gallery_1),
                     (ImageView) itemView.findViewById(R.id.iv_gallery_2)
+            };
+            mEditTextViews = new EditText[]{
+                    (EditText) itemView.findViewById(R.id.et_gallery_1),
+                    (EditText) itemView.findViewById(R.id.et_gallery_2)
             };
         }
 
@@ -113,6 +149,8 @@ public class BatchImageAdapter extends RecyclerView.Adapter<BatchImageAdapter.Ga
                 String url = image.image();
                 imageView.setTag(url);
                 Picasso.with(context).load(url).placeholder(ContextCompat.getDrawable(context, R.color.light_gray)).into(imageView);
+                final EditText editText = mEditTextViews[imageIndex];
+                editText.setText(image.author());
                 imageIndex++;
             }
             for (int i = imageIndex; i < CHUNK_SIZE; i++) {
@@ -121,7 +159,7 @@ public class BatchImageAdapter extends RecyclerView.Adapter<BatchImageAdapter.Ga
         }
     }
 
-    public interface ImageSelectionListener {
-        void onImageSelected(String originalUrl, String thumUrl);
+    public interface TextChangeListener {
+        void onTextChange(BatchImage batchImage, int position);
     }
 }

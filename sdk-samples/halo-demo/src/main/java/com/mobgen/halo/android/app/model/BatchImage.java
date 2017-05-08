@@ -32,9 +32,18 @@ public class BatchImage implements Parcelable {
         return mImage;
     }
 
+    public void image(String image) {
+        mImage = image;
+    }
+
     public String author() {
         return mAuthor;
     }
+
+    public void author(String author) {
+        mAuthor = author;
+    }
+
 
     public boolean isSelected() {
         return isSelected;
