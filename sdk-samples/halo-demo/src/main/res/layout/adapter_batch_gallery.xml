@@ -26,6 +26,7 @@
             android:layout_margin="10dp"
             android:background="?attr/selectableItemBackground"
             android:padding="10dp"
+            android:visibility="gone"
             android:scaleType="fitXY" />
 
         <EditText
@@ -35,8 +36,9 @@
             android:layout_weight="1"
             android:textAlignment="center"
             android:ems="10"
+            android:visibility="gone"
             android:inputType="textPersonName"
-            android:text="Name" />
+            android:text="@string/batch_gallery_author" />
     </LinearLayout>
 
     <View
@@ -57,6 +59,7 @@
             android:layout_margin="10dp"
             android:background="?attr/selectableItemBackground"
             android:padding="10dp"
+            android:visibility="gone"
             android:scaleType="fitXY" />
 
         <EditText
@@ -66,8 +69,9 @@
             android:layout_weight="1"
             android:textAlignment="center"
             android:ems="10"
+            android:visibility="gone"
             android:inputType="textPersonName"
-            android:text="Name" />
+            android:text="@string/batch_gallery_author" />
     </LinearLayout>
 
     <View

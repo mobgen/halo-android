@@ -109,6 +109,8 @@ public class GalleryBatchImageActivity extends MobgenHaloActivity implements Swi
     }
 
     private void loadGallery() {
+        ViewUtils.refreshing(mSwipeToRefresh, true);
+
         //take photos from unsplash.it
         mGalleryImages = new ArrayList<>();
 

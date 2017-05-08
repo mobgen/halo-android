@@ -78,6 +78,7 @@
     <!-- Batch gallery -->
     <string name="batch_gallery_title">Batch Gallery</string>
     <string name="batch_gallery_select_title">Select more images</string>
+    <string name="batch_gallery_author">Author</string>
 
     <!-- Translations -->
     <string name="translations_title">Translations</string>

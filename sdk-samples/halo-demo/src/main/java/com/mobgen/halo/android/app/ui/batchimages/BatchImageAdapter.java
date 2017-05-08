@@ -147,9 +147,11 @@ public class BatchImageAdapter extends RecyclerView.Adapter<BatchImageAdapter.Ga
                     imageView.setBackgroundColor(Color.TRANSPARENT);
                 }
                 String url = image.image();
+                imageView.setVisibility(View.VISIBLE);
                 imageView.setTag(url);
                 Picasso.with(context).load(url).placeholder(ContextCompat.getDrawable(context, R.color.light_gray)).into(imageView);
                 final EditText editText = mEditTextViews[imageIndex];
+                editText.setVisibility(View.VISIBLE);
                 editText.setText(image.author());
                 imageIndex++;
             }
