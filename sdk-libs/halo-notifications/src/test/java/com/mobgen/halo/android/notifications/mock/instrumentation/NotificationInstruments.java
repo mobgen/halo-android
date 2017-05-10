@@ -46,6 +46,18 @@ public class NotificationInstruments {
     }
 
     @NonNull
+    public static Map<String, String> withImage() {
+        Map<String, String> map = new HashMap<>();
+        map.put("content_available", "0");
+        map.put("image", "{\n" +
+                "\"url\": \"http://myimage.jpg\",\n" +
+                "\"layout\":\"expanded\"\n" +
+                "}");
+        map.put("from", NOTIFICATION_FROM);
+        return map;
+    }
+
+    @NonNull
     public static Map<String, String> withAnySourceNotification() {
         Map<String, String> map = new HashMap<>();
         map.put("foo", "bar");

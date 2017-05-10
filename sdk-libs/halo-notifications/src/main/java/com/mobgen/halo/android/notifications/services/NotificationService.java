@@ -3,7 +3,6 @@ package com.mobgen.halo.android.notifications.services;
 import android.annotation.SuppressLint;
 import android.app.NotificationManager;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Keep;
 import android.support.annotation.NonNull;
@@ -12,7 +11,6 @@ import android.support.v4.app.NotificationCompat;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
-import com.mobgen.halo.android.framework.common.annotations.Api;
 import com.mobgen.halo.android.framework.common.helpers.logger.Halog;
 import com.mobgen.halo.android.framework.common.utils.AssertionUtils;
 import com.mobgen.halo.android.notifications.decorator.HaloNotificationDecorator;
@@ -20,6 +18,7 @@ import com.mobgen.halo.android.notifications.decorator.NotificationActionDecorat
 import com.mobgen.halo.android.notifications.decorator.NotificationBadgeDecorator;
 import com.mobgen.halo.android.notifications.decorator.NotificationColorDecorator;
 import com.mobgen.halo.android.notifications.decorator.NotificationIconDecorator;
+import com.mobgen.halo.android.notifications.decorator.NotificationImageDecorator;
 import com.mobgen.halo.android.notifications.decorator.NotificationLedDecorator;
 import com.mobgen.halo.android.notifications.decorator.NotificationMessageDecorator;
 import com.mobgen.halo.android.notifications.decorator.NotificationSoundDecorator;
@@ -186,10 +185,11 @@ public class NotificationService extends FirebaseMessagingService {
                                 new NotificationBadgeDecorator(
                                         new NotificationColorDecorator(
                                                 new NotificationLedDecorator(
-                                                        new NotificationMessageDecorator(
-                                                                new NotificationTitleDecorator(
-                                                                        mDecorator
-                                                                ))))))));
+                                                        new NotificationImageDecorator(this,
+                                                            new NotificationMessageDecorator(
+                                                                    new NotificationTitleDecorator(
+                                                                            mDecorator
+                                                                    )))))))));
     }
 
     /**

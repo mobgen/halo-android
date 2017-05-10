@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 
 import com.mobgen.halo.android.notifications.HaloNotificationsApi;
 import com.mobgen.halo.android.notifications.callbacks.HaloNotificationListener;
+import com.mobgen.halo.android.notifications.models.PushImage;
 import com.mobgen.halo.android.testing.CallbackFlag;
 
 import org.jetbrains.annotations.NotNull;
@@ -58,6 +59,18 @@ public class NotificationListenerInstruments {
             public void onNotificationReceived(@NonNull Context context, @NonNull String from, @NonNull Bundle data, @Nullable Bundle extra) {
                 flag.flagExecuted();
                 assertThat(from).isNotNull();
+            }
+        };
+    }
+
+
+    public static HaloNotificationListener givenANotificationWithImageListener(@NonNull final CallbackFlag flag) {
+        return new HaloNotificationListener() {
+            @Override
+            public void onNotificationReceived(@NonNull Context context, @NonNull String from, @NonNull Bundle data, @Nullable Bundle extra) {
+                flag.flagExecuted();
+                assertThat(from).isNotNull();
+                assertThat(data.get("image")).isNotNull();
             }
         };
     }

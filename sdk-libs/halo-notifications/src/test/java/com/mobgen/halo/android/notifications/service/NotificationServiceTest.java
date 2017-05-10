@@ -30,11 +30,13 @@ import static com.mobgen.halo.android.notifications.mock.instrumentation.Notific
 import static com.mobgen.halo.android.notifications.mock.instrumentation.NotificationInstruments.withAnySourceNotification;
 import static com.mobgen.halo.android.notifications.mock.instrumentation.NotificationInstruments.withExtraData;
 import static com.mobgen.halo.android.notifications.mock.instrumentation.NotificationInstruments.withExtraDataJSON;
+import static com.mobgen.halo.android.notifications.mock.instrumentation.NotificationInstruments.withImage;
 import static com.mobgen.halo.android.notifications.mock.instrumentation.NotificationInstruments.withNotSilentNotification;
 import static com.mobgen.halo.android.notifications.mock.instrumentation.NotificationInstruments.withNullExtraData;
 import static com.mobgen.halo.android.notifications.mock.instrumentation.NotificationInstruments.withSilentNotification;
 import static com.mobgen.halo.android.notifications.mock.instrumentation.NotificationInstruments.withTwoFactor;
 import static com.mobgen.halo.android.notifications.mock.instrumentation.NotificationListenerInstruments.givenANotificationListener;
+import static com.mobgen.halo.android.notifications.mock.instrumentation.NotificationListenerInstruments.givenANotificationWithImageListener;
 import static com.mobgen.halo.android.notifications.mock.instrumentation.NotificationListenerInstruments.givenATwoFactorListener;
 import static com.mobgen.halo.android.notifications.mock.instrumentation.NotificationListenerInstruments.givenAnAllNotificationListener;
 import static com.mobgen.halo.android.notifications.mock.instrumentation.NotificationListenerInstruments.givenAnNotificationListenerWithCustomId;
@@ -88,6 +90,19 @@ public class NotificationServiceTest extends HaloRobolectricTest {
     public void thatANotificationWithTwoFactor() throws NoSuchFieldException, IllegalAccessException {
         RemoteMessage notification = givenANotification(withTwoFactor());
         ISubscription subscription = mNotificationsApi.listenTwoFactorNotifications(givenATwoFactorListener(mCallbackFlag));
+
+        mNotificationService.onMessageReceived(notification);
+
+        assertThat(subscription).isNotNull();
+        assertThat(mCallbackFlag.isFlagged()).isTrue();
+        subscription.unsubscribe();
+    }
+
+
+    @Test
+    public void thatANotificationWithImage() throws NoSuchFieldException, IllegalAccessException {
+        RemoteMessage notification = givenANotification(withImage());
+        ISubscription subscription = mNotificationsApi.listenAllNotifications(givenANotificationWithImageListener(mCallbackFlag));
 
         mNotificationService.onMessageReceived(notification);
 
