@@ -41,7 +41,7 @@ public class BatchOperationResultTest extends HaloRobolectricTest {
                 "      ]"));
         BatchOperationResult parcelInstance = TestUtils.testParcel(instance, BatchOperationResult.CREATOR);
         assertThat(instance.getRawData()).isEqualTo(parcelInstance.getRawData());
-        assertThat(instance.getDataTruncate().get(0).getItemId()).isEqualTo("58f73971af013400107b93c4");
+        assertThat(instance.getDataTruncate()).isEqualTo(1);
     }
 
     @Test

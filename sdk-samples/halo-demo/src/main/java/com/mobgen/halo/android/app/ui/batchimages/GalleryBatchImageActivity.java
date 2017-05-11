@@ -114,7 +114,7 @@ public class GalleryBatchImageActivity extends MobgenHaloActivity implements Swi
         //take photos from unsplash.it
         mGalleryImages = new ArrayList<>();
 
-        OkHttpClient client = new OkHttpClient();
+        OkHttpClient client = MobgenHaloApplication.halo().framework().network().client().ok();
         Request request = new Request.Builder()
                 .url(UNSPLASH_URL)
                 .build();

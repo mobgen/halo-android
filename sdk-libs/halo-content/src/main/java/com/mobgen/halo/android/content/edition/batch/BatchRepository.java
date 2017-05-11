@@ -8,10 +8,13 @@ import com.mobgen.halo.android.content.models.BatchErrorInfo;
 import com.mobgen.halo.android.content.models.BatchOperationResult;
 import com.mobgen.halo.android.content.models.BatchOperationResults;
 import com.mobgen.halo.android.content.models.BatchOperations;
+import com.mobgen.halo.android.content.models.BatchOperator;
 import com.mobgen.halo.android.content.models.HaloContentInstance;
 import com.mobgen.halo.android.content.models.SyncQuery;
 import com.mobgen.halo.android.framework.common.exceptions.HaloParsingException;
 import com.mobgen.halo.android.framework.common.utils.AssertionUtils;
+import com.mobgen.halo.android.framework.network.exceptions.HaloAuthenticationException;
+import com.mobgen.halo.android.framework.network.exceptions.HaloConnectionException;
 import com.mobgen.halo.android.framework.network.exceptions.HaloNetException;
 import com.mobgen.halo.android.framework.storage.exceptions.HaloStorageGeneralException;
 import com.mobgen.halo.android.framework.toolbox.bus.Event;
@@ -28,6 +31,7 @@ import static com.mobgen.halo.android.content.edition.HaloContentEditApi.BATCH_F
 import static com.mobgen.halo.android.content.models.BatchOperator.CREATEORUPDATE;
 import static com.mobgen.halo.android.content.models.BatchOperator.DELETE;
 import static com.mobgen.halo.android.content.models.BatchOperator.UPDATE;
+import static com.mobgen.halo.android.content.models.BatchOperator.TRUNCATE;
 import static com.mobgen.halo.android.sdk.api.HaloApplication.halo;
 
 /**
@@ -101,17 +105,23 @@ public class BatchRepository {
             } else {
                 throw new HaloParsingException("You must provide at least one operation to batch", new Exception());
             }
-        } catch (HaloNetException haloException) {
+        } catch (HaloAuthenticationException haloAuthencicationException) {
+            status.error(haloAuthencicationException);
+        } catch (HaloNetException haloNetException) {
             //net error so we need to store data when we have connection
-            status.error(haloException);
-            mLocalDataSource.saveErrors(batchOperations);
-            //schedule a job to execute when network works again
-            Job.Builder job = Job.builder(new BatchSchedule(halo(), this))
-                    .persist(true)
-                    .thread(Threading.SINGLE_QUEUE_POLICY)
-                    .tag(JOB_NAME)
-                    .needsNetwork(Job.NETWORK_TYPE_ANY);
-            halo().framework().toolbox().schedule(job.build());
+            if (haloNetException instanceof HaloConnectionException) {
+                status.error(haloNetException);
+                mLocalDataSource.saveErrors(batchOperations);
+                //schedule a job to execute when network works again
+                Job.Builder job = Job.builder(new BatchSchedule(halo(), this))
+                        .persist(true)
+                        .thread(Threading.SINGLE_QUEUE_POLICY)
+                        .tag(JOB_NAME)
+                        .needsNetwork(Job.NETWORK_TYPE_ANY);
+                halo().framework().toolbox().schedule(job.build());
+            } else {
+                status.error(haloNetException);
+            }
         } catch (HaloParsingException haloParsingException) {
             status.error(haloParsingException);
         }
@@ -129,7 +139,7 @@ public class BatchRepository {
         List<BatchOperationResult> batchResult = batchOperationResults.getContentResult();
         for (int i = 0; i < batchResult.size(); i++) {
             //sync every success module which contains the instance
-            if (mSyncResults) {
+            if (mSyncResults && !batchResult.get(i).getOperation().equals(TRUNCATE)) {
                 HaloContentInstance instance = batchResult.get(i).getData();
                 if (instance != null && instance.getModuleName() != null && batchResult.get(i).isSuccess()) {
                     mHaloContentApi.sync(SyncQuery.create(instance.getModuleName(), Threading.POOL_QUEUE_POLICY), true);

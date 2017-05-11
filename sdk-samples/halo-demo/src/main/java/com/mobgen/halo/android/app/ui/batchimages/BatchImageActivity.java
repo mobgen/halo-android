@@ -148,11 +148,6 @@ public class BatchImageActivity extends MobgenHaloActivity implements SwipeRefre
                 });
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
-
     private void updateGallery() {
         if (mStatus != null) {
             StatusInterceptor.intercept(mStatus, mStatusView);
