@@ -34,14 +34,12 @@ public class BatchOperationResultTest extends HaloRobolectricTest {
 
     @Test
     public void thatAParcelOperationKeepsTheSameDataWithConstructor() throws JSONException {
-        BatchOperationResult instance = new BatchOperationResult(BatchOperator.TRUNCATE, 0, true, new JSONArray("[\n" +
-                "        {\n" +
-                "          \"id\": \"58f73971af013400107b93c4\"\n" +
-                "        }\n" +
-                "      ]"));
+        BatchOperationResult instance = new BatchOperationResult(BatchOperator.TRUNCATE, 0, true, new JSONObject("{\n" +
+                "        \"deletedInstances\": 3\n" +
+                "      }"));
         BatchOperationResult parcelInstance = TestUtils.testParcel(instance, BatchOperationResult.CREATOR);
         assertThat(instance.getRawData()).isEqualTo(parcelInstance.getRawData());
-        assertThat(instance.getDataTruncate()).isEqualTo(1);
+        assertThat(instance.getDataTruncate()).isEqualTo(3);
     }
 
     @Test
