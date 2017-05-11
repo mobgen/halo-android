@@ -169,6 +169,7 @@ public class NotificationImageDecorator extends HaloNotificationDecorator {
      * @param url The url to fetch.
      * @return The bitmap.
      */
+    @Nullable
     private Bitmap getBitmapFromURL(String url) {
         try {
             URL urlconnection = new URL(url);
@@ -179,7 +180,6 @@ public class NotificationImageDecorator extends HaloNotificationDecorator {
             Bitmap myBitmap = BitmapFactory.decodeStream(input);
             return myBitmap;
         } catch (IOException e) {
-            e.printStackTrace();
             return null;
         }
     }

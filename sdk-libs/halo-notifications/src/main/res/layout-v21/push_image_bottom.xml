@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_margin="5dp"
-        android:layout_weight="0.2"
+        android:layout_weight="0.3"
         android:orientation="vertical">
 
         <TextView
@@ -22,14 +22,15 @@
         <TextView
             android:id="@+id/tv_text"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ellipsize="end" />
+            android:layout_height="match_parent"
+            android:ellipsize="end"
+            android:maxLines="2" />
     </LinearLayout>
 
     <ImageView
         android:id="@+id/im_notification_bottom"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.8"
+        android:layout_weight="0.70"
         android:scaleType="centerCrop" />
 </LinearLayout>

@@ -1,6 +1,5 @@
 package com.mobgen.halo.android.notifications.decorator;
 
-import android.app.Notification;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -8,7 +7,6 @@ import android.support.v4.app.NotificationCompat;
 import android.widget.RemoteViews;
 
 import com.mobgen.halo.android.framework.common.exceptions.HaloParsingException;
-import com.mobgen.halo.android.notifications.models.PushImage;
 import com.mobgen.halo.android.sdk.api.Halo;
 import com.mobgen.halo.android.testing.BundleTestUtils;
 

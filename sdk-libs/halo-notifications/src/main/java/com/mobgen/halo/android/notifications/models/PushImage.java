@@ -11,6 +11,7 @@ import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.mobgen.halo.android.framework.common.annotations.Api;
 import com.mobgen.halo.android.framework.common.exceptions.HaloParsingException;
+import com.mobgen.halo.android.framework.common.helpers.logger.Halog;
 import com.mobgen.halo.android.framework.network.client.response.Parser;
 
 import java.io.ByteArrayInputStream;
@@ -76,10 +77,12 @@ public class PushImage implements Parcelable {
      * The layout type to apply
      */
     @JsonField(name = "layout")
-    @Layout
     private String mLayout;
 
-    public PushImage() {
+    /**
+     * Default constructor
+     */
+    protected PushImage() {
 
     }
 
@@ -164,8 +167,9 @@ public class PushImage implements Parcelable {
      * @throws HaloParsingException Error parsing the item.
      */
     @Nullable
+    @Keep
     public static PushImage deserialize(@Nullable String pushImage, @NonNull Parser.Factory parser) throws HaloParsingException {
-        if (pushImage != null) {
+        if (pushImage != null && parser != null) {
             try {
                 return ((Parser<InputStream, PushImage>) parser.deserialize(PushImage.class)).convert(new ByteArrayInputStream(pushImage.getBytes()));
             } catch (IOException e) {
