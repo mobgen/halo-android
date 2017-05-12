@@ -48,57 +48,8 @@ public class BatchImageAdapter extends RecyclerView.Adapter<BatchImageAdapter.Ga
 
     @Override
     public GalleryViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        final GalleryViewHolder viewHolder = new GalleryViewHolder(LayoutInflater.from(mContext).inflate(R.layout.adapter_batch_gallery, parent, false));
-        int index = 0;
-        for (final ImageView view : viewHolder.mImageViews) {
-            final int finalIndex = index;
-            view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int adapterPosition = viewHolder.getAdapterPosition();
-                    List<BatchImage> images = mImageChunks.get(adapterPosition);
-                    if (finalIndex < images.size()) {
-                        if (images.get(finalIndex).isSelected()) {
-                            view.setBackgroundColor(Color.TRANSPARENT);
-                            images.get(finalIndex).setSelected(false);
-                        } else {
-                            view.setBackgroundColor(ContextCompat.getColor(mContext, R.color.orange_mobgen));
-                            images.get(finalIndex).setSelected(true);
-                        }
-                    }
-                }
-            });
-            index++;
-        }
-
-        index = 0;
-        for (final EditText view : viewHolder.mEditTextViews) {
-            final int finalIndex = index;
-            view.clearFocus();
-            if (mListener != null) {
-                view.addTextChangedListener(new TextWatcher() {
-                    @Override
-                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                    }
-
-                    @Override
-                    public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    }
-
-                    @Override
-                    public void afterTextChanged(Editable s) {
-                        int adapterPosition = viewHolder.getAdapterPosition();
-                        int arrayindex = (CHUNK_SIZE * adapterPosition) + finalIndex;
-                        List<BatchImage> batchImages = mImageChunks.get(adapterPosition);
-                        batchImages.get(finalIndex).author(s.toString());
-                        mListener.onTextChange(batchImages.get(finalIndex), arrayindex);
-                    }
-                });
-            } else {
-                view.setVisibility(View.GONE);
-            }
-            index++;
-        }
+        final GalleryViewHolder viewHolder = new GalleryViewHolder(LayoutInflater.from(mContext).inflate(R.layout.adapter_batch_gallery, parent, false),
+                mContext, mListener);
         return viewHolder;
     }
 
@@ -120,12 +71,12 @@ public class BatchImageAdapter extends RecyclerView.Adapter<BatchImageAdapter.Ga
         return 0;
     }
 
-    public static class GalleryViewHolder extends RecyclerView.ViewHolder {
+    public class GalleryViewHolder extends RecyclerView.ViewHolder {
 
         private ImageView[] mImageViews;
         private EditText[] mEditTextViews;
 
-        public GalleryViewHolder(View itemView) {
+        public GalleryViewHolder(View itemView, final Context context, final TextChangeListener listener) {
             super(itemView);
             mImageViews = new ImageView[]{
                     (ImageView) itemView.findViewById(R.id.iv_gallery_1),
@@ -135,6 +86,55 @@ public class BatchImageAdapter extends RecyclerView.Adapter<BatchImageAdapter.Ga
                     (EditText) itemView.findViewById(R.id.et_gallery_1),
                     (EditText) itemView.findViewById(R.id.et_gallery_2)
             };
+
+            int index = 0;
+            for (final ImageView view : mImageViews) {
+                final int finalIndex = index;
+                view.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        int adapterPosition = getAdapterPosition();
+                        if (finalIndex < mImageChunks.get(adapterPosition).size()) {
+                            if (mImageChunks.get(adapterPosition).get(finalIndex).isSelected()) {
+                                view.setBackgroundColor(Color.TRANSPARENT);
+                                mImageChunks.get(adapterPosition).get(finalIndex).setSelected(false);
+                            } else {
+                                view.setBackgroundColor(ContextCompat.getColor(context, R.color.orange_mobgen));
+                                mImageChunks.get(adapterPosition).get(finalIndex).setSelected(true);
+                            }
+                        }
+                    }
+                });
+                index++;
+            }
+
+            index = 0;
+            for (final EditText view : mEditTextViews) {
+                final int finalIndex = index;
+                view.clearFocus();
+                if (listener != null) {
+                    view.addTextChangedListener(new TextWatcher() {
+                        @Override
+                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                        }
+
+                        @Override
+                        public void onTextChanged(CharSequence s, int start, int before, int count) {
+                        }
+
+                        @Override
+                        public void afterTextChanged(Editable s) {
+                            int adapterPosition = getAdapterPosition();
+                            int arrayindex = (CHUNK_SIZE * adapterPosition) + finalIndex;
+                            mImageChunks.get(adapterPosition).get(finalIndex).author(s.toString());
+                            listener.onTextChange(mImageChunks.get(adapterPosition).get(finalIndex), arrayindex);
+                        }
+                    });
+                } else {
+                    view.setVisibility(View.GONE);
+                }
+                index++;
+            }
         }
 
         public void bind(@NonNull List<BatchImage> galleryImages, @NonNull final Context context) {
