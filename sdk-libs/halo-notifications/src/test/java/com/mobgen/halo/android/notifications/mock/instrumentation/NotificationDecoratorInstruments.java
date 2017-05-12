@@ -18,6 +18,15 @@ public class NotificationDecoratorInstruments {
         };
     }
 
+    public static HaloNotificationDecorator givenADefaultNotificationDecorator() {
+        return new HaloNotificationDecorator() {
+            @Override
+            public NotificationCompat.Builder decorate(@NonNull NotificationCompat.Builder builder, @NonNull Bundle bundle) {
+                return builder;
+            }
+        };
+    }
+
     public static HaloNotificationDecorator givenADefaultNotificationDecorator(@NonNull final CallbackFlag flag) {
         return new HaloNotificationDecorator() {
             @Override

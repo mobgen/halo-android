@@ -7,6 +7,7 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.RemoteMessage;
 import com.mobgen.halo.android.framework.common.helpers.subscription.ISubscription;
 import com.mobgen.halo.android.notifications.HaloNotificationsApi;
+import com.mobgen.halo.android.notifications.decorator.HaloNotificationDecorator;
 import com.mobgen.halo.android.notifications.services.NotificationIdGenerator;
 import com.mobgen.halo.android.notifications.services.InstanceIDService;
 import com.mobgen.halo.android.notifications.services.NotificationEmitter;
@@ -212,6 +213,13 @@ public class NotificationServiceTest extends HaloRobolectricTest {
         assertThat(mCallbackFlag.isFlagged()).isTrue();
         assertThat(mCallbackFlag.timesExecuted()).isEqualTo(1);
         subscription.unsubscribe();
+    }
+
+    @Test
+    public void thatCanReachTheCustomNotificationDecorator() throws NoSuchFieldException, IllegalAccessException {
+        HaloNotificationDecorator myDecorator = givenADefaultNotificationDecorator();
+        mNotificationsApi.setNotificationDecorator(myDecorator);
+        assertThat(mNotificationService.getNotificationDecorator()).isNotNull();
     }
 
     @Test
