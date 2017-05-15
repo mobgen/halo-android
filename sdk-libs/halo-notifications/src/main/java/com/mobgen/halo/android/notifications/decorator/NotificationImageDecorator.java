@@ -30,6 +30,12 @@ import java.net.URL;
 public class NotificationImageDecorator extends HaloNotificationDecorator {
 
     /**
+     * The maximun size of the image to show on the notification aprox. 1M
+     * Fit well to a 1280x720 resolution. The maximun resolution supported is 2048x1024.
+     */
+    private static final int IMAGE_MAX_SIZE = 1000000;
+
+    /**
      * The image notification ket
      */
     private static final String IMAGE_KEY = "image";
@@ -61,43 +67,44 @@ public class NotificationImageDecorator extends HaloNotificationDecorator {
         if (bundle.get(IMAGE_KEY) != null) {
             try {
                 PushImage pushImage = PushImage.deserialize(bundle.get(IMAGE_KEY).toString(), Halo.instance().framework().parser());
-                Bitmap bitmap = null;
-                bitmap = getBitmapFromURL(pushImage.getUrl());
-                String title = bundle.getString("title");
-                String message = bundle.getString("body");
-                RemoteViews remoteView, remoteViewExpanded;
-                switch (pushImage.getLayout()) {
-                    case PushImage.DEFAULT:
-                        builder.setLargeIcon(bitmap);
-                        break;
-                    case PushImage.EXPANDED:
-                        builder.setStyle(new NotificationCompat.BigPictureStyle().bigPicture(bitmap));
-                        break;
-                    case PushImage.LEFT:
-                        remoteView = getRemoteView(pushImage.getLayout(), bitmap, title, message);
-                        builder.setCustomContentView(remoteView);
-                        break;
-                    case PushImage.RIGHT:
-                        remoteView = getRemoteView(pushImage.getLayout(), bitmap, title, message);
-                        builder.setCustomContentView(remoteView);
-                        break;
-                    case PushImage.TOP:
-                        remoteView = getRemoteView(PushImage.LEFT, bitmap, title, message);
-                        builder.setCustomContentView(remoteView);
-                        remoteViewExpanded = getRemoteView(pushImage.getLayout(), bitmap, title, message);
-                        builder.setCustomBigContentView(remoteViewExpanded);
-                        break;
-                    case PushImage.BOTTOM:
-                        remoteView = getRemoteView(PushImage.RIGHT, bitmap, title, message);
-                        builder.setCustomContentView(remoteView);
-                        remoteViewExpanded = getRemoteView(pushImage.getLayout(), bitmap, title, message);
-                        builder.setCustomBigContentView(remoteViewExpanded);
-                        break;
-                    case PushImage.BACKGROUND:
-                        remoteView = getRemoteView(pushImage.getLayout(), bitmap, title, message);
-                        builder.setCustomContentView(remoteView);
-                        builder.setCustomBigContentView(remoteView);
-                        break;
+                Bitmap bitmap = getScaledBitmapFromURL(pushImage.getUrl());
+                if (bitmap != null) {
+                    String title = bundle.getString("title");
+                    String message = bundle.getString("body");
+                    RemoteViews remoteView, remoteViewExpanded;
+                    switch (pushImage.getLayout()) {
+                        case PushImage.DEFAULT:
+                            builder.setLargeIcon(bitmap);
+                            break;
+                        case PushImage.EXPANDED:
+                            builder.setStyle(new NotificationCompat.BigPictureStyle().bigPicture(bitmap));
+                            break;
+                        case PushImage.LEFT:
+                            remoteView = getRemoteView(pushImage.getLayout(), bitmap, title, message);
+                            builder.setCustomContentView(remoteView);
+                            break;
+                        case PushImage.RIGHT:
+                            remoteView = getRemoteView(pushImage.getLayout(), bitmap, title, message);
+                            builder.setCustomContentView(remoteView);
+                            break;
+                        case PushImage.TOP:
+                            remoteView = getRemoteView(PushImage.LEFT, bitmap, title, message);
+                            builder.setCustomContentView(remoteView);
+                            remoteViewExpanded = getRemoteView(pushImage.getLayout(), bitmap, title, message);
+                            builder.setCustomBigContentView(remoteViewExpanded);
+                            break;
+                        case PushImage.BOTTOM:
+                            remoteView = getRemoteView(PushImage.RIGHT, bitmap, title, message);
+                            builder.setCustomContentView(remoteView);
+                            remoteViewExpanded = getRemoteView(pushImage.getLayout(), bitmap, title, message);
+                            builder.setCustomBigContentView(remoteViewExpanded);
+                            break;
+                        case PushImage.BACKGROUND:
+                            remoteView = getRemoteView(pushImage.getLayout(), bitmap, title, message);
+                            builder.setCustomContentView(remoteView);
+                            builder.setCustomBigContentView(remoteView);
+                            break;
+                    }
                 }
 
             } catch (HaloParsingException e) {
@@ -164,20 +171,49 @@ public class NotificationImageDecorator extends HaloNotificationDecorator {
     }
 
     /**
-     * Get image from url and convert this to bitmap.
+     * Get image from url and convert this to bitmap. Downscale the bitmap if its bigger than maximun size.
      *
      * @param url The url to fetch.
      * @return The bitmap.
      */
     @Nullable
-    private Bitmap getBitmapFromURL(String url) {
+    private Bitmap getScaledBitmapFromURL(String url) {
         try {
+            int inWidth = 0;
+            int inHeight = 0;
+
             URL urlconnection = new URL(url);
             HttpURLConnection connection = (HttpURLConnection) urlconnection.openConnection();
             connection.setDoInput(true);
             connection.connect();
             InputStream input = connection.getInputStream();
-            Bitmap myBitmap = BitmapFactory.decodeStream(input);
+
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+            //get the metadata of the image
+            BitmapFactory.decodeStream(input, null, options);
+            inWidth = options.outWidth;
+            inHeight = options.outHeight;
+            input.close();
+            int scale = 1;
+            if (inWidth != 0 && inHeight != 0) {
+                while ((inWidth * inHeight) * (1 / Math.pow(scale, 2)) >
+                        IMAGE_MAX_SIZE) {
+                    scale++;
+                }
+            } else {
+                //we cannot downsacle the bitmap
+                return null;
+            }
+            //download the image and downscale
+            options.inSampleSize = scale;
+            options.inJustDecodeBounds = false;
+            connection = (HttpURLConnection) urlconnection.openConnection();
+            connection.setDoInput(true);
+            connection.connect();
+            input = connection.getInputStream();
+            Bitmap myBitmap = BitmapFactory.decodeStream(input, null, options);
+            input.close();
             return myBitmap;
         } catch (IOException e) {
             return null;
