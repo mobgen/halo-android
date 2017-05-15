@@ -14,6 +14,7 @@ import org.junit.rules.ExpectedException;
 import java.io.IOException;
 
 import static com.mobgen.halo.android.notifications.mock.instrumentation.HaloMock.givenADefaultHalo;
+import static com.mobgen.halo.android.notifications.mock.instrumentation.NotificationImageDecoratorInstruments.givenAImageNotification;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
 public class PushImageTest extends HaloRobolectricTest {
@@ -43,11 +44,8 @@ public class PushImageTest extends HaloRobolectricTest {
     }
 
     @Test
-    public void thatCanDeserializeFromJSON() throws JSONException, HaloParsingException {
-        String pushImageJSON = "{\n" +
-                "                  \"url\": \"http://myimage.jpg\",\n" +
-                "                  \"layout\":\"expanded\"\n" +
-                "          }";
+    public void thatCanDeserializeFromJSON() throws JSONException, HaloParsingException, IOException {
+        String pushImageJSON = givenAImageNotification(mHalo.context(),"test");
         PushImage instance = PushImage.deserialize(pushImageJSON,mHalo.framework().parser());
         assertThat(instance.getUrl()).isEqualTo("http://myimage.jpg");
         assertThat(instance.getLayout()).isEqualTo("expanded");
