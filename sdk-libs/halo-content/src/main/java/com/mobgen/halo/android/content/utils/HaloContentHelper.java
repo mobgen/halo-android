@@ -110,7 +110,6 @@ public final class HaloContentHelper {
      *
      * @param cursor The raw used.
      * @param clazz The class to convert the content.
-     * @param <T>
      * @return The instance of the object of clazz type; otherwise null
      */
     @Nullable

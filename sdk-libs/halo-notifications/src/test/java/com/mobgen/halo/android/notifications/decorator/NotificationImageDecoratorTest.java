@@ -42,7 +42,7 @@ public class NotificationImageDecoratorTest extends BaseNotificationDecoratorTes
     public void thatCanHandleAImageOnTheNotificationWithDefaultType() throws IOException {
         final boolean[] marker = new boolean[1];
         final String text = "This is my Text And Body";
-        final String image = givenAImageNotification(mHalo.context(),"default");
+        final String image = givenAImageNotification(mHalo.context(), "default");
         Bundle bundle = BundleTestUtils.builder().putString("body", text).putString("title", text).build();
         when(bundle.get("image")).thenReturn(image);
         when(bundle.get("image").toString()).thenReturn(image);
@@ -61,7 +61,7 @@ public class NotificationImageDecoratorTest extends BaseNotificationDecoratorTes
     public void thatCanHandleAImageOnTheNotificationWithExpandedType() throws IOException {
         final boolean[] marker = new boolean[1];
         final String text = "This is my Text And Body";
-        final String image = givenAImageNotification(mHalo.context(),"expanded");
+        final String image = givenAImageNotification(mHalo.context(), "expanded");
         Bundle bundle = BundleTestUtils.builder().putString("body", text).putString("title", text).build();
         when(bundle.get("image")).thenReturn(image);
         when(bundle.get("image").toString()).thenReturn(image);
@@ -80,7 +80,7 @@ public class NotificationImageDecoratorTest extends BaseNotificationDecoratorTes
     public void thatCanHandleAImageOnTheNotificationWithBackgroundType() throws IOException {
         final boolean[] marker = new boolean[1];
         final String text = "This is my Text And Body";
-        final String image = givenAImageNotification(mHalo.context(),"background");
+        final String image = givenAImageNotification(mHalo.context(), "background");
         Bundle bundle = BundleTestUtils.builder().putString("body", text).putString("title", text).build();
         when(bundle.get("image")).thenReturn(image);
         when(bundle.get("image").toString()).thenReturn(image);
@@ -99,7 +99,7 @@ public class NotificationImageDecoratorTest extends BaseNotificationDecoratorTes
     public void thatCanHandleAImageOnTheNotificationWithLeftType() throws IOException {
         final boolean[] marker = new boolean[1];
         final String text = "This is my Text And Body";
-        final String image = givenAImageNotification(mHalo.context(),"left");
+        final String image = givenAImageNotification(mHalo.context(), "left");
         Bundle bundle = BundleTestUtils.builder().putString("body", text).putString("title", text).build();
         when(bundle.get("image")).thenReturn(image);
         when(bundle.get("image").toString()).thenReturn(image);
@@ -118,7 +118,7 @@ public class NotificationImageDecoratorTest extends BaseNotificationDecoratorTes
     public void thatCanHandleAImageOnTheNotificationWithRightType() throws IOException {
         final boolean[] marker = new boolean[1];
         final String text = "This is my Text And Body";
-        final String image = givenAImageNotification(mHalo.context(),"right");
+        final String image = givenAImageNotification(mHalo.context(), "right");
         Bundle bundle = BundleTestUtils.builder().putString("body", text).putString("title", text).build();
         when(bundle.get("image")).thenReturn(image);
         when(bundle.get("image").toString()).thenReturn(image);
@@ -137,7 +137,7 @@ public class NotificationImageDecoratorTest extends BaseNotificationDecoratorTes
     public void thatCanHandleAImageOnTheNotificationWithTopType() throws IOException {
         final boolean[] marker = new boolean[1];
         final String text = "This is my Text And Body";
-        final String image = givenAImageNotification(mHalo.context(),"top");
+        final String image = givenAImageNotification(mHalo.context(), "top");
         Bundle bundle = BundleTestUtils.builder().putString("body", text).putString("title", text).build();
         when(bundle.get("image")).thenReturn(image);
         when(bundle.get("image").toString()).thenReturn(image);
@@ -156,7 +156,7 @@ public class NotificationImageDecoratorTest extends BaseNotificationDecoratorTes
     public void thatCanHandleAImageOnTheNotificationWithBottomType() throws IOException {
         final boolean[] marker = new boolean[1];
         final String text = "This is my Text And Body";
-        final String image = givenAImageNotification(mHalo.context(),"bottom");
+        final String image = givenAImageNotification(mHalo.context(), "bottom");
         Bundle bundle = BundleTestUtils.builder().putString("body", text).putString("title", text).build();
         when(bundle.get("image")).thenReturn(image);
         when(bundle.get("image").toString()).thenReturn(image);
@@ -188,6 +188,8 @@ public class NotificationImageDecoratorTest extends BaseNotificationDecoratorTes
 
     @Override
     public NotificationImageDecorator createDecorator() {
-        return new NotificationImageDecorator(mock(Context.class),null);
+        NotificationImageDecorator decorator = new NotificationImageDecorator(mock(Context.class), null);
+        //decorator.disableLibraries();
+        return decorator;
     }
 }
