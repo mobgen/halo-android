@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Looper;
+import android.support.annotation.Keep;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
@@ -32,6 +33,7 @@ import java.util.concurrent.ExecutionException;
  * @hide Decorator that adds the possibility to process the click_action element from the notification
  * to open an activity when the notification is clicked.
  */
+@Keep
 public class NotificationImageDecorator extends HaloNotificationDecorator {
 
     /**
