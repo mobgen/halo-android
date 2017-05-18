@@ -189,7 +189,6 @@ public class NotificationImageDecoratorTest extends BaseNotificationDecoratorTes
     @Override
     public NotificationImageDecorator createDecorator() {
         NotificationImageDecorator decorator = new NotificationImageDecorator(mock(Context.class), null);
-        //decorator.disableLibraries();
         return decorator;
     }
 }
