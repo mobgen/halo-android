@@ -60,6 +60,7 @@ public class BatchImageActivity extends MobgenHaloActivity implements SwipeRefre
     String mModuleName;
     @State
     String mModuleId;
+    private boolean deleteVisible = false;
     private View mStatusView;
     private SwipeRefreshLayout mSwipeToRefresh;
     private RecyclerView mRecyclerView;
@@ -186,6 +187,12 @@ public class BatchImageActivity extends MobgenHaloActivity implements SwipeRefre
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_batch, menu);
+        MenuItem deleteItem = menu.findItem(R.id.action_delete_batch);
+        if (deleteVisible) {
+            deleteItem.setVisible(true);
+        } else {
+            deleteItem.setVisible(false);
+        }
         return true;
     }
 
@@ -298,5 +305,25 @@ public class BatchImageActivity extends MobgenHaloActivity implements SwipeRefre
     @Override
     public void onTextChange(BatchImage batchImage, int position) {
         Log.v("new name", batchImage.author());
+    }
+
+    @Override
+    public void onItemSelected(boolean isSelected) {
+        if (isSelected) {
+            deleteVisible = true;
+            invalidateOptionsMenu();
+        } else {
+            boolean visible = false;
+            for (int i = 0; i < mGalleryImages.size(); i++) {
+                if (mGalleryImages.get(i).isSelected()) {
+                    visible = true;
+                    return;
+                }
+            }
+            if (!visible) {
+                deleteVisible = false;
+                invalidateOptionsMenu();
+            }
+        }
     }
 }

@@ -102,6 +102,9 @@ public class BatchImageAdapter extends RecyclerView.Adapter<BatchImageAdapter.Ga
                                 view.setBackgroundColor(ContextCompat.getColor(context, R.color.orange_mobgen));
                                 mImageChunks.get(adapterPosition).get(finalIndex).setSelected(true);
                             }
+                            if (listener != null) {
+                                listener.onItemSelected(mImageChunks.get(adapterPosition).get(finalIndex).isSelected());
+                            }
                         }
                     }
                 });
@@ -162,5 +165,6 @@ public class BatchImageAdapter extends RecyclerView.Adapter<BatchImageAdapter.Ga
 
     public interface TextChangeListener {
         void onTextChange(BatchImage batchImage, int position);
+        void onItemSelected(boolean position);
     }
 }
