@@ -87,18 +87,18 @@ public class BatchOperations implements Parcelable {
     /**
      * Serializes a instance.
      *
-     * @param haloContentInstance The object to serialize.
+     * @param batchOperations The object to serialize.
      * @param parser              The parser.
      * @return The instace seriliazed.
      * @throws HaloParsingException
      */
-    public static String serialize(@NonNull BatchOperations haloContentInstance, @NonNull Parser.Factory parser) throws HaloParsingException {
-        AssertionUtils.notNull(haloContentInstance, "haloContentInstance");
+    public static String serialize(@NonNull BatchOperations batchOperations, @NonNull Parser.Factory parser) throws HaloParsingException {
+        AssertionUtils.notNull(batchOperations, "batchOperations");
         AssertionUtils.notNull(parser, "parser");
         try {
-            return ((Parser<BatchOperations, String>) parser.serialize(BatchOperations.class)).convert(haloContentInstance);
+            return ((Parser<BatchOperations, String>) parser.serialize(BatchOperations.class)).convert(batchOperations);
         } catch (IOException e) {
-            throw new HaloParsingException("Error while serializing the HaloContentInstance", e);
+            throw new HaloParsingException("Error while serializing the batchOperations", e);
         }
     }
 
@@ -115,7 +115,7 @@ public class BatchOperations implements Parcelable {
      *
      * @return A list with all truncate operations
      */
-    @NonNull
+    @Nullable
     @Api(2.3)
     public List<HaloContentInstance> getTruncate() {
         return mTruncate;
@@ -126,7 +126,7 @@ public class BatchOperations implements Parcelable {
      *
      * @return A list with all create operations.
      */
-    @NonNull
+    @Nullable
     @Api(2.3)
     public List<HaloContentInstance> getCreated() {
         return mCreated;
@@ -137,7 +137,7 @@ public class BatchOperations implements Parcelable {
      *
      * @return A list with all the update operations.
      */
-    @NonNull
+    @Nullable
     @Api(2.3)
     public List<HaloContentInstance> getUpdated() {
         return mUpdated;
@@ -148,7 +148,7 @@ public class BatchOperations implements Parcelable {
      *
      * @return A list with all createorupdate operations.
      */
-    @NonNull
+    @Nullable
     @Api(2.3)
     public List<HaloContentInstance> getCreatedOrUpdated() {
         return mCreatedOrUpdated;
@@ -159,7 +159,7 @@ public class BatchOperations implements Parcelable {
      *
      * @return A list with all delete operations.
      */
-    @NonNull
+    @Nullable
     @Api(2.3)
     public List<HaloContentInstance> getDeleted() {
         return mDeleted;

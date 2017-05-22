@@ -59,7 +59,7 @@ public class BatchOperationResult implements Parcelable {
                 try {
                     List<HaloContentInstance> haloContentInstances = (List<HaloContentInstance>) mapResult;
                     return haloContentInstances != null ? new JSONArray(haloContentInstances) : null;
-                } catch (Exception jsonArryaException){
+                } catch (Exception jsonArryaException) {
                     return null;
                 }
             }
@@ -84,7 +84,7 @@ public class BatchOperationResult implements Parcelable {
 
     }
 
-    public BatchOperationResult(String operation, int position, boolean success, Object data){
+    public BatchOperationResult(String operation, int position, boolean success, Object data) {
         mPosition = position;
         mOperation = operation;
         mSuccess = success;
@@ -157,14 +157,14 @@ public class BatchOperationResult implements Parcelable {
     /**
      * Get the data of the operation. parsed
      *
-     * @return The data parsed as HaloContentInstance or BatchError
+     * @return The data parsed as HaloContentInstance
      */
     @Api(2.3)
     @Nullable
     public HaloContentInstance getData() {
         try {
-            if (mSuccess && mOperation != BatchOperator.TRUNCATE) {
-                return HaloContentInstance.deserialize(mData.toString(), Halo.instance().framework().parser());
+            if (mSuccess && !mOperation.equals(BatchOperator.TRUNCATE)) {
+                return HaloContentInstance.deserialize(getRawData(), Halo.instance().framework().parser());
             }
         } catch (HaloParsingException parsingExcetion) {
             return null;
@@ -173,35 +173,34 @@ public class BatchOperationResult implements Parcelable {
     }
 
     /**
-     * Get the data of the operation truncate
+     * Get the data result of the operation truncate
      *
-     * @return The data parsed as List<HaloContentInstance>
+     * @return The number of instaces deleted BatchDeletedInstace. Otherwise -1
      */
     @Api(2.3)
-    @Nullable
-    public List<HaloContentInstance> getDataTruncate() {
+    public int getDataTruncate() {
         try {
-            if (mSuccess && mOperation == BatchOperator.TRUNCATE) {
-                JsonMapper<HaloContentInstance> mapper =  LoganSquare.mapperFor(HaloContentInstance.class);
-                return mapper.parseList(mData.toString());
+            if (mSuccess && mOperation.equals(BatchOperator.TRUNCATE)) {
+                BatchDeletedInstance deletedInstance = BatchDeletedInstance.deserialize(getRawData(), Halo.instance().framework().parser());
+                return deletedInstance.getDeletedInstaces();
             }
-        } catch (IOException e) {
-            return null;
+        } catch (HaloParsingException e) {
+            return -1;
         }
-        return null;
+        return -1;
 
     }
 
     /**
-     * Get the data of the operation. parsed
+     * Get the data of the operation parsed
      *
-     * @return The data parsed as HaloContentInstance or BatchError
+     * @return The data parsed as BatchError
      */
     @Api(2.3)
     @Nullable
     public BatchError getDataError() {
         try {
-            if (!mSuccess && mOperation != BatchOperator.TRUNCATE) {
+            if (!mSuccess) {
                 return BatchError.deserialize(mData.toString(), Halo.instance().framework().parser());
             }
         } catch (HaloParsingException parsingExcetion) {

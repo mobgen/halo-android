@@ -148,7 +148,7 @@ public class GalleryActivity extends MobgenHaloActivity implements SwipeRefreshL
     public void onRefresh() {
         //if (mLoadingAction == null) {
             loadGallery();
-       //ß }
+       // }
     }
 
     public void onImageSelected(String originalUrl, String thumb) {

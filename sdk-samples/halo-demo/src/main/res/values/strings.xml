@@ -75,6 +75,11 @@
     <!-- Gallery -->
     <string name="gallery_title">Gallery</string>
 
+    <!-- Batch gallery -->
+    <string name="batch_gallery_title">Batch Gallery</string>
+    <string name="batch_gallery_select_title">Select more images</string>
+    <string name="batch_gallery_author">Author</string>
+
     <!-- Translations -->
     <string name="translations_title">Translations</string>
     <string name="spanish_es">Spanish</string>

@@ -59,14 +59,16 @@ public class HaloContentInstance implements Parcelable {
             try {
                 return new JSONObject(LoganSquare.serialize(map));
             } catch (JSONException e) {
-               return null;
+                return null;
             }
         }
 
         @Override
         public void serialize(JSONObject object, String fieldName, boolean writeFieldNameForObject, JsonGenerator jsonGenerator) throws IOException {
-            jsonGenerator.writeFieldName(fieldName);
-            jsonGenerator.writeRaw(":"+object.toString());
+            if (object != null) {
+                jsonGenerator.writeFieldName(fieldName);
+                jsonGenerator.writeRaw(":" + object.toString());
+            }
         }
     }
 
@@ -201,7 +203,7 @@ public class HaloContentInstance implements Parcelable {
         this.mName = in.readString();
         try {
             String values = in.readString();
-            this.mValues = values != null ? new JSONObject(values): null;
+            this.mValues = values != null ? new JSONObject(values) : null;
         } catch (JSONException e) {
             Halog.e(getClass(), "The values of the general content item " + mItemId + "could not be parsed on the parceling op.");
         }
@@ -375,7 +377,7 @@ public class HaloContentInstance implements Parcelable {
 
     @Override
     public String toString() {
-        String tags =  mTags != null ? mTags.toString() : null;
+        String tags = mTags != null ? mTags.toString() : null;
         return "ContentInstance{" +
                 "mItemId='" + mItemId + '\'' +
                 ", mModuleName='" + mModuleName + '\'' +
@@ -397,7 +399,7 @@ public class HaloContentInstance implements Parcelable {
      * Provides the serializer given the factory.
      *
      * @param haloContentInstance The object to serialize.
-     * @param parser   The parser factory.
+     * @param parser              The parser factory.
      * @return The parser obtained.
      */
     public static String serialize(@NonNull HaloContentInstance haloContentInstance, @NonNull Parser.Factory parser) throws HaloParsingException {
@@ -413,8 +415,8 @@ public class HaloContentInstance implements Parcelable {
     /**
      * Parses a Halo content instance.
      *
-     * @param haloContentInstance   The haloContentInstance as string.
-     * @param parser The parser.
+     * @param haloContentInstance The haloContentInstance as string.
+     * @param parser              The parser.
      * @return The haloContentInstance parsed or an empty haloContentInstance if the string passed is null.
      * @throws HaloParsingException Error parsing the item.
      */
@@ -514,11 +516,11 @@ public class HaloContentInstance implements Parcelable {
          * The module name
          */
         private String mModuleName;
+
         /**
-         * Creates the builder
-         *
+         * Creates the builder. You can set a nullable module name.
          */
-        public Builder(@NonNull String moduleName) {
+        public Builder(@Nullable String moduleName) {
             mModuleName = moduleName;
         }
 
@@ -529,7 +531,7 @@ public class HaloContentInstance implements Parcelable {
          * @return The builder
          */
         @NonNull
-        public HaloContentInstance.Builder withId(@NonNull String id){
+        public HaloContentInstance.Builder withId(@NonNull String id) {
             AssertionUtils.notNull(id, "id");
             mItemId = id;
             return this;
@@ -541,7 +543,7 @@ public class HaloContentInstance implements Parcelable {
          * @param moduleId
          * @return
          */
-        public HaloContentInstance.Builder withModuleId(@NonNull String moduleId){
+        public HaloContentInstance.Builder withModuleId(@NonNull String moduleId) {
             AssertionUtils.notNull(moduleId, "moduleId");
             mModuleId = moduleId;
             return this;
@@ -554,7 +556,7 @@ public class HaloContentInstance implements Parcelable {
          * @return The builder
          */
         @NonNull
-        public HaloContentInstance.Builder withAuthor(@NonNull String author){
+        public HaloContentInstance.Builder withAuthor(@NonNull String author) {
             AssertionUtils.notNull(author, "author");
             mAuthor = author;
             return this;
@@ -566,7 +568,7 @@ public class HaloContentInstance implements Parcelable {
          * @param name
          * @return
          */
-        public HaloContentInstance.Builder withName(@NonNull String name){
+        public HaloContentInstance.Builder withName(@NonNull String name) {
             AssertionUtils.notNull(name, "name");
             mName = name;
             return this;
@@ -578,7 +580,7 @@ public class HaloContentInstance implements Parcelable {
          * @param tags
          * @return
          */
-        public HaloContentInstance.Builder withTags(@NonNull List<HaloSegmentationTag> tags){
+        public HaloContentInstance.Builder withTags(@NonNull List<HaloSegmentationTag> tags) {
             AssertionUtils.notNull(tags, "tags");
             mTags = tags;
             return this;
@@ -586,13 +588,14 @@ public class HaloContentInstance implements Parcelable {
 
         /**
          * Set the content values.
+         *
          * @param values
          * @return
          */
         public HaloContentInstance.Builder withContentData(@NonNull Object values) {
             AssertionUtils.notNull(values, "values");
-            Map<String,Object> mapped = mapValues(values);
-            if(mapped!=null) {
+            Map<String, Object> mapped = mapValues(values);
+            if (mapped != null) {
                 JSONObject data = new JSONObject(mapped);
                 mValues = data;
             }
@@ -601,11 +604,12 @@ public class HaloContentInstance implements Parcelable {
 
         /**
          * Map values from model object.
+         *
          * @param object
          * @return The mapped values or null
          */
         @Nullable
-        private Map<String,Object> mapValues(Object object){
+        private Map<String, Object> mapValues(Object object) {
             try {
                 ObjectMapper mapper = new ObjectMapper();
                 Map<String, Object> map = mapper.parseMap(mapper.serialize(object));
@@ -617,10 +621,11 @@ public class HaloContentInstance implements Parcelable {
 
         /**
          * Set the creation date.
+         *
          * @param creationDate
          * @return
          */
-        public HaloContentInstance.Builder withCreationDate(@NonNull Date creationDate){
+        public HaloContentInstance.Builder withCreationDate(@NonNull Date creationDate) {
             AssertionUtils.notNull(creationDate, "creationDate");
             mCreatedDate = creationDate;
             return this;
@@ -628,10 +633,11 @@ public class HaloContentInstance implements Parcelable {
 
         /**
          * Set the last update date.
+         *
          * @param lastUpdateDate
          * @return
          */
-        public HaloContentInstance.Builder withLastUpdateDate(@NonNull Date lastUpdateDate){
+        public HaloContentInstance.Builder withLastUpdateDate(@NonNull Date lastUpdateDate) {
             AssertionUtils.notNull(lastUpdateDate, "lastUpdateDate");
             mLastUpdate = lastUpdateDate;
             return this;
@@ -639,10 +645,11 @@ public class HaloContentInstance implements Parcelable {
 
         /**
          * Set the publish date.
+         *
          * @param publishDate
          * @return
          */
-        public HaloContentInstance.Builder withPublishDate(@NonNull Date publishDate){
+        public HaloContentInstance.Builder withPublishDate(@NonNull Date publishDate) {
             AssertionUtils.notNull(publishDate, "publishDate");
             mPublishedAt = publishDate;
             return this;
@@ -651,10 +658,11 @@ public class HaloContentInstance implements Parcelable {
 
         /**
          * Set the publish date.
+         *
          * @param archivedDate
          * @return
          */
-        public HaloContentInstance.Builder withArchivedDate(@NonNull Date archivedDate){
+        public HaloContentInstance.Builder withArchivedDate(@NonNull Date archivedDate) {
             AssertionUtils.notNull(archivedDate, "archivedDate");
             mArchivedAt = archivedDate;
             return this;
@@ -662,10 +670,11 @@ public class HaloContentInstance implements Parcelable {
 
         /**
          * Set the removal date shceduled.
+         *
          * @param removalDate
          * @return
          */
-        public HaloContentInstance.Builder withRemovalDate(@NonNull Date removalDate){
+        public HaloContentInstance.Builder withRemovalDate(@NonNull Date removalDate) {
             AssertionUtils.notNull(removalDate, "removalDate");
             mRemovedAt = removalDate;
             return this;
