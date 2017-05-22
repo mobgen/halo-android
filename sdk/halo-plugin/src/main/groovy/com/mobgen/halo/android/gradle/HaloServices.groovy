@@ -37,7 +37,7 @@ public class HaloServices {
      * @param enabled Translations library.
      */
     public void translations(boolean enabled) {
-        this.translationsEnabled = true
+        this.translationsEnabled = enabled
     }
 
     /**
@@ -45,7 +45,7 @@ public class HaloServices {
      * @param enabled Presenter library.
      */
     public void presenter(boolean enabled) {
-        this.presenterEnabled = true
+        this.presenterEnabled = enabled
     }
 
     /**
@@ -75,7 +75,7 @@ public class HaloServices {
      * @param enabled True to enable the content api, false otherwise.
      */
     public void content(boolean enabled) {
-        this.contentEnabled = true
+        this.contentEnabled = enabled
     }
 
     /**

@@ -245,6 +245,19 @@ public class HaloNotificationsApi extends HaloPluginApi {
     }
 
     /**
+     * Gets the custom notification decorator. A decorator allows the user to
+     * override current behavior of the notification and customize the way it is shown.
+     *
+     * @return The decorator.
+     */
+    @Keep
+    @Nullable
+    @Api(2.3)
+    public HaloNotificationDecorator getNotificationDecorator() {
+        return NotificationService.getNotificationDecorator();
+    }
+
+    /**
      * Provides the current firebase token available in the device.
      * We discourage to store it in other place than the instance of firebase
      * since the token can change and unexpected behaviors may reflect.

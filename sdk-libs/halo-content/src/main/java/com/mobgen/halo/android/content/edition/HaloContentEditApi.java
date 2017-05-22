@@ -109,7 +109,7 @@ public class HaloContentEditApi extends HaloPluginApi {
      * Delete a given general content instance.
      *
      * @param haloContentInstance The general content instance to delete.
-     * @@return HaloInteractorExecutor
+     * @return HaloInteractorExecutor
      */
     @Api(2.2)
     @Keep
@@ -129,7 +129,7 @@ public class HaloContentEditApi extends HaloPluginApi {
      *
      * @param batchOperations The batch operations to perfom.
      * @param syncResults     Flag to perfom sync after batch.
-     * @@return HaloInteractorExecutor
+     * @return HaloInteractorExecutor
      */
     @Api(2.3)
     @Keep

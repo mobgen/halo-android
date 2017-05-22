@@ -34,6 +34,12 @@ ext {
     //Facebook
     facebookSdkVersion = '4.13.1'
 
+    //Picasso
+    picassoVersion = '2.5.2'
+
+    //Glide
+    glideVersion = '3.7.0'
+
     //Runtime
     loganSquareVersion = '1.3.6'
     okHttpVersion = '3.6.0'

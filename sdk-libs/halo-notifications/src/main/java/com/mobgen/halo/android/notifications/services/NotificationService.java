@@ -3,7 +3,6 @@ package com.mobgen.halo.android.notifications.services;
 import android.annotation.SuppressLint;
 import android.app.NotificationManager;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Keep;
 import android.support.annotation.NonNull;
@@ -20,6 +19,7 @@ import com.mobgen.halo.android.notifications.decorator.NotificationActionDecorat
 import com.mobgen.halo.android.notifications.decorator.NotificationBadgeDecorator;
 import com.mobgen.halo.android.notifications.decorator.NotificationColorDecorator;
 import com.mobgen.halo.android.notifications.decorator.NotificationIconDecorator;
+import com.mobgen.halo.android.notifications.decorator.NotificationImageDecorator;
 import com.mobgen.halo.android.notifications.decorator.NotificationLedDecorator;
 import com.mobgen.halo.android.notifications.decorator.NotificationMessageDecorator;
 import com.mobgen.halo.android.notifications.decorator.NotificationSoundDecorator;
@@ -186,10 +186,11 @@ public class NotificationService extends FirebaseMessagingService {
                                 new NotificationBadgeDecorator(
                                         new NotificationColorDecorator(
                                                 new NotificationLedDecorator(
-                                                        new NotificationMessageDecorator(
-                                                                new NotificationTitleDecorator(
-                                                                        mDecorator
-                                                                ))))))));
+                                                        new NotificationImageDecorator(this,
+                                                            new NotificationMessageDecorator(
+                                                                    new NotificationTitleDecorator(
+                                                                            mDecorator
+                                                                    )))))))));
     }
 
     /**
@@ -209,6 +210,16 @@ public class NotificationService extends FirebaseMessagingService {
      */
     public static void setNotificationDecorator(@Nullable HaloNotificationDecorator decorator) {
         mDecorator = decorator;
+    }
+
+    /**
+     * Gets the custom decorator if its available.
+     *
+     * @return The custom decorator.
+     */
+    @Nullable
+    public static HaloNotificationDecorator getNotificationDecorator() {
+        return mDecorator;
     }
 
     /**
