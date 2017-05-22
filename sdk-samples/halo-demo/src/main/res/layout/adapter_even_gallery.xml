@@ -38,10 +38,10 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            tools:ignore="NestedWeights"
             android:background="?attr/selectableItemBackground"
             android:padding="5dp"
-            android:scaleType="fitXY"/>
+            android:scaleType="fitXY"
+            tools:ignore="NestedWeights" />
 
     </LinearLayout>
 </LinearLayout>

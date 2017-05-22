@@ -75,6 +75,10 @@
 
         <activity android:name=".ui.gallery.GalleryActivity"/>
 
+        <activity android:name=".ui.batchimages.BatchImageActivity"/>
+
+        <activity android:name=".ui.batchimages.GalleryBatchImageActivity"/>
+
         <activity android:name=".ui.translations.TranslationsActivity"/>
 
         <activity android:name=".ui.loadtests.LoadTestsActivity"/>
