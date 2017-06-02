@@ -4,21 +4,18 @@ import android.support.annotation.NonNull;
 
 import com.mobgen.halo.android.framework.api.HaloNetworkApi;
 import com.mobgen.halo.android.framework.common.exceptions.HaloParsingException;
-import com.mobgen.halo.android.framework.common.helpers.logger.Halog;
 import com.mobgen.halo.android.framework.common.utils.AssertionUtils;
 import com.mobgen.halo.android.framework.network.client.body.HaloBodyFactory;
 import com.mobgen.halo.android.framework.network.client.request.HaloRequest;
 import com.mobgen.halo.android.framework.network.client.request.HaloRequestMethod;
 import com.mobgen.halo.android.framework.network.exceptions.HaloNetException;
 import com.mobgen.halo.android.framework.network.exceptions.HaloNetParseException;
-import com.mobgen.halo.android.framework.network.exceptions.HaloNotFoundException;
 import com.mobgen.halo.android.sdk.core.internal.network.HaloNetworkConstants;
 import com.mobgen.halo.android.sdk.core.management.models.Device;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 

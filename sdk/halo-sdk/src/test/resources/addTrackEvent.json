@@ -1,0 +1,14 @@
+{
+  "clientId": "halotestappclient",
+  "clientType": "app",
+  "appId": 2,
+  "customerId": 1,
+  "category": "MOB_APP",
+  "type": "1",
+  "coord": "3,3",
+  "ip": "213.60.23.11",
+  "extra": {
+    "prevRoom": "2C",
+    "roomName": "2B"
+  }
+}

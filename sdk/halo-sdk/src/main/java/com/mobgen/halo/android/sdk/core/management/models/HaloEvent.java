@@ -5,6 +5,7 @@ import android.os.Parcelable;
 import android.support.annotation.Keep;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringDef;
 
 import com.bluelinelabs.logansquare.JsonMapper;
 import com.bluelinelabs.logansquare.LoganSquare;
@@ -25,15 +26,47 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.Map;
 
 /**
  * Created by f.souto.gonzalez on 02/06/2017.
  */
+
+/**
+ * Halo events to track user analytics.You may select one of predefined types when creating an instance.
+ *
+ */
+@Keep
 @JsonObject
 public class HaloEvent implements Parcelable {
+
+    /**
+     * Halo supported events.
+     */
+    @StringDef({OPEN_APPLICATION, REGISTER_DEVICE, UPDATE_DEVICE, REGISTER_LOCATION})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface EventType {
+    }
+
+    /**
+     * Event when user open application.
+     */
+    public static final String OPEN_APPLICATION = "1";
+    /**
+     * Event when user register a device.
+     */
+    public static final String REGISTER_DEVICE = "2";
+    /**
+     * Event when user update device.
+     */
+    public static final String UPDATE_DEVICE = "3";
+    /**
+     * Event when user register a location status.
+     */
+    public static final String REGISTER_LOCATION = "4";
+
 
     /**
      * Json converter to transform the json that comes to a json object.
@@ -62,33 +95,50 @@ public class HaloEvent implements Parcelable {
         public void serialize(JSONObject object, String fieldName, boolean writeFieldNameForObject, JsonGenerator jsonGenerator) throws IOException {
             if (object != null) {
                 jsonGenerator.writeFieldName(fieldName);
-                jsonGenerator.writeRaw(":" + object.toString());
+                jsonGenerator.writeRawValue(object.toString());
             }
         }
     }
 
+    /**
+     * The type of the event.
+     */
     @JsonField(name = "type")
     String mType;
 
+    /**
+     * The location of the event.
+     */
     @JsonField(name = "coord")
     String mCoord;
 
+    /**
+     * An object with additional information of the event.
+     */
     @JsonField(name = "extra", typeConverter = JSONObjectConverter.class)
     JSONObject mExtra;
 
+    /**
+     * The ip address of the event.
+     */
     @JsonField(name = "ip")
     String mIp;
 
+    /**
+     * The category of the event.
+     */
     @JsonField(name = "category")
     String mCategory;
 
-    @JsonField(name = "customerId")
-    int mCustomerId;
-
+    /**
+     * The appid of the event.
+     */
     @JsonField(name = "appId")
-    int mAppId;
+    Integer mAppId;
 
-    //default constructor
+    /**
+     *  Default constructor
+     */
     protected HaloEvent() {
     }
 
@@ -98,13 +148,76 @@ public class HaloEvent implements Parcelable {
         mCoord = builder.mCoord;
     }
 
+    /**
+     * Get the type of the event.
+     * @return The type of the event.
+     */
+    @NonNull
+    @Api(2.33)
+    public String getType() {
+        return mType;
+    }
+
+    /**
+     * Get the location of the event.
+     *
+     * @return The location of the event.
+     */
+    @NonNull
+    @Api(2.33)
+    public String getCoord() {
+        return mCoord;
+    }
+
+    /**
+     * Get the extra data of the event.
+     *
+     * @return The additional info of the event.
+     */
+    @NonNull
+    @Api(2.33)
+    public JSONObject getExtra() {
+        return mExtra;
+    }
+
+    /**
+     * Get the ip of the event.
+     *
+     * @return The ip address of the event.
+     */
+    @NonNull
+    @Api(2.33)
+    public String getIp() {
+        return mIp;
+    }
+
+    /**
+     * Get the category of the event.
+     *
+     * @return The category of the event.
+     */
+    @NonNull
+    @Api(2.33)
+    public String getCategory() {
+        return mCategory;
+    }
+
+    /**
+     * Get the appid of the event.
+     * @return The appid.
+     */
+    @NonNull
+    @Api(2.33)
+    public Integer getAppId() {
+        return mAppId;
+    }
+
 
     protected HaloEvent(Parcel in) {
         mType = in.readString();
         mCoord = in.readString();
         mIp = in.readString();
         mCategory = in.readString();
-        mCustomerId = in.readInt();
         mAppId = in.readInt();
         try {
             String values = in.readString();
@@ -137,7 +250,6 @@ public class HaloEvent implements Parcelable {
         dest.writeString(mCoord);
         dest.writeString(mIp);
         dest.writeString(mCategory);
-        dest.writeInt(mCustomerId);
         dest.writeInt(mAppId);
         dest.writeString(mExtra != null ? this.mExtra.toString() : null);
     }
@@ -159,10 +271,19 @@ public class HaloEvent implements Parcelable {
     @Keep
     public static class Builder implements IBuilder<HaloEvent> {
 
+        /**
+         * The type of the event.
+         */
         private String mType;
 
+        /**
+         * The location of the event.
+         */
         private String mCoord;
 
+        /**
+         * The additional information of the event.
+         */
         private JSONObject mExtra;
 
         /**
@@ -172,14 +293,23 @@ public class HaloEvent implements Parcelable {
 
         }
 
-
+        /**
+         * Set the type of the event.
+         * @param type The type of the event.
+         * @return The builder.
+         */
         @NonNull
         @Api(2.33)
-        public HaloEvent.Builder withType(@NonNull String type) {
+        public HaloEvent.Builder withType(@EventType String type) {
             mType = type;
             return this;
         }
 
+        /**
+         * Set the location of the event.
+         * @param coord The location of the event.
+         * @return The builder.
+         */
         @NonNull
         @Api(2.33)
         public HaloEvent.Builder withLocation(@NonNull String coord) {
@@ -190,8 +320,8 @@ public class HaloEvent implements Parcelable {
         /**
          * Set the content extra values.
          *
-         * @param values
-         * @return
+         * @param values The additional information.
+         * @return The builder.
          */
         public HaloEvent.Builder withExtra(@NonNull Object values) {
             AssertionUtils.notNull(values, "values");
@@ -206,7 +336,7 @@ public class HaloEvent implements Parcelable {
         /**
          * Map values from model object.
          *
-         * @param object
+         * @param object The object to map.
          * @return The mapped values or null
          */
         @Nullable
@@ -220,7 +350,10 @@ public class HaloEvent implements Parcelable {
             }
         }
 
-
+        /**
+         * Build the instance.
+         * @return The HaloEvent instance.
+         */
         @NonNull
         @Override
         public HaloEvent build() {

@@ -15,13 +15,27 @@ import java.util.List;
  * Created by f.souto.gonzalez on 02/06/2017.
  */
 
+/**
+ * Interactor to send event track analytics of the user.
+ */
 public class SendTrackEventInteractor implements HaloInteractorExecutor.Interactor<HaloEvent> {
 
-
+    /**
+     * The halo event to track.
+     */
     HaloEvent mHaloEvent;
 
+    /**
+     * The event repository.
+     */
     EventRepository mEventRepository;
 
+    /**
+     * Constructor of the interactor.
+     *
+     * @param eventRepository The event repository.
+     * @param haloEvent The event to track.
+     */
     public SendTrackEventInteractor(@NonNull EventRepository eventRepository, @NonNull HaloEvent haloEvent) {
         mEventRepository = eventRepository;
         mHaloEvent = haloEvent;

@@ -15,6 +15,7 @@ import com.mobgen.halo.android.sdk.api.Halo;
 import com.mobgen.halo.android.sdk.core.management.device.DeviceLocalDatasource;
 import com.mobgen.halo.android.sdk.core.management.models.Credentials;
 import com.mobgen.halo.android.sdk.core.management.models.Device;
+import com.mobgen.halo.android.sdk.core.management.models.HaloEvent;
 import com.mobgen.halo.android.sdk.core.management.models.HaloModule;
 import com.mobgen.halo.android.sdk.core.management.models.HaloServerVersion;
 import com.mobgen.halo.android.sdk.core.management.models.Token;
@@ -35,6 +36,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static com.mobgen.halo.android.sdk.mock.fixtures.ServerFixtures.ADD_SEGMENTATION_TAG;
+import static com.mobgen.halo.android.sdk.mock.fixtures.ServerFixtures.ADD_TRACK_EVET;
 import static com.mobgen.halo.android.sdk.mock.fixtures.ServerFixtures.GET_DEVICE;
 import static com.mobgen.halo.android.sdk.mock.fixtures.ServerFixtures.GET_MODULES;
 import static com.mobgen.halo.android.sdk.mock.fixtures.ServerFixtures.GET_MODULES_META_DATA;
@@ -43,11 +45,13 @@ import static com.mobgen.halo.android.sdk.mock.fixtures.ServerFixtures.REQUEST_T
 import static com.mobgen.halo.android.sdk.mock.fixtures.ServerFixtures.SYNC_DEVICE;
 import static com.mobgen.halo.android.sdk.mock.fixtures.ServerFixtures.TEST_SERVER_VERSION;
 import static com.mobgen.halo.android.sdk.mock.fixtures.ServerFixtures.enqueueServerFile;
+import static com.mobgen.halo.android.sdk.mock.instrumentation.HaloManagerApiInstrument.givenAHaloEvent;
 import static com.mobgen.halo.android.sdk.mock.instrumentation.HaloManagerApiInstrument.givenCallbackServerVersion;
 import static com.mobgen.halo.android.sdk.mock.instrumentation.HaloManagerApiInstrument.givenCallbackWithDeviceSegmentationTagAdd;
 import static com.mobgen.halo.android.sdk.mock.instrumentation.HaloManagerApiInstrument.givenCallbackWithDeviceSegmentationTagAddList;
 import static com.mobgen.halo.android.sdk.mock.instrumentation.HaloManagerApiInstrument.givenCallbackWithDeviceSegmentationTagRemoved;
 import static com.mobgen.halo.android.sdk.mock.instrumentation.HaloManagerApiInstrument.givenCallbackWithDeviceSegmentationTagRemovedList;
+import static com.mobgen.halo.android.sdk.mock.instrumentation.HaloManagerApiInstrument.givenCallbackWithEvent;
 import static com.mobgen.halo.android.sdk.mock.instrumentation.HaloManagerApiInstrument.givenCallbackWithGetDevice;
 import static com.mobgen.halo.android.sdk.mock.instrumentation.HaloManagerApiInstrument.givenCallbackWithGetDeviceAnonymous;
 import static com.mobgen.halo.android.sdk.mock.instrumentation.HaloManagerApiInstrument.givenCallbackWithGetModules;
@@ -382,6 +386,18 @@ public class HaloManagerApiTest extends HaloRobolectricTest {
         enqueueServerFile(mMockServer, GET_DEVICE);
         CallbackV2<Device> callback = givenCallbackWithSetNotificationToken(mCallbackFlag);
         ICancellable cancellable = mHalo.manager().setNotificationsToken("mytoken")
+                .threadPolicy(Threading.POOL_QUEUE_POLICY)
+                .execute(callback);
+        assertThat(mCallbackFlag.isFlagged()).isTrue();
+        assertThat(cancellable).isNotNull();
+    }
+
+    @Test
+    public void thatCanAddAEventTrackAnalyticData() throws IOException {
+        enqueueServerFile(mMockServer, ADD_TRACK_EVET);
+        CallbackV2<HaloEvent> callback = givenCallbackWithEvent(mCallbackFlag);
+        HaloEvent event = givenAHaloEvent();
+        ICancellable cancellable = mHalo.manager().sendEvent(event)
                 .threadPolicy(Threading.POOL_QUEUE_POLICY)
                 .execute(callback);
         assertThat(mCallbackFlag.isFlagged()).isTrue();

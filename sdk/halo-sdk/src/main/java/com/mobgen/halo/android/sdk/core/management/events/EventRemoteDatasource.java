@@ -4,24 +4,19 @@ import android.support.annotation.NonNull;
 
 import com.mobgen.halo.android.framework.api.HaloNetworkApi;
 import com.mobgen.halo.android.framework.common.exceptions.HaloParsingException;
-import com.mobgen.halo.android.framework.common.utils.AssertionUtils;
 import com.mobgen.halo.android.framework.network.client.body.HaloBodyFactory;
 import com.mobgen.halo.android.framework.network.client.request.HaloRequest;
 import com.mobgen.halo.android.framework.network.client.request.HaloRequestMethod;
-import com.mobgen.halo.android.framework.network.client.response.TypeReference;
 import com.mobgen.halo.android.framework.network.exceptions.HaloNetException;
 import com.mobgen.halo.android.sdk.api.Halo;
 import com.mobgen.halo.android.sdk.core.internal.network.HaloNetworkConstants;
-import com.mobgen.halo.android.sdk.core.management.models.Device;
 import com.mobgen.halo.android.sdk.core.management.models.HaloEvent;
-import com.mobgen.halo.android.sdk.core.management.models.HaloServerVersion;
 
 import org.json.JSONObject;
 
 /**
  * Created by f.souto.gonzalez on 02/06/2017.
  */
-
 /**
  * Remote data source for tracking events.
  *
@@ -40,7 +35,7 @@ public class EventRemoteDatasource {
     private HaloNetworkApi mClientApi;
 
     /**
-     * Creates a remote data source for the event traker.
+     * Creates a remote data source for the event tracker.
      *
      * @param clientApi The remote data source.
      */
@@ -48,6 +43,14 @@ public class EventRemoteDatasource {
         mClientApi = clientApi;
     }
 
+    /**
+     * Send the event analytic tracking data.
+     *
+     * @param haloEvent The halo event to send.
+     * @return The HaloEvent with additional data.
+     * @throws HaloNetException
+     * @throws HaloParsingException
+     */
     @NonNull
     public HaloEvent sendEvent(@NonNull HaloEvent haloEvent) throws HaloNetException,HaloParsingException {
 
