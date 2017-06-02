@@ -130,11 +130,6 @@ public class HaloEvent implements Parcelable {
     @JsonField(name = "category")
     String mCategory;
 
-    /**
-     * The appid of the event.
-     */
-    @JsonField(name = "appId")
-    Integer mAppId;
 
     /**
      *  Default constructor
@@ -202,23 +197,11 @@ public class HaloEvent implements Parcelable {
         return mCategory;
     }
 
-    /**
-     * Get the appid of the event.
-     * @return The appid.
-     */
-    @NonNull
-    @Api(2.33)
-    public Integer getAppId() {
-        return mAppId;
-    }
-
-
     protected HaloEvent(Parcel in) {
         mType = in.readString();
         mCoord = in.readString();
         mIp = in.readString();
         mCategory = in.readString();
-        mAppId = in.readInt();
         try {
             String values = in.readString();
             this.mExtra = values != null ? new JSONObject(values) : null;
@@ -250,7 +233,6 @@ public class HaloEvent implements Parcelable {
         dest.writeString(mCoord);
         dest.writeString(mIp);
         dest.writeString(mCategory);
-        dest.writeInt(mAppId);
         dest.writeString(mExtra != null ? this.mExtra.toString() : null);
     }
 
