@@ -2,6 +2,7 @@ package com.mobgen.halo.android.sdk.core.threading;
 
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.CheckResult;
 import android.support.annotation.Keep;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -102,7 +103,7 @@ public final class HaloInteractorExecutor<T> implements ICancellable, ThreadCont
         mInteractor = interactor;
         mExecutionCallback = executionCallback;
         mThreadPolicy = Threading.POOL_QUEUE_POLICY;
-        if(Looper.myLooper() != null){
+        if (Looper.myLooper() != null) {
             mResultHandler = new Handler(Looper.myLooper());
         }
     }
@@ -161,6 +162,7 @@ public final class HaloInteractorExecutor<T> implements ICancellable, ThreadCont
      */
     @Nullable
     @Api(2.33)
+    @CheckResult(suggest = "This execution will be always with a SAME_THREAD_POLICY.")
     public final HaloResultV2<T> executeInline() {
         this.threadPolicy(Threading.SAME_THREAD_POLICY);
         HaloResultV2<T> resultingData = null;
