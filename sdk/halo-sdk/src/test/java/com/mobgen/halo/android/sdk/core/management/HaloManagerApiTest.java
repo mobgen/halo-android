@@ -10,6 +10,7 @@ import com.mobgen.halo.android.framework.toolbox.bus.Event;
 import com.mobgen.halo.android.framework.toolbox.bus.Subscriber;
 import com.mobgen.halo.android.framework.toolbox.data.CallbackV2;
 import com.mobgen.halo.android.framework.toolbox.data.Data;
+import com.mobgen.halo.android.framework.toolbox.data.HaloResultV2;
 import com.mobgen.halo.android.framework.toolbox.threading.Threading;
 import com.mobgen.halo.android.sdk.api.Halo;
 import com.mobgen.halo.android.sdk.core.management.device.DeviceLocalDatasource;
@@ -42,6 +43,7 @@ import static com.mobgen.halo.android.sdk.mock.fixtures.ServerFixtures.REMOVE_SE
 import static com.mobgen.halo.android.sdk.mock.fixtures.ServerFixtures.REQUEST_TOKEN;
 import static com.mobgen.halo.android.sdk.mock.fixtures.ServerFixtures.SYNC_DEVICE;
 import static com.mobgen.halo.android.sdk.mock.fixtures.ServerFixtures.TEST_SERVER_VERSION;
+import static com.mobgen.halo.android.sdk.mock.fixtures.ServerFixtures.enqueueServerError;
 import static com.mobgen.halo.android.sdk.mock.fixtures.ServerFixtures.enqueueServerFile;
 import static com.mobgen.halo.android.sdk.mock.instrumentation.HaloManagerApiInstrument.givenCallbackServerVersion;
 import static com.mobgen.halo.android.sdk.mock.instrumentation.HaloManagerApiInstrument.givenCallbackWithDeviceSegmentationTagAdd;
@@ -386,5 +388,25 @@ public class HaloManagerApiTest extends HaloRobolectricTest {
                 .execute(callback);
         assertThat(mCallbackFlag.isFlagged()).isTrue();
         assertThat(cancellable).isNotNull();
+    }
+
+    @Test
+    public void thatCanSetNotificationTokenInlineResponse() throws IOException {
+        enqueueServerFile(mMockServer, GET_DEVICE);
+        HaloResultV2<Device> result = mHalo.manager()
+                .setNotificationsToken("mytoken")
+                .executeInline();
+        assertThat(result.data()).isNotNull();
+        assertThat(result.data().getNotificationsToken()).isEqualTo("mytoken");
+    }
+
+    @Test
+    public void thatCanHandleExceptionWithAnInlineResponse() throws IOException {
+        enqueueServerError(mMockServer,500);
+        HaloResultV2<Device> result = mHalo.manager()
+                .setNotificationsToken("mytoken")
+                .executeInline();
+        assertThat(result.data()).isNull();
+        assertThat(result.status().isError()).isTrue();
     }
 }

@@ -154,6 +154,35 @@ public final class HaloInteractorExecutor<T> implements ICancellable, ThreadCont
     }
 
     /**
+     * Executes a inline given operation into the thread manager in the same thread
+     *
+     * @return A cancellable interface. In this case it is the same
+     * executor but casted.
+     */
+    @Nullable
+    @Api(2.33)
+    public final HaloResultV2<T> executeInline() {
+        this.threadPolicy(Threading.SAME_THREAD_POLICY);
+        HaloResultV2<T> resultingData = null;
+        if (mExecutionCallback != null) {
+            mExecutionCallback.onPreExecute();
+        }
+        try {
+            resultingData = mInteractor.executeInteractor();
+        } catch (Exception e) {
+            //Notify erroneous execution
+            HaloStatus status = HaloStatus.builder()
+                    .error(e)
+                    .build();
+            resultingData = new HaloResultV2<T>(status, null);
+        }
+        if (mExecutionCallback != null) {
+            mExecutionCallback.onPostExecute();
+        }
+        return resultingData;
+    }
+
+    /**
      * Checks if the selector is cancelled.
      *
      * @return True if cancelled, false otherwise.
