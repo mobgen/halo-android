@@ -155,10 +155,9 @@ public final class HaloInteractorExecutor<T> implements ICancellable, ThreadCont
     }
 
     /**
-     * Executes a inline given operation into the thread manager in the same thread
+     * Executes given operation into the thread manager in the same thread given an inline response.
      *
-     * @return A cancellable interface. In this case it is the same
-     * executor but casted.
+     * @return The result of the operation wrapped on HaloResultV2 object.
      */
     @Nullable
     @Api(2.33)
