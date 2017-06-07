@@ -1,9 +1,9 @@
-package com.mobgen.fernandosouto.locationpoc.ui;
+package com.mobgen.locationpoc.ui;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.mobgen.fernandosouto.locationpoc.BuildConfig;
+import com.mobgen.locationpoc.BuildConfig;
 import com.mobgen.halo.android.auth.HaloAuthApi;
 import com.mobgen.halo.android.auth.models.HaloAuthProfile;
 import com.mobgen.halo.android.auth.models.IdentifiedUser;

@@ -1,4 +1,4 @@
-package com.mobgen.fernandosouto.locationpoc.receiver;
+package com.mobgen.locationpoc.receiver;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -19,13 +19,13 @@ import android.telephony.CellSignalStrengthLte;
 import android.telephony.CellSignalStrengthWcdma;
 import android.telephony.TelephonyManager;
 
-import com.mobgen.fernandosouto.locationpoc.model.AddLocationMsg;
-import com.mobgen.fernandosouto.locationpoc.model.GsmAps;
-import com.mobgen.fernandosouto.locationpoc.model.ObserverMsg;
-import com.mobgen.fernandosouto.locationpoc.model.PositionMsg;
-import com.mobgen.fernandosouto.locationpoc.model.ScanAPResult;
-import com.mobgen.fernandosouto.locationpoc.model.WifiAps;
-import com.mobgen.fernandosouto.locationpoc.ui.MobgenHaloApplication;
+import com.mobgen.locationpoc.model.AddLocationMsg;
+import com.mobgen.locationpoc.model.GsmAps;
+import com.mobgen.locationpoc.model.ObserverMsg;
+import com.mobgen.locationpoc.model.PositionMsg;
+import com.mobgen.locationpoc.model.ScanAPResult;
+import com.mobgen.locationpoc.model.WifiAps;
+import com.mobgen.locationpoc.ui.MobgenHaloApplication;
 import com.mobgen.halo.android.content.HaloContentApi;
 import com.mobgen.halo.android.content.models.SearchQuery;
 import com.mobgen.halo.android.content.search.SearchQueryBuilderFactory;

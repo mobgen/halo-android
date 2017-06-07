@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.mobgen.fernandosouto.locationpoc.ui.MainActivity">
+    tools:context="com.mobgen.locationpoc.ui.HomeActivity">
 
     <TextView
         android:id="@+id/room"

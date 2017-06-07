@@ -1,4 +1,4 @@
-package com.mobgen.fernandosouto.locationpoc.model;
+package com.mobgen.locationpoc.model;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;

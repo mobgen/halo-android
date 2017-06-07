@@ -1,4 +1,4 @@
-package com.mobgen.fernandosouto.locationpoc.model;
+package com.mobgen.locationpoc.model;
 
 /**
  * Created by f.souto.gonzalez on 01/06/2017.

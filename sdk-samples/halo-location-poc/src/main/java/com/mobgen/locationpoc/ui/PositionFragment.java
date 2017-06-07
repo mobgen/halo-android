@@ -1,4 +1,4 @@
-package com.mobgen.fernandosouto.locationpoc.ui;
+package com.mobgen.locationpoc.ui;
 
 import android.Manifest;
 import android.content.Context;
@@ -32,11 +32,11 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.mobgen.fernandosouto.locationpoc.R;
-import com.mobgen.fernandosouto.locationpoc.model.AddLocationMsg;
-import com.mobgen.fernandosouto.locationpoc.model.ObserverMsg;
-import com.mobgen.fernandosouto.locationpoc.model.PositionMsg;
-import com.mobgen.fernandosouto.locationpoc.receiver.BroadcastObserver;
+import com.mobgen.locationpoc.R;
+import com.mobgen.locationpoc.model.AddLocationMsg;
+import com.mobgen.locationpoc.model.ObserverMsg;
+import com.mobgen.locationpoc.model.PositionMsg;
+import com.mobgen.locationpoc.receiver.BroadcastObserver;
 
 import java.util.Observable;
 import java.util.Observer;

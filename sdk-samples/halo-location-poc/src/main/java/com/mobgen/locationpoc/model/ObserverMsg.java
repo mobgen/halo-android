@@ -1,6 +1,6 @@
-package com.mobgen.fernandosouto.locationpoc.model;
+package com.mobgen.locationpoc.model;
 
-import com.mobgen.fernandosouto.locationpoc.ui.PositionFragment;
+import com.mobgen.locationpoc.ui.PositionFragment;
 
 import java.util.List;
 

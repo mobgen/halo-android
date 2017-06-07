@@ -1,4 +1,4 @@
-package com.mobgen.fernandosouto.locationpoc.model;
+package com.mobgen.locationpoc.model;
 
 import android.location.Location;
 

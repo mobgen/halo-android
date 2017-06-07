@@ -1,4 +1,4 @@
-package com.mobgen.fernandosouto.locationpoc.ui;
+package com.mobgen.locationpoc.ui;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -8,10 +8,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.mobgen.fernandosouto.locationpoc.R;
-import com.mobgen.fernandosouto.locationpoc.model.AddLocationMsg;
-import com.mobgen.fernandosouto.locationpoc.model.ObserverMsg;
-import com.mobgen.fernandosouto.locationpoc.receiver.BroadcastObserver;
+import com.mobgen.locationpoc.R;
+import com.mobgen.locationpoc.model.AddLocationMsg;
+import com.mobgen.locationpoc.model.ObserverMsg;
+import com.mobgen.locationpoc.receiver.BroadcastObserver;
 
 import java.util.Observable;
 import java.util.Observer;

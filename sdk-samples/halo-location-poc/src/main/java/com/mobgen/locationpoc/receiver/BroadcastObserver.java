@@ -1,4 +1,4 @@
-package com.mobgen.fernandosouto.locationpoc.receiver;
+package com.mobgen.locationpoc.receiver;
 
 import java.util.Observable;
 
