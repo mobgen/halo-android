@@ -155,7 +155,7 @@ public final class HaloInteractorExecutor<T> implements ICancellable, ThreadCont
     }
 
     /**
-     * Executes given operation into the thread manager in the same thread given an inline response.
+     * Executes the given operation into the thread manager in the same thread providing an inline response.
      *
      * @return The result of the operation wrapped on HaloResultV2 object.
      */
@@ -163,7 +163,7 @@ public final class HaloInteractorExecutor<T> implements ICancellable, ThreadCont
     @Api(2.33)
     @CheckResult(suggest = "This execution will be always with a SAME_THREAD_POLICY.")
     public final HaloResultV2<T> executeInline() {
-        this.threadPolicy(Threading.SAME_THREAD_POLICY);
+        threadPolicy(Threading.SAME_THREAD_POLICY);
         HaloResultV2<T> resultingData = null;
         if (mExecutionCallback != null) {
             mExecutionCallback.onPreExecute();
