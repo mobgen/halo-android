@@ -1,1 +1,2 @@
+include ':halo-location-poc'
 include ":halo-demo"

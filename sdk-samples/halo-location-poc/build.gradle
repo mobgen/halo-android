@@ -1,0 +1,88 @@
+apply plugin: 'com.android.application'
+apply plugin: 'halo'
+apply plugin: 'grill'
+
+description = 'Location POC application with HALO SDK'
+
+def bambooBuild = System.getenv("bamboo_buildNumber");
+def editorMail = System.getenv("HALO_EDITOR_EMAIL");
+def editorPass = System.getenv("HALO_EDITOR_PASS");
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+    defaultConfig {
+        applicationId "com.mobgen.halo.locationpoc.android.app"
+        minSdkVersion rootProject.ext.minLocationSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode grill.CI.getCommitRevision()
+        versionName "${rootProject.ext.haloVersion}-demo-loc"
+        buildConfigField "Integer", "BAMBOO_BUILD", "${bambooBuild}"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        buildConfigField "String", "EDITOR_EMAIL", "\"${editorMail}\""
+        buildConfigField "String", "EDITOR_PASS", "\"${editorPass}\""
+        multiDexEnabled true
+    }
+    signingConfigs {
+        release {
+            storeFile file("../Halo.keystore")
+            storePassword "Hal0M0bg3nPassw0rd"
+            keyAlias "MOBGEN"
+            keyPassword "Hal0M0bg3nPassw0rd"
+        }
+        debug {
+            storeFile file("../HaloDebug.keystore")
+            storePassword "android"
+            keyAlias "androiddebugkey"
+            keyPassword "android"
+        }
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+
+    buildTypes {
+        debug {
+            minifyEnabled false
+            debuggable true
+            signingConfig signingConfigs.debug
+        }
+        release {
+            minifyEnabled true
+            debuggable true
+            signingConfig signingConfigs.release
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    packagingOptions {
+        exclude '.README'
+    }
+}
+
+repositories {
+    maven { url "https://clojars.org/repo/" }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+
+    compile "com.android.support:appcompat-v7:${rootProject.ext.appcompatVersion}"
+    compile "com.android.support:design:${rootProject.ext.appcompatVersion}"
+    compile "com.google.android.gms:play-services:${rootProject.ext.firebaseVersion}"
+    testCompile "junit:junit:4.12"
+}
+
+halo {
+    clientId "halotestappclient"
+    clientSecret "halotestapppass"
+    clientIdDebug "halotestappclient"
+    clientSecretDebug "halotestapppass"
+    services {
+        content true
+        auth {
+        }
+    }
+}

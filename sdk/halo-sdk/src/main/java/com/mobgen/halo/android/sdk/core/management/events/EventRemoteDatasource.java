@@ -26,7 +26,7 @@ public class EventRemoteDatasource {
     /**
      * Create a analytic tracking event.
      */
-    private static final String URL_CREATE_EVENT = "api/events/daily/create";
+    private static final String URL_CREATE_EVENT = "api/events/daily/";
 
 
     /**

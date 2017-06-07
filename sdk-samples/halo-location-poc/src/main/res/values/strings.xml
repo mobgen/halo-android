@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">LocationPOC</string>
+    <string name="action_login">Login</string>
+</resources>
