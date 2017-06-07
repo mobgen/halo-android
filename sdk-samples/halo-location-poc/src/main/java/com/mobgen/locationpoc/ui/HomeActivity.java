@@ -51,21 +51,32 @@ import java.util.Observer;
 
 public class HomeActivity extends AppCompatActivity implements Observer {
 
+    private static final int REQUEST_LOCATION_PERMS = 12;
+    private static final int REQUEST_PHONE_PERMS = 13;
+    private static final String MODULE_NAME = "LocationPOC";
+    private static final String AUTHOR_NAME = "Location POC";
+    private static final String MODULE_ID = "592bed5194bca6001162a16a";
+
     private BottomNavigationView bottomNavigationView;
     private AddLocationFragment mAddLocationFragment;
     private PositionFragment mPositionFragment;
     private BroadcastObserver mBroadcastObserver;
     List<ScanAPResult> scanAPResults = new ArrayList<>();
     private FloatingActionButton fab;
+    private AccessPointReceiver mAccessPointReceiver;
     private WifiManager wifi;
     private TelephonyManager telephony;
-    private static final int REQUEST_LOCATION_PERMS = 12;
-    private static final int REQUEST_PHONE_PERMS = 13;
+
+
+    public static void start(@NonNull Context context) {
+        Intent intent = new Intent(context, HomeActivity.class);
+        context.startActivity(intent);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_home);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -76,8 +87,8 @@ public class HomeActivity extends AppCompatActivity implements Observer {
         telephony = (TelephonyManager) context1.getSystemService(Context.TELEPHONY_SERVICE);
         mBroadcastObserver = new BroadcastObserver();
         mBroadcastObserver.addObserver(this);
-        AccessPointReceiver accessPointReceiver = new AccessPointReceiver(wifi, telephony, mBroadcastObserver);
-        registerReceiver(accessPointReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+        mAccessPointReceiver = new AccessPointReceiver(wifi, telephony, mBroadcastObserver);
+        registerReceiver(mAccessPointReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
         wifi.startScan();
 
         fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -105,13 +116,13 @@ public class HomeActivity extends AppCompatActivity implements Observer {
                 //send scan result to halo
                 if (scanAPResults.size() > 0) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                    builder.setTitle("Select the name of the room");
+                    builder.setTitle(getString(R.string.dialog_title));
                     final EditText roomSelection = new EditText(context);
                     roomSelection.setText(scanAPResults.get(0).getRoomName());
                     roomSelection.setInputType(InputType.TYPE_CLASS_TEXT);
                     builder.setView(roomSelection);
 
-                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    builder.setPositiveButton(getString(R.string.dialog_ok), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             HaloContentEditApi.with(MobgenHaloApplication.halo())
@@ -119,7 +130,7 @@ public class HomeActivity extends AppCompatActivity implements Observer {
                                     .execute(new CallbackV2<BatchOperationResults>() {
                                         @Override
                                         public void onFinish(@NonNull HaloResultV2<BatchOperationResults> haloResultV2) {
-                                            Toast.makeText(context, "We sent the data to HALO",
+                                            Toast.makeText(context, getString(R.string.dialog_result_ok),
                                                     Toast.LENGTH_SHORT).show();
                                         }
                                     });
@@ -128,7 +139,7 @@ public class HomeActivity extends AppCompatActivity implements Observer {
 
                     builder.show();
                 } else {
-                    Toast.makeText(context, "Sorry you need to detect WIFI APs",
+                    Toast.makeText(context, getString(R.string.dialog_result_ko),
                             Toast.LENGTH_SHORT).show();
                 }
             }
@@ -136,12 +147,12 @@ public class HomeActivity extends AppCompatActivity implements Observer {
     }
 
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
         //get permission for location
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},REQUEST_LOCATION_PERMS);
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION_PERMS);
             changeFragment(1);
         } else {
             changeFragment(0);
@@ -149,15 +160,23 @@ public class HomeActivity extends AppCompatActivity implements Observer {
         //get permission for phone state
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.READ_PHONE_STATE},REQUEST_PHONE_PERMS);
+                    new String[]{Manifest.permission.READ_PHONE_STATE}, REQUEST_PHONE_PERMS);
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        unregisterReceiver(mAccessPointReceiver);
+        mBroadcastObserver.deleteObservers();
+        super.onDestroy();
+
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
         switch (requestCode) {
             case REQUEST_LOCATION_PERMS: {
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     //show map
                     changeFragment(0);
                 } else {
@@ -179,13 +198,13 @@ public class HomeActivity extends AppCompatActivity implements Observer {
         for (int i = 0; i < scanAPResults.size(); i++) {
             //add one instance with every image which has been selected
             Date now = new Date();
-            HaloContentInstance instance = new HaloContentInstance.Builder("LocationPOC")
-                    .withAuthor("Location POC")
+            HaloContentInstance instance = new HaloContentInstance.Builder(MODULE_NAME)
+                    .withAuthor(AUTHOR_NAME)
                     .withContentData(scanAPResults.get(i))
                     .withName(roomName)
                     .withCreationDate(now)
                     .withPublishDate(now)
-                    .withModuleId("592bed5194bca6001162a16a")
+                    .withModuleId(MODULE_ID)
                     .build();
             operations.createOrUpdate(instance);
         }
@@ -194,7 +213,7 @@ public class HomeActivity extends AppCompatActivity implements Observer {
 
 
     /**
-     * To load fragments for sample
+     * To load fragments
      *
      * @param position menu index
      */
@@ -221,10 +240,6 @@ public class HomeActivity extends AppCompatActivity implements Observer {
                 .commit();
     }
 
-
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -234,23 +249,10 @@ public class HomeActivity extends AppCompatActivity implements Observer {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_login) {
-            try {
-                HaloAuthProfile auth = new HaloAuthProfile("halo@team.halo", "qwe12qwe");
-                MobgenHaloApplication.getAuth().loginWithHalo(HaloAuthApi.SOCIAL_HALO, auth, new CallbackV2<IdentifiedUser>() {
-                    @Override
-                    public void onFinish(@NonNull HaloResultV2<IdentifiedUser> result) {
-                        changeFragment(0);
-                    }
-                });
-            } catch (SocialNotAvailableException e) {
-            }
+        if (id == R.id.action_refresh) {
+            wifi.startScan();
             return true;
         }
 

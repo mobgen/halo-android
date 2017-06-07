@@ -5,7 +5,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.mobgen.locationpoc.R;
@@ -45,7 +44,6 @@ public class AddLocationFragment extends Fragment implements Observer {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootview = inflater.inflate(R.layout.content_add_location, container, false);
-
 
         distance = (TextView) rootview.findViewById(R.id.distance);
         room = (TextView) rootview.findViewById(R.id.room);

@@ -4,14 +4,13 @@ import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,7 +32,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.mobgen.locationpoc.R;
-import com.mobgen.locationpoc.model.AddLocationMsg;
 import com.mobgen.locationpoc.model.ObserverMsg;
 import com.mobgen.locationpoc.model.PositionMsg;
 import com.mobgen.locationpoc.receiver.BroadcastObserver;
@@ -105,10 +103,13 @@ public class PositionFragment extends Fragment implements Observer, GoogleApiCli
         return rootview;
     }
 
+    /**
+     * Setup the map with initial markers.
+     *
+     */
     public void setUpMapIfNeeded() {
         if (ActivityCompat.checkSelfPermission(mPositionFragment.getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(mPositionFragment.getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
             return;
         }
         mMap.setMyLocationEnabled(false);
@@ -140,6 +141,12 @@ public class PositionFragment extends Fragment implements Observer, GoogleApiCli
         }
     }
 
+    /**
+     * Get current location.
+     *
+     * @return The location.
+     */
+    @Nullable
     public Location getLocation() {
         if (getActivity() != null) {
             LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
@@ -171,7 +178,7 @@ public class PositionFragment extends Fragment implements Observer, GoogleApiCli
                 if (location != null) {
                     //mMap.clear();
                     BitmapDescriptor colorMarker;
-                    if (positionMsg.getDetectedName().contains("Between")) {
+                    if (positionMsg.getDetectedName().contains(getString(R.string.scan_between_1))) {
                         colorMarker = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED);
                     } else {
                         colorMarker = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN);
@@ -182,7 +189,7 @@ public class PositionFragment extends Fragment implements Observer, GoogleApiCli
                     mInsideMarker.setPosition(myLatLng);
                     mInsideMarker.setTitle(positionMsg.getDetectedName());
                     mInsideMarker.setIcon(colorMarker);
-                    mInsideMarker.setSnippet("Welcome to room!!");
+                    mInsideMarker.setSnippet(getString(R.string.welcome_msg));
                     mInsideMarker.showInfoWindow();
 
                     mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myLatLng, 25.0f));

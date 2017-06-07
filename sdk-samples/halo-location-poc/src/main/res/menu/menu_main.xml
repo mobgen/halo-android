@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.mobgen.locationpoc.ui.HomeActivity">
     <item
-        android:id="@+id/action_login"
+        android:id="@+id/action_refresh"
         android:orderInCategory="100"
-        android:title="@string/action_login"
+        android:title="@string/action_refresh"
         app:showAsAction="never" />
 </menu>
