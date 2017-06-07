@@ -28,6 +28,7 @@
     <string name="selection_result">You will make a fingerprint of room:</string>
 
     <!-- rooms -->
+    <string name="room_change">Location change alert!!</string>
     <string name="room_kitchen">Kitchen</string>
     <string name="room_kitchen_meeting">Kitchen meeting</string>
     <string name="room_ping_pong">Ping Pong</string>

@@ -11,6 +11,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -166,6 +167,7 @@ public class PositionFragment extends Fragment implements Observer, GoogleApiCli
                     mInsideMarker.showInfoWindow();
 
                     mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myLatLng, 25.0f));
+                    Toast.makeText(getContext(), getString(R.string.room_change), Toast.LENGTH_LONG).show();
                 }
             }
         }
