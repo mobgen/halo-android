@@ -1,13 +1,10 @@
 package com.mobgen.locationpoc.ui;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -35,6 +32,7 @@ import com.mobgen.locationpoc.R;
 import com.mobgen.locationpoc.model.ObserverMsg;
 import com.mobgen.locationpoc.model.PositionMsg;
 import com.mobgen.locationpoc.receiver.BroadcastObserver;
+import com.mobgen.locationpoc.utils.LocationUtils;
 
 import java.util.Observable;
 import java.util.Observer;
@@ -115,7 +113,7 @@ public class PositionFragment extends Fragment implements Observer, GoogleApiCli
         mMap.setMyLocationEnabled(false);
         mInsideMarker = mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)));
         mInsideMarker.setVisible(false);
-        Location location = getLocation();
+        Location location = LocationUtils.getLocation(getContext());;
         if (location != null) {
             LatLng myLatLng = new LatLng(location.getLatitude(),
                     location.getLongitude());
@@ -141,31 +139,6 @@ public class PositionFragment extends Fragment implements Observer, GoogleApiCli
         }
     }
 
-    /**
-     * Get current location.
-     *
-     * @return The location.
-     */
-    @Nullable
-    public Location getLocation() {
-        if (getActivity() != null) {
-            LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-            if (locationManager != null) {
-                if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    return null;
-                }
-                Location lastKnownLocationGPS = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                if (lastKnownLocationGPS != null) {
-                    return lastKnownLocationGPS;
-                } else {
-                    Location loc = locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
-                    return loc;
-                }
-            }
-        }
-        return null;
-    }
-
     @Override
     public void update(Observable o, Object result) {
         //updates from receiver
@@ -174,7 +147,7 @@ public class PositionFragment extends Fragment implements Observer, GoogleApiCli
             if (positionMsg.isChangeStatus() || updateUI) {
                 updateUI = false;
                 //remove all markers and add the new location
-                Location location = getLocation();
+                Location location = LocationUtils.getLocation(getContext());
                 if (location != null) {
                     //mMap.clear();
                     BitmapDescriptor colorMarker;

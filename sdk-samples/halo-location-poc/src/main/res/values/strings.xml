@@ -24,7 +24,7 @@
     <string name="scan_print_2">distance:</string>
     <string name="scan_print_3">,level:</string>
     <string name="scan_between_1">Between</string>
-    <string name="scan_between_2">AND:</string>
+    <string name="scan_between_2">and</string>
     <string name="selection_result">You will make a fingerprint of room:</string>
 
     <!-- rooms -->

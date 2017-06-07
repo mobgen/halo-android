@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.Build;
@@ -39,6 +40,7 @@ import com.mobgen.halo.android.framework.toolbox.data.Data;
 import com.mobgen.halo.android.framework.toolbox.data.HaloResultV2;
 import com.mobgen.halo.android.sdk.api.Halo;
 import com.mobgen.halo.android.sdk.core.management.models.HaloEvent;
+import com.mobgen.locationpoc.utils.LocationUtils;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
@@ -181,8 +183,14 @@ public class AccessPointReceiver extends BroadcastReceiver {
                             HashMap<String, String> mapValues = new HashMap<>();
                             mapValues.put("roomName", currentName);
                             mapValues.put("prevRoom", previousName);
+                            Location location = LocationUtils.getLocation(mContext);
+                            String locationStringify = null;
+                            if(location != null){
+                                locationStringify = location.getLatitude() + "," + location.getLongitude();
+                            }
                             HaloEvent event = HaloEvent.builder()
                                     .withType(HaloEvent.REGISTER_LOCATION)
+                                    .withLocation(locationStringify)
                                     .withExtra(mapValues).build();
                             MobgenHaloApplication
                                     .halo()
@@ -328,7 +336,7 @@ public class AccessPointReceiver extends BroadcastReceiver {
         if (finalIndex != -1) {
             return haloResult.get(finalIndex).getRoomName();
         } else {
-            return mContext.getString(R.string.scan_between_1) + haloResult.get(result1).getRoomName()
+            return mContext.getString(R.string.scan_between_1) + " " + haloResult.get(result1).getRoomName()
                     + " " + mContext.getString(R.string.scan_between_2) + " " + haloResult.get(result2).getRoomName();
         }
     }

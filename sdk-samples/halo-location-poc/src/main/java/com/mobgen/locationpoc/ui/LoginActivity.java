@@ -67,6 +67,9 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Attempt to login
+     */
     public void login() {
         if (!validate()) {
             onLoginFailed();
@@ -100,22 +103,28 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    public void onBackPressed() {
-        moveTaskToBack(true);
-    }
-
+    /**
+     * Success with a login attempt
+     */
     public void onLoginSuccess() {
         mLoginButton.setEnabled(true);
         HomeActivity.start(mContext);
         finish();
     }
 
+    /**
+     * Error with a login attempt
+     */
     public void onLoginFailed() {
         Toast.makeText(getBaseContext(), getString(R.string.login_error), Toast.LENGTH_LONG).show();
         mLoginButton.setEnabled(true);
     }
 
+    /**
+     * Validate the fields of the form
+     *
+     * @return True if all its ok
+     */
     public boolean validate() {
         boolean valid = true;
 
@@ -140,5 +149,10 @@ public class LoginActivity extends AppCompatActivity {
         mPasswordLayout.setErrorEnabled(valid);
 
         return valid;
+    }
+
+    @Override
+    public void onBackPressed() {
+        moveTaskToBack(true);
     }
 }
