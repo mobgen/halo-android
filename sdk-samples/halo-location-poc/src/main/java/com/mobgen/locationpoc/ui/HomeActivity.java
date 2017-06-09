@@ -7,6 +7,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -21,6 +24,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.telephony.TelephonyManager;
 import android.text.InputType;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,10 +36,6 @@ import com.mobgen.locationpoc.model.ObserverMsg;
 import com.mobgen.locationpoc.model.ScanAPResult;
 import com.mobgen.locationpoc.receiver.AccessPointReceiver;
 import com.mobgen.locationpoc.receiver.BroadcastObserver;
-import com.mobgen.halo.android.auth.HaloAuthApi;
-import com.mobgen.halo.android.auth.models.HaloAuthProfile;
-import com.mobgen.halo.android.auth.models.IdentifiedUser;
-import com.mobgen.halo.android.auth.providers.SocialNotAvailableException;
 import com.mobgen.halo.android.content.edition.HaloContentEditApi;
 import com.mobgen.halo.android.content.models.BatchOperationResults;
 import com.mobgen.halo.android.content.models.BatchOperations;
@@ -49,23 +49,23 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
-public class HomeActivity extends AppCompatActivity implements Observer {
+public class HomeActivity extends AppCompatActivity implements Observer, LocationListener {
 
     private static final int REQUEST_LOCATION_PERMS = 12;
     private static final int REQUEST_PHONE_PERMS = 13;
-    private static final String MODULE_NAME = "LocationPOC";
-    private static final String AUTHOR_NAME = "Location POC";
-    private static final String MODULE_ID = "592bed5194bca6001162a16a";
+    private final static int FIVE_MINUTES_MS = 5 * 60 * 1000;
 
     private BottomNavigationView bottomNavigationView;
     private AddLocationFragment mAddLocationFragment;
     private PositionFragment mPositionFragment;
+    private FriendsFragment mFriendsFragment;
     private BroadcastObserver mBroadcastObserver;
     List<ScanAPResult> scanAPResults = new ArrayList<>();
     private FloatingActionButton fab;
     private AccessPointReceiver mAccessPointReceiver;
     private WifiManager wifi;
     private TelephonyManager telephony;
+    private LocationManager locationManager;
 
 
     public static void start(@NonNull Context context) {
@@ -104,6 +104,9 @@ public class HomeActivity extends AppCompatActivity implements Observer {
                                 break;
                             case R.id.action_position:
                                 changeFragment(0);
+                                break;
+                            case R.id.action_friends:
+                                changeFragment(2);
                                 break;
                         }
                         return true;
@@ -144,6 +147,13 @@ public class HomeActivity extends AppCompatActivity implements Observer {
                 }
             }
         });
+
+        locationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                || ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, FIVE_MINUTES_MS, 0, this);
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, FIVE_MINUTES_MS, 0, this);
+        }
     }
 
     @Override
@@ -165,11 +175,17 @@ public class HomeActivity extends AppCompatActivity implements Observer {
     }
 
     @Override
+    public void onPause() {
+        locationManager.removeUpdates(this);
+        locationManager = null;
+        super.onPause();
+    }
+
+    @Override
     public void onDestroy() {
         unregisterReceiver(mAccessPointReceiver);
         mBroadcastObserver.deleteObservers();
         super.onDestroy();
-
     }
 
     @Override
@@ -198,13 +214,13 @@ public class HomeActivity extends AppCompatActivity implements Observer {
         for (int i = 0; i < scanAPResults.size(); i++) {
             //add one instance with every image which has been selected
             Date now = new Date();
-            HaloContentInstance instance = new HaloContentInstance.Builder(MODULE_NAME)
-                    .withAuthor(AUTHOR_NAME)
+            HaloContentInstance instance = new HaloContentInstance.Builder(AccessPointReceiver.MODULE_NAME)
+                    .withAuthor(AccessPointReceiver.AUTHOR_NAME)
                     .withContentData(scanAPResults.get(i))
                     .withName(roomName)
                     .withCreationDate(now)
                     .withPublishDate(now)
-                    .withModuleId(MODULE_ID)
+                    .withModuleId(AccessPointReceiver.MODULE_ID)
                     .build();
             operations.createOrUpdate(instance);
         }
@@ -233,6 +249,12 @@ public class HomeActivity extends AppCompatActivity implements Observer {
             }
             newFragment = mAddLocationFragment;
             fab.setVisibility(View.VISIBLE);
+        } else if (position == 2) {
+            if (mFriendsFragment == null) {
+                mFriendsFragment = FriendsFragment.newInstance(mBroadcastObserver);
+            }
+            newFragment = mFriendsFragment;
+            fab.setVisibility(View.GONE);
         }
 
         getSupportFragmentManager().beginTransaction().replace(
@@ -264,5 +286,25 @@ public class HomeActivity extends AppCompatActivity implements Observer {
         if (result instanceof ObserverMsg) {
             scanAPResults = ((ObserverMsg) result).getScanAPResults();
         }
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        Log.v("loc","loc");
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+
     }
 }

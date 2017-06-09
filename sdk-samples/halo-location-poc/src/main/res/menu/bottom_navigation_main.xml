@@ -5,12 +5,19 @@
         android:id="@+id/action_position"
         android:enabled="true"
         android:icon="@drawable/ic_directions_black_24dp"
-        android:title="Position"
+        android:title="@string/menu_bottom1"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_add_location"
         android:enabled="true"
         android:icon="@drawable/ic_add_location_black_24dp"
-        android:title="Add location"
+        android:title="@string/menu_bottom2"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_friends"
+        android:enabled="true"
+        android:icon="@drawable/ic_explore_black_24dp"
+        android:title="@string/menu_bottom3"
         app:showAsAction="ifRoom" />
 </menu>

@@ -1,5 +1,9 @@
 <resources>
     <string name="app_name">LocationPOC</string>
+    <!-- menu bottom -->
+    <string name="menu_bottom1">Position</string>
+    <string name="menu_bottom2">Add location</string>
+    <string name="menu_bottom3">Friends</string>
 
     <!-- login screen -->
     <string name="error_msg_create">This is a private beta you cannot create an account.</string>
@@ -26,8 +30,10 @@
     <string name="scan_between_1">Between</string>
     <string name="scan_between_2">and</string>
     <string name="selection_result">You will make a fingerprint of room:</string>
+    <string name="add_location_wait">Reading wifi AP values</string>
 
     <!-- rooms -->
+    <string name="room_info">Room:</string>
     <string name="room_change">Location change alert!!</string>
     <string name="room_kitchen">Kitchen</string>
     <string name="room_kitchen_meeting">Kitchen meeting</string>

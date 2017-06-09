@@ -23,6 +23,8 @@ import android.telephony.CellSignalStrengthLte;
 import android.telephony.CellSignalStrengthWcdma;
 import android.telephony.TelephonyManager;
 
+import com.mobgen.halo.android.content.edition.HaloContentEditApi;
+import com.mobgen.halo.android.content.models.HaloContentInstance;
 import com.mobgen.locationpoc.R;
 import com.mobgen.locationpoc.model.AddLocationMsg;
 import com.mobgen.locationpoc.model.GsmAps;
@@ -30,6 +32,7 @@ import com.mobgen.locationpoc.model.ObserverMsg;
 import com.mobgen.locationpoc.model.PositionMsg;
 import com.mobgen.locationpoc.model.ScanAPResult;
 import com.mobgen.locationpoc.model.WifiAps;
+import com.mobgen.locationpoc.ui.LoginActivity;
 import com.mobgen.locationpoc.ui.MobgenHaloApplication;
 import com.mobgen.halo.android.content.HaloContentApi;
 import com.mobgen.halo.android.content.models.SearchQuery;
@@ -49,6 +52,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Date;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -65,19 +69,28 @@ import static java.lang.Math.abs;
  */
 public class AccessPointReceiver extends BroadcastReceiver {
 
-    List<ScanResult> results;
-    WifiManager wifiManager;
-    TelephonyManager telephonyManager;
-    List<ScanAPResult> scanAPResults = new ArrayList<>();
-    List<WifiAps> wifiApsList;
-    List<GsmAps> gsmApsList;
-    String location = null;
-    int ROOM_RADIUS = 10;
-    BroadcastObserver broadcastObserver;
-    String previousName = "";
-    static String moduleName = "LocationPOC";
-    static String googleAPI = "https://www.googleapis.com/geolocation/v1/geolocate?key=AIzaSyCoMroBJr37F5oUPcIMNPKVmNnGPhU_gjk";
-    Context mContext;
+    public final static String MODULE_NAME = "LocationPOC";
+    public final static String MODULE_NAME_FRIENDS = "FriendsLocationPOC";
+    public static final String AUTHOR_NAME = "Location POC";
+    public static final String MODULE_ID = "592bed5194bca6001162a16a";
+    public static final String MODULE_FRIENDS_ID = "593913330cb1f9001e3b99c6";
+    private static String googleAPI = "https://www.googleapis.com/geolocation/v1/geolocate?key=AIzaSyCoMroBJr37F5oUPcIMNPKVmNnGPhU_gjk";
+    private final static String CURRENT_ROOM = "roomName";
+    private final static String PREV_ROOM = "prevRoom";
+    private final static int ROOM_RADIUS = 10;
+
+    private List<ScanResult> results;
+    private WifiManager wifiManager;
+    private TelephonyManager telephonyManager;
+    private List<ScanAPResult> scanAPResults = new ArrayList<>();
+    private List<WifiAps> wifiApsList;
+    private List<GsmAps> gsmApsList;
+    private String location = null;
+
+    private BroadcastObserver broadcastObserver;
+    private String previousName = "";
+    private Context mContext;
+    private HaloResultV2<List<ScanAPResult>> haloRoomResult = null;
 
     public AccessPointReceiver(WifiManager wifi, TelephonyManager telephony, BroadcastObserver broadcastObserver) {
         wifiManager = wifi;
@@ -105,13 +118,12 @@ public class AccessPointReceiver extends BroadcastReceiver {
         scanAPResults.add(apResult);
         //set obeserver msg object
         observerMsg.setScanAPResults(scanAPResults);
-        if(wifiApsList.size()>0){
+        if (wifiApsList.size() > 0) {
             addLocationMsg.setRoomSelection(mContext.getString(R.string.selection_result) + " " + getRoomName(wifiApsList.get(0).getBSSID()));
         } else {
             addLocationMsg.setRoomSelection(mContext.getString(R.string.selection_result) + previousName);
         }
         observerMsg.setAddLocationMsg(addLocationMsg);
-        observerMsg.setPositionMsg(positionMsg);
         observerMsg.setPositionMsg(positionMsg);
         //check name with halo
         checkWithHalo(wifiManager, observerMsg);
@@ -164,44 +176,100 @@ public class AccessPointReceiver extends BroadcastReceiver {
      * @param observerMsg
      */
     private void checkWithHalo(final WifiManager wifi, final ObserverMsg observerMsg) {
-        SearchQuery options = SearchQueryBuilderFactory.getPublishedItems(moduleName, moduleName)
-                .populateAll()
-                .build();
+        //we do not check every time with halo room only once per execution
+        if(haloRoomResult != null){
+            notifyAndScan(haloRoomResult, observerMsg, wifi);
+        } else {
+            SearchQuery options = SearchQueryBuilderFactory.getPublishedItems(MODULE_NAME, MODULE_NAME)
+                    .populateAll()
+                    .build();
 
-        HaloContentApi.with(MobgenHaloApplication.halo())
-                .search(Data.NETWORK_AND_STORAGE, options)
-                .asContent(ScanAPResult.class)
-                .execute(new CallbackV2<List<ScanAPResult>>() {
-                    @Override
-                    public void onFinish(@NonNull HaloResultV2<List<ScanAPResult>> haloResultV2) {
-                        String currentName = getRealName(haloResultV2.data());
-                        observerMsg.getPositionMsg().setDetectedName(currentName);
-                        observerMsg.getPositionMsg().setChangeStatus(!currentName.equals(previousName));
-                        broadcastObserver.change(observerMsg);
-                        //save events on halo when changing room
-                        if (!currentName.equals(previousName)) {
-                            HashMap<String, String> mapValues = new HashMap<>();
-                            mapValues.put("roomName", currentName);
-                            mapValues.put("prevRoom", previousName);
-                            Location location = LocationUtils.getLocation(mContext);
-                            String locationStringify = null;
-                            if(location != null){
-                                locationStringify = location.getLatitude() + "," + location.getLongitude();
-                            }
-                            HaloEvent event = HaloEvent.builder()
-                                    .withType(HaloEvent.REGISTER_LOCATION)
-                                    .withLocation(locationStringify)
-                                    .withExtra(mapValues).build();
-                            MobgenHaloApplication
-                                    .halo()
-                                    .manager()
-                                    .sendEvent(event)
-                                    .execute();
+            HaloContentApi.with(MobgenHaloApplication.halo())
+                    .search(Data.NETWORK_AND_STORAGE, options)
+                    .asContent(ScanAPResult.class)
+                    .execute(new CallbackV2<List<ScanAPResult>>() {
+                        @Override
+                        public void onFinish(@NonNull HaloResultV2<List<ScanAPResult>> haloResultV2) {
+                            haloRoomResult = haloResultV2;
+                            notifyAndScan(haloResultV2, observerMsg, wifi);
                         }
-                        previousName = currentName;
-                        wifi.startScan();
-                    }
-                });
+                    });
+        }
+    }
+
+    /**
+     * Notify observer save on halo and restart scan
+     * @param haloResultV2
+     * @param observerMsg
+     * @param wifi
+     */
+    private void notifyAndScan(@NonNull HaloResultV2<List<ScanAPResult>> haloResultV2, ObserverMsg observerMsg, WifiManager wifi) {
+        String currentName = getRealName(haloResultV2.data());
+        observerMsg.getPositionMsg().setDetectedName(currentName);
+        observerMsg.getPositionMsg().setChangeStatus(!currentName.equals(previousName));
+        broadcastObserver.change(observerMsg);
+        //save events on halo when changing room
+        if (!currentName.equals(previousName)) {
+            //user data
+            String userName = MobgenHaloApplication.halo()
+                    .getCore().manager().storage()
+                    .prefs().getString(LoginActivity.USER_NAME, "");
+            String userMail = MobgenHaloApplication.halo()
+                    .getCore().manager().storage()
+                    .prefs().getString(LoginActivity.USER_MAIL, "");
+            String userPhoto = MobgenHaloApplication.halo()
+                    .getCore().manager().storage()
+                    .prefs().getString(LoginActivity.USER_PHOTO, "https://mobgen.github.io/halo-documentation/images/halo-home.png");
+            //location data
+            Location location = LocationUtils.getLocation(mContext);
+            String locationStringify = null;
+            Double longitude = null;
+            Double latitude = null;
+            if (location != null) {
+                locationStringify = location.getLatitude() + "," + location.getLongitude();
+                longitude = location.getLongitude();
+                latitude = location.getLatitude();
+            }
+            //event data
+            HashMap<String, String> eventValues = new HashMap<>();
+            eventValues.put(CURRENT_ROOM, currentName);
+            eventValues.put(PREV_ROOM, previousName);
+            eventValues.put(LoginActivity.USER_NAME,userName);
+            eventValues.put(LoginActivity.USER_MAIL,userMail);
+            //send event
+            HaloEvent event = HaloEvent.builder()
+                    .withType(HaloEvent.REGISTER_LOCATION)
+                    .withLocation(locationStringify)
+                    .withExtra(eventValues).build();
+            MobgenHaloApplication
+                    .halo()
+                    .manager()
+                    .sendEvent(event)
+                    .execute();
+            //instance data
+            HashMap<String, Object> instanceValues = new HashMap<>();
+            instanceValues.put("room", currentName);
+            instanceValues.put("photo", userPhoto);
+            instanceValues.put("name",userName);
+            instanceValues.put("mail",userMail);
+            instanceValues.put("longitude",longitude);
+            instanceValues.put("latitude",latitude);
+            Date now = new Date();
+            //save data instance
+            HaloContentInstance newPosition = new HaloContentInstance.Builder(MODULE_NAME_FRIENDS)
+                    .withAuthor(AUTHOR_NAME)
+                    .withContentData(instanceValues)
+                    .withName(userName)
+                    .withCreationDate(now)
+                    .withPublishDate(now)
+                    .withModuleId(MODULE_FRIENDS_ID)
+                    .build();
+            HaloContentEditApi.with(MobgenHaloApplication.halo())
+                    .addContent(newPosition)
+                    .execute();
+        }
+        previousName = currentName;
+        wifi.startScan();
     }
 
     /**
@@ -315,24 +383,27 @@ public class AccessPointReceiver extends BroadcastReceiver {
 
         //solving ecuation
         List<Double> tempDistanceAvg = new ArrayList<Double>(distancesAvgs);
-        Collections.sort(tempDistanceAvg);
-        tempDistanceAvg = new ArrayList<Double>(tempDistanceAvg.subList(0, 2));
-        List<Integer> top2Distance = new ArrayList<>();
-        top2Distance.add(distancesAvgs.indexOf(tempDistanceAvg.get(0)));
-        top2Distance.add(distancesAvgs.indexOf(tempDistanceAvg.get(1)));
-
         int finalIndex = 0;
         int result1 = 0;
         int result2 = 0;
-        if (tempDistanceAvg.get(1) - tempDistanceAvg.get(0) < ROOM_RADIUS && tempDistanceAvg.get(0) > ROOM_RADIUS) {
-            //middle point
-            finalIndex = -1;//the first
-            result1 = top2Distance.get(0);
-            result2 = top2Distance.get(1);
-        } else {
-            finalIndex = top2Distance.get(0);
+        if (distancesAvgs.size() > 0) {
+            Collections.sort(tempDistanceAvg);
+            tempDistanceAvg = new ArrayList<Double>(tempDistanceAvg.subList(0, 2));
+            List<Integer> top2Distance = new ArrayList<>();
+            top2Distance.add(distancesAvgs.indexOf(tempDistanceAvg.get(0)));
+            top2Distance.add(distancesAvgs.indexOf(tempDistanceAvg.get(1)));
+
+            if (tempDistanceAvg.get(1) - tempDistanceAvg.get(0) < ROOM_RADIUS && tempDistanceAvg.get(0) > ROOM_RADIUS) {
+                //middle point
+                finalIndex = -1;//the first
+                result1 = top2Distance.get(0);
+                result2 = top2Distance.get(1);
+            } else {
+                finalIndex = top2Distance.get(0);
+            }
         }
 
+        //return result
         if (finalIndex != -1) {
             return haloResult.get(finalIndex).getRoomName();
         } else {
@@ -348,7 +419,7 @@ public class AccessPointReceiver extends BroadcastReceiver {
      * @return
      */
     private String getMinimunDistance(List<ScanResult> results) {
-        if(results.size()>0) {
+        if (results.size() > 0) {
             double min = calculateDistance((double) results.get(0).level, results.get(0).frequency);
             int minIndex = 0;
             for (int i = 0; i < results.size(); i++) {

@@ -150,7 +150,6 @@ public class PositionFragment extends Fragment implements Observer, GoogleApiCli
                 //remove all markers and add the new location
                 Location location = LocationUtils.getLocation(getContext());
                 if (location != null) {
-                    //mMap.clear();
                     BitmapDescriptor colorMarker;
                     if (positionMsg.getDetectedName().contains(getString(R.string.scan_between_1))) {
                         colorMarker = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED);
@@ -166,7 +165,6 @@ public class PositionFragment extends Fragment implements Observer, GoogleApiCli
                     mInsideMarker.setSnippet(getString(R.string.welcome_msg));
                     mInsideMarker.showInfoWindow();
 
-                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myLatLng, 25.0f));
                     Toast.makeText(getContext(), getString(R.string.room_change), Toast.LENGTH_LONG).show();
                 }
             }

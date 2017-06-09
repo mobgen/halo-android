@@ -18,6 +18,7 @@ import com.mobgen.halo.android.auth.models.IdentifiedUser;
 import com.mobgen.halo.android.auth.providers.SocialNotAvailableException;
 import com.mobgen.halo.android.framework.toolbox.data.CallbackV2;
 import com.mobgen.halo.android.framework.toolbox.data.HaloResultV2;
+import com.mobgen.halo.android.sdk.api.Halo;
 import com.mobgen.locationpoc.R;
 
 /**
@@ -25,6 +26,11 @@ import com.mobgen.locationpoc.R;
  */
 
 public class LoginActivity extends AppCompatActivity {
+
+    public static final String USER_NAME = "userName";
+    public static final String USER_MAIL = "userEmail";
+    public static final String USER_PHOTO = "userPhoto";
+
     private EditText mEmailText;
     private EditText mPasswordText;
     private TextInputLayout mEmailLayout;
@@ -93,6 +99,19 @@ public class LoginActivity extends AppCompatActivity {
                 public void onFinish(@NonNull HaloResultV2<IdentifiedUser> result) {
                     progressDialog.dismiss();
                     if (result.data() != null) {
+                        //save userName
+                        String photoUrl = null;
+                        if(!result.data().getUser().getPhoto().equals("")){
+                            photoUrl = result.data().getUser().getPhoto();
+                        }
+                        MobgenHaloApplication.halo()
+                                .getCore().manager().storage()
+                                .prefs()
+                                .edit()
+                                .putString(USER_MAIL, result.data().getUser().getEmail())
+                                .putString(USER_NAME, result.data().getUser().getName())
+                                .putString(USER_PHOTO, photoUrl)
+                                .apply();
                         onLoginSuccess();
                     } else {
                         onLoginFailed();
@@ -138,7 +157,7 @@ public class LoginActivity extends AppCompatActivity {
             mEmailText.setError(null);
         }
 
-        if (password.isEmpty() || password.length() < 4 || password.length() > 10) {
+        if (password.isEmpty() || password.length() < 4 || password.length() > 20) {
             mPasswordText.setError(getString(R.string.login_validate_password_error));
             valid = false;
         } else {

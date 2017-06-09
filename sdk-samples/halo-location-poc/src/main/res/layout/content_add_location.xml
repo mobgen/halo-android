@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:textAlignment="center"
-        android:text="Wait until we read wifi values"
+        android:text="@string/add_location_wait"
         android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
 
     <ScrollView
