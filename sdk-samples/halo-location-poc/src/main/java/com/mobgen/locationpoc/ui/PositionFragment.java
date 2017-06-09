@@ -165,7 +165,7 @@ public class PositionFragment extends Fragment implements Observer, GoogleApiCli
                     mInsideMarker.setSnippet(getString(R.string.welcome_msg));
                     mInsideMarker.showInfoWindow();
 
-                    Toast.makeText(getContext(), getString(R.string.room_change), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), getString(R.string.room_change), Toast.LENGTH_SHORT).show();
                 }
             }
         }

@@ -35,7 +35,6 @@ import com.mobgen.halo.android.content.search.SearchQueryBuilderFactory;
 import com.mobgen.halo.android.framework.toolbox.data.CallbackV2;
 import com.mobgen.halo.android.framework.toolbox.data.Data;
 import com.mobgen.halo.android.framework.toolbox.data.HaloResultV2;
-import com.mobgen.halo.android.framework.toolbox.threading.Threading;
 import com.mobgen.locationpoc.R;
 import com.mobgen.locationpoc.model.Friend;
 import com.mobgen.locationpoc.model.ObserverMsg;
@@ -44,7 +43,6 @@ import com.mobgen.locationpoc.receiver.AccessPointReceiver;
 import com.mobgen.locationpoc.receiver.BroadcastObserver;
 import com.mobgen.locationpoc.utils.LocationUtils;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -150,6 +148,7 @@ public class FriendsFragment extends Fragment implements Observer, GoogleApiClie
         final List<String> emailsStored = new ArrayList<>();
         SearchQuery options = SearchQueryBuilderFactory.getPublishedItems(AccessPointReceiver.MODULE_NAME_FRIENDS, AccessPointReceiver.MODULE_NAME_FRIENDS)
                 .populateAll()
+                .onePage(true)
                 .build();
 
         HaloContentApi.with(MobgenHaloApplication.halo())
@@ -160,7 +159,7 @@ public class FriendsFragment extends Fragment implements Observer, GoogleApiClie
                     public void onFinish(@NonNull HaloResultV2<List<Friend>> result) {
                         if (result.data() != null) {
                             final List<Friend> friendList = result.data();
-                            for (int i = 0; i < friendList.size(); i++) {
+                            for (int i = friendList.size() - 1; i >= 0; i--) {
                                 if (!emailsStored.contains(friendList.get(i).getUserMail())) {
                                     final Marker friendMarker = mMap.addMarker(new MarkerOptions().position(
                                             new LatLng(friendList.get(i).getLatitude(), friendList.get(i).getLongitude())));

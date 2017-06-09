@@ -182,6 +182,7 @@ public class AccessPointReceiver extends BroadcastReceiver {
         } else {
             SearchQuery options = SearchQueryBuilderFactory.getPublishedItems(MODULE_NAME, MODULE_NAME)
                     .populateAll()
+                    .onePage(true)
                     .build();
 
             HaloContentApi.with(MobgenHaloApplication.halo())
