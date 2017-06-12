@@ -2,11 +2,8 @@ package com.mobgen.locationpoc.ui;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.location.Location;
-import android.media.Image;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -17,7 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -172,7 +168,7 @@ public class FriendsFragment extends Fragment implements Observer, GoogleApiClie
                             for (int i = friendList.size() - 1; i >= 0; i--) {
                                 if (!emailsStored.contains(friendList.get(i).getUserMail())) {
                                     emailsStored.add(friendList.get(i).getUserMail());
-                                    polylineColor.add(getRandomColor(friendList.get(i).getTime()));
+                                    polylineColor.add(getRandomColor());
                                     polylineOptions.add(new PolylineOptions());
                                 }
                                 //add polyline options
@@ -180,19 +176,20 @@ public class FriendsFragment extends Fragment implements Observer, GoogleApiClie
                                 polylineOptions.get(currentIndex).color(polylineColor.get(currentIndex));
                                 polylineOptions.get(currentIndex).add(
                                         new LatLng(friendList.get(i).getLatitude(), friendList.get(i).getLongitude()));
+                                final Marker friendMarker = mMap.addMarker(new MarkerOptions().position(
+                                        new LatLng(friendList.get(i).getLatitude(), friendList.get(i).getLongitude())));
+                                friendMarker.setTitle(friendList.get(i).getUserName() + " " + friendList.get(i).getRoom());
+                                friendMarker.setSnippet(friendList.get(i).getUserMail());
+                                friendMarker.setTag(friendList.get(i));
+                                BitmapDescriptor bitmapDescriptor;
+                                bitmapDescriptor = getMarkerIcon(polylineColor.get(currentIndex));
+                                friendMarker.setIcon(bitmapDescriptor);
 
-                                if(isMarkerVisible(friendList.get(i).getTime())) {
-                                    final Marker friendMarker = mMap.addMarker(new MarkerOptions().position(
-                                            new LatLng(friendList.get(i).getLatitude(), friendList.get(i).getLongitude())));
-                                    friendMarker.setTitle(friendList.get(i).getUserName() + " " + friendList.get(i).getRoom());
-                                    friendMarker.setSnippet(friendList.get(i).getUserMail());
-                                    friendMarker.setTag(friendList.get(i));
-                                    BitmapDescriptor bitmapDescriptor;
-                                    bitmapDescriptor = getMarkerIcon(polylineColor.get(currentIndex));
-                                    friendMarker.setIcon(bitmapDescriptor);
-                                    //fetch images for caching
-                                    Picasso.with(getContext()).load(friendList.get(i).getUserPhoto()).fetch();
-                                }
+                                friendMarker.setVisible(isMarkerVisible(friendList.get(i).getTime()));
+                                polylineOptions.get(currentIndex).visible(isMarkerVisible(friendList.get(i).getTime()));
+
+                                //fetch images for caching
+                                Picasso.with(getContext()).load(friendList.get(i).getUserPhoto()).fetch();
                             }
                             //add all polylines
                             for (int j = 0; j < polylineOptions.size(); j++) {
@@ -209,9 +206,9 @@ public class FriendsFragment extends Fragment implements Observer, GoogleApiClie
      * @param timestamp
      * @return True if we need visibility false otherwise
      */
-    private boolean isMarkerVisible(Date timestamp){
+    private boolean isMarkerVisible(Date timestamp) {
         long now = new Date().getTime();
-        if(timestamp == null){
+        if (timestamp == null) {
             return false;
         }
         return (now - timestamp.getTime()) < (60 * 60 * 1000);
@@ -222,20 +219,17 @@ public class FriendsFragment extends Fragment implements Observer, GoogleApiClie
      *
      * @return The random color as int.
      */
-    private int getRandomColor(Date timestamp){
+    private int getRandomColor() {
         Random randomGenerator = new Random();
         int red = randomGenerator.nextInt(256);
         int green = randomGenerator.nextInt(256);
         int blue = randomGenerator.nextInt(256);
-        if(isMarkerVisible(timestamp)) {
-            return Color.argb(255, red, green, blue);
-        } else {
-            return Color.argb(0, red, green, blue);
-        }
+        return Color.argb(255, red, green, blue);
     }
 
     /**
      * Get descriptor from color.
+     *
      * @param color
      * @return The bitmapDescriptor.
      */
