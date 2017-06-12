@@ -248,6 +248,7 @@ public class AccessPointReceiver extends BroadcastReceiver {
                     .sendEvent(event)
                     .execute();
             //instance data
+            Date now = new Date();
             HashMap<String, Object> instanceValues = new HashMap<>();
             instanceValues.put("room", currentName);
             instanceValues.put("photo", userPhoto);
@@ -255,7 +256,7 @@ public class AccessPointReceiver extends BroadcastReceiver {
             instanceValues.put("mail",userMail);
             instanceValues.put("longitude",longitude);
             instanceValues.put("latitude",latitude);
-            Date now = new Date();
+            instanceValues.put("time",now.getTime());
             //save data instance
             HaloContentInstance newPosition = new HaloContentInstance.Builder(MODULE_NAME_FRIENDS)
                     .withAuthor(AUTHOR_NAME)

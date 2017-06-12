@@ -5,6 +5,8 @@ import android.location.Location;
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 
+import java.util.Date;
+
 /**
  * Created by f.souto.gonzalez on 08/06/2017.
  */
@@ -23,6 +25,8 @@ public class Friend {
     double longitude;
     @JsonField(name = "room")
     String room;
+    @JsonField(name = "time")
+    Date time;
 
     public String getRoom() {
         return room;
@@ -70,5 +74,13 @@ public class Friend {
 
     public void setLongitude(double longitude) {
         this.longitude = longitude;
+    }
+
+    public Date getTime() {
+        return time;
+    }
+
+    public void setTime(Date time) {
+        this.time = time;
     }
 }

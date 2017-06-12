@@ -175,8 +175,10 @@ public class HomeActivity extends AppCompatActivity implements Observer, Locatio
 
     @Override
     public void onPause() {
-        locationManager.removeUpdates(this);
-        locationManager = null;
+        if(locationManager != null) {
+            locationManager.removeUpdates(this);
+            locationManager = null;
+        }
         super.onPause();
     }
 
