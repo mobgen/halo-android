@@ -1,7 +1,5 @@
 package com.mobgen.locationpoc.model;
 
-import com.mobgen.locationpoc.ui.PositionFragment;
-
 import java.util.List;
 
 /**

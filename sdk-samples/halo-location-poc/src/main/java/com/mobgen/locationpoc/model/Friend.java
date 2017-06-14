@@ -41,6 +41,7 @@ public class Friend implements Parcelable {
         latitude = in.readDouble();
         longitude = in.readDouble();
         room = in.readString();
+        time = new Date(in.readLong());
     }
 
     public static final Creator<Friend> CREATOR = new Creator<Friend>() {
@@ -124,5 +125,6 @@ public class Friend implements Parcelable {
         dest.writeDouble(latitude);
         dest.writeDouble(longitude);
         dest.writeString(room);
+        dest.writeLong(time.getTime());
     }
 }

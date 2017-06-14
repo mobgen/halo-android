@@ -38,6 +38,13 @@
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
+        <activity
+            android:name=".ui.friends.AllFriendsActivity"
+            android:label="@string/allfriend_location"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme">
+        </activity>
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyDjfQnWs0sXPM2uyPT_xCIlBlCaeAtWjZY"/>

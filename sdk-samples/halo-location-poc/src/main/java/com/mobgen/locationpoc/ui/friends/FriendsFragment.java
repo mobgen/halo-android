@@ -1,4 +1,4 @@
-package com.mobgen.locationpoc.ui;
+package com.mobgen.locationpoc.ui.friends;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
@@ -13,7 +13,6 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -46,9 +45,9 @@ import com.mobgen.locationpoc.model.ObserverMsg;
 import com.mobgen.locationpoc.model.PositionMsg;
 import com.mobgen.locationpoc.receiver.AccessPointReceiver;
 import com.mobgen.locationpoc.receiver.BroadcastObserver;
+import com.mobgen.locationpoc.ui.MobgenHaloApplication;
 import com.mobgen.locationpoc.utils.FriendItem;
 import com.mobgen.locationpoc.utils.LocationUtils;
-import com.mobgen.locationpoc.utils.InfoWindowSlidePagerAdapter;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.squareup.picasso.Picasso;
 
@@ -81,6 +80,8 @@ public class FriendsFragment extends Fragment implements Observer, GoogleApiClie
     private RelativeLayout mControlLeft, mControlRight;
     private TextView no_elements;
     private List<Friend> uniqueFriendList = new ArrayList<>();
+
+    boolean fragmentStatus = false;
 
     public static FriendsFragment newInstance(BroadcastObserver broadcastObserver) {
 
@@ -201,8 +202,8 @@ public class FriendsFragment extends Fragment implements Observer, GoogleApiClie
                     }
                 }
                 friendClustered = orderUniqueFriendList(friendClustered);
-
                 showClusteredElements(friendClustered);
+
                 return null;
             }
 
@@ -230,8 +231,9 @@ public class FriendsFragment extends Fragment implements Observer, GoogleApiClie
      * @param friends
      */
     private void showClusteredElements(List<Friend> friends) {
+        mLayout.requestLayout();
         mLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
-        if (friends.size() > 0) {
+        if (friends != null && friends.size() > 0) {
             mPagerAdapter = new InfoWindowSlidePagerAdapter(getChildFragmentManager(), friends);
             mPager.setAdapter(mPagerAdapter);
             //set button visibility
@@ -353,7 +355,7 @@ public class FriendsFragment extends Fragment implements Observer, GoogleApiClie
         polylineOptions.get(currentIndex).color(polylineColor.get(currentIndex));
         polylineOptions.get(currentIndex).add(
                 new LatLng(friendList.get(i).getLatitude(), friendList.get(i).getLongitude()));
-        
+
         if(isMarkerVisible(friendList.get(i).getTime())) {
             FriendItem offsetItem = new FriendItem(friendList.get(i).getLatitude(), friendList.get(i).getLongitude(), friendList.get(i));
             mClusterManager.addItem(offsetItem);
@@ -433,16 +435,35 @@ public class FriendsFragment extends Fragment implements Observer, GoogleApiClie
 
     }
 
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        fragmentStatus = true;
+    }
+
+    @Override
+    public void onPause() {
+        fragmentStatus = false;
+        super.onPause();
+    }
+
+    public List<Friend> getUniqueFriendList(){
+        return uniqueFriendList;
+    }
+
     @Override
     public void update(Observable o, Object result) {
         //only with a status change we reload all friends status
-        if (result instanceof ObserverMsg) {
-            PositionMsg positionMsg = ((ObserverMsg) result).getPositionMsg();
-            if (positionMsg.isChangeStatus()) {
-                if (mMap != null && mClusterManager != null) {
-                    mMap.clear();
-                    mClusterManager.clearItems();
-                    addFriendPoints();
+        if(fragmentStatus) {
+            if (result instanceof ObserverMsg) {
+                PositionMsg positionMsg = ((ObserverMsg) result).getPositionMsg();
+                if (positionMsg.isChangeStatus()) {
+                    if (mMap != null && mClusterManager != null) {
+                        mMap.clear();
+                        mClusterManager.clearItems();
+                        addFriendPoints();
+                    }
                 }
             }
         }

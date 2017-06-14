@@ -1,4 +1,4 @@
-package com.mobgen.locationpoc.ui;
+package com.mobgen.locationpoc.ui.fingerprint;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -23,6 +23,7 @@ public class AddLocationFragment extends Fragment implements Observer {
 
     TextView distance, room;
     String distanceText, roomText;
+    boolean fragmentStatus = false;
 
     public static AddLocationFragment newInstance(BroadcastObserver brodcascastObserver) {
 
@@ -56,15 +57,31 @@ public class AddLocationFragment extends Fragment implements Observer {
         return rootview;
     }
 
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        fragmentStatus = true;
+    }
+
+    @Override
+    public void onPause() {
+        fragmentStatus = false;
+        super.onPause();
+    }
+
+
     @Override
     public void update(Observable o, Object result) {
         //updates from receiver
-        if(result instanceof ObserverMsg) {
-            AddLocationMsg addLocationMsg = ((ObserverMsg) result).getAddLocationMsg();
-            roomText = addLocationMsg.getRoomSelection();
-            distanceText = addLocationMsg.getWifiStatus();
-            room.setText(roomText);
-            distance.setText(distanceText);
+        if(fragmentStatus) {
+            if (result instanceof ObserverMsg) {
+                AddLocationMsg addLocationMsg = ((ObserverMsg) result).getAddLocationMsg();
+                roomText = addLocationMsg.getRoomSelection();
+                distanceText = addLocationMsg.getWifiStatus();
+                room.setText(roomText);
+                distance.setText(distanceText);
+            }
         }
     }
 }

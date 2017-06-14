@@ -1,4 +1,4 @@
-package com.mobgen.locationpoc.ui;
+package com.mobgen.locationpoc.ui.friends;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -51,8 +51,8 @@ public class InfoWindowSlidePageFragment extends Fragment {
 
         if (mFriend != null) {
             room.setText(getContext().getString(R.string.room_info) + " " + mFriend.getRoom());
-            userName.setText(getContext().getString(R.string.room_username) + " " +mFriend.getUserName());
-            userMail.setText(getContext().getString(R.string.room_email) + " " +mFriend.getUserMail());
+            userName.setText(getContext().getString(R.string.room_username) + " " + mFriend.getUserName());
+            userMail.setText(getContext().getString(R.string.room_email) + " " + mFriend.getUserMail());
             userDate.setText(mFriend.getTime().toString());
             Picasso.with(getContext()).load(mFriend.getUserPhoto()).into(imageView);
         }

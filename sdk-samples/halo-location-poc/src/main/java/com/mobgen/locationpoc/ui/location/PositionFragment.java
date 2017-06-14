@@ -1,4 +1,4 @@
-package com.mobgen.locationpoc.ui;
+package com.mobgen.locationpoc.ui.location;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
@@ -50,6 +50,8 @@ public class PositionFragment extends Fragment implements Observer, GoogleApiCli
     private GoogleApiClient mGoogleApiClient;
     private Marker mInsideMarker;
     private boolean updateUI;
+
+    boolean fragmentStatus = false;
 
     public static PositionFragment newInstance(BroadcastObserver broadcastObserver) {
 
@@ -141,31 +143,45 @@ public class PositionFragment extends Fragment implements Observer, GoogleApiCli
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        fragmentStatus = true;
+    }
+
+    @Override
+    public void onPause() {
+        fragmentStatus = false;
+        super.onPause();
+    }
+
+    @Override
     public void update(Observable o, Object result) {
         //updates from receiver
-        if (result instanceof ObserverMsg) {
-            PositionMsg positionMsg = ((ObserverMsg) result).getPositionMsg();
-            if (positionMsg.isChangeStatus() || updateUI) {
-                updateUI = false;
-                //remove all markers and add the new location
-                Location location = LocationUtils.getLocation(getContext());
-                if (location != null) {
-                    BitmapDescriptor colorMarker;
-                    if (positionMsg.getDetectedName().contains(getString(R.string.scan_between_1))) {
-                        colorMarker = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED);
-                    } else {
-                        colorMarker = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN);
-                    }
-                    LatLng myLatLng = new LatLng(location.getLatitude(),
-                            location.getLongitude());
-                    mInsideMarker.setVisible(true);
-                    mInsideMarker.setPosition(myLatLng);
-                    mInsideMarker.setTitle(positionMsg.getDetectedName());
-                    mInsideMarker.setIcon(colorMarker);
-                    mInsideMarker.setSnippet(getString(R.string.welcome_msg));
-                    mInsideMarker.showInfoWindow();
+        if(fragmentStatus) {
+            if (result instanceof ObserverMsg) {
+                PositionMsg positionMsg = ((ObserverMsg) result).getPositionMsg();
+                if (positionMsg.isChangeStatus() || updateUI) {
+                    updateUI = false;
+                    //remove all markers and add the new location
+                    Location location = LocationUtils.getLocation(getContext());
+                    if (location != null) {
+                        BitmapDescriptor colorMarker;
+                        if (positionMsg.getDetectedName().contains(getString(R.string.scan_between_1))) {
+                            colorMarker = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED);
+                        } else {
+                            colorMarker = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN);
+                        }
+                        LatLng myLatLng = new LatLng(location.getLatitude(),
+                                location.getLongitude());
+                        mInsideMarker.setVisible(true);
+                        mInsideMarker.setPosition(myLatLng);
+                        mInsideMarker.setTitle(positionMsg.getDetectedName());
+                        mInsideMarker.setIcon(colorMarker);
+                        mInsideMarker.setSnippet(getString(R.string.welcome_msg));
+                        mInsideMarker.showInfoWindow();
 
-                    Toast.makeText(getContext(), getString(R.string.room_change), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), getString(R.string.room_change), Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         }

@@ -31,6 +31,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.mobgen.locationpoc.R;
+import com.mobgen.locationpoc.model.Friend;
 import com.mobgen.locationpoc.model.ObserverMsg;
 import com.mobgen.locationpoc.model.ScanAPResult;
 import com.mobgen.locationpoc.receiver.AccessPointReceiver;
@@ -41,6 +42,10 @@ import com.mobgen.halo.android.content.models.BatchOperations;
 import com.mobgen.halo.android.content.models.HaloContentInstance;
 import com.mobgen.halo.android.framework.toolbox.data.CallbackV2;
 import com.mobgen.halo.android.framework.toolbox.data.HaloResultV2;
+import com.mobgen.locationpoc.ui.fingerprint.AddLocationFragment;
+import com.mobgen.locationpoc.ui.friends.AllFriendsActivity;
+import com.mobgen.locationpoc.ui.friends.FriendsFragment;
+import com.mobgen.locationpoc.ui.location.PositionFragment;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -65,6 +70,9 @@ public class HomeActivity extends AppCompatActivity implements Observer, Locatio
     private WifiManager wifi;
     private TelephonyManager telephony;
     private LocationManager locationManager;
+    private int currentFragment = -1;
+    private Activity mActivity = this;
+    private Context mContext = this;
 
 
     public static void start(@NonNull Context context) {
@@ -79,11 +87,11 @@ public class HomeActivity extends AppCompatActivity implements Observer, Locatio
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        final Activity context = this;
-        Context context1 = this;
+        mActivity = this;
+        mContext = this;
 
-        wifi = (WifiManager) context1.getSystemService(Context.WIFI_SERVICE);
-        telephony = (TelephonyManager) context1.getSystemService(Context.TELEPHONY_SERVICE);
+        wifi = (WifiManager) mContext.getSystemService(Context.WIFI_SERVICE);
+        telephony = (TelephonyManager) mContext.getSystemService(Context.TELEPHONY_SERVICE);
         mBroadcastObserver = new BroadcastObserver();
         mBroadcastObserver.addObserver(this);
         mAccessPointReceiver = new AccessPointReceiver(wifi, telephony, mBroadcastObserver);
@@ -100,12 +108,15 @@ public class HomeActivity extends AppCompatActivity implements Observer, Locatio
                         switch (item.getItemId()) {
                             case R.id.action_add_location:
                                 changeFragment(1);
+                                currentFragment = 1;
                                 break;
                             case R.id.action_position:
                                 changeFragment(0);
+                                currentFragment = 0;
                                 break;
                             case R.id.action_friends:
                                 changeFragment(2);
+                                currentFragment = 2;
                                 break;
                         }
                         return true;
@@ -115,44 +126,65 @@ public class HomeActivity extends AppCompatActivity implements Observer, Locatio
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //send scan result to halo
-                if (scanAPResults.size() > 0) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                    builder.setTitle(getString(R.string.dialog_title));
-                    final EditText roomSelection = new EditText(context);
-                    roomSelection.setText(scanAPResults.get(0).getRoomName());
-                    roomSelection.setInputType(InputType.TYPE_CLASS_TEXT);
-                    builder.setView(roomSelection);
-
-                    builder.setPositiveButton(getString(R.string.dialog_ok), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            HaloContentEditApi.with(MobgenHaloApplication.halo())
-                                    .batch(getInstancesToBatch(roomSelection.getText().toString()), true)
-                                    .execute(new CallbackV2<BatchOperationResults>() {
-                                        @Override
-                                        public void onFinish(@NonNull HaloResultV2<BatchOperationResults> haloResultV2) {
-                                            Toast.makeText(context, getString(R.string.dialog_result_ok),
-                                                    Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
-                        }
-                    });
-
-                    builder.show();
-                } else {
-                    Toast.makeText(context, getString(R.string.dialog_result_ko),
-                            Toast.LENGTH_SHORT).show();
+                if(currentFragment==1) {
+                    sendFingerPrint();
+                } else if(currentFragment==2){
+                    listFriends(mFriendsFragment.getUniqueFriendList());
                 }
             }
         });
 
         locationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
-        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-                || ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(mActivity, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                || ActivityCompat.checkSelfPermission(mActivity, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, FIVE_MINUTES_MS, 0, this);
             locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, FIVE_MINUTES_MS, 0, this);
         }
+    }
+
+    /**
+     * Send a new fingerprint
+     *
+     */
+    private void sendFingerPrint() {
+        //send scan result to halo
+        if (scanAPResults.size() > 0) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+            builder.setTitle(getString(R.string.dialog_title));
+            final EditText roomSelection = new EditText(mContext);
+            roomSelection.setText(scanAPResults.get(0).getRoomName());
+            roomSelection.setInputType(InputType.TYPE_CLASS_TEXT);
+            builder.setView(roomSelection);
+
+            builder.setPositiveButton(getString(R.string.dialog_ok), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    HaloContentEditApi.with(MobgenHaloApplication.halo())
+                            .batch(getInstancesToBatch(roomSelection.getText().toString()), true)
+                            .execute(new CallbackV2<BatchOperationResults>() {
+                                @Override
+                                public void onFinish(@NonNull HaloResultV2<BatchOperationResults> haloResultV2) {
+                                    Toast.makeText(mContext, getString(R.string.dialog_result_ok),
+                                            Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                }
+            });
+
+            builder.show();
+        } else {
+            Toast.makeText(mContext, getString(R.string.dialog_result_ko),
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    /**
+     * Show unique friends list.
+     *
+     * @param uniqueFriends
+     */
+    private void listFriends(List<Friend> uniqueFriends){
+        AllFriendsActivity.start(mContext,uniqueFriends);
     }
 
     @Override
@@ -164,7 +196,9 @@ public class HomeActivity extends AppCompatActivity implements Observer, Locatio
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION_PERMS);
             changeFragment(1);
         } else {
-            changeFragment(0);
+            if(currentFragment == -1){
+                changeFragment(0);
+            }
         }
         //get permission for phone state
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
@@ -249,13 +283,15 @@ public class HomeActivity extends AppCompatActivity implements Observer, Locatio
                 mAddLocationFragment = AddLocationFragment.newInstance(mBroadcastObserver);
             }
             newFragment = mAddLocationFragment;
+            fab.setImageResource(R.drawable.ic_backup_black_24dp);
             fab.setVisibility(View.VISIBLE);
         } else if (position == 2) {
             if (mFriendsFragment == null) {
                 mFriendsFragment = FriendsFragment.newInstance(mBroadcastObserver);
             }
             newFragment = mFriendsFragment;
-            fab.setVisibility(View.GONE);
+            fab.setImageResource(R.drawable.ic_people_black_24dp);
+            fab.setVisibility(View.VISIBLE);
         }
 
         getSupportFragmentManager().beginTransaction().replace(
