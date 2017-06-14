@@ -34,6 +34,8 @@
 
     <!-- rooms -->
     <string name="room_info">Room:</string>
+    <string name="room_username">Username:</string>
+    <string name="room_email">Email:</string>
     <string name="room_change">Location change alert!!</string>
     <string name="room_kitchen">Kitchen</string>
     <string name="room_kitchen_meeting">Kitchen meeting</string>
@@ -48,6 +50,9 @@
     <string name="room_3b">3B</string>
     <string name="room_3c">3C</string>
     <string name="room_out">out-of-MOBGEN-rooms</string>
+
+    <string name="friend_location">Friend locations:</string>
+    <string name="friend_location_empy">Sorry we do not have elements.</string>
 
 
 </resources>

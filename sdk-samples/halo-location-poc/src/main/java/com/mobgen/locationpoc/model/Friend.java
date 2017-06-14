@@ -1,6 +1,8 @@
 package com.mobgen.locationpoc.model;
 
 import android.location.Location;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
@@ -11,7 +13,7 @@ import java.util.Date;
  * Created by f.souto.gonzalez on 08/06/2017.
  */
 @JsonObject
-public class Friend {
+public class Friend implements Parcelable {
 
     @JsonField(name = "name")
     String userName;
@@ -27,6 +29,31 @@ public class Friend {
     String room;
     @JsonField(name = "time")
     Date time;
+
+    public Friend(){
+        //empty constructor
+    }
+
+    protected Friend(Parcel in) {
+        userName = in.readString();
+        userMail = in.readString();
+        userPhoto = in.readString();
+        latitude = in.readDouble();
+        longitude = in.readDouble();
+        room = in.readString();
+    }
+
+    public static final Creator<Friend> CREATOR = new Creator<Friend>() {
+        @Override
+        public Friend createFromParcel(Parcel in) {
+            return new Friend(in);
+        }
+
+        @Override
+        public Friend[] newArray(int size) {
+            return new Friend[size];
+        }
+    };
 
     public String getRoom() {
         return room;
@@ -82,5 +109,20 @@ public class Friend {
 
     public void setTime(Date time) {
         this.time = time;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(userName);
+        dest.writeString(userMail);
+        dest.writeString(userPhoto);
+        dest.writeDouble(latitude);
+        dest.writeDouble(longitude);
+        dest.writeString(room);
     }
 }
