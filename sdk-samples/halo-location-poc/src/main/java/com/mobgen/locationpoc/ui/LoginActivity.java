@@ -2,6 +2,7 @@ package com.mobgen.locationpoc.ui;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
@@ -39,6 +40,11 @@ public class LoginActivity extends AppCompatActivity {
     private TextView mSignupLink;
     private Context mContext;
 
+    public static void start(@NonNull Context context) {
+        Intent intent = new Intent(context, LoginActivity.class);
+        context.startActivity(intent);
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,7 +74,7 @@ public class LoginActivity extends AppCompatActivity {
         mSignupLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getBaseContext(), getString(R.string.error_msg_create), Toast.LENGTH_LONG).show();
+                SignupActivity.start(mContext);
             }
         });
     }

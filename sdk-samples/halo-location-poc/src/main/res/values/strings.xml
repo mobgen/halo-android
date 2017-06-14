@@ -12,7 +12,23 @@
     <string name="login_error">The credentials are not valid :(</string>
     <string name="login_validate_email_error">Provide a valid email address.</string>
     <string name="login_validate_password_error">Your password must have between 4 and 10 alphanumeric characters</string>
+    <string name="login_validate_name_error">Provide a valid name.</string>
+    <string name="login_validate_surname_error">Provide a valid surname.</string>
+    <string name="login_email">Email</string>
+    <string name="login_password">Password</string>
+    <string name="login_login">Login</string>
+    <string name="login_signup">No account yet? Create one</string>
 
+    <!-- signup -->
+    <string name="signup_name">Name</string>
+    <string name="signup_surname">Surname</string>
+    <string name="signup_email">Email</string>
+    <string name="signup_password">Password</string>
+    <string name="signup_signup">Signup</string>
+    <string name="signup_error">There are some errors :(</string>
+    <string name="signup_error_login">Try to login</string>
+
+    <!-- menu action -->
     <string name="action_refresh">Refresh</string>
 
     <!-- dialog -->
