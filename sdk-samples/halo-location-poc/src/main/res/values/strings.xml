@@ -5,6 +5,7 @@
     <string name="menu_bottom1">Position</string>
     <string name="menu_bottom2">Add location</string>
     <string name="menu_bottom3">Friends</string>
+    <string name="menu_bottom4">Heatmap</string>
 
     <!-- login screen -->
     <string name="error_msg_create">This is a private beta you cannot create an account.</string>
@@ -70,6 +71,12 @@
 
     <string name="friend_location">Friend locations:</string>
     <string name="friend_location_empy">Sorry we do not have elements.</string>
+
+    <!-- date utils -->
+    <string name="date_days">days ago.</string>
+    <string name="date_minutes">minutes ago.</string>
+    <string name="date_hours">hours ago.</string>
+    <string name="date_now">Now.</string>
 
 
 </resources>

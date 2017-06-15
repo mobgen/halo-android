@@ -20,4 +20,10 @@
         android:icon="@drawable/ic_explore_black_24dp"
         android:title="@string/menu_bottom3"
         app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_heat"
+        android:enabled="true"
+        android:icon="@drawable/ic_whatshot_black_24dp"
+        android:title="@string/menu_bottom4"
+        app:showAsAction="ifRoom" />
 </menu>

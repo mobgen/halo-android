@@ -10,8 +10,10 @@ import android.widget.TextView;
 
 import com.mobgen.locationpoc.R;
 import com.mobgen.locationpoc.model.Friend;
+import com.mobgen.locationpoc.utils.DateUtils;
 import com.squareup.picasso.Picasso;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -68,10 +70,10 @@ public class AllFriendAdapter extends RecyclerView.Adapter<AllFriendAdapter.View
         private void bind(Friend friend) {
             if (friend != null) {
                 room.setText(mContext.getString(R.string.room_info) + " " + friend.getRoom());
-                userName.setText(mContext.getString(R.string.room_username) + " "+ friend.getUserName());
-                userMail.setText(mContext.getString(R.string.room_email) + " " +friend.getUserMail());
+                userName.setText(mContext.getString(R.string.room_username) + " " + friend.getUserName());
+                userMail.setText(mContext.getString(R.string.room_email) + " " + friend.getUserMail());
                 if (friend.getTime() != null) {
-                    userDate.setText(friend.getTime().toString());
+                    userDate.setText(DateUtils.timeBetween(mContext, friend.getTime(), new Date()));
                 }
                 Picasso.with(mContext).load(friend.getUserPhoto()).into(userImage);
             }

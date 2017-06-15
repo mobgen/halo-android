@@ -45,6 +45,7 @@ import com.mobgen.halo.android.framework.toolbox.data.HaloResultV2;
 import com.mobgen.locationpoc.ui.fingerprint.AddLocationFragment;
 import com.mobgen.locationpoc.ui.friends.AllFriendsActivity;
 import com.mobgen.locationpoc.ui.friends.FriendsFragment;
+import com.mobgen.locationpoc.ui.heatmap.HeatRegionFragment;
 import com.mobgen.locationpoc.ui.location.PositionFragment;
 
 import java.util.ArrayList;
@@ -63,6 +64,7 @@ public class HomeActivity extends AppCompatActivity implements Observer, Locatio
     private AddLocationFragment mAddLocationFragment;
     private PositionFragment mPositionFragment;
     private FriendsFragment mFriendsFragment;
+    private HeatRegionFragment mHeatRegionFragment;
     private BroadcastObserver mBroadcastObserver;
     List<ScanAPResult> scanAPResults = new ArrayList<>();
     private FloatingActionButton fab;
@@ -118,6 +120,10 @@ public class HomeActivity extends AppCompatActivity implements Observer, Locatio
                                 changeFragment(2);
                                 currentFragment = 2;
                                 break;
+                            case R.id.action_heat:
+                                changeFragment(3);
+                                currentFragment = 3;
+                                break;
                         }
                         return true;
                     }
@@ -126,10 +132,12 @@ public class HomeActivity extends AppCompatActivity implements Observer, Locatio
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(currentFragment==1) {
+                if (currentFragment == 1) {
                     sendFingerPrint();
-                } else if(currentFragment==2){
+                } else if (currentFragment == 2) {
                     listFriends(mFriendsFragment.getUniqueFriendList());
+                } else if(currentFragment == 3){
+                    mHeatRegionFragment.startHeatAnimation();
                 }
             }
         });
@@ -144,7 +152,6 @@ public class HomeActivity extends AppCompatActivity implements Observer, Locatio
 
     /**
      * Send a new fingerprint
-     *
      */
     private void sendFingerPrint() {
         //send scan result to halo
@@ -183,8 +190,8 @@ public class HomeActivity extends AppCompatActivity implements Observer, Locatio
      *
      * @param uniqueFriends
      */
-    private void listFriends(List<Friend> uniqueFriends){
-        AllFriendsActivity.start(mContext,uniqueFriends);
+    private void listFriends(List<Friend> uniqueFriends) {
+        AllFriendsActivity.start(mContext, uniqueFriends);
     }
 
     @Override
@@ -196,7 +203,7 @@ public class HomeActivity extends AppCompatActivity implements Observer, Locatio
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION_PERMS);
             changeFragment(1);
         } else {
-            if(currentFragment == -1){
+            if (currentFragment == -1) {
                 changeFragment(0);
             }
         }
@@ -209,7 +216,7 @@ public class HomeActivity extends AppCompatActivity implements Observer, Locatio
 
     @Override
     public void onPause() {
-        if(locationManager != null) {
+        if (locationManager != null) {
             locationManager.removeUpdates(this);
             locationManager = null;
         }
@@ -291,6 +298,13 @@ public class HomeActivity extends AppCompatActivity implements Observer, Locatio
             }
             newFragment = mFriendsFragment;
             fab.setImageResource(R.drawable.ic_people_black_24dp);
+            fab.setVisibility(View.VISIBLE);
+        } else if (position == 3) {
+            if (mHeatRegionFragment == null) {
+                mHeatRegionFragment = HeatRegionFragment.newInstance();
+            }
+            newFragment = mHeatRegionFragment;
+            fab.setImageResource(R.drawable.ic_video_library_black_24dp);
             fab.setVisibility(View.VISIBLE);
         }
 

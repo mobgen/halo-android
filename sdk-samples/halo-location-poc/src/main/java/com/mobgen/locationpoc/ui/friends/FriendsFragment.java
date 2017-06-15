@@ -1,6 +1,7 @@
 package com.mobgen.locationpoc.ui.friends;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
@@ -80,6 +81,7 @@ public class FriendsFragment extends Fragment implements Observer, GoogleApiClie
     private RelativeLayout mControlLeft, mControlRight;
     private TextView no_elements;
     private List<Friend> uniqueFriendList = new ArrayList<>();
+    private Context mContext;
 
     boolean fragmentStatus = false;
 
@@ -106,6 +108,7 @@ public class FriendsFragment extends Fragment implements Observer, GoogleApiClie
         View rootview = inflater.inflate(R.layout.content_position, container, false);
 
         mPositionFragment = this;
+        mContext = getContext();
 
         mMapFragment = SupportMapFragment.newInstance();
         FragmentTransaction fragmentTransaction =
@@ -117,7 +120,7 @@ public class FriendsFragment extends Fragment implements Observer, GoogleApiClie
             @Override
             public void onMapReady(GoogleMap googleMap) {
                 mMap = googleMap;
-                mClusterManager = new ClusterManager<FriendItem>(getContext(), mMap);
+                mClusterManager = new ClusterManager<FriendItem>(mContext, mMap);
                 algorithm = new PreCachingAlgorithmDecorator<FriendItem>(new NonHierarchicalDistanceBasedAlgorithm<FriendItem>());
                 mClusterManager.setAlgorithm(algorithm);
                 setUpMapIfNeeded();
@@ -212,7 +215,7 @@ public class FriendsFragment extends Fragment implements Observer, GoogleApiClie
                 return null;
             }
         });
-        Location location = LocationUtils.getLocation(getContext());
+        Location location = LocationUtils.getLocation(mContext);
         if (location != null) {
             LatLng myLatLng = new LatLng(location.getLatitude(),
                     location.getLongitude());
@@ -260,14 +263,14 @@ public class FriendsFragment extends Fragment implements Observer, GoogleApiClie
         final List<String> emailsStored = new ArrayList<>();
         final List<PolylineOptions> polylineOptions = new ArrayList<>();
         final List<Integer> polylineColor = new ArrayList<>();
-        final IconGenerator iconFactory = new IconGenerator(getContext());
+        final IconGenerator iconFactory = new IconGenerator(mContext);
         SearchQuery options = SearchQueryBuilderFactory.getPublishedItems(AccessPointReceiver.MODULE_NAME_FRIENDS, AccessPointReceiver.MODULE_NAME_FRIENDS)
                 .populateAll()
                 .onePage(true)
                 .build();
 
         HaloContentApi.with(MobgenHaloApplication.halo())
-                .search(Data.NETWORK_AND_STORAGE, options) //s@back.end qwe123qwe
+                .search(Data.NETWORK_AND_STORAGE, options)
                 .asContent(Friend.class)
                 .execute(new CallbackV2<List<Friend>>() {
                     @Override
@@ -288,7 +291,7 @@ public class FriendsFragment extends Fragment implements Observer, GoogleApiClie
                                 mMap.addPolyline(polylineOptions.get(j));
                             }
                             //center map on current location
-                            Location location = LocationUtils.getLocation(getContext());
+                            Location location = LocationUtils.getLocation(mContext);
                             if (location != null) {
                                 LatLng myLatLng = new LatLng(location.getLatitude(),
                                         location.getLongitude());
@@ -383,7 +386,7 @@ public class FriendsFragment extends Fragment implements Observer, GoogleApiClie
         bitmapDescriptor = getMarkerIcon(color);
         friendMarker.setIcon(bitmapDescriptor);
 
-        Picasso.with(getContext()).load(friend.getUserPhoto()).fetch();
+        Picasso.with(mContext).load(friend.getUserPhoto()).fetch();
 
         friendMarker.setAnchor(iconFactory.getAnchorU(), iconFactory.getAnchorV());
         //hide old markers

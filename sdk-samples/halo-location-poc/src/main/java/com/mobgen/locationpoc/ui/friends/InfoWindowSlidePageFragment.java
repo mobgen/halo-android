@@ -10,7 +10,10 @@ import android.widget.TextView;
 
 import com.mobgen.locationpoc.R;
 import com.mobgen.locationpoc.model.Friend;
+import com.mobgen.locationpoc.utils.DateUtils;
 import com.squareup.picasso.Picasso;
+
+import java.util.Date;
 
 /**
  * Created by f.souto.gonzalez on 13/06/2017.
@@ -53,7 +56,7 @@ public class InfoWindowSlidePageFragment extends Fragment {
             room.setText(getContext().getString(R.string.room_info) + " " + mFriend.getRoom());
             userName.setText(getContext().getString(R.string.room_username) + " " + mFriend.getUserName());
             userMail.setText(getContext().getString(R.string.room_email) + " " + mFriend.getUserMail());
-            userDate.setText(mFriend.getTime().toString());
+            userDate.setText(DateUtils.timeBetween(getContext(), mFriend.getTime(), new Date()));
             Picasso.with(getContext()).load(mFriend.getUserPhoto()).into(imageView);
         }
 
