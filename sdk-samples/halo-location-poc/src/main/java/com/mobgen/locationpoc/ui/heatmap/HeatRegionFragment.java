@@ -186,6 +186,10 @@ public class HeatRegionFragment extends Fragment implements GoogleApiClient.OnCo
         return tmpPoint;
     }
 
+    /**
+     * Start heat map animation
+     * 
+     */
     public void startHeatAnimation() {
 
         final LinkedHashMap<Integer, List<LatLng>> myList = new LinkedHashMap<>();
