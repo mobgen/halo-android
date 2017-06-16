@@ -38,6 +38,7 @@ import com.mobgen.halo.android.sdk.core.management.device.SyncDeviceSegmentedInt
 import com.mobgen.halo.android.sdk.core.management.models.Credentials;
 import com.mobgen.halo.android.sdk.core.management.models.Device;
 import com.mobgen.halo.android.sdk.core.management.models.HaloModule;
+import com.mobgen.halo.android.sdk.core.management.models.HaloModuleQuery;
 import com.mobgen.halo.android.sdk.core.management.models.HaloServerVersion;
 import com.mobgen.halo.android.sdk.core.management.models.Token;
 import com.mobgen.halo.android.sdk.core.management.modules.Cursor2ModulesConverter;
@@ -136,17 +137,18 @@ public class HaloManagerApi extends HaloPluginApi {
     /**
      * Provides the current modules.
      *
-     * @param dataMode Tell where the data will be taken from.
+     * @param dataMode    Tell where the data will be taken from.
+     * @param moduleQuery The module query with options to make the request.
      * @return Returns the selector to execute the action.
      */
     @Keep
     @NonNull
     @Api(2.0)
     @CheckResult(suggest = "You may want to call asContent() or asRaw() to get the information")
-    public HaloSelectorFactory<List<HaloModule>, Cursor> getModules(@Data.Policy int dataMode) {
+    public HaloSelectorFactory<List<HaloModule>, Cursor> getModules(@Data.Policy int dataMode, @NonNull HaloModuleQuery moduleQuery) {
         return new HaloSelectorFactory<>(
                 halo(),
-                new RequestModulesInteractor(mModulesRepository,false),
+                new RequestModulesInteractor(mModulesRepository, moduleQuery),
                 new Cursor2ModulesConverter(),
                 null,
                 dataMode,
@@ -157,14 +159,19 @@ public class HaloManagerApi extends HaloPluginApi {
     /**
      * Prints the current modules with all the fields metadata. You can use this method to see in the
      * log the metadata of the module instances.
-     *
      */
     @Keep
     @NonNull
     @Api(2.3)
     public ICancellable printModulesMetaData() {
+        //force request without cache and display true
+        HaloModuleQuery haloModulePrintQuery = HaloModuleQuery.builder()
+                .serverCache(0)
+                .withFields(true)
+                .build();
+
         return HaloManagerApi.with(Halo.instance())
-                .getModuleWithMetaData()
+                .getModuleWithMetaData(haloModulePrintQuery)
                 .asContent()
                 .threadPolicy(Threading.POOL_QUEUE_POLICY)
                 .execute();
@@ -177,10 +184,10 @@ public class HaloManagerApi extends HaloPluginApi {
      */
     @NonNull
     @CheckResult(suggest = "You may want to call execute() to run the task")
-    private HaloSelectorFactory<List<HaloModule>, Cursor> getModuleWithMetaData() {
+    private HaloSelectorFactory<List<HaloModule>, Cursor> getModuleWithMetaData(@NonNull HaloModuleQuery moduleQuery) {
         return new HaloSelectorFactory<>(
                 halo(),
-                new RequestModulesInteractor(mModulesRepository,true),
+                new RequestModulesInteractor(mModulesRepository, moduleQuery),
                 new Cursor2ModulesConverter(),
                 null,
                 Data.NETWORK_ONLY,
@@ -438,7 +445,7 @@ public class HaloManagerApi extends HaloPluginApi {
     @Api(2.3)
     @Nullable
     public String getAppId() {
-        if(mDeviceRepository.getDeviceInMemory()!=null){
+        if (mDeviceRepository.getDeviceInMemory() != null) {
             return mDeviceRepository.getDeviceInMemory().getAppId();
         } else {
             return null;

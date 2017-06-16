@@ -108,6 +108,7 @@ public class ContentSearchRepository {
 
     /**
      * Clears the search data from the search local datasource.
+     *
      * @return The search result.
      */
     @NonNull
