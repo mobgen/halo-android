@@ -14,6 +14,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -24,10 +25,14 @@ import android.widget.Toast;
 
 import com.mobgen.halo.android.app.R;
 import com.mobgen.halo.android.app.model.MockAppConfiguration;
+import com.mobgen.halo.android.app.model.QROffer;
 import com.mobgen.halo.android.app.ui.MobgenHaloActivity;
 import com.mobgen.halo.android.app.ui.MobgenHaloApplication;
 import com.mobgen.halo.android.app.ui.chat.ChatRoomActivity;
 import com.mobgen.halo.android.app.ui.social.SocialLoginActivity;
+import com.mobgen.halo.android.auth.models.Pocket;
+import com.mobgen.halo.android.auth.models.ReferenceContainer;
+import com.mobgen.halo.android.auth.pocket.HaloPocketApi;
 import com.mobgen.halo.android.framework.common.utils.HaloUtils;
 import com.mobgen.halo.android.framework.toolbox.data.CallbackV2;
 import com.mobgen.halo.android.framework.toolbox.data.HaloResultV2;
@@ -37,6 +42,10 @@ import com.mobgen.halo.android.twofactor.callbacks.HaloTwoFactorAttemptListener;
 import com.mobgen.halo.android.twofactor.models.TwoFactorCode;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * This activity contains and displays in a left panel menu all the modules active for the current
@@ -109,6 +118,29 @@ public class ModulesActivity extends MobgenHaloActivity {
         } else {
             setTwoFactorListener();
         }
+
+
+        //check pocket api
+        HaloPocketApi pocketApi = MobgenHaloApplication.getHaloAuthApi().pocket();
+        QROffer qrOffer = new QROffer("12","My user",new Date(),"This is my contennt","htpp://google.com");
+        List<String> myrefs = new ArrayList<>();
+        myrefs.add("1");
+        myrefs.add("3");
+        ReferenceContainer referenceContainer = new ReferenceContainer("mycollection",myrefs);
+        ReferenceContainer referenceContainer2 = new ReferenceContainer("mycollection222",myrefs);
+        ReferenceContainer referenceContainer3 = new ReferenceContainer("mlol",myrefs);
+        Pocket pocket = new Pocket.Builder()
+                .withData(qrOffer)
+                .withReferences(new ReferenceContainer[]{referenceContainer,referenceContainer2})
+                .withReferences(referenceContainer3)
+                .build();
+        pocketApi.save(pocket)
+                .execute(new CallbackV2<Pocket>() {
+                    @Override
+                    public void onFinish(@NonNull HaloResultV2<Pocket> result) {
+                        Log.v("my pocket","");
+                    }
+                });
     }
 
     @Override
