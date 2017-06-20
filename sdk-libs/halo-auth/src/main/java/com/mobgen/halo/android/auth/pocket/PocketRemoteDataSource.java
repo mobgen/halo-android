@@ -19,12 +19,18 @@ import org.json.JSONObject;
  * Created by f.souto.gonzalez on 19/06/2017.
  */
 
+/**
+ * Remote data source to fetch and store pockets.
+ */
 public class PocketRemoteDataSource {
 
     /**
-     * The url to make requests.
+     * The url to get current pocket.
      */
-    public static final String URL_POCKET_OPERATION = "api/segmentation/identified-pocket/self?";
+    public static final String URL_POCKET_OPERATION_GET = "api/segmentation/identified-pocket/self?";
+    /**
+     * The url to save data on pocket.
+     */
     public static final String URL_POCKET_OPERATION_SAVE = "api/segmentation/identified-pocket/";
 
     /**
@@ -42,15 +48,31 @@ public class PocketRemoteDataSource {
     }
 
 
+    /**
+     * Get the current pocket from remote data source.
+     *
+     * @param referenceFilter The references filter to apply.
+     * @return The pocket.
+     * @throws HaloNetException
+     * @throws HaloParsingException
+     */
     @NonNull
     public Pocket getPocket(@NonNull String referenceFilter) throws HaloNetException, HaloParsingException {
 
         return HaloRequest.builder(mClientApi)
-                .url(HaloNetworkConstants.HALO_ENDPOINT_ID, URL_POCKET_OPERATION + referenceFilter)
+                .url(HaloNetworkConstants.HALO_ENDPOINT_ID, URL_POCKET_OPERATION_GET + referenceFilter)
                 .method(HaloRequestMethod.GET)
                 .build().execute(Pocket.class);
     }
 
+    /**
+     * Save a pocket on remote data source.
+     *
+     * @param pocket The pocket to save.
+     * @return The response as a pocket from the backend.
+     * @throws HaloNetException
+     * @throws HaloParsingException
+     */
     @NonNull
     public Pocket savePocket(@NonNull Pocket pocket) throws HaloNetException, HaloParsingException {
 

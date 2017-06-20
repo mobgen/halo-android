@@ -45,6 +45,9 @@ public class HaloPocketApi extends HaloPluginApi {
         return new HaloPocketApi.Builder(halo);
     }
 
+    /**
+     * Get the current pocket references and data.
+     */
     @Keep
     @Api(2.4)
     @NonNull
@@ -57,6 +60,11 @@ public class HaloPocketApi extends HaloPluginApi {
         );
     }
 
+    /**
+     * Save currente pocket with references and data.
+     *
+     * @param pocket The pocket to save.
+     */
     @Keep
     @Api(2.4)
     @NonNull
@@ -68,6 +76,11 @@ public class HaloPocketApi extends HaloPluginApi {
         );
     }
 
+    /**
+     * Get only filtered references.
+     *
+     * @param referenceFilters The references filter.
+     */
     @Keep
     @Api(2.4)
     @NonNull
@@ -80,6 +93,11 @@ public class HaloPocketApi extends HaloPluginApi {
         );
     }
 
+    /**
+     * Save the references on the current pocket.
+     *
+     * @param referenceContainer The references to save.
+     */
     @Keep
     @Api(2.4)
     @NonNull
@@ -92,6 +110,9 @@ public class HaloPocketApi extends HaloPluginApi {
         );
     }
 
+    /**
+     * Get the custom pocket data.
+     */
     @Keep
     @Api(2.4)
     @NonNull
@@ -104,6 +125,11 @@ public class HaloPocketApi extends HaloPluginApi {
         );
     }
 
+    /**
+     * Save current custom pocket data.
+     *
+     * @param data The data to save.
+     */
     @Keep
     @Api(2.4)
     @NonNull

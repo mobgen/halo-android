@@ -24,20 +24,24 @@ import com.mobgen.halo.android.framework.network.client.response.Parser;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  * Created by f.souto.gonzalez on 19/06/2017.
  */
+
+/**
+ * The pocket class to store custom identify information and string references.
+ */
 @Keep
 @JsonObject
 public class Pocket implements Parcelable {
-    //TODO PARCELABLE
-
     /**
      * Json converter to transform the json that comes to a json object.
      */
@@ -65,7 +69,7 @@ public class Pocket implements Parcelable {
         public void serialize(JSONObject object, String fieldName, boolean writeFieldNameForObject, JsonGenerator jsonGenerator) throws IOException {
             if (object != null) {
                 jsonGenerator.writeFieldName(fieldName);
-                jsonGenerator.writeRaw(":" + object.toString());
+                jsonGenerator.writeRawValue(object.toString());
             }
         }
     }
@@ -74,7 +78,7 @@ public class Pocket implements Parcelable {
      * Json converter to transform the json that comes to a json object.
      */
     @Keep
-    public static class JSONReferencesObjectConverter implements TypeConverter<List<JSONObject>> {
+    public static class JSONReferencesObjectConverter implements TypeConverter<List<ReferenceContainer>> {
 
         /**
          * The mapper for objects.
@@ -82,73 +86,51 @@ public class Pocket implements Parcelable {
         private static final JsonMapper<Object> mapper = LoganSquare.mapperFor(Object.class);
 
         @Override
-        public List<JSONObject> parse(JsonParser jsonParser) throws IOException {
+        public List<ReferenceContainer> parse(JsonParser jsonParser) throws IOException {
             Map map = (Map) mapper.parse(jsonParser);
             Object[] keysetNames = map.keySet().toArray();
-            Object[] referenceContainer = new Object[keysetNames.length];
-            for (int i = 0; i < keysetNames.length; i ++){
+            List<ReferenceContainer> referenceContainerList = new ArrayList<>();
+            for (int i = 0; i < keysetNames.length; i++) {
                 List<String> referenceData = (List<String>) map.get(keysetNames[i]);
-                referenceContainer[i] = new ReferenceContainer((String)keysetNames[i],referenceData);
+                ReferenceContainer refContainer = new ReferenceContainer.Builder((String) keysetNames[i])
+                        .references(referenceData.toArray(new String[referenceData.size()]))
+                        .build();
+                referenceContainerList.add(refContainer);
             }
-            List<JSONObject> referenceContainerList = new ArrayList<>();
-            referenceContainerList = addToList(referenceContainerList,referenceContainer);
             return referenceContainerList;
         }
 
-        private Map<String, Object> mapValues(Object object) {
-            try {
-                ObjectMapper mapper = new ObjectMapper();
-                Map<String, Object> map = mapper.parseMap(mapper.serialize(object));
-                return map;
-            } catch (IOException e) {
-                return null;
-            }
-        }
-
-        public List<JSONObject> addToList(@Nullable List<JSONObject> list, @Nullable Object[] items) {
-            List<JSONObject> finalList = list;
-            if (items != null && items.length > 0) {
-                if (finalList == null) {
-                    finalList = new ArrayList<>();
-                }
-                for (int i = 0; i < items.length; i++) {
-                    Map<String, Object> mapped = mapValues(items[i]);
-                    if (mapped != null) {
-                        JSONObject data = new JSONObject(mapped);
-                        finalList.add(data);
-                    }
-                }
-            }
-            return finalList;
-        }
-
         @Override
-        public void serialize(List<JSONObject> object, String fieldName, boolean writeFieldNameForObject, JsonGenerator jsonGenerator) throws IOException {
-
+        public void serialize(List<ReferenceContainer> object, String fieldName, boolean writeFieldNameForObject, JsonGenerator jsonGenerator) throws IOException {
             if (object != null) {
                 String referenceContainer = "";
-                for(int j = 0; j < object.size(); j++) {
-                    try {
-                        referenceContainer = referenceContainer + "\"" + object.get(j).get("referenceName").toString() + "\"";
-                        if (object.get(j).get("referenceData") != null) {
-                            referenceContainer =  referenceContainer  + ":" + object.get(j).get("referenceData").toString();
-                        } else {
-                            referenceContainer = referenceContainer + ":null";
+                for (int j = 0; j < object.size(); j++) {
+                    if (object.get(j).getReferences() != null) {
+                        referenceContainer = referenceContainer + mapper.serialize(object.get(j).getName().toString());
+                        referenceContainer = referenceContainer + ": [";
+                        for (int k = 0; k < object.get(j).getReferences().size(); k++) {
+                            referenceContainer = referenceContainer + mapper.serialize(object.get(j).getReferences().get(k));
+                            if (k < object.get(j).getReferences().size() - 1) {
+                                referenceContainer = referenceContainer + ",";
+                            }
                         }
-                        if(j < object.size() -1) {
-                            referenceContainer = referenceContainer + ",";
-                        }
-                    } catch (JSONException e) {
+                        referenceContainer = referenceContainer + "]";
+                    }
+                    if (j < object.size() - 1) {
+                        referenceContainer = referenceContainer + ",";
                     }
                 }
-                //jsonGenerator.writeFieldName(fieldName);
-                jsonGenerator.writeRaw(",\"" + fieldName + "\"" + ":{"+ referenceContainer + "}");
+                jsonGenerator.writeFieldName(fieldName);
+                jsonGenerator.writeRawValue("{" + referenceContainer + "}");
             }
         }
     }
 
     @JsonField(name = "references", typeConverter = JSONReferencesObjectConverter.class)
-    List<JSONObject> mReferences;
+    List<ReferenceContainer> mReferences;
+
+    @JsonField(name = "cdummy")
+    String myDummy;
 
     @JsonField(name = "data", typeConverter = JSONDataObjectConverter.class)
     JSONObject mData;
@@ -163,18 +145,24 @@ public class Pocket implements Parcelable {
      * @param builder The builder.
      */
     private Pocket(@NonNull Pocket.Builder builder) {
-        mData = builder.mData;
         mReferences = builder.mReferences;
+        mData = builder.mData;
     }
 
     protected Pocket(Parcel in) {
-        mReferences = in.readParcelable(ReferenceContainer.class.getClassLoader());
+        mReferences = in.createTypedArrayList(ReferenceContainer.CREATOR);
         try {
             String values = in.readString();
             this.mData = values != null ? new JSONObject(values) : null;
         } catch (JSONException e) {
             Halog.e(getClass(), "Cannot convert mData");
         }
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeTypedList(mReferences);
+        dest.writeString(mData != null ? this.mData.toString() : null);
     }
 
     public static final Creator<Pocket> CREATOR = new Creator<Pocket>() {
@@ -194,12 +182,6 @@ public class Pocket implements Parcelable {
         return 0;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        // dest.writeParcelable(this.mReferences, flags);
-        dest.writeString(mData != null ? this.mData.toString() : null);
-    }
-
 
     /**
      * Provides the custom values of this item.
@@ -208,7 +190,7 @@ public class Pocket implements Parcelable {
      */
     @Keep
     @Api(2.4)
-    public List<JSONObject> getReferences() {
+    public List<ReferenceContainer> getReferences() {
         return mReferences;
     }
 
@@ -224,6 +206,26 @@ public class Pocket implements Parcelable {
     }
 
     /**
+     * Provides the custom values of this item.
+     *
+     * @param clazz The class to convert the parsed data.
+     * @return The custom values of this item.
+     */
+    @Keep
+    @Api(2.4)
+    @Nullable
+    public <T> T getValues(@NonNull Class<T> clazz, @NonNull Parser.Factory parser) {
+        if (mData != null) {
+            try {
+                return ((Parser<InputStream, T>) parser.deserialize(clazz)).convert(new ByteArrayInputStream(mData.toString().getBytes()));
+            } catch (IOException e) {
+                return null;
+            }
+        }
+        return null;
+    }
+
+    /**
      * The builder class.
      */
     @Keep
@@ -232,7 +234,7 @@ public class Pocket implements Parcelable {
         /**
          * The reference container.
          */
-        List<JSONObject> mReferences;
+        List<ReferenceContainer> mReferences;
 
         /**
          * The custom user data.
@@ -279,49 +281,6 @@ public class Pocket implements Parcelable {
             return this;
         }
 
-        /**
-         * Map values from model object.
-         *
-         * @param object
-         * @return The mapped values or null
-         */
-        @Nullable
-        private Map<String, Object> mapValues(Object object) {
-            try {
-                ObjectMapper mapper = new ObjectMapper();
-                Map<String, Object> map = mapper.parseMap(mapper.serialize(object));
-                return map;
-            } catch (IOException e) {
-                return null;
-            }
-        }
-
-
-        /**
-         * Adds something to the given list or creates it returning as a result.
-         *
-         * @param list  The list of items.
-         * @param items The items.
-         * @return The list returned or created.
-         */
-        @NonNull
-        public List<JSONObject> addToList(@Nullable List<JSONObject> list, @Nullable Object[] items) {
-            List<JSONObject> finalList = list;
-            if (items != null && items.length > 0) {
-                if (finalList == null) {
-                    finalList = new ArrayList<>();
-                }
-                for (int i = 0; i < items.length; i++) {
-                    Map<String, Object> mapped = mapValues(items[i]);
-                    if (mapped != null) {
-                        JSONObject data = new JSONObject(mapped);
-                        finalList.add(data);
-                    }
-                }
-            }
-            return finalList;
-        }
-
         @NonNull
         @Override
         public Pocket build() {
@@ -342,7 +301,45 @@ public class Pocket implements Parcelable {
         try {
             return ((Parser<Pocket, String>) parser.serialize(Pocket.class)).convert(pocket);
         } catch (IOException e) {
-            throw new HaloParsingException("Error while serializing the HaloContentInstance", e);
+            throw new HaloParsingException("Error while serializing the Pocket", e);
         }
+    }
+
+    /**
+     * Map values from model object.
+     *
+     * @param object
+     * @return The mapped values or null
+     */
+    @Nullable
+    public static Map<String, Object> mapValues(Object object) {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            Map<String, Object> map = mapper.parseMap(mapper.serialize(object));
+            return map;
+        } catch (IOException e) {
+            return null;
+        }
+    }
+
+    /**
+     * Adds something to the given list or creates it returning as a result.
+     *
+     * @param list  The list of items.
+     * @param items The items.
+     * @return The list returned or created.
+     */
+    @NonNull
+    public static List<ReferenceContainer> addToList(@Nullable List<ReferenceContainer> list, @Nullable ReferenceContainer[] items) {
+        List<ReferenceContainer> finalList = list;
+        if (items != null && items.length > 0) {
+            if (finalList == null) {
+                finalList = new ArrayList<>();
+            }
+            for (int i = 0; i < items.length; i++) {
+                finalList.add(items[i]);
+            }
+        }
+        return finalList;
     }
 }

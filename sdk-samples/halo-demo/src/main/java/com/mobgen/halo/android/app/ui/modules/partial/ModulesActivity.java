@@ -125,7 +125,7 @@ public class ModulesActivity extends MobgenHaloActivity {
         QROffer qrOffer = new QROffer("12","My user",new Date(),"This is my contennt","htpp://google.com");
         List<String> myrefs = new ArrayList<>();
         myrefs.add("1");
-        myrefs.add("3");
+        myrefs.add("2");
         ReferenceContainer referenceContainer = new ReferenceContainer("mycollection",myrefs);
         ReferenceContainer referenceContainer2 = new ReferenceContainer("mycollection222",myrefs);
         ReferenceContainer referenceContainer3 = new ReferenceContainer("mlol",myrefs);
@@ -139,6 +139,8 @@ public class ModulesActivity extends MobgenHaloActivity {
                     @Override
                     public void onFinish(@NonNull HaloResultV2<Pocket> result) {
                         Log.v("my pocket","");
+                        result.data().getValues(QROffer.class,Halo.instance().framework().parser());
+                        result.data().getReferences();
                     }
                 });
     }
