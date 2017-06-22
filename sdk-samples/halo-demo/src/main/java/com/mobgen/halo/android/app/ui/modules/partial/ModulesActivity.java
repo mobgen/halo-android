@@ -14,7 +14,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -38,10 +37,6 @@ import com.mobgen.halo.android.twofactor.callbacks.HaloTwoFactorAttemptListener;
 import com.mobgen.halo.android.twofactor.models.TwoFactorCode;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
 
 /**
  * This activity contains and displays in a left panel menu all the modules active for the current
@@ -117,7 +112,8 @@ public class ModulesActivity extends MobgenHaloActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[],
+                                           @NonNull int[] grantResults) {
         switch (requestCode) {
             case REQUEST_PERMISSION: {
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -184,6 +180,7 @@ public class ModulesActivity extends MobgenHaloActivity {
     /**
      * Creates the dialog
      */
+
     public void createInfoDialog(String message) {
         if (mInfoDialog != null) mInfoDialog.dismiss();
         mInfoDialog = new AlertDialog.Builder(this)

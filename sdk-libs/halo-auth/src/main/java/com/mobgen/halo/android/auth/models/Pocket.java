@@ -15,6 +15,7 @@ import com.bluelinelabs.logansquare.typeconverters.TypeConverter;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.mobgen.halo.android.framework.common.annotations.Api;
+import com.mobgen.halo.android.framework.common.exceptions.HaloConfigurationException;
 import com.mobgen.halo.android.framework.common.exceptions.HaloParsingException;
 import com.mobgen.halo.android.framework.common.helpers.builder.IBuilder;
 import com.mobgen.halo.android.framework.common.helpers.logger.Halog;
@@ -92,7 +93,7 @@ public class Pocket implements Parcelable {
             List<ReferenceContainer> referenceContainerList = new ArrayList<>();
             for (int i = 0; i < keysetNames.length; i++) {
                 List<String> referenceData = (List<String>) map.get(keysetNames[i]);
-                if(referenceData!= null) {
+                if (referenceData != null) {
                     ReferenceContainer refContainer = new ReferenceContainer.Builder((String) keysetNames[i])
                             .references(referenceData.toArray(new String[referenceData.size()]))
                             .build();
@@ -218,13 +219,17 @@ public class Pocket implements Parcelable {
     @Api(2.4)
     @Nullable
     public <T> T getValues(@NonNull Class clazz) {
-        Parser.Factory parser = Halo.instance().framework().parser();
-        if (mData != null) {
-            try {
-                return ((Parser<InputStream, T>) parser.deserialize(clazz)).convert(new ByteArrayInputStream(mData.toString().getBytes()));
-            } catch (IOException e) {
-                return null;
+        try {
+            Parser.Factory parser = Halo.instance().framework().parser();
+            if (mData != null) {
+                try {
+                    return ((Parser<InputStream, T>) parser.deserialize(clazz)).convert(new ByteArrayInputStream(mData.toString().getBytes()));
+                } catch (IOException e) {
+                    return null;
+                }
             }
+        } catch (HaloConfigurationException haloConfigurationException) {
+            return null;
         }
         return null;
     }
