@@ -92,10 +92,12 @@ public class Pocket implements Parcelable {
             List<ReferenceContainer> referenceContainerList = new ArrayList<>();
             for (int i = 0; i < keysetNames.length; i++) {
                 List<String> referenceData = (List<String>) map.get(keysetNames[i]);
-                ReferenceContainer refContainer = new ReferenceContainer.Builder((String) keysetNames[i])
-                        .references(referenceData.toArray(new String[referenceData.size()]))
-                        .build();
-                referenceContainerList.add(refContainer);
+                if(referenceData!= null) {
+                    ReferenceContainer refContainer = new ReferenceContainer.Builder((String) keysetNames[i])
+                            .references(referenceData.toArray(new String[referenceData.size()]))
+                            .build();
+                    referenceContainerList.add(refContainer);
+                }
             }
             return referenceContainerList;
         }
@@ -105,8 +107,8 @@ public class Pocket implements Parcelable {
             if (object != null) {
                 String referenceContainer = "";
                 for (int j = 0; j < object.size(); j++) {
+                    referenceContainer = referenceContainer + mapper.serialize(object.get(j).getName().toString());
                     if (object.get(j).getReferences() != null) {
-                        referenceContainer = referenceContainer + mapper.serialize(object.get(j).getName().toString());
                         referenceContainer = referenceContainer + ": [";
                         for (int k = 0; k < object.get(j).getReferences().size(); k++) {
                             referenceContainer = referenceContainer + mapper.serialize(object.get(j).getReferences().get(k));
@@ -115,10 +117,14 @@ public class Pocket implements Parcelable {
                             }
                         }
                         referenceContainer = referenceContainer + "]";
+
+                    } else {
+                        referenceContainer = referenceContainer + ": null";
                     }
                     if (j < object.size() - 1) {
                         referenceContainer = referenceContainer + ",";
                     }
+
                 }
                 jsonGenerator.writeFieldName(fieldName);
                 jsonGenerator.writeRawValue("{" + referenceContainer + "}");

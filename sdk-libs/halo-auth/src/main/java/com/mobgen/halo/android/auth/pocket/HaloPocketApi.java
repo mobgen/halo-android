@@ -10,7 +10,6 @@ import com.mobgen.halo.android.auth.models.ReferenceFilter;
 import com.mobgen.halo.android.auth.models.ReferenceContainer;
 import com.mobgen.halo.android.framework.common.annotations.Api;
 import com.mobgen.halo.android.framework.common.helpers.builder.IBuilder;
-import com.mobgen.halo.android.framework.toolbox.data.Data;
 import com.mobgen.halo.android.sdk.api.Halo;
 import com.mobgen.halo.android.sdk.api.HaloPluginApi;
 import com.mobgen.halo.android.sdk.core.threading.HaloInteractorExecutor;

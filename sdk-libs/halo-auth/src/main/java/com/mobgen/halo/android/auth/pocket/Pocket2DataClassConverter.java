@@ -40,10 +40,10 @@ public class Pocket2DataClassConverter<T> implements ISelectorConverter<T, Pocke
     public HaloResultV2<T> convert(@NonNull HaloResultV2<Pocket> result) throws HaloParsingException, HaloNetException {
         Pocket pocket = result.data();
         T parsedData = null;
-        if (mClazz.isInstance(Pocket.class)) {
-            parsedData = (T) new Pocket.Builder().withData(pocket.getValues()).build();
-        } else {
-            if (pocket != null) {
+        if (pocket != null) {
+            if (pocket.getClass().equals(mClazz)) {
+                parsedData = (T) pocket;
+            } else {
                 parsedData = pocket.getValues(mClazz);
             }
         }
