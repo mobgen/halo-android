@@ -32,6 +32,7 @@ import com.mobgen.halo.android.app.ui.chat.ChatRoomActivity;
 import com.mobgen.halo.android.app.ui.social.SocialLoginActivity;
 import com.mobgen.halo.android.auth.models.Pocket;
 import com.mobgen.halo.android.auth.models.ReferenceContainer;
+import com.mobgen.halo.android.auth.models.ReferenceFilter;
 import com.mobgen.halo.android.auth.pocket.HaloPocketApi;
 import com.mobgen.halo.android.framework.common.utils.HaloUtils;
 import com.mobgen.halo.android.framework.toolbox.data.CallbackV2;
@@ -122,25 +123,36 @@ public class ModulesActivity extends MobgenHaloActivity {
 
         //check pocket api
         HaloPocketApi pocketApi = MobgenHaloApplication.getHaloAuthApi().pocket();
-        QROffer qrOffer = new QROffer("12","My user",new Date(),"This is my contennt","htpp://google.com");
+        QROffer qrOffer = new QROffer("134", "My user", new Date(), "This is my contennt", "htpp://google.com");
         List<String> myrefs = new ArrayList<>();
         myrefs.add("1");
         myrefs.add("2");
-        ReferenceContainer referenceContainer = new ReferenceContainer("mycollection",myrefs);
-        ReferenceContainer referenceContainer2 = new ReferenceContainer("mycollection222",myrefs);
-        ReferenceContainer referenceContainer3 = new ReferenceContainer("mlol",myrefs);
+        ReferenceContainer referenceContainer = new ReferenceContainer("mycollection", myrefs);
+        ReferenceContainer referenceContainer2 = new ReferenceContainer("mycollection222", myrefs);
+        ReferenceContainer referenceContainer3 = new ReferenceContainer("mlol", myrefs);
+        ReferenceContainer referenceContainer4 = new ReferenceContainer("mlolazo", myrefs);
         Pocket pocket = new Pocket.Builder()
                 .withData(qrOffer)
-                .withReferences(new ReferenceContainer[]{referenceContainer,referenceContainer2})
+                .withReferences(new ReferenceContainer[]{referenceContainer, referenceContainer2})
                 .withReferences(referenceContainer3)
+                .withReferences(referenceContainer4)
                 .build();
-        pocketApi.save(pocket)
+//        pocketApi.save(pocket)
+//                .execute(new CallbackV2<Pocket>() {
+//                    @Override
+//                    public void onFinish(@NonNull HaloResultV2<Pocket> result) {
+//                        Log.v("my pocket","");
+//                        result.data().getValues(QROffer.class);
+//                        result.data().getReferences();
+//                    }
+//                });
+
+        pocketApi.getData()
+                .asPocket()
                 .execute(new CallbackV2<Pocket>() {
                     @Override
                     public void onFinish(@NonNull HaloResultV2<Pocket> result) {
                         Log.v("my pocket","");
-                        result.data().getValues(QROffer.class,Halo.instance().framework().parser());
-                        result.data().getReferences();
                     }
                 });
     }
@@ -157,10 +169,10 @@ public class ModulesActivity extends MobgenHaloActivity {
     }
 
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
         //TODO Delete this code when APP+ credential is ready to send push
-        if(HaloManagerApi.with(MobgenHaloApplication.halo())
+        if (HaloManagerApi.with(MobgenHaloApplication.halo())
                 .isPasswordAuthentication()) {
             Halo.instance().getCore().logout();
         }
@@ -171,7 +183,7 @@ public class ModulesActivity extends MobgenHaloActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if(MobgenHaloApplication.getHaloAuthApi()!=null && MobgenHaloApplication.getHaloAuthApi().isAccountStored()){
+        if (MobgenHaloApplication.getHaloAuthApi() != null && MobgenHaloApplication.getHaloAuthApi().isAccountStored()) {
             getMenuInflater().inflate(R.menu.menu_modules_logout, menu);
         } else {
             getMenuInflater().inflate(R.menu.menu_modules_login, menu);
@@ -187,10 +199,10 @@ public class ModulesActivity extends MobgenHaloActivity {
                     .execute(new CallbackV2<Boolean>() {
                         @Override
                         public void onFinish(@NonNull HaloResultV2<Boolean> result) {
-                            if(result.data()){
+                            if (result.data()) {
                                 createInfoDialog("See you soon ;)");
                                 //remove the chat qr image
-                                File chatImage =  new File(MobgenHaloApplication.halo().context().getExternalFilesDir(null).getAbsolutePath().toString() + "/qr/profile.jpg");
+                                File chatImage = new File(MobgenHaloApplication.halo().context().getExternalFilesDir(null).getAbsolutePath().toString() + "/qr/profile.jpg");
                                 chatImage.delete();
                             } else {
                                 createInfoDialog("You must signin or login");

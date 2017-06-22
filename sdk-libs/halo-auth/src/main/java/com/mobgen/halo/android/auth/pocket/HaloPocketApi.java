@@ -10,9 +10,12 @@ import com.mobgen.halo.android.auth.models.ReferenceFilter;
 import com.mobgen.halo.android.auth.models.ReferenceContainer;
 import com.mobgen.halo.android.framework.common.annotations.Api;
 import com.mobgen.halo.android.framework.common.helpers.builder.IBuilder;
+import com.mobgen.halo.android.framework.toolbox.data.Data;
 import com.mobgen.halo.android.sdk.api.Halo;
 import com.mobgen.halo.android.sdk.api.HaloPluginApi;
 import com.mobgen.halo.android.sdk.core.threading.HaloInteractorExecutor;
+
+import java.util.List;
 
 /**
  * Created by f.souto.gonzalez on 19/06/2017.
@@ -54,10 +57,12 @@ public class HaloPocketApi extends HaloPluginApi {
     @CheckResult(suggest = "You may want to call execute() to run the task")
     public HaloInteractorExecutor<Pocket> get() {
         String referenceFilter = new ReferenceFilter.Builder().build().getAll();
-        return new HaloInteractorExecutor<>(halo(),
-                "Get user data and references",
-                new PocketInteractor(new PocketRepository(new PocketRemoteDataSource(halo().framework().network())), referenceFilter, null, PocketOperation.GET)
-        );
+        return new HaloPocketSelectorFactory<>(
+                halo(),
+                new PocketDataProvider(new PocketRepository(new PocketRemoteDataSource(halo().framework().network())), referenceFilter, null, PocketOperation.GET),
+                new Pocket2ClassDataConverterFactory(),
+                "Get user data and references")
+                .asPocket();
     }
 
     /**
@@ -70,10 +75,12 @@ public class HaloPocketApi extends HaloPluginApi {
     @NonNull
     @CheckResult(suggest = "You may want to call execute() to run the task")
     public HaloInteractorExecutor<Pocket> save(Pocket pocket) {
-        return new HaloInteractorExecutor<>(halo(),
-                "Save user data and references",
-                new PocketInteractor(new PocketRepository(new PocketRemoteDataSource(halo().framework().network())), null, pocket, PocketOperation.SAVE)
-        );
+        return new HaloPocketSelectorFactory<>(
+                halo(),
+                new PocketDataProvider(new PocketRepository(new PocketRemoteDataSource(halo().framework().network())), null, pocket, PocketOperation.SAVE),
+                new Pocket2ClassDataConverterFactory(),
+                "Save references and data")
+                .asPocket();
     }
 
     /**
@@ -85,12 +92,14 @@ public class HaloPocketApi extends HaloPluginApi {
     @Api(2.4)
     @NonNull
     @CheckResult(suggest = "You may want to call execute() to run the task")
-    public HaloInteractorExecutor<Pocket> getReferences(ReferenceFilter referenceFilters) {
+    public HaloInteractorExecutor<List<ReferenceContainer>> getReferences(ReferenceFilter referenceFilters) {
         String referenceFilter = referenceFilters.getCurrentReferences();
-        return new HaloInteractorExecutor<>(halo(),
-                "Get references",
-                new PocketInteractor(new PocketRepository(new PocketRemoteDataSource(halo().framework().network())), referenceFilter, null, PocketOperation.GET)
-        );
+        return new HaloPocketSelectorFactory<>(
+                halo(),
+                new PocketDataProvider(new PocketRepository(new PocketRemoteDataSource(halo().framework().network())), referenceFilter, null, PocketOperation.GET),
+                new Pocket2ClassDataConverterFactory(),
+                "Get references")
+                .asReferencesContainer();
     }
 
     /**
@@ -104,10 +113,12 @@ public class HaloPocketApi extends HaloPluginApi {
     @CheckResult(suggest = "You may want to call execute() to run the task")
     public HaloInteractorExecutor<Pocket> saveReferences(ReferenceContainer... referenceContainer) {
         Pocket pocket = new Pocket.Builder().withReferences(referenceContainer).build();
-        return new HaloInteractorExecutor<>(halo(),
-                "Save references",
-                new PocketInteractor(new PocketRepository(new PocketRemoteDataSource(halo().framework().network())), null, pocket, PocketOperation.SAVE)
-        );
+        return new HaloPocketSelectorFactory<>(
+                halo(),
+                new PocketDataProvider(new PocketRepository(new PocketRemoteDataSource(halo().framework().network())), null, pocket, PocketOperation.SAVE),
+                new Pocket2ClassDataConverterFactory(),
+                "Save references")
+                .asPocket();
     }
 
     /**
@@ -116,13 +127,14 @@ public class HaloPocketApi extends HaloPluginApi {
     @Keep
     @Api(2.4)
     @NonNull
-    @CheckResult(suggest = "You may want to call execute() to run the task")
-    public HaloInteractorExecutor<Pocket> getData() {
+    @CheckResult(suggest = "You may want to call asCustomData(.class) or asPocket() to get the information")
+    public <T> HaloPocketSelectorFactory<T> getData() {
         String referenceFilter = new ReferenceFilter.Builder().build().noReferences();
-        return new HaloInteractorExecutor<>(halo(),
-                "Get custom user data without references",
-                new PocketInteractor(new PocketRepository(new PocketRemoteDataSource(halo().framework().network())), referenceFilter, null, PocketOperation.GET)
-        );
+        return new HaloPocketSelectorFactory<T>(
+                halo(),
+                new PocketDataProvider(new PocketRepository(new PocketRemoteDataSource(halo().framework().network())), referenceFilter, null, PocketOperation.GET),
+                new Pocket2ClassDataConverterFactory(),
+                "Get custom user data without references");
     }
 
     /**
@@ -136,10 +148,12 @@ public class HaloPocketApi extends HaloPluginApi {
     @CheckResult(suggest = "You may want to call execute() to run the task")
     public HaloInteractorExecutor<Pocket> saveData(Object data) {
         Pocket pocket = new Pocket.Builder().withData(data).build();
-        return new HaloInteractorExecutor<>(halo(),
-                "Save custom user data without references",
-                new PocketInteractor(new PocketRepository(new PocketRemoteDataSource(halo().framework().network())), null, pocket, PocketOperation.SAVE)
-        );
+        return new HaloPocketSelectorFactory<>(
+                halo(),
+                new PocketDataProvider(new PocketRepository(new PocketRemoteDataSource(halo().framework().network())), null, pocket, PocketOperation.SAVE),
+                new Pocket2ClassDataConverterFactory(),
+                "Save custom user data without references")
+                .asPocket();
     }
 
     /**

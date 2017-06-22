@@ -20,6 +20,7 @@ import com.mobgen.halo.android.framework.common.helpers.builder.IBuilder;
 import com.mobgen.halo.android.framework.common.helpers.logger.Halog;
 import com.mobgen.halo.android.framework.common.utils.AssertionUtils;
 import com.mobgen.halo.android.framework.network.client.response.Parser;
+import com.mobgen.halo.android.sdk.api.Halo;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -30,7 +31,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 /**
  * Created by f.souto.gonzalez on 19/06/2017.
@@ -129,9 +129,6 @@ public class Pocket implements Parcelable {
     @JsonField(name = "references", typeConverter = JSONReferencesObjectConverter.class)
     List<ReferenceContainer> mReferences;
 
-    @JsonField(name = "cdummy")
-    String myDummy;
-
     @JsonField(name = "data", typeConverter = JSONDataObjectConverter.class)
     JSONObject mData;
 
@@ -206,7 +203,7 @@ public class Pocket implements Parcelable {
     }
 
     /**
-     * Provides the custom values of this item.
+     * Provides the custom values of this item as specified class.
      *
      * @param clazz The class to convert the parsed data.
      * @return The custom values of this item.
@@ -214,7 +211,8 @@ public class Pocket implements Parcelable {
     @Keep
     @Api(2.4)
     @Nullable
-    public <T> T getValues(@NonNull Class<T> clazz, @NonNull Parser.Factory parser) {
+    public <T> T getValues(@NonNull Class clazz) {
+        Parser.Factory parser = Halo.instance().framework().parser();
         if (mData != null) {
             try {
                 return ((Parser<InputStream, T>) parser.deserialize(clazz)).convert(new ByteArrayInputStream(mData.toString().getBytes()));

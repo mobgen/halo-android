@@ -5,18 +5,21 @@ import android.support.annotation.Nullable;
 
 import com.mobgen.halo.android.auth.models.Pocket;
 import com.mobgen.halo.android.auth.models.PocketOperation;
+import com.mobgen.halo.android.framework.common.exceptions.HaloParsingException;
 import com.mobgen.halo.android.framework.common.utils.AssertionUtils;
+import com.mobgen.halo.android.framework.network.exceptions.HaloNetException;
 import com.mobgen.halo.android.framework.toolbox.data.HaloResultV2;
-import com.mobgen.halo.android.sdk.core.threading.HaloInteractorExecutor;
+import com.mobgen.halo.android.framework.toolbox.data.HaloStatus;
+import com.mobgen.halo.android.sdk.core.selectors.SelectorProviderAdapter;
 
 /**
  * Created by f.souto.gonzalez on 19/06/2017.
  */
 
 /**
- * The Pocket interactor to perfom operations.
+ * The Pocket data provider to request data.
  */
-public class PocketInteractor implements HaloInteractorExecutor.Interactor<Pocket> {
+public class PocketDataProvider<T> extends SelectorProviderAdapter<Pocket, T> {
 
     /**
      * The pocket repository.
@@ -47,7 +50,7 @@ public class PocketInteractor implements HaloInteractorExecutor.Interactor<Pocke
      * @param pocket           The pocket to operate with.
      * @param pocketOperation  The pocket operation to perfom.
      */
-    public PocketInteractor(@NonNull PocketRepository pocketRepository, @Nullable String referenceFilter, @Nullable Pocket pocket, @NonNull PocketOperation pocketOperation) {
+    public PocketDataProvider(@NonNull PocketRepository pocketRepository, @Nullable String referenceFilter, @Nullable Pocket pocket, PocketOperation pocketOperation) {
         AssertionUtils.notNull(pocketRepository, "pocketRepository");
         mPocketRepository = pocketRepository;
         mPocketOperation = pocketOperation;
@@ -55,16 +58,22 @@ public class PocketInteractor implements HaloInteractorExecutor.Interactor<Pocke
         mPocket = pocket;
     }
 
-
     @NonNull
     @Override
-    public HaloResultV2<Pocket> executeInteractor() throws Exception {
+    public HaloResultV2<Pocket> fromNetwork() {
         HaloResultV2<Pocket> result = null;
-        switch (mPocketOperation) {
-            case GET:
-                return mPocketRepository.getOperation(mReferenceFilter);
-            case SAVE:
-                return mPocketRepository.saveOperation(mPocket);
+        try {
+            switch (mPocketOperation) {
+                case GET:
+                    return mPocketRepository.getOperation(mReferenceFilter);
+
+                case SAVE:
+                    return mPocketRepository.saveOperation(mPocket);
+            }
+        } catch (HaloNetException haloNetException) {
+            return new HaloResultV2<>(HaloStatus.builder().error(haloNetException).build(), null);
+        } catch (HaloParsingException haloParsingException) {
+            return new HaloResultV2<>(HaloStatus.builder().error(haloParsingException).build(), null);
         }
         return result;
     }
