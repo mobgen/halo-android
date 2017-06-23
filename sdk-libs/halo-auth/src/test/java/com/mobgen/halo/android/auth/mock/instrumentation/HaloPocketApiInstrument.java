@@ -1,21 +1,12 @@
 package com.mobgen.halo.android.auth.mock.instrumentation;
 
 import android.support.annotation.NonNull;
-import android.util.SparseArray;
-
-import com.mobgen.halo.android.auth.HaloAuthApi;
-import com.mobgen.halo.android.auth.models.HaloUserProfile;
-import com.mobgen.halo.android.auth.models.IdentifiedUser;
 import com.mobgen.halo.android.auth.models.Pocket;
 import com.mobgen.halo.android.auth.models.ReferenceContainer;
-import com.mobgen.halo.android.auth.providers.SocialProvider;
-import com.mobgen.halo.android.auth.providers.facebook.FacebookSocialProvider;
-import com.mobgen.halo.android.auth.providers.google.GoogleSocialProvider;
 import com.mobgen.halo.android.framework.toolbox.data.CallbackV2;
 import com.mobgen.halo.android.framework.toolbox.data.HaloResultV2;
 import com.mobgen.halo.android.testing.CallbackFlag;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;

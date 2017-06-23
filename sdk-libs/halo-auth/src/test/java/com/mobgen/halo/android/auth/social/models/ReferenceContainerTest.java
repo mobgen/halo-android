@@ -1,7 +1,6 @@
 package com.mobgen.halo.android.auth.social.models;
 
 import com.mobgen.halo.android.auth.models.ReferenceContainer;
-import com.mobgen.halo.android.auth.models.ReferenceFilter;
 import com.mobgen.halo.android.framework.common.exceptions.HaloParsingException;
 import com.mobgen.halo.android.sdk.api.Halo;
 import com.mobgen.halo.android.testing.HaloRobolectricTest;

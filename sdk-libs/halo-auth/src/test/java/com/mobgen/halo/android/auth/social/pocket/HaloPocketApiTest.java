@@ -1,8 +1,5 @@
 package com.mobgen.halo.android.auth.social.pocket;
 
-import android.content.Context;
-import android.support.annotation.NonNull;
-
 import com.mobgen.halo.android.auth.HaloAuthApi;
 import com.mobgen.halo.android.auth.mock.instrumentation.UserDummy;
 import com.mobgen.halo.android.auth.models.Pocket;
@@ -11,7 +8,6 @@ import com.mobgen.halo.android.auth.models.ReferenceFilter;
 import com.mobgen.halo.android.auth.pocket.HaloPocketApi;
 import com.mobgen.halo.android.framework.common.exceptions.HaloParsingException;
 import com.mobgen.halo.android.framework.toolbox.data.CallbackV2;
-import com.mobgen.halo.android.framework.toolbox.data.HaloResultV2;
 import com.mobgen.halo.android.sdk.api.Halo;
 import com.mobgen.halo.android.testing.CallbackFlag;
 import com.mobgen.halo.android.testing.HaloRobolectricTest;
