@@ -8,12 +8,12 @@ import java.util.Map;
  * @hide Converter helper that access some protected methods of the LoganSquare library so
  * we can check if the given type is available to work with it.
  */
-public final class ConverterUtils {
+public final class HaloParserConverterUtils {
 
     /**
      * Private constructor for the converter.
      */
-    private ConverterUtils() {
+    private HaloParserConverterUtils() {
         throw new AssertionError();
     }
 
