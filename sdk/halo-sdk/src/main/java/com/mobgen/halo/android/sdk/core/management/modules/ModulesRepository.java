@@ -14,6 +14,7 @@ import com.mobgen.halo.android.framework.toolbox.data.HaloStatus;
 import com.mobgen.halo.android.sdk.api.Halo;
 import com.mobgen.halo.android.sdk.core.management.models.HaloModule;
 import com.mobgen.halo.android.sdk.core.management.models.HaloModuleField;
+import com.mobgen.halo.android.sdk.core.management.models.HaloModuleQuery;
 
 import org.json.JSONException;
 
@@ -36,8 +37,9 @@ public class ModulesRepository {
 
     /**
      * Constructor for the repository.
+     *
      * @param modulesRemoteDatasource The remote data source.
-     * @param modulesLocalDatasource The local data source.
+     * @param modulesLocalDatasource  The local data source.
      */
     public ModulesRepository(@NonNull ModulesRemoteDatasource modulesRemoteDatasource, @NonNull ModulesLocalDatasource modulesLocalDatasource) {
         AssertionUtils.notNull(modulesRemoteDatasource, "remoteDatasource");
@@ -48,14 +50,15 @@ public class ModulesRepository {
 
     /**
      * Provides the modules cached from the network.
+     *
      * @return The modules cached from the network.
      */
-    public HaloResultV2<List<HaloModule>> getModulesFromNetwork(boolean withFields) {
+    public HaloResultV2<List<HaloModule>> getModulesFromNetwork(@NonNull HaloModuleQuery moduleQuery) {
         HaloStatus.Builder status = HaloStatus.builder();
         List<HaloModule> modules = null;
         try {
-            modules = mRemoteDatasource.getModules(withFields);
-            if(withFields){
+            modules = mRemoteDatasource.getModules(moduleQuery);
+            if (moduleQuery.withFields()) {
                 try {
                     printFieldsToLog(modules);
                 } catch (HaloParsingException | JSONException jsonException) {
@@ -71,13 +74,18 @@ public class ModulesRepository {
 
     /**
      * Provides the modules.
+     *
      * @return Provides the modules from the local data source.
      */
     public HaloResultV2<Cursor> getModules() {
         HaloStatus.Builder status = HaloStatus.builder();
         Cursor cursor = null;
         try {
-            mLocalDatasource.saveModules(mRemoteDatasource.getModules(false));
+            HaloModuleQuery haloModuleQuery = HaloModuleQuery.builder()
+                    .serverCache(0)
+                    .withFields(false)
+                    .build();
+            mLocalDatasource.saveModules(mRemoteDatasource.getModules(haloModuleQuery));
         } catch (HaloNetException | HaloStorageGeneralException e) {
             Halog.e(getClass(), "Error saving instances", e);
             status.error(e);
@@ -94,6 +102,7 @@ public class ModulesRepository {
 
     /**
      * Provides the local cached modules.
+     *
      * @return The local modules.
      */
     public HaloResultV2<Cursor> getCachedModules() {
@@ -101,7 +110,7 @@ public class ModulesRepository {
         Cursor cursor = null;
         try {
             cursor = mLocalDatasource.getModules();
-        }catch (Exception e){
+        } catch (Exception e) {
             Halog.e(getClass(), "Could not obtain the modules from the local data source.", e);
             status.error(e);
         }
@@ -110,35 +119,37 @@ public class ModulesRepository {
 
     /**
      * Print meta data from modules to log.
+     *
      * @param modules The halo module instances.
      * @throws HaloParsingException
      * @throws JSONException
      */
     private void printFieldsToLog(List<HaloModule> modules) throws HaloParsingException, JSONException {
 
-        StringBuilder printModuleData = new StringBuilder("\n");;
+        StringBuilder printModuleData = new StringBuilder("\n");
+        ;
         printModuleData.append("==================== BEGIN MODULE METADATA ===================" + "\n");
         int numberOfModules = modules.size();
-        for(int i=0; i<numberOfModules;i++) {
+        for (int i = 0; i < numberOfModules; i++) {
             printModuleData.append("********* BEGIN MODULE NAME: " + modules.get(i).getName() + "\n");
             printModuleData.append("MODULE ID:        " + modules.get(i).getId() + "\n");
             int numberOfFields = modules.get(i).getFields().length();
-            if(numberOfFields>0){
-                printModuleData.append("FIELDS DATA: "+ "\n");
-                printModuleData.append("\t-------------------------------------------------------------"+ "\n");
+            if (numberOfFields > 0) {
+                printModuleData.append("FIELDS DATA: " + "\n");
+                printModuleData.append("\t-------------------------------------------------------------" + "\n");
             }
-            for(int j=0; j<numberOfFields;j++) {
+            for (int j = 0; j < numberOfFields; j++) {
                 HaloModuleField field = HaloModuleField.deserialize(modules.get(i).getFields().get(j).toString(), Halo.instance().framework().parser());
                 printModuleData.append("\tBEGIN FIELD " + field.getName() + "\n");
                 printModuleData.append("\t\tDESCRIPTION:    " + field.getDescription() + "\n");
-                printModuleData.append("\t\tFIELD TYPE:     " +field.getModuleFieldType().getName() + "\n");
+                printModuleData.append("\t\tFIELD TYPE:     " + field.getModuleFieldType().getName() + "\n");
                 int numberOfRules = field.getModuleFieldType().getRules().size();
                 printModuleData.append("\t\tRULES: " + "\n");
-                for(int k=0; k<numberOfRules;k++) {
-                    printModuleData.append("\t\t                " +field.getModuleFieldType().getRules().get(k).getRule() + "\n");
+                for (int k = 0; k < numberOfRules; k++) {
+                    printModuleData.append("\t\t                " + field.getModuleFieldType().getRules().get(k).getRule() + "\n");
                 }
                 printModuleData.append("\n");
-                printModuleData.append("\tEND FIELD " + field.getName()+ "\n");
+                printModuleData.append("\tEND FIELD " + field.getName() + "\n");
                 printModuleData.append("\t--------------------------------------------------------------" + "\n");
             }
             printModuleData.append("********* END MODULE NAME: " + modules.get(i).getName() + "\n");
@@ -147,11 +158,11 @@ public class ModulesRepository {
         printModuleData.append("=================== END MODULE METADATA   ====================" + "\n");
 
         int maxLogSize = 2048;
-        for(int i = 0; i <= printModuleData.length() / maxLogSize; i++) {
+        for (int i = 0; i <= printModuleData.length() / maxLogSize; i++) {
             int start = i * maxLogSize;
-            int end = (i+1) * maxLogSize;
+            int end = (i + 1) * maxLogSize;
             end = end > printModuleData.length() ? printModuleData.length() : end;
-            Halog.d(ModulesRepository.class, "\n"  + printModuleData.substring(start, end));
+            Halog.d(ModulesRepository.class, "\n" + printModuleData.substring(start, end));
         }
     }
 }

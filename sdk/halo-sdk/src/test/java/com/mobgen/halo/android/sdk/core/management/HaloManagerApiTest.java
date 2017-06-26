@@ -17,6 +17,7 @@ import com.mobgen.halo.android.sdk.core.management.device.DeviceLocalDatasource;
 import com.mobgen.halo.android.sdk.core.management.models.Credentials;
 import com.mobgen.halo.android.sdk.core.management.models.Device;
 import com.mobgen.halo.android.sdk.core.management.models.HaloModule;
+import com.mobgen.halo.android.sdk.core.management.models.HaloModuleQuery;
 import com.mobgen.halo.android.sdk.core.management.models.HaloServerVersion;
 import com.mobgen.halo.android.sdk.core.management.models.Token;
 import com.mobgen.halo.android.sdk.core.management.segmentation.HaloSegmentationTag;
@@ -143,8 +144,12 @@ public class HaloManagerApiTest extends HaloRobolectricTest {
     public void thatGetModulesAsContentNetwork() throws IOException {
         enqueueServerFile(mMockServer, GET_MODULES);
         CallbackV2<List<HaloModule>> callback = givenCallbackWithGetModules(mCallbackFlag, true);
+        HaloModuleQuery haloModuleQuery = HaloModuleQuery.builder()
+                .serverCache(2 * 60) // 2 minute cache
+                .withFields(false)
+                .build();
         ICancellable cancellable = mHalo.getCore().manager()
-                .getModules(Data.NETWORK_ONLY)
+                .getModules(Data.NETWORK_ONLY,haloModuleQuery)
                 .asContent()
                 .execute(callback);
         assertThat(mCallbackFlag.isFlagged()).isTrue();
@@ -155,8 +160,12 @@ public class HaloManagerApiTest extends HaloRobolectricTest {
     public void thatGetModulesNetworkAndStorage() throws IOException {
         enqueueServerFile(mMockServer, GET_MODULES);
         CallbackV2<List<HaloModule>> callback = givenCallbackWithGetModules(mCallbackFlag, true);
+        HaloModuleQuery haloModuleQuery = HaloModuleQuery.builder()
+                .serverCache(2 * 60) // 2 minute cache
+                .withFields(false)
+                .build();
         ICancellable cancellable = mHalo.getCore().manager()
-                .getModules(Data.NETWORK_AND_STORAGE)
+                .getModules(Data.NETWORK_AND_STORAGE,haloModuleQuery)
                 .asContent()
                 .execute(callback);
         assertThat(mCallbackFlag.isFlagged()).isTrue();
@@ -166,8 +175,12 @@ public class HaloManagerApiTest extends HaloRobolectricTest {
     @Test
     public void thatGetModulesStorage() throws IOException {
         CallbackV2<List<HaloModule>> callback = givenCallbackWithGetModules(mCallbackFlag, false);
+        HaloModuleQuery haloModuleQuery = HaloModuleQuery.builder()
+                .serverCache(2 * 60) // 2 minute cache
+                .withFields(false)
+                .build();
         ICancellable cancellable = mHalo.getCore().manager()
-                .getModules(Data.STORAGE_ONLY)
+                .getModules(Data.STORAGE_ONLY,haloModuleQuery)
                 .asContent()
                 .execute(callback);
         assertThat(mCallbackFlag.isFlagged()).isTrue();
@@ -178,8 +191,12 @@ public class HaloManagerApiTest extends HaloRobolectricTest {
     public void thatGetModulesAsRawNetwork() throws IOException {
         enqueueServerFile(mMockServer, GET_MODULES);
         CallbackV2<Cursor> callback = givenCallbackWithGetModulesAsRaw(mCallbackFlag, true);
+        HaloModuleQuery haloModuleQuery = HaloModuleQuery.builder()
+                .serverCache(2 * 60) // 2 minute cache
+                .withFields(false)
+                .build();
         ICancellable cancellable = mHalo.getCore().manager()
-                .getModules(Data.NETWORK_AND_STORAGE)
+                .getModules(Data.NETWORK_AND_STORAGE,haloModuleQuery)
                 .asRaw()
                 .execute(callback);
         assertThat(mCallbackFlag.isFlagged()).isTrue();
@@ -190,8 +207,12 @@ public class HaloManagerApiTest extends HaloRobolectricTest {
     public void thatGetModulesAsRawNetworkAndStorage() throws IOException {
         enqueueServerFile(mMockServer, GET_MODULES);
         CallbackV2<Cursor> callback = givenCallbackWithGetModulesAsRaw(mCallbackFlag, true);
+        HaloModuleQuery haloModuleQuery = HaloModuleQuery.builder()
+                .serverCache(2 * 60) // 2 minute cache
+                .withFields(false)
+                .build();
         ICancellable cancellable = mHalo.getCore().manager()
-                .getModules(Data.NETWORK_AND_STORAGE)
+                .getModules(Data.NETWORK_AND_STORAGE,haloModuleQuery)
                 .asRaw()
                 .execute(callback);
         assertThat(mCallbackFlag.isFlagged()).isTrue();
@@ -201,8 +222,12 @@ public class HaloManagerApiTest extends HaloRobolectricTest {
     @Test
     public void thatGetModulesAsRawStorage() throws IOException {
         CallbackV2<Cursor> callback = givenCallbackWithGetModulesAsRaw(mCallbackFlag, false);
+        HaloModuleQuery haloModuleQuery = HaloModuleQuery.builder()
+                .serverCache(2 * 60) // 2 minute cache
+                .withFields(false)
+                .build();
         ICancellable cancellable = mHalo.getCore().manager()
-                .getModules(Data.STORAGE_ONLY)
+                .getModules(Data.STORAGE_ONLY,haloModuleQuery)
                 .asRaw()
                 .execute(callback);
         assertThat(mCallbackFlag.isFlagged()).isTrue();
