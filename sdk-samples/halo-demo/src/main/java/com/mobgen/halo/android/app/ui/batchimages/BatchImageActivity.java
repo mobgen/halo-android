@@ -119,6 +119,7 @@ public class BatchImageActivity extends MobgenHaloActivity implements SwipeRefre
         ViewUtils.refreshing(mSwipeToRefresh, true);
         SearchQuery options = SearchQueryBuilderFactory.getPublishedItems(mModuleName, mModuleName)
                 .onePage(true)
+                .serverCache(60*2)
                 .segmentWithDevice()
                 .build();
         HaloContentApi.with(MobgenHaloApplication.halo())
