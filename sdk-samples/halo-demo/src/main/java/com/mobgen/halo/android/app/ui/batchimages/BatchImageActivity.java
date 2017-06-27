@@ -31,6 +31,9 @@ import com.mobgen.halo.android.content.models.BatchOperations;
 import com.mobgen.halo.android.content.models.HaloContentInstance;
 import com.mobgen.halo.android.content.models.Paginated;
 import com.mobgen.halo.android.content.models.SearchQuery;
+import com.mobgen.halo.android.content.models.SearchSort;
+import com.mobgen.halo.android.content.models.SortField;
+import com.mobgen.halo.android.content.models.SortOrder;
 import com.mobgen.halo.android.content.search.SearchQueryBuilderFactory;
 import com.mobgen.halo.android.framework.toolbox.data.CallbackV2;
 import com.mobgen.halo.android.framework.toolbox.data.Data;
@@ -120,6 +123,7 @@ public class BatchImageActivity extends MobgenHaloActivity implements SwipeRefre
         SearchQuery options = SearchQueryBuilderFactory.getPublishedItems(mModuleName, mModuleName)
                 .onePage(true)
                 .segmentWithDevice()
+                .sort(new SearchSort(SortField.PUBLISHED, SortOrder.DESCENDING))
                 .build();
         HaloContentApi.with(MobgenHaloApplication.halo())
                 .search(Data.NETWORK_AND_STORAGE, options)

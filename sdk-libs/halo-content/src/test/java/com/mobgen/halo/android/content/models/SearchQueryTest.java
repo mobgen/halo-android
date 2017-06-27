@@ -316,6 +316,34 @@ public class SearchQueryTest extends HaloRobolectricTest {
         assertThat(query.getTags().get(0).getValue()).isEqualTo(listTags.get(0).getValue());
     }
 
+    @Test
+    public void thatCanSortSearch() {
+        SearchSort[] searchSorts = new SearchSort[]{new SearchSort(SortField.UPDATE, SortOrder.ASCENDING),
+                new SearchSort(SortField.UPDATEDBY, SortOrder.ASCENDING)};
+        SearchQuery query = SearchQuery.builder()
+                .sort(new SearchSort(SortField.ARCHIVED,SortOrder.DESCENDING))
+                .sort(new SearchSort(SortField.CREATE,SortOrder.ASCENDING))
+                .sort(new SearchSort(SortField.CREATEDBY,SortOrder.ASCENDING))
+                .sort(new SearchSort(SortField.DELETE,SortOrder.DESCENDING))
+                .sort(new SearchSort(SortField.DELETEDBY,SortOrder.ASCENDING))
+                .sort(new SearchSort(SortField.NAME,SortOrder.DESCENDING))
+                .sort(new SearchSort(SortField.PUBLISHED,SortOrder.ASCENDING))
+                .sort(new SearchSort(SortField.REMOVED,SortOrder.DESCENDING))
+                .sort(searchSorts)
+                .build();
+
+        assertThat(query.getSort()).contains(SortField.ARCHIVED);
+        assertThat(query.getSort()).contains(SortField.CREATE);
+        assertThat(query.getSort()).contains(SortField.CREATEDBY);
+        assertThat(query.getSort()).contains(SortField.DELETE);
+        assertThat(query.getSort()).contains(SortField.DELETEDBY);
+        assertThat(query.getSort()).contains(SortField.NAME);
+        assertThat(query.getSort()).contains(SortField.PUBLISHED);
+        assertThat(query.getSort()).contains(SortField.REMOVED);
+        assertThat(query.getSort()).contains(SortField.UPDATE);
+        assertThat(query.getSort()).contains(SortField.UPDATEDBY);
+    }
+
 
     private void assertFullquery(SearchQuery query) {
         // query
