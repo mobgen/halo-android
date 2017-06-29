@@ -13,6 +13,11 @@ import com.mobgen.halo.android.framework.storage.database.dsl.annotations.Table;
 public final class HaloContentContract {
 
     /**
+     * Database autoincrement column
+     */
+    public final static String ROW_ID = "rowid";
+
+    /**
      * Preferences contract name. This is where the preferences will be stored for the
      * HALO SDK.
      */

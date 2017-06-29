@@ -359,6 +359,17 @@ public class Select extends Query {
         }
 
         /**
+         * Adds a order by clause to the query.
+         *
+         * @param column The column.
+         * @return The order clause to apply.
+         */
+        public OrderSyntax order(String column){
+            builder().append(" ORDER BY " + column);
+            return new OrderSyntax();
+        }
+
+        /**
          * Creates another joined element.
          *
          * @param column The new column.
@@ -403,6 +414,33 @@ public class Select extends Query {
          */
         public FromSyntax from(@NonNull Class<? extends HaloTable> table) {
             return new FromSyntax(table);
+        }
+    }
+
+
+    /**
+     * Order clause.
+     */
+    public class OrderSyntax extends ExecutableExpression {
+
+        /**
+         * Set order by desc.
+         *
+         * @return The order clause
+         */
+        public OrderSyntax desc() {
+            builder().append(" DESC ");
+            return new OrderSyntax();
+        }
+
+        /**
+         * Set order by asc.
+         *
+         * @return The order clause
+         */
+        public OrderSyntax asc() {
+            builder().append(" ASC ");
+            return new OrderSyntax();
         }
     }
 
@@ -452,6 +490,18 @@ public class Select extends Query {
          */
         public WhereSyntax where(@Nullable String column) {
             return new WhereSyntax(column, true);
+        }
+
+
+        /**
+         * Adds a order by clause to the query.
+         *
+         * @param column The column.
+         * @return The order clause to apply.
+         */
+        public OrderSyntax order(String column){
+            builder().append(" ORDER BY " + column);
+            return new OrderSyntax();
         }
     }
 

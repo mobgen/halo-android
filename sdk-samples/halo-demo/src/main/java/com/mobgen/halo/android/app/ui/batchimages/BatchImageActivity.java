@@ -2,6 +2,7 @@ package com.mobgen.halo.android.app.ui.batchimages;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -70,6 +71,7 @@ public class BatchImageActivity extends MobgenHaloActivity implements SwipeRefre
     private BatchImageAdapter mAdapter;
     private Context mContext;
     private GeometricProgressView mProgressView;
+    private SearchSort mSearchSort;
 
     public static void start(@NonNull Context context, @NonNull String moduleName, @NonNull String moduleId) {
         Bundle data = new Bundle();
@@ -103,6 +105,8 @@ public class BatchImageActivity extends MobgenHaloActivity implements SwipeRefre
         mRecyclerView = (RecyclerView) findViewById(R.id.rv_generic);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mProgressView = (GeometricProgressView) findViewById(R.id.gm_progress);
+
+        mSearchSort = new SearchSort(SortField.PUBLISHED, SortOrder.DESCENDING);
     }
 
     @Override
@@ -122,8 +126,7 @@ public class BatchImageActivity extends MobgenHaloActivity implements SwipeRefre
         ViewUtils.refreshing(mSwipeToRefresh, true);
         SearchQuery options = SearchQueryBuilderFactory.getPublishedItems(mModuleName, mModuleName)
                 .onePage(true)
-                .segmentWithDevice()
-                .sort(new SearchSort(SortField.PUBLISHED, SortOrder.DESCENDING))
+                .sort(mSearchSort)
                 .build();
         HaloContentApi.with(MobgenHaloApplication.halo())
                 .search(Data.NETWORK_AND_STORAGE, options)
@@ -258,6 +261,17 @@ public class BatchImageActivity extends MobgenHaloActivity implements SwipeRefre
                     Toast.makeText(BatchImageActivity.this, "Sorry we cannot make the operation", Toast.LENGTH_SHORT).show();
                 }
                 break;
+            case R.id.action_sort_batch:
+                //change sort order
+                if(mSearchSort.getSortQuery().contains(SortOrder.DESCENDING)) {
+                    mSearchSort = new SearchSort(SortField.PUBLISHED, SortOrder.ASCENDING);
+                } else {
+                    mSearchSort = new SearchSort(SortField.PUBLISHED, SortOrder.DESCENDING);
+                }
+                loadGallery();
+                break;
+
+
         }
         return true;
     }

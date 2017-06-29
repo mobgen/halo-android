@@ -88,6 +88,8 @@ public class ContentSearchLocalDatasource {
             return Select.all().from(ContentSearch.class)
                     .where(ContentSearch.HASH_ID)
                     .in(ids)
+                    .order(HaloContentContract.ROW_ID)
+                    .asc()
                     .on(mStorage.db(), "Queries the found instances in the search table by hash id");
         } catch (HaloParsingException e) {
             throw new HaloStorageParseException("Error creating options hash.", e);

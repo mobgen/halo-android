@@ -192,4 +192,36 @@ public class HaloQueriesTest extends HaloRobolectricTest {
                 .HaloTableContentTest.class).on(database,"drop table");
         database.rawQuery("SELECT * FROM halotable",new String[]{null});
     }
+
+    @Test
+    public void thatCanOrderByQueryAsc(){
+        SQLiteDatabase database = mHaloDatabase.getDatabase();
+        database.execSQL("INSERT INTO halotable VALUES(3,'halo1',500,1,null)");
+        database.execSQL("INSERT INTO halotable VALUES(2,'halo2',501,2,null)");
+        Cursor cursor = Select.all().from(HaloManagerContractInstrument
+                .HaloTableContentTest.class)
+                .where(HaloManagerContractInstrument.HaloTableContentTest.id)
+                .gt(1)
+                .order(HaloManagerContractInstrument.HaloTableContentTest.id)
+                .asc()
+                .on(mHaloDatabase,"Select query with order asc");
+        cursor.moveToFirst();
+        assertThat(cursor).isNotNull();
+        assertThat(cursor.getString(0)).isEqualTo("2");
+    }
+
+    @Test
+    public void thatCanOrderByQueryDesc(){
+        SQLiteDatabase database = mHaloDatabase.getDatabase();
+        database.execSQL("INSERT INTO halotable VALUES(3,'halo1',500,1,null)");
+        database.execSQL("INSERT INTO halotable VALUES(2,'halo2',501,2,null)");
+        Cursor cursor = Select.all().from(HaloManagerContractInstrument
+                .HaloTableContentTest.class)
+                .order(HaloManagerContractInstrument.HaloTableContentTest.id)
+                .desc()
+                .on(mHaloDatabase,"Select query with order desc");
+        cursor.moveToFirst();
+        assertThat(cursor).isNotNull();
+        assertThat(cursor.getString(0)).isEqualTo("3");
+    }
 }
