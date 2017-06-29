@@ -74,7 +74,7 @@ public class SearchQuery implements Parcelable {
      * The instace ids with relation by field
      */
     @Nullable
-    @JsonField(name="relatedTo")
+    @JsonField(name = "relatedTo")
     List<Relationship> mRelationships;
 
     /**
@@ -166,6 +166,11 @@ public class SearchQuery implements Parcelable {
     private transient String mSearchTag;
 
     /**
+     * Tells the content api if the call should be cached during this time in seconds.
+     */
+    private int mCacheTime;
+
+    /**
      * The creator for parcelables.
      */
     public static final Creator<SearchQuery> CREATOR = new Creator<SearchQuery>() {
@@ -203,8 +208,30 @@ public class SearchQuery implements Parcelable {
         this.mModuleName = in.readString();
         this.mSegmentMode = in.readString();
         this.mSearchTag = in.readString();
-        this.mRelationships = in.readParcelable(Relationship.class.getClassLoader());
+        this.mRelationships = in.createTypedArrayList(Relationship.CREATOR);
+        this.mCacheTime = in.readInt();
         this.mSearchSort = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeStringList(this.mModuleIds);
+        dest.writeStringList(this.mInstanceIds);
+        dest.writeStringList(this.mFieldNames);
+        dest.writeStringList(this.mPopulateNames);
+        dest.writeParcelable(this.mPagination, flags);
+        dest.writeTypedList(mTags);
+        dest.writeParcelable(this.mSearch, flags);
+        dest.writeParcelable(this.mMetaSearch, flags);
+        dest.writeString(this.mLocale);
+        dest.writeByte(mSegmentWithDevice ? (byte) 1 : (byte) 0);
+        dest.writeLong(this.mTtl);
+        dest.writeString(this.mModuleName);
+        dest.writeString(this.mSegmentMode);
+        dest.writeString(this.mSearchTag);
+        dest.writeTypedList(mRelationships);
+        dest.writeInt(this.mCacheTime);
+        dest.writeString(this.mSearchSort);
     }
 
     /**
@@ -230,6 +257,7 @@ public class SearchQuery implements Parcelable {
         mSegmentMode = builder.mSegmentMode;
         mSearchTag = builder.mSearchTag;
         mRelationships = builder.mRelationships;
+        mCacheTime = builder.mCacheTime;
         mSearchSort = builder.mSearchSort;
     }
 
@@ -498,6 +526,18 @@ public class SearchQuery implements Parcelable {
     }
 
     /**
+     * Provides the time in seconds to cache the request.
+     *
+     * @return The time in seconds to cache request.
+     */
+    @Keep
+    @Api(2.33)
+    @NonNull
+    public int serverCache() {
+        return mCacheTime;
+    }
+
+    /**
      * The builder for the options item.
      */
     @Keep
@@ -594,6 +634,11 @@ public class SearchQuery implements Parcelable {
         private boolean mSegmentWithDevice;
 
         /**
+         * Tells the content api if the call should be cached during this time in seconds.
+         */
+        private int mCacheTime;
+
+        /**
          * Default builder creation.
          */
         protected Builder() {
@@ -635,6 +680,7 @@ public class SearchQuery implements Parcelable {
             mSegmentMode = currentOptions.mSegmentMode;
             mSearchTag = currentOptions.mSearchTag;
             mSearchSort = currentOptions.mSearchSort;
+            mCacheTime = 0;
         }
 
         /**
@@ -675,7 +721,7 @@ public class SearchQuery implements Parcelable {
         @Api(2.22)
         @NonNull
         public Builder relatedInstances(@NonNull Relationship... relationships) {
-            mRelationships = HaloContentHelper.addToList(mRelationships,relationships);
+            mRelationships = HaloContentHelper.addToList(mRelationships, relationships);
             return this;
         }
 
@@ -689,7 +735,7 @@ public class SearchQuery implements Parcelable {
         @Api(2.22)
         @NonNull
         public Builder addRelatedInstances(@NonNull Relationship relationship) {
-            if(mRelationships != null){
+            if (mRelationships != null) {
                 mRelationships.add(relationship);
             } else {
                 mRelationships = new ArrayList<>();
@@ -979,6 +1025,20 @@ public class SearchQuery implements Parcelable {
             return this;
         }
 
+        /**
+         * Set server cache in seconds when cache will expire.
+         *
+         * @param timeInSeconds The time when cache will expire in seconds
+         * @return The current builder.
+         */
+        @Keep
+        @Api(2.33)
+        @NonNull
+        public Builder serverCache(int timeInSeconds) {
+            mCacheTime = timeInSeconds;
+            return this;
+        }
+
         @Keep
         @NonNull
         @Api(2.0)
@@ -991,25 +1051,6 @@ public class SearchQuery implements Parcelable {
     @Override
     public int describeContents() {
         return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeStringList(this.mModuleIds);
-        dest.writeStringList(this.mInstanceIds);
-        dest.writeStringList(this.mFieldNames);
-        dest.writeStringList(this.mPopulateNames);
-        dest.writeParcelable(this.mPagination, flags);
-        dest.writeTypedList(mTags);
-        dest.writeParcelable(this.mSearch, flags);
-        dest.writeParcelable(this.mMetaSearch, flags);
-        dest.writeString(this.mLocale);
-        dest.writeByte(mSegmentWithDevice ? (byte) 1 : (byte) 0);
-        dest.writeLong(this.mTtl);
-        dest.writeString(this.mModuleName);
-        dest.writeString(this.mSegmentMode);
-        dest.writeString(this.mSearchTag);
-        dest.writeString(this.mSearchSort);
     }
 
     /**

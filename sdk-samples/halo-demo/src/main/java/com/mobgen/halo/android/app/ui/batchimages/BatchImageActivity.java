@@ -127,6 +127,8 @@ public class BatchImageActivity extends MobgenHaloActivity implements SwipeRefre
         SearchQuery options = SearchQueryBuilderFactory.getPublishedItems(mModuleName, mModuleName)
                 .onePage(true)
                 .sort(mSearchSort)
+                .serverCache(60*2)
+                .segmentWithDevice()
                 .build();
         HaloContentApi.with(MobgenHaloApplication.halo())
                 .search(Data.NETWORK_AND_STORAGE, options)

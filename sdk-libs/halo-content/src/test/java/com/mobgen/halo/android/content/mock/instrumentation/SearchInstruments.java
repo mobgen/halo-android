@@ -7,14 +7,22 @@ import com.mobgen.halo.android.content.models.HaloContentInstance;
 import com.mobgen.halo.android.content.models.Paginated;
 import com.mobgen.halo.android.content.models.SearchQuery;
 import com.mobgen.halo.android.content.search.SearchQueryBuilderFactory;
+import com.mobgen.halo.android.framework.network.client.HaloNetClient;
 import com.mobgen.halo.android.framework.toolbox.data.CallbackV2;
 import com.mobgen.halo.android.framework.toolbox.data.HaloResultV2;
 import com.mobgen.halo.android.sdk.core.management.segmentation.HaloLocale;
 import com.mobgen.halo.android.sdk.core.management.segmentation.HaloSegmentationTag;
 import com.mobgen.halo.android.testing.CallbackFlag;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
+import okhttp3.Headers;
+import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
@@ -149,5 +157,29 @@ public class SearchInstruments {
                 assertThat(result.status().isInconsistent()).isTrue();
             }
         };
+    }
+
+    public static OkHttpClient.Builder givenAOkClientWithCustomInterceptor(HaloNetClient netClient, final String cacheTime){
+        return  netClient.ok().newBuilder()
+                .addInterceptor(new Interceptor() {
+                    @Override
+                    public Response intercept(Chain chain) throws IOException {
+                        Request request = chain.request();
+                        Headers headers = request.headers();
+                        assertThat(headers.get("to-cache")).isEqualTo(cacheTime);
+                        return chain.proceed(request);
+                    }
+                });
+    }
+
+    public static SearchQuery givenASearchWithServerCache() {
+        return SearchQueryBuilderFactory.getPublishedItemsByName("sampleId", "sample","searchString")
+                .serverCache(212)
+                .build();
+    }
+
+    public static SearchQuery givenASearchWithoutServerCache() {
+        return SearchQueryBuilderFactory.getPublishedItemsByName("sampleId", "sample","searchString")
+                .build();
     }
 }
