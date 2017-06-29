@@ -22,6 +22,24 @@ public class Select extends Query {
     /**
      * Join policy annotation to constraint it.
      */
+    @StringDef({ORDER_ASC, ORDER_DESC})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface OrderPolicy {
+    }
+
+    /**
+     * Order asc elements.
+     */
+    public static final String ORDER_ASC = "ASC";
+
+    /**
+     * Order desc elements.
+     */
+    public static final String ORDER_DESC = "DESC";
+
+    /**
+     * Join policy annotation to constraint it.
+     */
     @StringDef({NATURAL, LEFT, CROSS, LEFT_OUTER})
     @Retention(RetentionPolicy.SOURCE)
     public @interface JoinPolicy {
@@ -362,11 +380,11 @@ public class Select extends Query {
          * Adds a order by clause to the query.
          *
          * @param column The column.
+         * @param orderPolicy The order type to apply.
          * @return The order clause to apply.
          */
-        public OrderSyntax order(String column){
-            builder().append(" ORDER BY " + column);
-            return new OrderSyntax();
+        public OrderSyntax order(@NonNull String column, @NonNull @OrderPolicy String orderPolicy){
+            return new OrderSyntax(column, orderPolicy);
         }
 
         /**
@@ -424,23 +442,13 @@ public class Select extends Query {
     public class OrderSyntax extends ExecutableExpression {
 
         /**
-         * Set order by desc.
+         * Constructor for orderby
          *
-         * @return The order clause
+         * @param column The column.
+         * @param orderPolicy The order policy to apply.
          */
-        public OrderSyntax desc() {
-            builder().append(" DESC ");
-            return new OrderSyntax();
-        }
-
-        /**
-         * Set order by asc.
-         *
-         * @return The order clause
-         */
-        public OrderSyntax asc() {
-            builder().append(" ASC ");
-            return new OrderSyntax();
+        public OrderSyntax(@NonNull String column, @NonNull @OrderPolicy String orderPolicy){
+            builder().append(" ORDER BY " + column + " " + orderPolicy + " ");
         }
     }
 
@@ -497,11 +505,11 @@ public class Select extends Query {
          * Adds a order by clause to the query.
          *
          * @param column The column.
+         * @param orderPolicy The order type to apply.
          * @return The order clause to apply.
          */
-        public OrderSyntax order(String column){
-            builder().append(" ORDER BY " + column);
-            return new OrderSyntax();
+        public OrderSyntax order(@NonNull String column, @NonNull @OrderPolicy String orderPolicy){
+            return new OrderSyntax(column, orderPolicy);
         }
     }
 

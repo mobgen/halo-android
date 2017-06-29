@@ -202,8 +202,7 @@ public class HaloQueriesTest extends HaloRobolectricTest {
                 .HaloTableContentTest.class)
                 .where(HaloManagerContractInstrument.HaloTableContentTest.id)
                 .gt(1)
-                .order(HaloManagerContractInstrument.HaloTableContentTest.id)
-                .asc()
+                .order(HaloManagerContractInstrument.HaloTableContentTest.id, Select.ORDER_ASC)
                 .on(mHaloDatabase,"Select query with order asc");
         cursor.moveToFirst();
         assertThat(cursor).isNotNull();
@@ -217,8 +216,7 @@ public class HaloQueriesTest extends HaloRobolectricTest {
         database.execSQL("INSERT INTO halotable VALUES(2,'halo2',501,2,null)");
         Cursor cursor = Select.all().from(HaloManagerContractInstrument
                 .HaloTableContentTest.class)
-                .order(HaloManagerContractInstrument.HaloTableContentTest.id)
-                .desc()
+                .order(HaloManagerContractInstrument.HaloTableContentTest.id, Select.ORDER_DESC)
                 .on(mHaloDatabase,"Select query with order desc");
         cursor.moveToFirst();
         assertThat(cursor).isNotNull();
