@@ -106,7 +106,7 @@ public class BatchImageActivity extends MobgenHaloActivity implements SwipeRefre
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mProgressView = (GeometricProgressView) findViewById(R.id.gm_progress);
 
-        mSearchSort = new SearchSort(SortField.PUBLISHED, SortOrder.DESCENDING);
+        mSearchSort = new SearchSort(SortField.PUBLISHED, SortOrder.ASCENDING);
     }
 
     @Override
@@ -263,19 +263,39 @@ public class BatchImageActivity extends MobgenHaloActivity implements SwipeRefre
                     Toast.makeText(BatchImageActivity.this, "Sorry we cannot make the operation", Toast.LENGTH_SHORT).show();
                 }
                 break;
-            case R.id.action_sort_batch:
-                //change sort order
-                if(mSearchSort.getSortQuery().contains(SortOrder.DESCENDING)) {
-                    mSearchSort = new SearchSort(SortField.PUBLISHED, SortOrder.ASCENDING);
-                } else {
-                    mSearchSort = new SearchSort(SortField.PUBLISHED, SortOrder.DESCENDING);
-                }
-                loadGallery();
+            case R.id.action_sort_batch_name:
+                setSearchSortOptions(SortField.NAME);
                 break;
-
-
+            case R.id.action_sort_batch_create:
+                setSearchSortOptions(SortField.CREATED);
+                break;
+            case R.id.action_sort_batch_update:
+                setSearchSortOptions(SortField.UPDATED);
+                break;
+            case R.id.action_sort_batch_publish:
+                setSearchSortOptions(SortField.PUBLISHED);
+                break;
+            case R.id.action_sort_batch_remove:
+                setSearchSortOptions(SortField.REMOVED);
+                break;
+            case R.id.action_sort_batch_archive:
+                setSearchSortOptions(SortField.ARCHIVED);
+                break;
+            case R.id.action_sort_batch_delete:
+                setSearchSortOptions(SortField.DELETED);
+                break;
         }
         return true;
+    }
+
+    private void setSearchSortOptions(@NonNull @SortField.SortOperator String field) {
+        //change sort order
+        if(mSearchSort.getSortQuery().contains(SortOrder.DESCENDING)) {
+            mSearchSort = new SearchSort(field, SortOrder.ASCENDING);
+        } else {
+            mSearchSort = new SearchSort(field, SortOrder.DESCENDING);
+        }
+        loadGallery();
     }
 
     @Nullable

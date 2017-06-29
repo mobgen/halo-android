@@ -5,10 +5,10 @@
         android:id="@+id/action_edit_batch"
         android:enabled="true"
         android:icon="@drawable/ic_save_black_24dp"
-        android:title="Edit content"
+        android:title="@string/action_edit_batch"
         app:showAsAction="always" />
     <item android:id="@+id/action_delete_batch"
-        android:title="Delete content"
+        android:title="@string/action_delete_batch"
         android:icon="@drawable/ic_delete_black_24dp"
         android:enabled="true"
         android:visible="false"
@@ -17,12 +17,41 @@
         android:id="@+id/action_add_batch"
         android:enabled="true"
         android:icon="@drawable/ic_collections_black_24dp"
-        android:title="Add content"
+        android:title="@string/action_add_batch"
         app:showAsAction="always" />
     <item
-        android:id="@+id/action_sort_batch"
+        android:id="@+id/action_sort_batch_name"
         android:enabled="true"
-        android:icon="@drawable/ic_sort_black_24dp"
-        android:title="Sort order"
-        app:showAsAction="always" />
+        android:title="@string/action_sort_batch_name"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_sort_batch_create"
+        android:enabled="true"
+        android:title="@string/action_sort_batch_create"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_sort_batch_update"
+        android:enabled="true"
+        android:title="@string/action_sort_batch_update"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_sort_batch_publish"
+        android:enabled="true"
+        android:title="@string/action_sort_batch_publish"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_sort_batch_remove"
+        android:enabled="true"
+        android:title="@string/action_sort_batch_remove"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_sort_batch_archive"
+        android:enabled="true"
+        android:title="@string/action_sort_batch_archive"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_sort_batch_delete"
+        android:enabled="true"
+        android:title="@string/action_sort_batch_delete"
+        app:showAsAction="never" />
 </menu>

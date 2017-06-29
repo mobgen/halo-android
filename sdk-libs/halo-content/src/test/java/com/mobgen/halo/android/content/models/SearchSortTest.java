@@ -28,19 +28,18 @@ public class SearchSortTest extends HaloRobolectricTest {
 
     @Test
     public void thatCanCreateASeatchSortInstance() {
-        SearchSort instance = new SearchSort(SortField.DELETE, SortOrder.DESCENDING);
+        SearchSort instance = new SearchSort(SortField.DELETED, SortOrder.DESCENDING);
         String sort = instance.getSortQuery();
-        assertThat(sort).contains(SortField.DELETE);
+        assertThat(sort).contains(SortField.DELETED);
         assertThat(sort).contains(SortOrder.DESCENDING);
     }
 
     @Test
     public void thatAParcelOperationKeepsTheSameDataWithConstructor() {
-        SearchSort instance = new SearchSort(SortField.DELETE, SortOrder.DESCENDING);
+        SearchSort instance = new SearchSort(SortField.DELETED, SortOrder.DESCENDING);
         SearchSort parcelInstance = TestUtils.testParcel(instance, SearchSort.CREATOR);
         assertThat(instance.getSortQuery()).isEqualTo(parcelInstance.getSortQuery());
     }
-
 
 
 }
