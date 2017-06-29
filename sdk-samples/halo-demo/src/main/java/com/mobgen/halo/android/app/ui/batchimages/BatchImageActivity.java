@@ -2,7 +2,6 @@ package com.mobgen.halo.android.app.ui.batchimages;
 
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -72,6 +71,7 @@ public class BatchImageActivity extends MobgenHaloActivity implements SwipeRefre
     private Context mContext;
     private GeometricProgressView mProgressView;
     private SearchSort mSearchSort;
+    private Boolean[] isAscending = new Boolean[]{false, false, false, false, false, false, false};
 
     public static void start(@NonNull Context context, @NonNull String moduleName, @NonNull String moduleId) {
         Bundle data = new Bundle();
@@ -127,7 +127,7 @@ public class BatchImageActivity extends MobgenHaloActivity implements SwipeRefre
         SearchQuery options = SearchQueryBuilderFactory.getPublishedItems(mModuleName, mModuleName)
                 .onePage(true)
                 .sort(mSearchSort)
-                .serverCache(60*2)
+                .serverCache(60 * 2)
                 .segmentWithDevice()
                 .build();
         HaloContentApi.with(MobgenHaloApplication.halo())
@@ -264,37 +264,40 @@ public class BatchImageActivity extends MobgenHaloActivity implements SwipeRefre
                 }
                 break;
             case R.id.action_sort_batch_name:
-                setSearchSortOptions(SortField.NAME);
+                setSearchSortOptions(SortField.NAME, 0);
                 break;
             case R.id.action_sort_batch_create:
-                setSearchSortOptions(SortField.CREATED);
+                setSearchSortOptions(SortField.CREATED, 1);
                 break;
             case R.id.action_sort_batch_update:
-                setSearchSortOptions(SortField.UPDATED);
+                setSearchSortOptions(SortField.UPDATED, 2);
                 break;
             case R.id.action_sort_batch_publish:
-                setSearchSortOptions(SortField.PUBLISHED);
+                setSearchSortOptions(SortField.PUBLISHED, 3);
                 break;
             case R.id.action_sort_batch_remove:
-                setSearchSortOptions(SortField.REMOVED);
+                setSearchSortOptions(SortField.REMOVED, 4);
                 break;
             case R.id.action_sort_batch_archive:
-                setSearchSortOptions(SortField.ARCHIVED);
+                setSearchSortOptions(SortField.ARCHIVED, 5);
                 break;
             case R.id.action_sort_batch_delete:
-                setSearchSortOptions(SortField.DELETED);
+                setSearchSortOptions(SortField.DELETED, 6);
                 break;
         }
         return true;
     }
 
-    private void setSearchSortOptions(@NonNull @SortField.SortOperator String field) {
+    private void setSearchSortOptions(@NonNull @SortField.SortOperator String field, int index) {
         //change sort order
-        if(mSearchSort.getSortQuery().contains(SortOrder.DESCENDING)) {
-            mSearchSort = new SearchSort(field, SortOrder.ASCENDING);
-        } else {
+        if (isAscending[index]) {
             mSearchSort = new SearchSort(field, SortOrder.DESCENDING);
+        } else {
+            mSearchSort = new SearchSort(field, SortOrder.ASCENDING);
         }
+        //change status
+        isAscending[index] = !isAscending[index];
+        //load images
         loadGallery();
     }
 
