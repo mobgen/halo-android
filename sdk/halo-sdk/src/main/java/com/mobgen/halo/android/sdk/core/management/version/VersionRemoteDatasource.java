@@ -19,6 +19,12 @@ import com.mobgen.halo.android.sdk.core.management.models.HaloServerVersion;
 public class VersionRemoteDatasource {
 
     /**
+     * One day in seconds.
+     *
+     */
+    public static final int CACHE_ONE_DAY = 24 * 60 * 60;
+
+    /**
      * The url of the server version.
      */
     public static final String URL_VERSION = "api/authentication/version/current";
@@ -47,6 +53,7 @@ public class VersionRemoteDatasource {
     public HaloServerVersion getServerVersion() throws HaloNetException {
         return HaloRequest.builder(mClientApi)
                 .url(HaloNetworkConstants.HALO_ENDPOINT_ID, URL_VERSION)
+                .cacheHeader(CACHE_ONE_DAY)
                 .method(HaloRequestMethod.GET)
                 .build().execute(new TypeReference<HaloServerVersion>() {
                 });

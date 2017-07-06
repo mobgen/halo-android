@@ -2,6 +2,7 @@ package com.mobgen.halo.android.framework.network.client.request;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringDef;
 
 import com.mobgen.halo.android.framework.api.HaloNetworkApi;
 import com.mobgen.halo.android.framework.common.annotations.Api;
@@ -23,6 +24,11 @@ import okhttp3.Response;
  * Request wrapper to be executed.
  */
 public class HaloRequest {
+
+    /**
+     * Cache header.
+     */
+    public static final String SERVER_CACHE_HEADER = "to-cache";
 
     /**
      * Request created.
@@ -290,6 +296,19 @@ public class HaloRequest {
             AssertionUtils.notNull(key, "key");
             AssertionUtils.notNull(value, "value");
             mRequestBuilder.addHeader(key, value);
+            return this;
+        }
+
+        /**
+         * Adds a cache header to the request.
+         *
+         * @param timeInSeconds The value of the cache header in seconds.
+         * @return The current builder.
+         */
+        @Api(2.33)
+        @NonNull
+        public Builder cacheHeader(int timeInSeconds) {
+            mRequestBuilder.addHeader(SERVER_CACHE_HEADER, String.valueOf(timeInSeconds));
             return this;
         }
 

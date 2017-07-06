@@ -2,7 +2,7 @@ package com.mobgen.halo.android.sdk.core.internal.parser;
 
 import android.support.annotation.NonNull;
 
-import com.bluelinelabs.logansquare.ConverterUtils;
+import com.bluelinelabs.logansquare.HaloParserConverterUtils;
 import com.bluelinelabs.logansquare.LoganSquare;
 import com.mobgen.halo.android.framework.network.client.response.Parser;
 
@@ -38,7 +38,7 @@ public class ToLoganJsonConverter implements Parser<Object, String> {
             java.lang.reflect.ParameterizedType pt = (java.lang.reflect.ParameterizedType) mType;
             Type rawType = pt.getRawType();
             if (rawType != List.class && rawType != Map.class) {
-                return LoganSquare.serialize(value, ConverterUtils.parameterizedTypeOf(mType));
+                return LoganSquare.serialize(value, HaloParserConverterUtils.parameterizedTypeOf(mType));
             }
         }
         return LoganSquare.serialize(value);

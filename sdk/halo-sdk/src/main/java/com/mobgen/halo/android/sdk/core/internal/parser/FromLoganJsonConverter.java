@@ -2,7 +2,7 @@ package com.mobgen.halo.android.sdk.core.internal.parser;
 
 import android.support.annotation.NonNull;
 
-import com.bluelinelabs.logansquare.ConverterUtils;
+import com.bluelinelabs.logansquare.HaloParserConverterUtils;
 import com.bluelinelabs.logansquare.LoganSquare;
 import com.mobgen.halo.android.framework.network.client.response.Parser;
 
@@ -50,7 +50,7 @@ public class FromLoganJsonConverter implements Parser<InputStream, Object> {
                 return LoganSquare.parseList(value, (Class<?>) firstType);
             } else {
                 // Generics
-                return LoganSquare.parse(value, ConverterUtils.parameterizedTypeOf(mType));
+                return LoganSquare.parse(value, HaloParserConverterUtils.parameterizedTypeOf(mType));
             }
         }
         return null;

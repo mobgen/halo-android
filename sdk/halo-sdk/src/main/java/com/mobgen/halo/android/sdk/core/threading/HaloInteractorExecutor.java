@@ -2,6 +2,7 @@ package com.mobgen.halo.android.sdk.core.threading;
 
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.CheckResult;
 import android.support.annotation.Keep;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -102,7 +103,7 @@ public final class HaloInteractorExecutor<T> implements ICancellable, ThreadCont
         mInteractor = interactor;
         mExecutionCallback = executionCallback;
         mThreadPolicy = Threading.POOL_QUEUE_POLICY;
-        if(Looper.myLooper() != null){
+        if (Looper.myLooper() != null) {
             mResultHandler = new Handler(Looper.myLooper());
         }
     }
@@ -151,6 +152,35 @@ public final class HaloInteractorExecutor<T> implements ICancellable, ThreadCont
     public final ICancellable execute() {
         execute(null);
         return this;
+    }
+
+    /**
+     * Executes the given operation into the thread manager in the same thread providing an inline response.
+     *
+     * @return The result of the operation wrapped on HaloResultV2 object.
+     */
+    @Nullable
+    @Api(2.33)
+    @CheckResult(suggest = "This execution will be always with a SAME_THREAD_POLICY.")
+    public final HaloResultV2<T> executeInline() {
+        threadPolicy(Threading.SAME_THREAD_POLICY);
+        HaloResultV2<T> resultingData = null;
+        if (mExecutionCallback != null) {
+            mExecutionCallback.onPreExecute();
+        }
+        try {
+            resultingData = mInteractor.executeInteractor();
+        } catch (Exception e) {
+            //Notify erroneous execution
+            HaloStatus status = HaloStatus.builder()
+                    .error(e)
+                    .build();
+            resultingData = new HaloResultV2<T>(status, null);
+        }
+        if (mExecutionCallback != null) {
+            mExecutionCallback.onPostExecute();
+        }
+        return resultingData;
     }
 
     /**

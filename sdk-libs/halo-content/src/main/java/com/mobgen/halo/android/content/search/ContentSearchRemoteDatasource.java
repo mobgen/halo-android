@@ -57,6 +57,7 @@ public class ContentSearchRemoteDatasource {
         HaloRequest request = HaloRequest.builder(mClientApi)
                 .url(HaloNetworkConstants.HALO_ENDPOINT_ID, HaloContentNetwork.URL_SEARCH_INSTANCES)
                 .method(HaloRequestMethod.POST)
+                .cacheHeader(query.serverCache())
                 .body(HaloBodyFactory.stringBody(HaloMediaType.APPLICATION_JSON, jsonParsed))
                 .build();
 
