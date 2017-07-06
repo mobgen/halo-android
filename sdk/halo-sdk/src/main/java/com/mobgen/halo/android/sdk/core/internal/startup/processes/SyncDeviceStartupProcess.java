@@ -17,10 +17,6 @@ public class SyncDeviceStartupProcess extends StartupProcess {
 
     @Override
     protected void onStart(@NonNull Halo halo) {
-        halo.getCore().manager().fetchCurrentDevice()
-                .threadPolicy(Threading.SAME_THREAD_POLICY)
-                .bypassHaloReadyCheck()
-                .execute();
-        halo.getCore().manager().syncDeviceWhenNetworkAvailable(Threading.POOL_QUEUE_POLICY);
+        halo.getCore().manager().syncDevice().bypassHaloReadyCheck().threadPolicy(Threading.SAME_THREAD_POLICY).execute();
     }
 }
