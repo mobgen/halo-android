@@ -1,25 +1,22 @@
-package com.mobgen.halo.android.app.model;
+package com.mobgen.halo.android.auth.mock.instrumentation;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
-import com.mobgen.halo.android.content.annotations.HaloConstructor;
-import com.mobgen.halo.android.content.annotations.HaloField;
-import com.mobgen.halo.android.content.annotations.HaloQueries;
-import com.mobgen.halo.android.content.annotations.HaloQuery;
-import com.mobgen.halo.android.content.annotations.HaloSearchable;
 
 import java.util.Date;
 
+/**
+ * Created by f.souto.gonzalez on 22/06/2017.
+ */
 @JsonObject
-@HaloSearchable(version = 15, tableName = "QROffer")
-@HaloQueries(queries = {@HaloQuery(name = "selectDate", query = "select * from QROffer where Date = @{mDate:Date}")})
-public class QROffer implements Parcelable {
-    @HaloField(index = true, columnName = "id")
+public class UserDummy implements Parcelable {
+
     @JsonField(name = "Id")
     private String mId;
+
     @JsonField(name = "Title")
     String mTitle;
 
@@ -35,12 +32,11 @@ public class QROffer implements Parcelable {
     @JsonField(name = "Thumbnail")
     String mThumbnail;
 
-    public QROffer() {
+    public UserDummy() {
 
     }
 
-    @HaloConstructor(columnNames = {"id", "title", "date", "article", "thumbnail"})
-    public QROffer(String id, String title, Date date, String article, String thumbnail) {
+    public UserDummy(String id, String title, Date date, String article, String thumbnail) {
         mId = id;
         mTitle = title;
         mDate = date;
@@ -91,7 +87,7 @@ public class QROffer implements Parcelable {
         dest.writeString(this.mQRImage);
     }
 
-    protected QROffer(Parcel in) {
+    protected UserDummy(Parcel in) {
         this.mId = in.readString();
         this.mTitle = in.readString();
         long tmpMDate = in.readLong();
@@ -101,13 +97,13 @@ public class QROffer implements Parcelable {
         this.mQRImage = in.readString();
     }
 
-    public static final Creator<QROffer> CREATOR = new Creator<QROffer>() {
-        public QROffer createFromParcel(Parcel source) {
-            return new QROffer(source);
+    public static final Creator<UserDummy> CREATOR = new Creator<UserDummy>() {
+        public UserDummy createFromParcel(Parcel source) {
+            return new UserDummy(source);
         }
 
-        public QROffer[] newArray(int size) {
-            return new QROffer[size];
+        public UserDummy[] newArray(int size) {
+            return new UserDummy[size];
         }
     };
 }

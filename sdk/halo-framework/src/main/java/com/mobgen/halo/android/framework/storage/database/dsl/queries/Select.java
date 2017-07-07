@@ -22,6 +22,24 @@ public class Select extends Query {
     /**
      * Join policy annotation to constraint it.
      */
+    @StringDef({ORDER_ASC, ORDER_DESC})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface OrderPolicy {
+    }
+
+    /**
+     * Order asc elements.
+     */
+    public static final String ORDER_ASC = "ASC";
+
+    /**
+     * Order desc elements.
+     */
+    public static final String ORDER_DESC = "DESC";
+
+    /**
+     * Join policy annotation to constraint it.
+     */
     @StringDef({NATURAL, LEFT, CROSS, LEFT_OUTER})
     @Retention(RetentionPolicy.SOURCE)
     public @interface JoinPolicy {
@@ -359,6 +377,17 @@ public class Select extends Query {
         }
 
         /**
+         * Adds a order by clause to the query.
+         *
+         * @param column The column.
+         * @param orderPolicy The order type to apply.
+         * @return The order clause to apply.
+         */
+        public OrderSyntax order(@NonNull String column, @NonNull @OrderPolicy String orderPolicy){
+            return new OrderSyntax(column, orderPolicy);
+        }
+
+        /**
          * Creates another joined element.
          *
          * @param column The new column.
@@ -403,6 +432,23 @@ public class Select extends Query {
          */
         public FromSyntax from(@NonNull Class<? extends HaloTable> table) {
             return new FromSyntax(table);
+        }
+    }
+
+
+    /**
+     * Order clause.
+     */
+    public class OrderSyntax extends ExecutableExpression {
+
+        /**
+         * Constructor for orderby
+         *
+         * @param column The column.
+         * @param orderPolicy The order policy to apply.
+         */
+        public OrderSyntax(@NonNull String column, @NonNull @OrderPolicy String orderPolicy){
+            builder().append(" ORDER BY " + column + " " + orderPolicy + " ");
         }
     }
 
@@ -452,6 +498,18 @@ public class Select extends Query {
          */
         public WhereSyntax where(@Nullable String column) {
             return new WhereSyntax(column, true);
+        }
+
+
+        /**
+         * Adds a order by clause to the query.
+         *
+         * @param column The column.
+         * @param orderPolicy The order type to apply.
+         * @return The order clause to apply.
+         */
+        public OrderSyntax order(@NonNull String column, @NonNull @OrderPolicy String orderPolicy){
+            return new OrderSyntax(column, orderPolicy);
         }
     }
 

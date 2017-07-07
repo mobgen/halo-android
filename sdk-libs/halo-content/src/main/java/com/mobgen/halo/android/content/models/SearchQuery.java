@@ -143,6 +143,13 @@ public class SearchQuery implements Parcelable {
     String mSegmentMode;
 
     /**
+     * The list of sort elements to search.
+     */
+    @Nullable
+    @JsonField(name = "sort")
+    String mSearchSort;
+
+    /**
      * Tells if should be segmented using the user.
      */
     private transient boolean mSegmentWithDevice;
@@ -203,6 +210,7 @@ public class SearchQuery implements Parcelable {
         this.mSearchTag = in.readString();
         this.mRelationships = in.createTypedArrayList(Relationship.CREATOR);
         this.mCacheTime = in.readInt();
+        this.mSearchSort = in.readString();
     }
 
     @Override
@@ -223,6 +231,7 @@ public class SearchQuery implements Parcelable {
         dest.writeString(this.mSearchTag);
         dest.writeTypedList(mRelationships);
         dest.writeInt(this.mCacheTime);
+        dest.writeString(this.mSearchSort);
     }
 
     /**
@@ -249,6 +258,7 @@ public class SearchQuery implements Parcelable {
         mSearchTag = builder.mSearchTag;
         mRelationships = builder.mRelationships;
         mCacheTime = builder.mCacheTime;
+        mSearchSort = builder.mSearchSort;
     }
 
     /**
@@ -455,6 +465,18 @@ public class SearchQuery implements Parcelable {
         return mSegmentMode;
     }
 
+
+    /**
+     * Provides the sort query to perfom
+     *
+     * @return The sort query.
+     */
+    @Keep
+    @Api(2.4)
+    public String getSort() {
+        return mSearchSort;
+    }
+
     /**
      * Provides the ttl time for the cache of instances.
      *
@@ -600,6 +622,12 @@ public class SearchQuery implements Parcelable {
         List<Relationship> mRelationships;
 
         /**
+         * The sort elements.
+         */
+        @Nullable
+        String mSearchSort;
+
+        /**
          * Tells the content api if the call should be segmented using the current device.
          * The action options.
          */
@@ -651,6 +679,7 @@ public class SearchQuery implements Parcelable {
             mSegmentWithDevice = currentOptions.mSegmentWithDevice;
             mSegmentMode = currentOptions.mSegmentMode;
             mSearchTag = currentOptions.mSearchTag;
+            mSearchSort = currentOptions.mSearchSort;
             mCacheTime = 0;
         }
 
@@ -727,6 +756,43 @@ public class SearchQuery implements Parcelable {
         public Builder allRelatedInstances(@NonNull String fieldName) {
             mRelationships = HaloContentHelper.addToList(mRelationships, new Relationship[]{Relationship.createForAll(fieldName)});
             return this;
+        }
+
+
+        /**
+         * The sort of the instances
+         *
+         * @param searchSorts The relationship to filter
+         * @return The current builder.
+         */
+        @Keep
+        @Api(2.4)
+        @NonNull
+        public Builder sort(@NonNull SearchSort... searchSorts) {
+            mSearchSort = addSortElements(mSearchSort, searchSorts);
+            return this;
+        }
+
+        /**
+         * Adds something to the given list or creates it returning as a result.
+         *
+         * @param currentSort  The list of items.
+         * @param items The items.
+         * @return The list returned or created.
+         */
+        @NonNull
+        private String addSortElements(@Nullable String currentSort, @Nullable SearchSort[] items) {
+            List<String> finalList = new ArrayList<>();
+            if (items != null && items.length > 0) {
+                for(int i = 0; i < items.length; i ++){
+                    finalList.add(items[i].getSortQuery());
+                }
+            }
+            if(currentSort == null) {
+                return TextUtils.join(",", finalList);
+            } else {
+                return mSearchSort + "," + TextUtils.join(",", finalList);
+            }
         }
 
         /**

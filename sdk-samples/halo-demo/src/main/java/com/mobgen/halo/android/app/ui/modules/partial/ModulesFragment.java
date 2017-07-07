@@ -33,6 +33,8 @@ import com.mobgen.halo.android.app.ui.social.SocialLoginActivity;
 import com.mobgen.halo.android.app.ui.storelocator.StoreLocatorActivity;
 import com.mobgen.halo.android.app.ui.translations.TranslationsActivity;
 import com.mobgen.halo.android.app.utils.ViewUtils;
+import com.mobgen.halo.android.auth.models.ReferenceContainer;
+import com.mobgen.halo.android.auth.pocket.HaloPocketApi;
 import com.mobgen.halo.android.content.HaloContentApi;
 import com.mobgen.halo.android.content.models.HaloContentInstance;
 import com.mobgen.halo.android.content.models.Paginated;
@@ -61,6 +63,11 @@ import java.util.Map;
  */
 public class ModulesFragment extends MobgenHaloFragment implements SwipeRefreshLayout.OnRefreshListener,
         ModulesAdapter.ModuleAddonListener {
+
+    /**
+     * Halo module names to store.
+     */
+    private static final String HALO_MODULE_NAMES = "moduleNames";
 
     /**
      * HaloModule list bundle.
@@ -229,6 +236,14 @@ public class ModulesFragment extends MobgenHaloFragment implements SwipeRefreshL
         refreshModules();
     }
 
+    private String[] getHaloModulesNames(List<HaloModule> modules){
+        String[] modulesArray = new String[modules.size()];
+        for(int i=0; i<modules.size(); i ++) {
+            modulesArray[i] = modules.get(i).getName();
+        }
+        return modulesArray;
+    }
+
     @Override
     public void onModuleSelected(HaloModule module) {
         if (module.getName().equalsIgnoreCase("store locator")) {
@@ -255,6 +270,14 @@ public class ModulesFragment extends MobgenHaloFragment implements SwipeRefreshL
         } else {
             GeneralContentModuleActivity.start(getContext(), module);
         }
+
+        //save modules names on pocket
+        HaloPocketApi pocketApi = MobgenHaloApplication.getHaloAuthApi().pocket();
+        ReferenceContainer referenceContainer = new ReferenceContainer.Builder(HALO_MODULE_NAMES)
+                .references(getHaloModulesNames(mModuleList.data()))
+                .build();
+        pocketApi.saveReferences(referenceContainer)
+                .execute();
     }
 
     @Override

@@ -10,6 +10,9 @@ public class ServerFixtures {
     public static final String LOGIN_SUCESS = "login.json";
     //register
     public static final String REGISTER_SUCESS = "register.json";
+    //pocket response
+    public static final String POCKET_SUCESS = "pocket.json";
+    public static final String POCKET_FILTER_SUCESS = "pocket_filter.json";
 
     public static void enqueueServerFile(MockServer server, String file) throws IOException {
         server.enqueueFile(200, file);

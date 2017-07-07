@@ -63,7 +63,7 @@ public class BatchErrorInfo implements Parcelable {
         public void serialize(JSONObject object, String fieldName, boolean writeFieldNameForObject, JsonGenerator jsonGenerator) throws IOException {
             if (object != null) {
                 jsonGenerator.writeFieldName(fieldName);
-                jsonGenerator.writeRaw(":" + object.toString());
+                jsonGenerator.writeRawValue(object.toString());
             }
         }
     }
