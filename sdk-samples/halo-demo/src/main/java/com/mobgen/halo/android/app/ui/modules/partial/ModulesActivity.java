@@ -112,7 +112,8 @@ public class ModulesActivity extends MobgenHaloActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[],
+                                           @NonNull int[] grantResults) {
         switch (requestCode) {
             case REQUEST_PERMISSION: {
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -123,10 +124,10 @@ public class ModulesActivity extends MobgenHaloActivity {
     }
 
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
         //TODO Delete this code when APP+ credential is ready to send push
-        if(HaloManagerApi.with(MobgenHaloApplication.halo())
+        if (HaloManagerApi.with(MobgenHaloApplication.halo())
                 .isPasswordAuthentication()) {
             Halo.instance().getCore().logout();
         }
@@ -137,7 +138,7 @@ public class ModulesActivity extends MobgenHaloActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if(MobgenHaloApplication.getHaloAuthApi()!=null && MobgenHaloApplication.getHaloAuthApi().isAccountStored()){
+        if (MobgenHaloApplication.getHaloAuthApi() != null && MobgenHaloApplication.getHaloAuthApi().isAccountStored()) {
             getMenuInflater().inflate(R.menu.menu_modules_logout, menu);
         } else {
             getMenuInflater().inflate(R.menu.menu_modules_login, menu);
@@ -153,10 +154,10 @@ public class ModulesActivity extends MobgenHaloActivity {
                     .execute(new CallbackV2<Boolean>() {
                         @Override
                         public void onFinish(@NonNull HaloResultV2<Boolean> result) {
-                            if(result.data()){
+                            if (result.data()) {
                                 createInfoDialog("See you soon ;)");
                                 //remove the chat qr image
-                                File chatImage =  new File(MobgenHaloApplication.halo().context().getExternalFilesDir(null).getAbsolutePath().toString() + "/qr/profile.jpg");
+                                File chatImage = new File(MobgenHaloApplication.halo().context().getExternalFilesDir(null).getAbsolutePath().toString() + "/qr/profile.jpg");
                                 chatImage.delete();
                             } else {
                                 createInfoDialog("You must signin or login");
@@ -179,6 +180,7 @@ public class ModulesActivity extends MobgenHaloActivity {
     /**
      * Creates the dialog
      */
+
     public void createInfoDialog(String message) {
         if (mInfoDialog != null) mInfoDialog.dismiss();
         mInfoDialog = new AlertDialog.Builder(this)

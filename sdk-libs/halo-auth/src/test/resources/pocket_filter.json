@@ -1,0 +1,15 @@
+{
+  "data": {
+    "Date": 1498140119461,
+    "Thumbnail": "https://mobgen.com/wp-content/uploads/2017/03/WebMOBGEN_partof_accenturedigital1.png",
+    "Title": "userName",
+    "Id": "132224",
+    "ContentHtml": "This is my bio"
+  },
+  "references": {
+    "favorites": [
+      "fav_1",
+      "fav_2"
+    ]
+  }
+}

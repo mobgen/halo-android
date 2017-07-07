@@ -79,6 +79,16 @@
     <string name="batch_gallery_title">Batch Gallery</string>
     <string name="batch_gallery_select_title">Select more images</string>
     <string name="batch_gallery_author">Author</string>
+    <string name="action_edit_batch">Edit content</string>
+    <string name="action_delete_batch">Delete content</string>
+    <string name="action_add_batch">Add content</string>
+    <string name="action_sort_batch_name">Sort by name</string>
+    <string name="action_sort_batch_create">Sort by createdAt</string>
+    <string name="action_sort_batch_update">Sort by updatedAt</string>
+    <string name="action_sort_batch_publish">Sort by publishAt</string>
+    <string name="action_sort_batch_remove">Sort by removeAt</string>
+    <string name="action_sort_batch_archive">Sort by archivedAt</string>
+    <string name="action_sort_batch_delete">Sort by deletedAt</string>
 
     <!-- Translations -->
     <string name="translations_title">Translations</string>
@@ -155,6 +165,8 @@
     <string name="hint_surname">Surname</string>
     <string name="hint_email">Email</string>
     <string name="hint_password">Password</string>
+    <string name="social_snack_login"> , last login: </string>
+    <string name="social_snack_button">Close</string>
 
     <!-- Social token-->
     <string name="social_halo_token_title">Token information</string>

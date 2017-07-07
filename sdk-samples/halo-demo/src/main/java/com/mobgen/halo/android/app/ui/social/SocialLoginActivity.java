@@ -5,19 +5,27 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.google.android.gms.common.SignInButton;
 import com.google.zxing.WriterException;
 import com.mobgen.halo.android.app.R;
 import com.mobgen.halo.android.app.generated.HaloContentQueryApi;
+import com.mobgen.halo.android.app.model.UserData;
 import com.mobgen.halo.android.app.model.chat.QRContact;
 import com.mobgen.halo.android.app.ui.MobgenHaloActivity;
 import com.mobgen.halo.android.app.ui.MobgenHaloApplication;
 import com.mobgen.halo.android.app.ui.chat.messages.MessagesActivity;
+import com.mobgen.halo.android.app.utils.DateUtils;
+import com.mobgen.halo.android.auth.models.Pocket;
+import com.mobgen.halo.android.auth.pocket.HaloPocketApi;
 import com.mobgen.halo.android.framework.common.helpers.logger.Halog;
 import com.mobgen.halo.android.framework.toolbox.data.CallbackV2;
 import com.mobgen.halo.android.framework.toolbox.data.HaloResultV2;
@@ -28,11 +36,14 @@ import com.mobgen.halo.android.auth.providers.SocialNotAvailableException;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
+import java.util.Date;
 import java.util.List;
 
 import androidmads.library.qrgenearator.QRGContents;
 import androidmads.library.qrgenearator.QRGEncoder;
 import androidmads.library.qrgenearator.QRGSaver;
+
+import static com.mobgen.halo.android.app.notifications.DeeplinkDecorator.BUNDLE_NOTIFICATION_INAPP;
 
 /**
  * Social login activity to login with different accounts.
@@ -76,9 +87,15 @@ public class SocialLoginActivity extends MobgenHaloActivity implements View.OnCl
     private ImageView mQrCredential;
 
     /**
+     * The snackbar to make pocket visible
+     */
+    private Snackbar mSnackbar;
+
+    /**
      * The QR file
      */
     private File mQrFile;
+
     /**
      * Starts the activity.
      *
@@ -112,16 +129,50 @@ public class SocialLoginActivity extends MobgenHaloActivity implements View.OnCl
         mSignInWithHalo.setOnClickListener(this);
         mTokenInformation.setOnClickListener(this);
 
-        mQrFile =  new File(MobgenHaloApplication.halo().context().getExternalFilesDir(null).getAbsolutePath().toString() + "/qr/");
+        mQrFile = new File(MobgenHaloApplication.halo().context().getExternalFilesDir(null).getAbsolutePath().toString() + "/qr/");
     }
 
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
-        if(new File(mQrFile.toString() + "/profile.jpg").exists()){
+        if (new File(mQrFile.toString() + "/profile.jpg").exists()) {
             mQrCredential.setVisibility(View.VISIBLE);
             Picasso.with(this).load(new File(mQrFile.toString() + "/profile.jpg")).into(mQrCredential);
+
+            //show pocket on snackbar
+            HaloPocketApi pocketApi = MobgenHaloApplication.getHaloAuthApi().pocket();
+            pocketApi.getData()
+                    .asCustomData(UserData.class)
+                    .execute(new CallbackV2<UserData>() {
+                        @Override
+                        public void onFinish(@NonNull HaloResultV2<UserData> result) {
+                            if (result.status().isOk()) {
+                                notifyUserData(result.data());
+                            }
+                        }
+                    });
         }
+    }
+
+    /**
+     * Notify the username and last login from pocket
+     */
+    private void notifyUserData(@NonNull UserData userData) {
+        mSnackbar = Snackbar
+                .make(mQrCredential, userData.getUserName() + getString(R.string.social_snack_login) + " " + DateUtils.formatDate(userData.getDate()), Snackbar.LENGTH_INDEFINITE)
+                .setAction(getString(R.string.social_snack_button), new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mSnackbar.dismiss();
+                    }
+                });
+        mSnackbar.setActionTextColor(getResources().getColor(R.color.dark_green));
+        View sbView = mSnackbar.getView();
+        sbView.setBackgroundColor(ContextCompat.getColor(mContext, R.color.orange_mobgen));
+        FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) sbView.getLayoutParams();
+        params.gravity = Gravity.TOP;
+        sbView.setLayoutParams(params);
+        mSnackbar.show();
     }
 
     @Override
@@ -162,7 +213,7 @@ public class SocialLoginActivity extends MobgenHaloActivity implements View.OnCl
                 String alias = MobgenHaloApplication.halo().getCore().manager().getDevice().getAlias();
                 String appId = MobgenHaloApplication.halo().getCore().manager().getAppId();
                 String userName = result.data().getUser().getName();
-                String qrText = "halo://chat?alias=" + alias + "&appId="+ appId + "&userName=" + userName;
+                String qrText = "halo://chat?alias=" + alias + "&appId=" + appId + "&userName=" + userName;
                 QRGEncoder qrgEncoder = new QRGEncoder(qrText, null, QRGContents.Type.TEXT, 200);
                 try {
                     // Getting QR-Code as Bitmap
@@ -173,7 +224,7 @@ public class SocialLoginActivity extends MobgenHaloActivity implements View.OnCl
                     QRGSaver.save(mQrFile.toString(), "/profile", bitmap, QRGContents.ImageType.IMAGE_JPEG);
                     //save contact data into storage
                     HaloContentQueryApi.with(MobgenHaloApplication.halo())
-                            .insertContact(alias,userName,mQrFile.toString() + "/profile.jpg")
+                            .insertContact(alias, userName, mQrFile.toString() + "/profile.jpg")
                             .asContent(QRContact.class)
                             .threadPolicy(Threading.POOL_QUEUE_POLICY)
                             .execute(new CallbackV2<List<QRContact>>() {
@@ -181,11 +232,24 @@ public class SocialLoginActivity extends MobgenHaloActivity implements View.OnCl
                                 public void onFinish(@NonNull HaloResultV2<List<QRContact>> result) {
                                     //create multichannel
                                     HaloContentQueryApi.with(MobgenHaloApplication.halo())
-                                            .insertContact(MessagesActivity.MULTIPLE_ROOM,mContext.getString(R.string.chat_multiple_room),mQrFile.toString() + "/profile.jpg")
+                                            .insertContact(MessagesActivity.MULTIPLE_ROOM, mContext.getString(R.string.chat_multiple_room), mQrFile.toString() + "/profile.jpg")
                                             .asContent(QRContact.class)
                                             .execute();
                                 }
                             });
+
+                    //save userdata pocket
+                    HaloPocketApi pocketApi = MobgenHaloApplication.getHaloAuthApi().pocket();
+                    UserData userData = new UserData(userName, new Date(), mQrFile.toString() + "/profile.jpg");
+                    pocketApi.saveData(userData).execute(new CallbackV2<Pocket>() {
+                        @Override
+                        public void onFinish(@NonNull HaloResultV2<Pocket> result) {
+                            if (result.status().isOk()) {
+                                notifyUserData((UserData) result.data().getValues(UserData.class));
+                            }
+                        }
+                    });
+
                 } catch (WriterException e) {
                 }
                 Halog.d(getClass(), result.data().toString());

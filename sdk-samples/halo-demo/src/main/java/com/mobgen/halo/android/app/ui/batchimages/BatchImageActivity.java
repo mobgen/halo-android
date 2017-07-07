@@ -31,6 +31,9 @@ import com.mobgen.halo.android.content.models.BatchOperations;
 import com.mobgen.halo.android.content.models.HaloContentInstance;
 import com.mobgen.halo.android.content.models.Paginated;
 import com.mobgen.halo.android.content.models.SearchQuery;
+import com.mobgen.halo.android.content.models.SearchSort;
+import com.mobgen.halo.android.content.models.SortField;
+import com.mobgen.halo.android.content.models.SortOrder;
 import com.mobgen.halo.android.content.search.SearchQueryBuilderFactory;
 import com.mobgen.halo.android.framework.toolbox.data.CallbackV2;
 import com.mobgen.halo.android.framework.toolbox.data.Data;
@@ -66,6 +69,8 @@ public class BatchImageActivity extends MobgenHaloActivity implements SwipeRefre
     private BatchImageAdapter mAdapter;
     private Context mContext;
     private GeometricProgressView mProgressView;
+    private SearchSort mSearchSort;
+    private Boolean[] isAscending = new Boolean[]{false, false, false, false, false, false, false};
 
     public static void start(@NonNull Context context, @NonNull String moduleName, @NonNull String moduleId) {
         Bundle data = new Bundle();
@@ -99,6 +104,8 @@ public class BatchImageActivity extends MobgenHaloActivity implements SwipeRefre
         mRecyclerView = (RecyclerView) findViewById(R.id.rv_generic);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mProgressView = (GeometricProgressView) findViewById(R.id.gm_progress);
+
+        mSearchSort = new SearchSort(SortField.PUBLISHED, SortOrder.ASCENDING);
     }
 
     @Override
@@ -118,7 +125,8 @@ public class BatchImageActivity extends MobgenHaloActivity implements SwipeRefre
         ViewUtils.refreshing(mSwipeToRefresh, true);
         SearchQuery options = SearchQueryBuilderFactory.getPublishedItems(mModuleName, mModuleName)
                 .onePage(true)
-                .serverCache(60*2)
+                .sort(mSearchSort)
+                .serverCache(60 * 2)
                 .segmentWithDevice()
                 .build();
         HaloContentApi.with(MobgenHaloApplication.halo())
@@ -254,8 +262,42 @@ public class BatchImageActivity extends MobgenHaloActivity implements SwipeRefre
                     Toast.makeText(BatchImageActivity.this, "Sorry we cannot make the operation", Toast.LENGTH_SHORT).show();
                 }
                 break;
+            case R.id.action_sort_batch_name:
+                setSearchSortOptions(SortField.NAME, 0);
+                break;
+            case R.id.action_sort_batch_create:
+                setSearchSortOptions(SortField.CREATED, 1);
+                break;
+            case R.id.action_sort_batch_update:
+                setSearchSortOptions(SortField.UPDATED, 2);
+                break;
+            case R.id.action_sort_batch_publish:
+                setSearchSortOptions(SortField.PUBLISHED, 3);
+                break;
+            case R.id.action_sort_batch_remove:
+                setSearchSortOptions(SortField.REMOVED, 4);
+                break;
+            case R.id.action_sort_batch_archive:
+                setSearchSortOptions(SortField.ARCHIVED, 5);
+                break;
+            case R.id.action_sort_batch_delete:
+                setSearchSortOptions(SortField.DELETED, 6);
+                break;
         }
         return true;
+    }
+
+    private void setSearchSortOptions(@NonNull @SortField.SortOperator String field, int index) {
+        //change sort order
+        if (isAscending[index]) {
+            mSearchSort = new SearchSort(field, SortOrder.DESCENDING);
+        } else {
+            mSearchSort = new SearchSort(field, SortOrder.ASCENDING);
+        }
+        //change status
+        isAscending[index] = !isAscending[index];
+        //load images
+        loadGallery();
     }
 
     @Nullable
