@@ -104,7 +104,7 @@ public class StartupManager implements ProcessListener {
 
     @Override
     public synchronized void onProcessFinished() {
-        Halog.d(getClass(), "-- Process finished");
+        Halog.d(getClass(), "Process finished");
         if (mCounter.decrementAndGet() == 0) {
             mHandler.post(new Runnable() {
                 @Override
