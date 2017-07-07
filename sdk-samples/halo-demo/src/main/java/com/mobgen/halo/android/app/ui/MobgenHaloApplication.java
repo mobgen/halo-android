@@ -19,9 +19,11 @@ import com.mobgen.halo.android.app.notifications.SilentNotificationDispatcher;
 import com.mobgen.halo.android.app.ui.settings.SettingsActivity;
 import com.mobgen.halo.android.auth.HaloAuthApi;
 import com.mobgen.halo.android.content.HaloContentApi;
+import com.mobgen.halo.android.content.models.SyncQuery;
 import com.mobgen.halo.android.framework.common.exceptions.HaloParsingException;
 import com.mobgen.halo.android.framework.common.helpers.logger.PrintLog;
 import com.mobgen.halo.android.framework.common.helpers.subscription.ISubscription;
+import com.mobgen.halo.android.framework.toolbox.threading.Threading;
 import com.mobgen.halo.android.notifications.HaloNotificationsApi;
 import com.mobgen.halo.android.notifications.services.NotificationIdGenerator;
 import com.mobgen.halo.android.sdk.api.Halo;
@@ -203,6 +205,10 @@ public class MobgenHaloApplication extends HaloApplication {
     @NonNull
     @Override
     public Halo onHaloCreated(@NonNull Halo halo) {
+
+        HaloContentApi.with(halo)
+                .sync(SyncQuery.create("SyncTest", null, Threading.POOL_QUEUE_POLICY),true);
+
         //translations
         if (mTranslationsApi != null) {
             mTranslationsApi.cancel();

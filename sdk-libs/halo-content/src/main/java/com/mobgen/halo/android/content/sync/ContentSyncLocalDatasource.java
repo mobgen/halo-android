@@ -123,6 +123,23 @@ public class ContentSyncLocalDatasource {
                 .on(mStorage.db(), "Fetch all the items for the given module.");
     }
 
+
+    /**
+     * Provides a cursor with all the instances synced for the given module name.
+     *
+     * @param moduleName The module name.
+     * @return The cursor created.
+     */
+    @NonNull
+    public Boolean getSyncedModulesIds(@NonNull String moduleName) {
+        Cursor result  = Select.columns(ContentSync.MODULE_ID).from(ContentSync.class)
+                .where(ContentSync.MODULE_NAME)
+                .eq(moduleName)
+                .on(mStorage.db(), "Fetch all the items for the given module.");
+
+        return true;
+    }
+
     /**
      * Tries to synchronize the information.
      *
