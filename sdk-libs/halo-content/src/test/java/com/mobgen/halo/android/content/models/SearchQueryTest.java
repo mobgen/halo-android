@@ -319,13 +319,13 @@ public class SearchQueryTest extends HaloRobolectricTest {
     @Test
     public void thatCanSortSearch() {
         SearchSort[] searchSorts = new SearchSort[]{new SearchSort(SortField.UPDATED, SortOrder.ASCENDING),
-                new SearchSort(SortField.UPDATEDBY, SortOrder.ASCENDING)};
+                new SearchSort(SortField.UPDATED_BY, SortOrder.ASCENDING)};
         SearchQuery query = SearchQuery.builder()
                 .sort(new SearchSort(SortField.ARCHIVED,SortOrder.DESCENDING))
                 .sort(new SearchSort(SortField.CREATED,SortOrder.ASCENDING))
-                .sort(new SearchSort(SortField.CREATEDBY,SortOrder.ASCENDING))
+                .sort(new SearchSort(SortField.CREATED_BY,SortOrder.ASCENDING))
                 .sort(new SearchSort(SortField.DELETED,SortOrder.DESCENDING))
-                .sort(new SearchSort(SortField.DELETEDBY,SortOrder.ASCENDING))
+                .sort(new SearchSort(SortField.DELETED_BY,SortOrder.ASCENDING))
                 .sort(new SearchSort(SortField.NAME,SortOrder.DESCENDING))
                 .sort(new SearchSort(SortField.PUBLISHED,SortOrder.ASCENDING))
                 .sort(new SearchSort(SortField.REMOVED,SortOrder.DESCENDING))
@@ -334,14 +334,14 @@ public class SearchQueryTest extends HaloRobolectricTest {
 
         assertThat(query.getSort()).contains(SortField.ARCHIVED);
         assertThat(query.getSort()).contains(SortField.CREATED);
-        assertThat(query.getSort()).contains(SortField.CREATEDBY);
+        assertThat(query.getSort()).contains(SortField.CREATED_BY);
         assertThat(query.getSort()).contains(SortField.DELETED);
-        assertThat(query.getSort()).contains(SortField.DELETEDBY);
+        assertThat(query.getSort()).contains(SortField.DELETED_BY);
         assertThat(query.getSort()).contains(SortField.NAME);
         assertThat(query.getSort()).contains(SortField.PUBLISHED);
         assertThat(query.getSort()).contains(SortField.REMOVED);
         assertThat(query.getSort()).contains(SortField.UPDATED);
-        assertThat(query.getSort()).contains(SortField.UPDATEDBY);
+        assertThat(query.getSort()).contains(SortField.UPDATED_BY);
     }
 
 

@@ -25,7 +25,7 @@ public class SortField {
      * Determines the search sort operation.
      */
     @Keep
-    @StringDef({NAME, CREATED, UPDATED, PUBLISHED, REMOVED, ARCHIVED, DELETED, CREATEDBY, UPDATEDBY, DELETEDBY})
+    @StringDef({NAME, CREATED, UPDATED, PUBLISHED, REMOVED, ARCHIVED, DELETED, CREATED_BY, UPDATED_BY, DELETED_BY})
     @Retention(RetentionPolicy.SOURCE)
     public @interface SortOperator {
     }
@@ -79,20 +79,20 @@ public class SortField {
      */
     @Api(2.4)
     @Keep
-    public static final String CREATEDBY = "createdBy";
+    public static final String CREATED_BY = "createdBy";
 
     /**
      * Identifier for updated by field.
      */
     @Api(2.4)
     @Keep
-    public static final String UPDATEDBY = "updatedBy";
+    public static final String UPDATED_BY = "updatedBy";
 
     /**
      * Identifier for deleted by field.
      */
     @Api(2.4)
     @Keep
-    public static final String DELETEDBY = "deletedBy";
+    public static final String DELETED_BY = "deletedBy";
 
 }
