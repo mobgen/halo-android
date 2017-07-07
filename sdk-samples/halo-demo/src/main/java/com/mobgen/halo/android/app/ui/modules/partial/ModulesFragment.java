@@ -49,6 +49,7 @@ import com.mobgen.halo.android.framework.toolbox.threading.Threading;
 import com.mobgen.halo.android.sdk.api.Halo;
 import com.mobgen.halo.android.sdk.core.management.HaloManagerApi;
 import com.mobgen.halo.android.sdk.core.management.models.HaloModule;
+import com.mobgen.halo.android.sdk.core.management.models.HaloModuleQuery;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -164,8 +165,12 @@ public class ModulesFragment extends MobgenHaloFragment implements SwipeRefreshL
         //print module metadata
         HaloManagerApi.with(Halo.instance()).printModulesMetaData();
 
+        HaloModuleQuery haloModuleQuery = HaloModuleQuery.builder()
+                .serverCache(2 * 60) // 2 minute cache
+                .withFields(false)
+                .build();
         HaloManagerApi.with(Halo.instance())
-                .getModules(Data.NETWORK_AND_STORAGE)
+                .getModules(Data.NETWORK_AND_STORAGE, haloModuleQuery)
                 .asContent()
                 .threadPolicy(Threading.POOL_QUEUE_POLICY)
                 .execute(new CallbackV2<List<HaloModule>>() {
@@ -258,7 +263,7 @@ public class ModulesFragment extends MobgenHaloFragment implements SwipeRefreshL
         } else if (module.isSingleItemInstance()) {
             HaloResultV2<HaloContentInstance> instance = mSingleInstanceItemMap.get(module.getInternalId());
             if (instance != null) {
-                GeneralContentItemActivity.startActivity(getContext(), instance.data(), module.getName(), instance.status(),false);
+                GeneralContentItemActivity.startActivity(getContext(), instance.data(), module.getName(), instance.status(), false);
             } else {
                 Toast.makeText(getContext(), getString(R.string.error_no_instance), Toast.LENGTH_LONG).show();
             }

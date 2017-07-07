@@ -2,7 +2,7 @@ package com.mobgen.halo.android.sdk.core.internal.parser;
 
 import android.support.annotation.Keep;
 
-import com.bluelinelabs.logansquare.ConverterUtils;
+import com.bluelinelabs.logansquare.HaloParserConverterUtils;
 import com.bluelinelabs.logansquare.LoganSquare;
 import com.bluelinelabs.logansquare.typeconverters.TypeConverter;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -33,7 +33,7 @@ public class LoganSquareParserFactory extends Parser.Factory {
     @Override
     public Parser<InputStream, ?> deserialize(Type type) {
         Parser<InputStream, ?> converter = null;
-        if (ConverterUtils.isSupported(type)) {
+        if (HaloParserConverterUtils.isSupported(type)) {
             converter = new FromLoganJsonConverter(type);
         }
         return converter;
@@ -42,7 +42,7 @@ public class LoganSquareParserFactory extends Parser.Factory {
     @Override
     public Parser<?, String> serialize(Type type) {
         Parser<?, String> converter = null;
-        if (ConverterUtils.isSupported(type)) {
+        if (HaloParserConverterUtils.isSupported(type)) {
             converter = new ToLoganJsonConverter(type);
         }
         return converter;

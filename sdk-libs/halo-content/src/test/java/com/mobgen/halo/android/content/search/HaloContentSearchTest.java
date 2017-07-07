@@ -8,6 +8,7 @@ import com.mobgen.halo.android.content.mock.dummy.DummyItem;
 import com.mobgen.halo.android.content.models.HaloContentInstance;
 import com.mobgen.halo.android.content.models.Paginated;
 import com.mobgen.halo.android.content.models.SearchQuery;
+import com.mobgen.halo.android.framework.network.interceptors.HaloCurlInterceptor;
 import com.mobgen.halo.android.framework.toolbox.data.CallbackV2;
 import com.mobgen.halo.android.framework.toolbox.data.Data;
 import com.mobgen.halo.android.framework.toolbox.data.HaloResultV2;
@@ -24,6 +25,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import okhttp3.Headers;
+import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+
 import static com.mobgen.halo.android.content.mock.fixtures.ServerFixtures.SEARCH_NOT_PAGINATED_RESPONSE;
 import static com.mobgen.halo.android.content.mock.fixtures.ServerFixtures.SEARCH_PAGINATED_RESPONSE;
 import static com.mobgen.halo.android.content.mock.fixtures.ServerFixtures.enqueueServerError;
@@ -32,7 +39,10 @@ import static com.mobgen.halo.android.content.mock.instrumentation.HaloContentAp
 import static com.mobgen.halo.android.content.mock.instrumentation.HaloMock.givenADefaultHalo;
 import static com.mobgen.halo.android.content.mock.instrumentation.SearchInstruments.givenAComplexQuery;
 import static com.mobgen.halo.android.content.mock.instrumentation.SearchInstruments.givenANotPaginatedQuery;
+import static com.mobgen.halo.android.content.mock.instrumentation.SearchInstruments.givenAOkClientWithCustomInterceptor;
 import static com.mobgen.halo.android.content.mock.instrumentation.SearchInstruments.givenASearchLikePatternQuery;
+import static com.mobgen.halo.android.content.mock.instrumentation.SearchInstruments.givenASearchWithServerCache;
+import static com.mobgen.halo.android.content.mock.instrumentation.SearchInstruments.givenASearchWithoutServerCache;
 import static com.mobgen.halo.android.content.mock.instrumentation.SearchInstruments.givenCallbackContentParsedEmptyDataLocal;
 import static com.mobgen.halo.android.content.mock.instrumentation.SearchInstruments.givenCallbackContentParsedSuccessData;
 import static com.mobgen.halo.android.content.mock.instrumentation.SearchInstruments.givenCallbackContentSuccessData;
@@ -345,6 +355,27 @@ public class HaloContentSearchTest extends HaloRobolectricTest {
                     }
                 });
 
+    }
+
+    @Test
+    public void thatCanPerfomSearchOperationWithServerCache() throws IOException {
+        enqueueServerFile(mMockServer, SEARCH_PAGINATED_RESPONSE);
+        SearchQuery query = givenASearchWithServerCache();
+        mHalo.framework().network().client().overrideOk(givenAOkClientWithCustomInterceptor(mHalo.framework().network().client(),"212"));
+
+        ContentSearchRemoteDatasource remoteDatasource = new ContentSearchRemoteDatasource(mHalo.framework().network());
+        remoteDatasource.findByQuery(query);
+    }
+
+
+    @Test
+    public void thatCanPerfomSearchOperationWithoutServerCache() throws IOException {
+        enqueueServerFile(mMockServer, SEARCH_PAGINATED_RESPONSE);
+        SearchQuery query = givenASearchWithoutServerCache();
+        mHalo.framework().network().client().overrideOk(givenAOkClientWithCustomInterceptor(mHalo.framework().network().client(),"0"));
+
+        ContentSearchRemoteDatasource remoteDatasource = new ContentSearchRemoteDatasource(mHalo.framework().network());
+        remoteDatasource.findByQuery(query);
     }
 
 }

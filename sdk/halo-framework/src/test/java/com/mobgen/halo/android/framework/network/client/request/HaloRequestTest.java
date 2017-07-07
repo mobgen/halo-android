@@ -23,6 +23,7 @@ import static com.mobgen.halo.android.framework.mock.fixtures.ServerFixtures.GET
 import static com.mobgen.halo.android.framework.mock.fixtures.ServerFixtures.enqueueServerFile;
 import static com.mobgen.halo.android.framework.mock.instrumentation.HaloNetInstrument.givenAGetRequest;
 import static com.mobgen.halo.android.framework.mock.instrumentation.HaloNetInstrument.givenAGetRequestTyped;
+import static com.mobgen.halo.android.framework.mock.instrumentation.HaloNetInstrument.givenAGetRequestWithCache;
 import static com.mobgen.halo.android.framework.mock.instrumentation.HaloNetInstrument.givenAGetRequestWithParams;
 import static com.mobgen.halo.android.framework.mock.instrumentation.HaloNetInstrument.givenAGetRequestWithParamsAndSession;
 import static org.assertj.core.api.Java6Assertions.assertThat;
@@ -47,8 +48,8 @@ public class HaloRequestTest extends HaloRobolectricTest {
 
     @Test
     public void thatMakeARequest() throws IOException {
-        enqueueServerFile(mMockServer,GET_TEST_ITEM);
-        HaloNetworkApi networkApi = givenAHaloNetWorkApi(mFramework,mEndpointURL);
+        enqueueServerFile(mMockServer, GET_TEST_ITEM);
+        HaloNetworkApi networkApi = givenAHaloNetWorkApi(mFramework, mEndpointURL);
         HaloRequest request = givenAGetRequest(networkApi);
         Response response = request.execute();
         assertThat(response).isNotNull();
@@ -57,8 +58,8 @@ public class HaloRequestTest extends HaloRobolectricTest {
 
     @Test
     public void thatMakeARequestWithParams() throws IOException {
-        enqueueServerFile(mMockServer,GET_TEST_ITEM);
-        HaloNetworkApi networkApi = givenAHaloNetWorkApi(mFramework,mEndpointURL);
+        enqueueServerFile(mMockServer, GET_TEST_ITEM);
+        HaloNetworkApi networkApi = givenAHaloNetWorkApi(mFramework, mEndpointURL);
         HaloRequest request = givenAGetRequestWithParams(networkApi);
         Response response = request.execute();
         assertThat(response).isNotNull();
@@ -68,8 +69,8 @@ public class HaloRequestTest extends HaloRobolectricTest {
 
     @Test
     public void thatMakeARequestWithParamsAndSession() throws IOException {
-        enqueueServerFile(mMockServer,GET_TEST_ITEM);
-        HaloNetworkApi networkApi = givenAHaloNetWorkApi(mFramework,mEndpointURL);
+        enqueueServerFile(mMockServer, GET_TEST_ITEM);
+        HaloNetworkApi networkApi = givenAHaloNetWorkApi(mFramework, mEndpointURL);
         HaloRequest request = givenAGetRequestWithParamsAndSession(networkApi);
         Response response = request.execute();
         assertThat(response).isNotNull();
@@ -79,8 +80,8 @@ public class HaloRequestTest extends HaloRobolectricTest {
 
     @Test
     public void thatMakeARequestWithClass() throws IOException, HaloParsingException, JSONException {
-        enqueueServerFile(mMockServer,GET_TEST_ITEM);
-        HaloNetworkApi networkApi = givenAHaloNetWorkApi(mFramework,mEndpointURL);
+        enqueueServerFile(mMockServer, GET_TEST_ITEM);
+        HaloNetworkApi networkApi = givenAHaloNetWorkApi(mFramework, mEndpointURL);
         HaloRequest request = givenAGetRequestTyped(networkApi);
         String response = request.execute(String.class);
         assertThat(response).isNotNull();
@@ -89,12 +90,23 @@ public class HaloRequestTest extends HaloRobolectricTest {
 
     @Test
     public void thatMakeARequestWithTyped() throws IOException, HaloParsingException, JSONException {
-        enqueueServerFile(mMockServer,GET_TEST_ITEM);
-        HaloNetworkApi networkApi = givenAHaloNetWorkApi(mFramework,mEndpointURL);
+        enqueueServerFile(mMockServer, GET_TEST_ITEM);
+        HaloNetworkApi networkApi = givenAHaloNetWorkApi(mFramework, mEndpointURL);
         HaloRequest request = givenAGetRequestTyped(networkApi);
-        String response = request.execute(new TypeReference<String>(){});
+        String response = request.execute(new TypeReference<String>() {
+        });
         assertThat(response).isNotNull();
         assertThat(response).isEqualTo("ExampleResponseTestFromNetWork");
     }
 
+    @Test
+    public void thatCanSetServerCacheOnRequest() throws IOException {
+        enqueueServerFile(mMockServer, GET_TEST_ITEM);
+        HaloNetworkApi networkApi = givenAHaloNetWorkApi(mFramework, mEndpointURL);
+        HaloRequest request = givenAGetRequestWithCache(networkApi);
+        Response response = request.execute();
+        assertThat(response).isNotNull();
+        assertThat(response.isSuccessful()).isTrue();
+        assertThat(request.buildOkRequest().header("to-cache")).isEqualTo("1234");
+    }
 }
