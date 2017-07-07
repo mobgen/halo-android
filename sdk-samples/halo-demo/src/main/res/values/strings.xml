@@ -165,6 +165,8 @@
     <string name="hint_surname">Surname</string>
     <string name="hint_email">Email</string>
     <string name="hint_password">Password</string>
+    <string name="social_snack_login"> , last login: </string>
+    <string name="social_snack_button">Close</string>
 
     <!-- Social token-->
     <string name="social_halo_token_title">Token information</string>

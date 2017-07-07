@@ -11,6 +11,7 @@ import android.util.SparseArray;
 
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.mobgen.halo.android.auth.login.LogoutInteractor;
+import com.mobgen.halo.android.auth.pocket.HaloPocketApi;
 import com.mobgen.halo.android.framework.common.annotations.Api;
 import com.mobgen.halo.android.framework.common.exceptions.HaloConfigurationException;
 import com.mobgen.halo.android.framework.common.helpers.builder.IBuilder;
@@ -43,6 +44,10 @@ import java.lang.annotation.RetentionPolicy;
  */
 @Keep
 public class HaloAuthApi extends HaloPluginApi {
+
+    @Api(2.4)
+    @Keep
+    public HaloPocketApi mPocketApi;
 
     /**
      * Determines the social provider type.
@@ -192,13 +197,13 @@ public class HaloAuthApi extends HaloPluginApi {
     }
 
     /**
-     *  Logout the user and flush session to restore app token
+     * Logout the user and flush session to restore app token
      */
     @Keep
     @Api(2.2)
     @NonNull
     @CheckResult(suggest = "You may want to call execute() to run the task")
-    public HaloInteractorExecutor<Boolean>  logout() {
+    public HaloInteractorExecutor<Boolean> logout() {
         return new HaloInteractorExecutor<>(halo(),
                 "Logout user",
                 new LogoutInteractor(mAccountManagerHelper)
@@ -206,13 +211,13 @@ public class HaloAuthApi extends HaloPluginApi {
     }
 
     /**
-     *  Verify is a account is stored
+     * Verify is a account is stored
      */
     @Keep
     @Api(2.2)
     @NonNull
     public boolean isAccountStored() {
-        if(mAccountManagerHelper.recoverAccount()!=null){
+        if (mAccountManagerHelper.recoverAccount() != null) {
             return true;
         } else {
             return false;
@@ -244,6 +249,18 @@ public class HaloAuthApi extends HaloPluginApi {
             }
         }
         mProviders.clear();
+    }
+
+
+    /**
+     * Get the current pocket api to perfom operations with the identified user data.
+     *
+     */
+    @Keep
+    @Api(2.4)
+    @NonNull
+    public HaloPocketApi pocket() {
+        return mPocketApi;
     }
 
     /**
@@ -311,8 +328,10 @@ public class HaloAuthApi extends HaloPluginApi {
      *
      * @param accountType   The account type to store.
      * @param recoverPolicy The recovery policy.
+     * @param pocketApi     The pocket api.
      */
-    private void setup(@Nullable String accountType, @RecoveryPolicy int recoverPolicy) {
+    private void setup(@Nullable String accountType, @RecoveryPolicy int recoverPolicy, HaloPocketApi pocketApi) {
+        mPocketApi = pocketApi;
         mRecoveryPolicy = recoverPolicy;
         mAccountType = accountType;
         if (recoverPolicy == RECOVERY_ALWAYS && mAccountType != null) {
@@ -409,6 +428,13 @@ public class HaloAuthApi extends HaloPluginApi {
          */
         @NonNull
         private HaloAuthApi mSocialApi;
+
+        /**
+         * The pocket api.
+         */
+        @NonNull
+        private HaloPocketApi mPocketApi;
+
         /**
          * The recovery policy. By default recovery policy equals never store.
          */
@@ -425,6 +451,7 @@ public class HaloAuthApi extends HaloPluginApi {
          */
         private Builder(@NonNull final Halo halo) {
             mSocialApi = new HaloAuthApi(halo);
+            mPocketApi = HaloPocketApi.with(halo).build();
         }
 
         /**
@@ -527,7 +554,7 @@ public class HaloAuthApi extends HaloPluginApi {
         @NonNull
         @Override
         public HaloAuthApi build() {
-            mSocialApi.setup(mAccountType, mRecoveryPolicy);
+            mSocialApi.setup(mAccountType, mRecoveryPolicy, mPocketApi);
             return mSocialApi;
         }
     }
