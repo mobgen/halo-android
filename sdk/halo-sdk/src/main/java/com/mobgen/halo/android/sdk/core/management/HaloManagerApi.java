@@ -56,6 +56,7 @@ import com.mobgen.halo.android.sdk.core.threading.HaloSchedule;
 import com.mobgen.halo.android.sdk.core.threading.ICancellable;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -282,7 +283,7 @@ public class HaloManagerApi extends HaloPluginApi {
         framework().toolbox().schedule(Job.builder(new HaloSchedule(halo()) {
             @Override
             public void executeWhenReady() {
-                syncDevice().threadPolicy(Threading.SAME_THREAD_POLICY).execute(getDeviceUpdateEmitter());
+                syncDevice().threadPolicy(threading).execute(getDeviceUpdateEmitter());
             }
         }).needsNetwork(Job.NETWORK_TYPE_ANY)
                 .thread(threading)
