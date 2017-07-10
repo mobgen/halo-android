@@ -16,18 +16,16 @@ import com.mobgen.halo.android.sdk.core.internal.network.HaloNetworkConstants;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 /**
  * @hide Remote datasource that request synced instances.
  */
 public class ContentSyncRemoteDatasource {
-
-    /**
-     * Default cache time for the server.
-     */
-    private static final long SERVER_CACHE_TIME = TimeUnit.DAYS.toSeconds(1);
 
     /**
      * The client api.
@@ -53,12 +51,12 @@ public class ContentSyncRemoteDatasource {
      * @throws HaloNetException Error while requesting the module.
      */
     @NonNull
-    public HaloInstanceSync syncModule(@NonNull String moduleToSync, @Nullable String locale, @Nullable Date fromSync) throws HaloNetException {
+    public HaloInstanceSync syncModule(int cacheTime, @NonNull String moduleToSync, @Nullable String locale, @Nullable Date fromSync) throws HaloNetException {
         long millis = System.currentTimeMillis();
-        HaloInstanceSync syncInstance = createSyncRequest(fromSync, moduleToSync, locale).execute(HaloInstanceSync.class);
+        HaloInstanceSync syncInstance = createSyncRequest(cacheTime, fromSync, moduleToSync, locale).execute(HaloInstanceSync.class);
         boolean isFirstSync = fromSync == null;
         if (isFirstSync) {
-            HaloRequest request = createSyncRequest(syncInstance.getSyncDate(), moduleToSync, locale);
+            HaloRequest request = createSyncRequest(cacheTime, syncInstance.getSyncDate(), moduleToSync, locale);
             HaloInstanceSync fromCacheSyncInstance = request.execute(HaloInstanceSync.class);
             syncInstance.mergeWith(fromCacheSyncInstance);
         }
@@ -74,13 +72,13 @@ public class ContentSyncRemoteDatasource {
      * @param locale       The locale.
      * @return The request created.
      */
-    private HaloRequest createSyncRequest(@Nullable Date fromSync, @NonNull String moduleToSync, @Nullable String locale) {
+    private HaloRequest createSyncRequest(int cacheTime, @Nullable Date fromSync, @NonNull String moduleToSync, @Nullable String locale) {
         HaloRequest.Builder builder = HaloRequest.builder(mClientApi)
                 .method(HaloRequestMethod.POST)
                 .url(HaloNetworkConstants.HALO_ENDPOINT_ID, HaloContentNetwork.URL_SYNC_MODULE)
                 .body(HaloBodyFactory.jsonObjectBody(createSyncJSONBody(moduleToSync, locale, fromSync)));
         if (fromSync == null) {
-            builder.header("to-cache", String.valueOf(SERVER_CACHE_TIME));
+            builder.cacheHeader(cacheTime);
         }
         return builder.build();
     }

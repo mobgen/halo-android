@@ -17,6 +17,11 @@ import com.mobgen.halo.android.sdk.core.management.segmentation.HaloLocale;
 public class SyncQuery implements Parcelable {
 
     /**
+     * One day in seconds.
+     */
+    public static final int CACHE_ONE_DAY = 24 * 60 * 60;
+
+    /**
      * The creator for parcelables.
      */
     public static final Creator<SyncQuery> CREATOR = new Creator<SyncQuery>() {
@@ -47,16 +52,22 @@ public class SyncQuery implements Parcelable {
     private String mModuleName;
 
     /**
+     * The server cache.
+     */
+    private int mServerCache;
+
+    /**
      * The private constructor for the sync options.
      *
      * @param moduleName   The module name.
      * @param locale       The locale.
      * @param threadPolicy The thread policy.
      */
-    private SyncQuery(@NonNull String moduleName, @Nullable String locale, @Threading.Policy int threadPolicy) {
+    private SyncQuery(@NonNull String moduleName, @Nullable String locale, @Threading.Policy int threadPolicy, int serverCache) {
         mThreadingMode = threadPolicy;
         mLocale = locale;
         mModuleName = moduleName;
+        mServerCache = serverCache;
     }
 
     @SuppressWarnings("all")
@@ -64,6 +75,7 @@ public class SyncQuery implements Parcelable {
         this.mThreadingMode = in.readInt();
         this.mLocale = in.readString();
         this.mModuleName = in.readString();
+        this.mServerCache = in.readInt();
     }
 
     /**
@@ -92,7 +104,36 @@ public class SyncQuery implements Parcelable {
     @Api(2.0)
     @NonNull
     public static SyncQuery create(@NonNull String moduleName, @Nullable @HaloLocale.LocaleDefinition String locale, @Threading.Policy int threadingMode) {
-        return new SyncQuery(moduleName, locale, threadingMode);
+        return new SyncQuery(moduleName, locale, threadingMode, CACHE_ONE_DAY);
+    }
+
+    /**
+     * Creates the builder of the sync options.
+     *
+     * @param moduleName    The module name.
+     * @param threadingMode The threadPolicy mode.
+     * @param serverCache   The server cache time in seconds.
+     * @return The builder.
+     */
+    @Keep
+    @Api(2.4)
+    @NonNull
+    public static SyncQuery create(@NonNull String moduleName, @Threading.Policy int threadingMode, int serverCache) {
+        return create(moduleName, null, threadingMode, serverCache);
+    }
+
+    /**
+     * @param moduleName    The module name.
+     * @param locale        The locale definition.
+     * @param threadingMode The threadPolicy mode.
+     * @param serverCache   The server cache time in seconds.
+     * @return
+     */
+    @Keep
+    @Api(2.4)
+    @NonNull
+    public static SyncQuery create(@NonNull String moduleName, @Nullable @HaloLocale.LocaleDefinition String locale, @Threading.Policy int threadingMode, int serverCache) {
+        return new SyncQuery(moduleName, locale, threadingMode, serverCache);
     }
 
     /**
@@ -142,6 +183,18 @@ public class SyncQuery implements Parcelable {
         return mThreadingMode;
     }
 
+
+    /**
+     * Provides the server cache time.
+     *
+     * @return The locale.
+     */
+    @Api(2.4)
+    @Nullable
+    public int getServerCache() {
+        return mServerCache;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -152,5 +205,6 @@ public class SyncQuery implements Parcelable {
         dest.writeInt(this.mThreadingMode);
         dest.writeString(this.mLocale);
         dest.writeString(this.mModuleName);
+        dest.writeInt(this.mServerCache);
     }
 }

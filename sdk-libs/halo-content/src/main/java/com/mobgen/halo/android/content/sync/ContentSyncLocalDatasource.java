@@ -27,6 +27,8 @@ import com.mobgen.halo.android.sdk.core.management.segmentation.HaloLocale;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -125,19 +127,28 @@ public class ContentSyncLocalDatasource {
 
 
     /**
-     * Provides a cursor with all the instances synced for the given module name.
+     * Detect when a module name was updated and have a new identifier.
      *
      * @param moduleName The module name.
-     * @return The cursor created.
+     * @return True when exist a conflict module name with different ids; Otherwise false.
      */
     @NonNull
-    public Boolean getSyncedModulesIds(@NonNull String moduleName) {
-        Cursor result  = Select.columns(ContentSync.MODULE_ID).from(ContentSync.class)
+    public List<String> isModuleRenamed(@NonNull String moduleName) {
+        Cursor result = Select.columns(ContentSync.MODULE_ID).from(ContentSync.class)
                 .where(ContentSync.MODULE_NAME)
                 .eq(moduleName)
                 .on(mStorage.db(), "Fetch all the items for the given module.");
-
-        return true;
+        List<String> currentIds = new ArrayList<>();
+        try {
+            if (result != null && result.moveToFirst()) {
+                do {
+                    currentIds.add(result.getString(result.getColumnIndex(ContentSync.MODULE_ID)));
+                } while (result.moveToNext());
+            }
+        } finally {
+            result.close();
+            return currentIds;
+        }
     }
 
     /**
@@ -162,6 +173,30 @@ public class ContentSyncLocalDatasource {
             @Override
             public void onTransaction(@NonNull SQLiteDatabase database) throws HaloStorageException {
                 Halog.d(getClass(), "Sync in progress...");
+
+                List<String> currentIds = isModuleRenamed(syncQuery.getModuleName());
+                for(int i=0; i<instancesToSync.getCreations().size();i++) {
+                    if (Collections.frequency(currentIds, instancesToSync.getCreations().get(i).getModuleId()) != currentIds.size()) {
+                        Halog.d(getClass(), "Clear database: different moduleId...");
+                        clearSyncModule(syncQuery.getModuleName());
+                        break;
+                    }
+                }
+                for(int i=0; i<instancesToSync.getUpdates().size();i++) {
+                    if (Collections.frequency(currentIds, instancesToSync.getUpdates().get(i).getModuleId()) != currentIds.size()) {
+                        Halog.d(getClass(), "Clear database: different moduleId...");
+                        clearSyncModule(syncQuery.getModuleName());
+                        break;
+                    }
+                }
+                for(int i=0; i<instancesToSync.getDeletions().size();i++) {
+                    if (Collections.frequency(currentIds, instancesToSync.getDeletions().get(i).getModuleId()) != currentIds.size()) {
+                        Halog.d(getClass(), "Clear database: different moduleId...");
+                        clearSyncModule(syncQuery.getModuleName());
+                        break;
+                    }
+                }
+
                 int creations = doSync(queryManager, syncQuery.getModuleName(), instancesToSync.getSyncDate(), instancesToSync.getCreations(), SYNC_OP_CREATION);
                 int updates = doSync(queryManager, syncQuery.getModuleName(), instancesToSync.getSyncDate(), instancesToSync.getUpdates(), SYNC_OP_UPDATE);
                 int deletions = doSync(queryManager, syncQuery.getModuleName(), instancesToSync.getSyncDate(), instancesToSync.getDeletions(), SYNC_OP_DELETION);
@@ -263,8 +298,8 @@ public class ContentSyncLocalDatasource {
      * Saves the time for the sync given the locale.
      *
      * @param moduleName The module.
-     * @param locale The locale to store.
-     * @param date   The date to store.
+     * @param locale     The locale to store.
+     * @param date       The date to store.
      */
     public void saveLastSyncDate(@NonNull String moduleName, @HaloLocale.LocaleDefinition @Nullable String locale, @NonNull Date date) {
         mStorage.prefs().edit()
