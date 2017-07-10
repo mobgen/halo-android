@@ -5,6 +5,8 @@ import com.mobgen.halo.android.testing.MockServer;
 import java.io.IOException;
 
 public class ServerFixtures {
+    //events
+    public static final String ADD_TRACK_EVET = "addTrackEvent.json";
     //authenticate
     public static final String AUTHENTICATE = "authenticateToken.json";
     //segmentation tags

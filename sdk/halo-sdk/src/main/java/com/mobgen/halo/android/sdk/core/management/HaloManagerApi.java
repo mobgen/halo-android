@@ -35,8 +35,12 @@ import com.mobgen.halo.android.sdk.core.management.device.RemoveDeviceTagInterac
 import com.mobgen.halo.android.sdk.core.management.device.SendDeviceInteractor;
 import com.mobgen.halo.android.sdk.core.management.device.SetNotificationTokenInteractor;
 import com.mobgen.halo.android.sdk.core.management.device.SyncDeviceSegmentedInteractor;
+import com.mobgen.halo.android.sdk.core.management.events.EventRemoteDatasource;
+import com.mobgen.halo.android.sdk.core.management.events.EventRepository;
+import com.mobgen.halo.android.sdk.core.management.events.SendTrackEventInteractor;
 import com.mobgen.halo.android.sdk.core.management.models.Credentials;
 import com.mobgen.halo.android.sdk.core.management.models.Device;
+import com.mobgen.halo.android.sdk.core.management.models.HaloEvent;
 import com.mobgen.halo.android.sdk.core.management.models.HaloModule;
 import com.mobgen.halo.android.sdk.core.management.models.HaloModuleQuery;
 import com.mobgen.halo.android.sdk.core.management.models.HaloServerVersion;
@@ -93,6 +97,11 @@ public class HaloManagerApi extends HaloPluginApi {
     private DeviceRepository mDeviceRepository;
 
     /**
+     * Send analytic track event.
+     */
+    private EventRepository mEventRespository;
+
+    /**
      * Constructor for the halo plugin.
      *
      * @param halo The halo instance.
@@ -111,6 +120,7 @@ public class HaloManagerApi extends HaloPluginApi {
         mVersionRepository = new VersionRepository(new VersionRemoteDatasource(halo.framework().network()));
         mTokenRepository = new TokenRepository(new TokenRemoteDatasource(halo.framework().network()));
         mDeviceRepository = new DeviceRepository(framework().parser(), new DeviceRemoteDatasource(halo.framework().network()), new DeviceLocalDatasource(mManagerStorage));
+        mEventRespository = new EventRepository(new EventRemoteDatasource(halo.framework().network()));
     }
 
     /**
@@ -451,6 +461,23 @@ public class HaloManagerApi extends HaloPluginApi {
         } else {
             return null;
         }
+    }
+
+    /**
+     * Send tracking analytic events of the current user.
+     *
+     * @return The executor.
+     */
+    @Keep
+    @Api(2.33)
+    @NonNull
+    @CheckResult(suggest = "You may want to call execute() to run the task")
+    public HaloInteractorExecutor<HaloEvent> sendEvent(@NonNull HaloEvent haloEvent) {
+        return new HaloInteractorExecutor<>(
+                halo(),
+                "Send events",
+                new SendTrackEventInteractor(mEventRespository, haloEvent)
+        );
     }
 
     /**
