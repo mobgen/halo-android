@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "744706314529",
+    "firebase_url": "https://halo-location-po-1495721869652.firebaseio.com",
+    "project_id": "halo-location-po-1495721869652",
+    "storage_bucket": "halo-location-po-1495721869652.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:744706314529:android:fce8107d273d68ca",
+        "android_client_info": {
+          "package_name": "com.mobgen.halo.locationpoc.android.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "744706314529-vo7j7n6pjv83nliv3sjpn21ptdqt2qqg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDHa3foyQzNnGZJMyQsTlU8QILWTr2uN-A"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

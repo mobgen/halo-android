@@ -39,7 +39,6 @@ import com.mobgen.halo.android.framework.toolbox.data.CallbackV2;
 import com.mobgen.halo.android.framework.toolbox.data.Data;
 import com.mobgen.halo.android.framework.toolbox.data.HaloResultV2;
 import com.mobgen.halo.android.framework.toolbox.data.HaloStatus;
-
 import net.bohush.geometricprogressview.GeometricProgressView;
 
 import java.util.ArrayList;

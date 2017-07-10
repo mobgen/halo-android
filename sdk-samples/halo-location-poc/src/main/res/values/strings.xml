@@ -1,0 +1,82 @@
+<resources>
+    <string name="app_name">LocationPOC</string>
+    <string name="allfriend_location">Friend list location</string>
+    <!-- menu bottom -->
+    <string name="menu_bottom1">Position</string>
+    <string name="menu_bottom2">Add location</string>
+    <string name="menu_bottom3">Friends</string>
+    <string name="menu_bottom4">Heatmap</string>
+
+    <!-- login screen -->
+    <string name="error_msg_create">This is a private beta you cannot create an account.</string>
+    <string name="login_attempt">Authentication in progress</string>
+    <string name="login_error">The credentials are not valid :(</string>
+    <string name="login_validate_email_error">Provide a valid email address.</string>
+    <string name="login_validate_password_error">Your password must have between 4 and 10 alphanumeric characters</string>
+    <string name="login_validate_name_error">Provide a valid name.</string>
+    <string name="login_validate_surname_error">Provide a valid surname.</string>
+    <string name="login_email">Email</string>
+    <string name="login_password">Password</string>
+    <string name="login_login">Login</string>
+    <string name="login_signup">No account yet? Create one</string>
+
+    <!-- signup -->
+    <string name="signup_name">Name</string>
+    <string name="signup_surname">Surname</string>
+    <string name="signup_email">Email</string>
+    <string name="signup_password">Password</string>
+    <string name="signup_signup">Signup</string>
+    <string name="signup_error">There are some errors :(</string>
+    <string name="signup_error_login">Try to login</string>
+
+    <!-- menu action -->
+    <string name="action_refresh">Refresh</string>
+
+    <!-- dialog -->
+    <string name="dialog_ok">OK</string>
+    <string name="dialog_title">Select the name of the room</string>
+    <string name="dialog_result_ok">We sent the data to HALO</string>
+    <string name="dialog_result_ko">Sorry you need to detect WIFI APs</string>
+
+    <!-- map -->
+    <string name="welcome_msg">Welcome to room!!</string>
+
+    <!-- scan -->
+    <string name="scan_print_1">WIFI name:</string>
+    <string name="scan_print_2">distance:</string>
+    <string name="scan_print_3">,level:</string>
+    <string name="scan_between_1">Between</string>
+    <string name="scan_between_2">and</string>
+    <string name="selection_result">You will make a fingerprint of room:</string>
+    <string name="add_location_wait">Reading wifi AP values</string>
+
+    <!-- rooms -->
+    <string name="room_info">Room:</string>
+    <string name="room_username">Username:</string>
+    <string name="room_email">Email:</string>
+    <string name="room_change">Location change alert!!</string>
+    <string name="room_kitchen">Kitchen</string>
+    <string name="room_kitchen_meeting">Kitchen meeting</string>
+    <string name="room_ping_pong">Ping Pong</string>
+    <string name="room_cave">Cave</string>
+    <string name="room_shell_1">Shell 1</string>
+    <string name="room_shell_2">Shell 2</string>
+    <string name="room_shell_3">Shell 3</string>
+    <string name="room_2b">2B</string>
+    <string name="room_2c">2C</string>
+    <string name="room_2c_meeting">2C Meeting</string>
+    <string name="room_3b">3B</string>
+    <string name="room_3c">3C</string>
+    <string name="room_out">out-of-MOBGEN-rooms</string>
+
+    <string name="friend_location">Friend locations:</string>
+    <string name="friend_location_empy">Sorry we do not have elements.</string>
+
+    <!-- date utils -->
+    <string name="date_days">days ago.</string>
+    <string name="date_minutes">minutes ago.</string>
+    <string name="date_hours">hours ago.</string>
+    <string name="date_now">Now.</string>
+
+
+</resources>

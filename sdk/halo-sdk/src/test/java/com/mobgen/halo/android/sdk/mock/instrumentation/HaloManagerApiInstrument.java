@@ -6,12 +6,14 @@ import android.support.annotation.NonNull;
 import com.mobgen.halo.android.framework.toolbox.data.CallbackV2;
 import com.mobgen.halo.android.framework.toolbox.data.HaloResultV2;
 import com.mobgen.halo.android.sdk.core.management.models.Device;
+import com.mobgen.halo.android.sdk.core.management.models.HaloEvent;
 import com.mobgen.halo.android.sdk.core.management.models.HaloModule;
 import com.mobgen.halo.android.sdk.core.management.models.HaloServerVersion;
 import com.mobgen.halo.android.sdk.core.management.models.Token;
 import com.mobgen.halo.android.sdk.core.management.segmentation.HaloSegmentationTag;
 import com.mobgen.halo.android.testing.CallbackFlag;
 
+import java.util.HashMap;
 import java.util.List;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
@@ -171,5 +173,27 @@ public class HaloManagerApiInstrument {
                 assertThat(result.data().getNotificationsToken()).isEqualTo("mytoken");
             }
         };
+    }
+
+    public static CallbackV2<HaloEvent> givenCallbackWithEvent(final CallbackFlag flag) {
+        return new CallbackV2<HaloEvent>() {
+            @Override
+            public void onFinish(@NonNull HaloResultV2<HaloEvent> result) {
+                flag.flagExecuted();
+                assertThat(result.data().getCoord()).isEqualTo("3,3");
+                assertThat(result.data().getType()).isEqualTo("1");
+                assertThat(result.data().getIp()).isEqualTo("213.60.23.11");
+            }
+        };
+    }
+
+    public static HaloEvent givenAHaloEvent(){
+        HashMap<String,String> mapValues = new HashMap<>();
+        mapValues.put("roomName","2B");
+        mapValues.put("prevRoom","2C");
+        return HaloEvent.builder()
+                .withLocation("3,3")
+                .withType(HaloEvent.OPEN_APPLICATION)
+                .withExtra(mapValues).build();
     }
 }
