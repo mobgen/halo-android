@@ -173,7 +173,7 @@ public class ContentSyncLocalDatasource {
             @Override
             public void onTransaction(@NonNull SQLiteDatabase database) throws HaloStorageException {
                 Halog.d(getClass(), "Sync in progress...");
-
+                //TODO TEST (TRASLATION AND SYNC)
                 List<String> currentIds = isModuleRenamed(syncQuery.getModuleName());
                 for(int i=0; i<instancesToSync.getCreations().size();i++) {
                     if (Collections.frequency(currentIds, instancesToSync.getCreations().get(i).getModuleId()) != currentIds.size()) {
