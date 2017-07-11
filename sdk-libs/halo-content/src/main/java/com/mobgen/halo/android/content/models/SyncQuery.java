@@ -123,6 +123,8 @@ public class SyncQuery implements Parcelable {
     }
 
     /**
+     * Creates the builder of the sync options
+     *
      * @param moduleName    The module name.
      * @param locale        The locale definition.
      * @param threadingMode The threadPolicy mode.
@@ -160,9 +162,9 @@ public class SyncQuery implements Parcelable {
     }
 
     /**
-     * Provides the module id.
+     * Provides the module name.
      *
-     * @return The module id.
+     * @return The module name.
      */
     @Keep
     @Api(2.0)
@@ -187,7 +189,7 @@ public class SyncQuery implements Parcelable {
     /**
      * Provides the server cache time.
      *
-     * @return The locale.
+     * @return The server cache time in seconds.
      */
     @Api(2.4)
     @Nullable

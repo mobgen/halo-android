@@ -287,7 +287,7 @@ public class ContentSyncLocalDatasource {
                 .eq(moduleName)
                 .and(ContentSync.MODULE_ID)
                 .eq(moduleId)
-                .on(mStorage.db(), "Deletes the previously synchronized module with module name " + moduleName);
+                .on(mStorage.db(), "Deletes the previously synchronized module because invalid moduleIds.");
         clearSyncDate(moduleName);
     }
 
