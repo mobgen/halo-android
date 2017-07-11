@@ -234,7 +234,7 @@ public class HaloTranslationsTest extends HaloRobolectricTest {
         assertThat(translations.getText("first_screen")).isEqualTo("First");
         assertThat(translations.getText("third_screen")).isEqualTo("Third");
         translations.load();
-        assertThat(translations.getText("first_screen")).isNull();
+        assertThat(translations.getText("first_screen")).isEqualTo("First");
         assertThat(translations.getText("third_screen")).isNull();
     }
 

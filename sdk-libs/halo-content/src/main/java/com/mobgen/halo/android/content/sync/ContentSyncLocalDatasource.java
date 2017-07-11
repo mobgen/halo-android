@@ -28,7 +28,6 @@ import com.mobgen.halo.android.sdk.core.management.segmentation.HaloLocale;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -127,13 +126,13 @@ public class ContentSyncLocalDatasource {
 
 
     /**
-     * Detect when a module name was updated and have a new identifier.
+     * Get all moduleId references of a given module name.
      *
      * @param moduleName The module name.
-     * @return True when exist a conflict module name with different ids; Otherwise false.
+     * @return List containing all module ids.
      */
     @NonNull
-    public List<String> isModuleRenamed(@NonNull String moduleName) {
+    private List<String> getModuleIds(@NonNull String moduleName) {
         Cursor result = Select.columns(ContentSync.MODULE_ID).from(ContentSync.class)
                 .where(ContentSync.MODULE_NAME)
                 .eq(moduleName)
@@ -149,6 +148,44 @@ public class ContentSyncLocalDatasource {
             result.close();
             return currentIds;
         }
+    }
+
+    /**
+     * Clear database by module name to avoid different modulesId with same moduleName
+     *
+     * @param syncQuery The syncquery .
+     * @param instancesToSync The instances to sync.
+     *
+     * @return True if database is consistent with the moduleIds; Otherwise false.
+     */
+    @NonNull
+    public Boolean cleanDuplicatedIds(@NonNull final SyncQuery syncQuery, @NonNull HaloInstanceSync instancesToSync) {
+        boolean isDatabaseClean = true;
+        Halog.d(getClass(), "Check  moduleIds and moduleNames...");
+        List<String> currentIds = getModuleIds(syncQuery.getModuleName());
+        if (currentIds.size() > 0) {
+            for (int i = 0; i < instancesToSync.getCreations().size(); i++) {
+                for (int j = 0; j < currentIds.size(); j++) {
+                    if (!currentIds.get(j).equals(instancesToSync.getCreations().get(i).getModuleId())) {
+                        Halog.d(getClass(), "Create clear database: different moduleIds for same moduleName...");
+                        clearInvalidSyncInstances(syncQuery.getModuleName(), currentIds.get(j));
+                        isDatabaseClean = false;
+                    }
+                }
+            }
+
+            for (int i = 0; i < instancesToSync.getUpdates().size(); i++) {
+                for (int j = 0; j < currentIds.size(); j++) {
+                    if (!currentIds.get(j).equals(instancesToSync.getUpdates().get(i).getModuleId())) {
+                        Halog.d(getClass(), "Update clear database: different moduleIds for same moduleName...");
+                        clearInvalidSyncInstances(syncQuery.getModuleName(), currentIds.get(j));
+                        isDatabaseClean = false;
+                    }
+                }
+            }
+        }
+        Halog.d(getClass(), "Sync begins...");
+        return isDatabaseClean;
     }
 
     /**
@@ -173,29 +210,6 @@ public class ContentSyncLocalDatasource {
             @Override
             public void onTransaction(@NonNull SQLiteDatabase database) throws HaloStorageException {
                 Halog.d(getClass(), "Sync in progress...");
-                //TODO TEST (TRASLATION AND SYNC)
-                List<String> currentIds = isModuleRenamed(syncQuery.getModuleName());
-                for(int i=0; i<instancesToSync.getCreations().size();i++) {
-                    if (Collections.frequency(currentIds, instancesToSync.getCreations().get(i).getModuleId()) != currentIds.size()) {
-                        Halog.d(getClass(), "Clear database: different moduleId...");
-                        clearSyncModule(syncQuery.getModuleName());
-                        break;
-                    }
-                }
-                for(int i=0; i<instancesToSync.getUpdates().size();i++) {
-                    if (Collections.frequency(currentIds, instancesToSync.getUpdates().get(i).getModuleId()) != currentIds.size()) {
-                        Halog.d(getClass(), "Clear database: different moduleId...");
-                        clearSyncModule(syncQuery.getModuleName());
-                        break;
-                    }
-                }
-                for(int i=0; i<instancesToSync.getDeletions().size();i++) {
-                    if (Collections.frequency(currentIds, instancesToSync.getDeletions().get(i).getModuleId()) != currentIds.size()) {
-                        Halog.d(getClass(), "Clear database: different moduleId...");
-                        clearSyncModule(syncQuery.getModuleName());
-                        break;
-                    }
-                }
 
                 int creations = doSync(queryManager, syncQuery.getModuleName(), instancesToSync.getSyncDate(), instancesToSync.getCreations(), SYNC_OP_CREATION);
                 int updates = doSync(queryManager, syncQuery.getModuleName(), instancesToSync.getSyncDate(), instancesToSync.getUpdates(), SYNC_OP_UPDATE);
@@ -257,6 +271,22 @@ public class ContentSyncLocalDatasource {
         Delete.from(ContentSync.class)
                 .where(ContentSync.MODULE_NAME)
                 .eq(moduleName)
+                .on(mStorage.db(), "Deletes the previously synchronized module with module name " + moduleName);
+        clearSyncDate(moduleName);
+    }
+
+    /**
+     * Clears sync instance with invalid moduleId.
+     *
+     * @param moduleName The module name.
+     * @param moduleId   The module id.
+     */
+    public void clearInvalidSyncInstances(@NonNull String moduleName, @NonNull String moduleId) {
+        Delete.from(ContentSync.class)
+                .where(ContentSync.MODULE_NAME)
+                .eq(moduleName)
+                .and(ContentSync.MODULE_ID)
+                .eq(moduleId)
                 .on(mStorage.db(), "Deletes the previously synchronized module with module name " + moduleName);
         clearSyncDate(moduleName);
     }

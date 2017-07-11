@@ -103,7 +103,7 @@ public class HaloContentSyncTest extends HaloRobolectricTest {
         enqueueServerFile(mMockServer, SYNC_CREATE_MODULE);
         enqueueServerFile(mMockServer, SYNC_UP_TO_DATE);
         enqueueServerFile(mMockServer, SYNC_UPDATE_MODULE);
-        CallbackV2<List<DummyItem>> callbackInstances = givenACallbackThatCheckParsedInstances(mCallbackFlag, "bar updated");
+        CallbackV2<List<DummyItem>> callbackInstances = givenACallbackThatCheckParsedInstances(mCallbackFlag, "bar", "bar updated");
 
         //First sync
         mHaloContentApi.sync(QUERY, false);

@@ -31,6 +31,16 @@ public class HaloRequest {
     public static final String SERVER_CACHE_HEADER = "to-cache";
 
     /**
+     * Cache control.
+     */
+    public static final String CACHE_CONTROL_HEADER = "cache-control";
+
+    /**
+     * No cache.
+     */
+    public static final String NO_CACHE = "no-cache";
+
+    /**
      * Request created.
      */
     private final Request.Builder mRequestBuilder;
@@ -309,6 +319,19 @@ public class HaloRequest {
         @NonNull
         public Builder cacheHeader(int timeInSeconds) {
             mRequestBuilder.addHeader(SERVER_CACHE_HEADER, String.valueOf(timeInSeconds));
+            return this;
+        }
+
+        /**
+         * Adds a cache control header to the request.
+         *
+         * @param cacheControl The cache control policy to apply.
+         * @return The current builder
+         */
+        @Api(2.4)
+        @NonNull
+        public Builder cacheControl(String cacheControl) {
+            mRequestBuilder.addHeader(CACHE_CONTROL_HEADER, cacheControl);
             return this;
         }
 
