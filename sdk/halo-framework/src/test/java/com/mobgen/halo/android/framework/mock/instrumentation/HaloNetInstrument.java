@@ -82,6 +82,7 @@ public class HaloNetInstrument {
         return HaloRequest.builder(networkApi)
                 .url("1","getSampleData")
                 .cacheHeader(1234)
+                .cacheControl(HaloRequest.NO_CACHE)
                 .method(HaloRequestMethod.GET)
                 .build();
     }
