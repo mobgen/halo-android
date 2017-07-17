@@ -17,17 +17,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Date;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @hide Remote datasource that request synced instances.
  */
 public class ContentSyncRemoteDatasource {
-
-    /**
-     * Default cache time for the server.
-     */
-    private static final long SERVER_CACHE_TIME = TimeUnit.DAYS.toSeconds(1);
 
     /**
      * The client api.
@@ -53,17 +47,32 @@ public class ContentSyncRemoteDatasource {
      * @throws HaloNetException Error while requesting the module.
      */
     @NonNull
-    public HaloInstanceSync syncModule(@NonNull String moduleToSync, @Nullable String locale, @Nullable Date fromSync) throws HaloNetException {
+    public HaloInstanceSync syncModule(int cacheTime, @NonNull String moduleToSync, @Nullable String locale, @Nullable Date fromSync) throws HaloNetException {
         long millis = System.currentTimeMillis();
-        HaloInstanceSync syncInstance = createSyncRequest(fromSync, moduleToSync, locale).execute(HaloInstanceSync.class);
+        HaloInstanceSync syncInstance = createSyncRequest(cacheTime, fromSync, moduleToSync, locale, false).execute(HaloInstanceSync.class);
         boolean isFirstSync = fromSync == null;
         if (isFirstSync) {
-            HaloRequest request = createSyncRequest(syncInstance.getSyncDate(), moduleToSync, locale);
+            HaloRequest request = createSyncRequest(cacheTime, syncInstance.getSyncDate(), moduleToSync, locale, false);
             HaloInstanceSync fromCacheSyncInstance = request.execute(HaloInstanceSync.class);
             syncInstance.mergeWith(fromCacheSyncInstance);
         }
         Halog.d(getClass(), Long.valueOf(System.currentTimeMillis() - millis).toString());
         return syncInstance;
+    }
+
+
+    /**
+     * Force clear the cache for given module due to insconsistent data.
+     *
+     * @param cacheTime Cache time selected by user.
+     * @param moduleToSync Module to cache.
+     * @param locale The locale to apply.
+     *
+     * @throws HaloNetException
+     */
+    public void forceCacheModule(int cacheTime, @NonNull String moduleToSync, @Nullable String locale) throws HaloNetException {
+        HaloRequest request = createSyncRequest(cacheTime, null, moduleToSync, locale, true);
+        request.execute();
     }
 
     /**
@@ -74,13 +83,16 @@ public class ContentSyncRemoteDatasource {
      * @param locale       The locale.
      * @return The request created.
      */
-    private HaloRequest createSyncRequest(@Nullable Date fromSync, @NonNull String moduleToSync, @Nullable String locale) {
+    private HaloRequest createSyncRequest(int cacheTime, @Nullable Date fromSync, @NonNull String moduleToSync, @Nullable String locale, @NonNull Boolean forceCleanCache) {
         HaloRequest.Builder builder = HaloRequest.builder(mClientApi)
                 .method(HaloRequestMethod.POST)
                 .url(HaloNetworkConstants.HALO_ENDPOINT_ID, HaloContentNetwork.URL_SYNC_MODULE)
                 .body(HaloBodyFactory.jsonObjectBody(createSyncJSONBody(moduleToSync, locale, fromSync)));
         if (fromSync == null) {
-            builder.header("to-cache", String.valueOf(SERVER_CACHE_TIME));
+            builder.cacheHeader(cacheTime);
+            if(forceCleanCache){
+                builder.cacheControl(HaloRequest.NO_CACHE);
+            }
         }
         return builder.build();
     }

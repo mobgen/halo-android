@@ -25,6 +25,7 @@ import static com.mobgen.halo.android.content.mock.fixtures.ServerFixtures.SYNC_
 import static com.mobgen.halo.android.content.mock.fixtures.ServerFixtures.enqueueServerFile;
 import static com.mobgen.halo.android.content.mock.instrumentation.HaloContentApiMock.givenAContentApi;
 import static com.mobgen.halo.android.content.mock.instrumentation.HaloMock.givenADefaultHalo;
+import static com.mobgen.halo.android.content.mock.instrumentation.SearchInstruments.givenAOkClientWithCustomInterceptor;
 import static com.mobgen.halo.android.content.mock.instrumentation.SyncInstruments.givenACallbackThatCheckNewModuleInstances;
 import static com.mobgen.halo.android.content.mock.instrumentation.SyncInstruments.givenACallbackThatCheckParsedInstances;
 import static com.mobgen.halo.android.content.mock.instrumentation.SyncInstruments.givenACallbackThatChecksLogs;
@@ -153,5 +154,13 @@ public class HaloContentSyncTest extends HaloRobolectricTest {
 
         assertThat(mCallbackFlag.isFlagged()).isTrue();
         assertThat(mCallbackFlag.timesExecuted()).isEqualTo(1);
+    }
+
+    @Test
+    public void thatCanSyncWithDiffertentServerCache() throws IOException {
+        enqueueServerFile(mMockServer, SYNC_CREATE_MODULE);
+        SyncQuery QUERY_CACHE = SyncQuery.create(MODULE_NAME_FAKE, Threading.SAME_THREAD_POLICY, 15);
+        mHalo.framework().network().client().overrideOk(givenAOkClientWithCustomInterceptor(mHalo.framework().network().client(), "15"));
+        mHaloContentApi.sync(QUERY_CACHE, true);
     }
 }

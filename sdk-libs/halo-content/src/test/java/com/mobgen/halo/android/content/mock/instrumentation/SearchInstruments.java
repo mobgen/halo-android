@@ -47,7 +47,7 @@ public class SearchInstruments {
     }
 
     public static SearchQuery givenASearchLikePatternQuery() {
-        return SearchQueryBuilderFactory.getPublishedItemsByName("sampleId", "sample","searchString")
+        return SearchQueryBuilderFactory.getPublishedItemsByName("sampleId", "sample", "searchString")
                 .build();
     }
 
@@ -159,27 +159,29 @@ public class SearchInstruments {
         };
     }
 
-    public static OkHttpClient.Builder givenAOkClientWithCustomInterceptor(HaloNetClient netClient, final String cacheTime){
-        return  netClient.ok().newBuilder()
+    public static OkHttpClient.Builder givenAOkClientWithCustomInterceptor(HaloNetClient netClient, final String cacheTime) {
+        return netClient.ok().newBuilder()
                 .addInterceptor(new Interceptor() {
                     @Override
                     public Response intercept(Chain chain) throws IOException {
                         Request request = chain.request();
                         Headers headers = request.headers();
-                        assertThat(headers.get("to-cache")).isEqualTo(cacheTime);
+                        if (headers.size() > 0) {
+                            assertThat(headers.get("to-cache")).isEqualTo(cacheTime);
+                        }
                         return chain.proceed(request);
                     }
                 });
     }
 
     public static SearchQuery givenASearchWithServerCache() {
-        return SearchQueryBuilderFactory.getPublishedItemsByName("sampleId", "sample","searchString")
+        return SearchQueryBuilderFactory.getPublishedItemsByName("sampleId", "sample", "searchString")
                 .serverCache(212)
                 .build();
     }
 
     public static SearchQuery givenASearchWithoutServerCache() {
-        return SearchQueryBuilderFactory.getPublishedItemsByName("sampleId", "sample","searchString")
+        return SearchQueryBuilderFactory.getPublishedItemsByName("sampleId", "sample", "searchString")
                 .build();
     }
 }

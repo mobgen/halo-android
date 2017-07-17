@@ -45,7 +45,7 @@ public class MobgenHaloApplication extends HaloApplication {
     /**
      * Annotation name for the environment definition.
      */
-    @IntDef({CUSTOM,LOCAL,QA, INT, STAGE, PROD, UAT})
+    @IntDef({CUSTOM, LOCAL, QA, INT, STAGE, PROD, UAT})
     @Retention(RetentionPolicy.SOURCE)
     public @interface Environment {
     }
@@ -202,7 +202,6 @@ public class MobgenHaloApplication extends HaloApplication {
     @NonNull
     @Override
     public Halo onHaloCreated(@NonNull Halo halo) {
-
         //translations
         if (mTranslationsApi != null) {
             mTranslationsApi.cancel();
@@ -245,10 +244,10 @@ public class MobgenHaloApplication extends HaloApplication {
             @Override
             public int getNextNotificationId(@NonNull Bundle data, int currentId) {
                 Object custom = data.get("custom");
-                if(custom != null) {
+                if (custom != null) {
                     try {
                         ChatMessage chatMessage = ChatMessage.deserialize(custom.toString(), Halo.instance().framework().parser());
-                        if(chatMessage.getMessage() != null) {
+                        if (chatMessage.getMessage() != null) {
                             return chatMessage.getAlias().hashCode();
                         } else {
                             return currentId;
@@ -262,7 +261,7 @@ public class MobgenHaloApplication extends HaloApplication {
             }
         });
 
-        if(mTwoFactorApi!=null){
+        if (mTwoFactorApi != null) {
             mTwoFactorApi.release();
             mTwoFactorApi = null;
         }

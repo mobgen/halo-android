@@ -54,7 +54,12 @@ public class ContentSyncRepository {
         HaloStatus.Builder status = HaloStatus.builder().dataLocal();
         Date lastSyncDate = mLocalDatasource.getLastSyncDate(syncQuery.getModuleName(), syncQuery.getLocale());
         try {
-            HaloInstanceSync instanceSync = mRemoteDatasource.syncModule(syncQuery.getModuleName(), syncQuery.getLocale(), lastSyncDate);
+            HaloInstanceSync instanceSync = mRemoteDatasource.syncModule(syncQuery.getServerCache(), syncQuery.getModuleName(), syncQuery.getLocale(), lastSyncDate);
+            boolean isDatabaseClean = mLocalDatasource.cleanDuplicatedIds(syncQuery,instanceSync);
+            if(!isDatabaseClean){
+                //retry request to cache module again
+                mRemoteDatasource.forceCacheModule(syncQuery.getServerCache(), syncQuery.getModuleName(), syncQuery.getLocale());
+            }
             long logId = mLocalDatasource.sync(lastSyncDate == null, syncQuery, instanceSync);
             result = mLocalDatasource.getSyncedModuleLog(logId);
         } catch (Exception e) {
