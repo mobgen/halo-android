@@ -45,7 +45,7 @@ public class SyncDeviceSegmentedInteractor implements HaloInteractorExecutor.Int
         Device device = null;
         try {
             device = mDeviceRepository.syncDevice(mCore.segmentationTags());
-            //refresh notification token
+            //emit event to refresh notification token if necessary
             Bundle params = new Bundle();
             params.putParcelable("user", device);
             mCore.framework().toolbox().eventHub().emit(new Event(DEVICE_UPDATE_EVENT_ID, params));
