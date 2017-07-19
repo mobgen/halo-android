@@ -73,7 +73,7 @@ public class HaloManagerApi extends HaloPluginApi {
     /**
      * Event id for the update device event.
      */
-    private static final EventId DEVICE_UPDATE_EVENT_ID = EventId.create(":halo:device:update");
+    public static final EventId DEVICE_UPDATE_EVENT_ID = EventId.create(":halo:device:update");
 
     /**
      * The storage api for the manager.
@@ -293,7 +293,7 @@ public class HaloManagerApi extends HaloPluginApi {
         framework().toolbox().schedule(Job.builder(new HaloSchedule(halo()) {
             @Override
             public void executeWhenReady() {
-                syncDevice().threadPolicy(threading).execute(getDeviceUpdateEmitter());
+                syncDevice().threadPolicy(threading).execute();
             }
         }).needsNetwork(Job.NETWORK_TYPE_ANY)
                 .thread(threading)
@@ -478,24 +478,5 @@ public class HaloManagerApi extends HaloPluginApi {
                 "Send events",
                 new SendTrackEventInteractor(mEventRespository, haloEvent)
         );
-    }
-
-    /**
-     * Provides a callback to emit the device update.
-     *
-     * @return The callback that will emit the update.
-     */
-    @NonNull
-    private CallbackV2<Device> getDeviceUpdateEmitter() {
-        return new CallbackV2<Device>() {
-            @Override
-            public void onFinish(@NonNull HaloResultV2<Device> result) {
-                if (result.status().isOk()) {
-                    Bundle params = new Bundle();
-                    params.putParcelable("user", result.data());
-                    framework().toolbox().eventHub().emit(new Event(DEVICE_UPDATE_EVENT_ID, params));
-                }
-            }
-        };
     }
 }
