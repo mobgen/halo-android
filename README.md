@@ -2,7 +2,7 @@
 
 # HALO Android SDK
 ------------------
-![Build Status](https://supermercado.mobgen.com:8443/plugins/servlet/wittified/build-status/HALO-AS2)
+![Build Status](https://android-bamboo.mobgen.com/plugins/servlet/wittified/build-status/HALO-AS2)
 
 ![Android >= 4.0.3](https://img.shields.io/badge/Android-%3E=%204.0.3-blue.svg)
 ![Gradle](https://img.shields.io/badge/Gradle-compatible-brightgreen.svg)
