@@ -107,6 +107,9 @@ public class HaloConfiguration {
         if (!((clientId && clientSecret) || (clientIdDebug && clientSecretDebug))) {
             throw new GradleException("HALO Plugin Error: Provide a clientId and a clientSecret or a clientIdDebug and a clientSecretDebug")
         }
+        if (haloServices == null) {
+            throw new GradleException("HALO Plugin Error: You must provide services closure")
+        }
         validateConfigurationName(project)
     }
 
@@ -115,7 +118,8 @@ public class HaloConfiguration {
      * @param project The project.
      */
     public void plugIn(Project project) {
-        if(haloServices && (haloServices.analyticsEnabled || haloServices.notificationsEnabled || haloServices.auth)){
+        if(haloServices && (haloServices.analyticsEnabled || haloServices.notificationsEnabled
+                || (haloServices.auth && haloServices.auth.googleClient != null))){
             if (!project.plugins.hasPlugin(GoogleServicesPlugin)) {
                 project.apply(plugin: GoogleServicesPlugin)
             }
