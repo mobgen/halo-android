@@ -101,14 +101,6 @@ task distributeLibraries(type: GradleBuild) {
     tasks = ['distribute']
     startParameter.projectProperties = gradle.startParameter.projectProperties
 }
-task distributeJavaLibraries(type: GradleBuild) {
-    dependsOn bintrayUpload
-    group = "halo"
-    description = "Installs all the java sdk libraries"
-    buildFile = file('sdk-libs/build.gradle')
-    tasks = ['install']
-    startParameter.projectProperties = gradle.startParameter.projectProperties
-}
 task testLibraries(type: GradleBuild){
     group = "halo"
     description = "Passes all the tests available in the sdk projects"
@@ -169,7 +161,6 @@ task build(type: GradleBuild) {
     dependsOn installGradlePlugin
     dependsOn distributeSdk
     dependsOn distributeLibraries
-    dependsOn distributeJavaLibraries
 }
 release {
     push = false
