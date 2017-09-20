@@ -225,8 +225,8 @@ public class Device implements Parcelable {
     @Api(1.0)
     public void addTags(@NonNull List<HaloSegmentationTag> systemTags, boolean shouldOverrideTags) {
         for (HaloSegmentationTag tag : systemTags) {
-            if(tag != null) {
-                if(shouldOverrideTags) {
+            if (tag != null) {
+                if (shouldOverrideTags) {
                     addTag(tag);
                 } else {
                     addRepeatedKeyTags(tag);
@@ -243,7 +243,12 @@ public class Device implements Parcelable {
     @Api(1.0)
     public void addTag(@NonNull HaloSegmentationTag segmentationTag) {
         if (mTags.contains(segmentationTag)) {
-            mTags.remove(segmentationTag);
+            int tagSize = mTags.size();
+            for (int i = 0; i < tagSize; i++) {
+                if (mTags.contains(segmentationTag)) {
+                    mTags.remove(segmentationTag);
+                }
+            }
             mTags.add(segmentationTag);
         } else {
             mTags.add(segmentationTag);
@@ -258,7 +263,7 @@ public class Device implements Parcelable {
     @Api(2.33)
     public void addRepeatedKeyTags(@NonNull HaloSegmentationTag... segmentationTags) {
         AssertionUtils.notNull(segmentationTags, "segmentationTag");
-        addToList(mTags,segmentationTags);
+        addToList(mTags, segmentationTags);
     }
 
     /**
@@ -312,7 +317,7 @@ public class Device implements Parcelable {
     /**
      * Parses the device stored in the preferences.
      *
-     * @param device   The device as string.
+     * @param device The device as string.
      * @param parser The parser.
      * @return The device parsed or an empty device if the string passed is null.
      * @throws HaloParsingException Error parsing the item.
