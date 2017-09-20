@@ -50,6 +50,7 @@
     <string name="add_tag_value">Add the tag value</string>
     <string name="add_tag_error">You have to provide a name for the tag</string>
     <string name="menu_add_segmentation_tag">Add tag</string>
+    <string name="override_tag_key">Override tag key</string>
 
     <!-- Icons -->
     <string name="icon_settings">{fa-cog}</string>

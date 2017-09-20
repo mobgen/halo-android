@@ -18,6 +18,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -222,27 +223,61 @@ public class Device implements Parcelable {
      * @param systemTags The system tags.
      */
     @Api(1.0)
-    public void addTags(@NonNull List<HaloSegmentationTag> systemTags) {
+    public void addTags(@NonNull List<HaloSegmentationTag> systemTags, boolean shouldOverrideTags) {
         for (HaloSegmentationTag tag : systemTags) {
             if(tag != null) {
-                addTag(tag);
+                if(shouldOverrideTags) {
+                    addTag(tag);
+                } else {
+                    addRepeatedKeyTags(tag);
+                }
             }
         }
     }
 
     /**
-     * Adds a new tag to the device.
+     * Adds a distinct tag to the device. If the tag exist with the same key it will be override.
      *
      * @param segmentationTag The tag to add to the device.
      */
     @Api(1.0)
-    public void addTag(HaloSegmentationTag segmentationTag) {
+    public void addTag(@NonNull HaloSegmentationTag segmentationTag) {
         if (mTags.contains(segmentationTag)) {
             mTags.remove(segmentationTag);
             mTags.add(segmentationTag);
         } else {
             mTags.add(segmentationTag);
         }
+    }
+
+    /**
+     * Adds a new tag to the device. If the tag has the same key it will create a new item with that key and value.
+     *
+     * @param segmentationTags The tag to add to the device.
+     */
+    @Api(2.33)
+    public void addRepeatedKeyTags(@NonNull HaloSegmentationTag... segmentationTags) {
+        AssertionUtils.notNull(segmentationTags, "segmentationTag");
+        addToList(mTags,segmentationTags);
+    }
+
+    /**
+     * Adds something to the given list or creates it returning as a result.
+     *
+     * @param list  The list of items.
+     * @param items The items.
+     * @return The list returned or created.
+     */
+    @NonNull
+    public static <T> List<T> addToList(@Nullable List<T> list, @Nullable T[] items) {
+        List<T> finalList = list;
+        if (items != null && items.length > 0) {
+            if (finalList == null) {
+                finalList = new ArrayList<>();
+            }
+            finalList.addAll(Arrays.asList(items));
+        }
+        return finalList;
     }
 
     /**

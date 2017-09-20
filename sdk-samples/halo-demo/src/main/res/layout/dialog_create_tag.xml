@@ -5,6 +5,14 @@
     android:layout_height="match_parent"
     android:padding="@dimen/default_padding">
 
+
+    <CheckBox
+        android:id="@+id/ch_override_key"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:checked="true"
+        android:text="@string/override_tag_key" />
+
     <EditText
         android:id="@+id/et_tag_name"
         android:layout_width="match_parent"
