@@ -268,8 +268,8 @@ public class SearchQueryTest extends HaloRobolectricTest {
     @Test
     public void thatCanSearchToFilterTargetRelationships() {
         SearchQuery query = SearchQuery.builder()
-                .addRelatedInstances(Relationship.create("fieldname","1"))
-                .addRelatedInstances(Relationship.create("fieldname","2"))
+                .addRelatedInstances(Relationship.create("fieldname", "1"))
+                .addRelatedInstances(Relationship.create("fieldname", "2"))
                 .build();
         assertThat(query.mRelationships.size()).isEqualTo(2);
         assertTrue(query.mRelationships.get(0).getFieldName().equals("fieldname"));
@@ -278,7 +278,7 @@ public class SearchQueryTest extends HaloRobolectricTest {
     @Test
     public void thatCanSearchToFilterTargetRelationshipsWithAArrayGiven() {
         SearchQuery query = SearchQuery.builder()
-                .relatedInstances(new Relationship[]{Relationship.create("fieldname","1"),Relationship.create("fieldname","2")})
+                .relatedInstances(new Relationship[]{Relationship.create("fieldname", "1"), Relationship.create("fieldname", "2")})
                 .build();
         assertThat(query.mRelationships.size()).isEqualTo(2);
         assertTrue(query.mRelationships.get(0).getFieldName().equals("fieldname"));
@@ -307,10 +307,10 @@ public class SearchQueryTest extends HaloRobolectricTest {
         SearchQuery query = SearchQuery.builder()
                 .segmentWithDevice()
                 .build();
-        Device device = new Device("alias","1","a@mobgen.com","token","5");
+        Device device = new Device("alias", "1", "a@mobgen.com", "token", "5");
         List<HaloSegmentationTag> listTags = new ArrayList<HaloSegmentationTag>();
-        listTags.add(new HaloSegmentationTag("name","value"));
-        device.addTags(listTags);
+        listTags.add(new HaloSegmentationTag("name", "value"));
+        device.addTags(listTags, true);
         query.setDevice(device);
         assertThat(query.getTags().get(0).getName()).isEqualTo(listTags.get(0).getName());
         assertThat(query.getTags().get(0).getValue()).isEqualTo(listTags.get(0).getValue());
@@ -321,14 +321,14 @@ public class SearchQueryTest extends HaloRobolectricTest {
         SearchSort[] searchSorts = new SearchSort[]{new SearchSort(SortField.UPDATED, SortOrder.ASCENDING),
                 new SearchSort(SortField.UPDATED_BY, SortOrder.ASCENDING)};
         SearchQuery query = SearchQuery.builder()
-                .sort(new SearchSort(SortField.ARCHIVED,SortOrder.DESCENDING))
-                .sort(new SearchSort(SortField.CREATED,SortOrder.ASCENDING))
-                .sort(new SearchSort(SortField.CREATED_BY,SortOrder.ASCENDING))
-                .sort(new SearchSort(SortField.DELETED,SortOrder.DESCENDING))
-                .sort(new SearchSort(SortField.DELETED_BY,SortOrder.ASCENDING))
-                .sort(new SearchSort(SortField.NAME,SortOrder.DESCENDING))
-                .sort(new SearchSort(SortField.PUBLISHED,SortOrder.ASCENDING))
-                .sort(new SearchSort(SortField.REMOVED,SortOrder.DESCENDING))
+                .sort(new SearchSort(SortField.ARCHIVED, SortOrder.DESCENDING))
+                .sort(new SearchSort(SortField.CREATED, SortOrder.ASCENDING))
+                .sort(new SearchSort(SortField.CREATED_BY, SortOrder.ASCENDING))
+                .sort(new SearchSort(SortField.DELETED, SortOrder.DESCENDING))
+                .sort(new SearchSort(SortField.DELETED_BY, SortOrder.ASCENDING))
+                .sort(new SearchSort(SortField.NAME, SortOrder.DESCENDING))
+                .sort(new SearchSort(SortField.PUBLISHED, SortOrder.ASCENDING))
+                .sort(new SearchSort(SortField.REMOVED, SortOrder.DESCENDING))
                 .sort(searchSorts)
                 .build();
 
