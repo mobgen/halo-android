@@ -76,7 +76,7 @@ public class NotificationImageDecorator extends HaloNotificationDecorator {
         mContext = context;
         mActionIntent = new Intent();
         //only use libraries out of main thread
-        if(Looper.getMainLooper() != Looper.myLooper()){
+        if (Looper.getMainLooper() != Looper.myLooper()) {
             glide = ReflectionUtils.toClass("com.bumptech.glide.Glide");
             picasso = ReflectionUtils.toClass("com.squareup.picasso.Picasso");
         }
