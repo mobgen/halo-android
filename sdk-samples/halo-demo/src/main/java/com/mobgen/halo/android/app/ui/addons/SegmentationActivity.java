@@ -92,40 +92,32 @@ public class SegmentationActivity extends MobgenHaloActivity {
                         .execute(new CallbackV2<Device>() {
                             @Override
                             public void onFinish(@NonNull HaloResultV2<Device> result) {
-                                updateTags(true);
+                                updateTags();
                             }
                         });
             }
         };
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
         itemTouchHelper.attachToRecyclerView(mSegmentationRecycler);
-        updateTags(false);
+        updateTags();
     }
 
     /**
      * Updates the tags in the adapter.
-     *
-     * @param needUpdateDevice True if need to sync the device with the server.
      */
-    private void updateTags(boolean needUpdateDevice) {
-        if (needUpdateDevice) {
-            HaloManagerApi.with(Halo.instance())
-                    .syncDevice()
-                    .execute(new CallbackV2<Device>() {
-                        @Override
-                        public void onFinish(@NonNull HaloResultV2<Device> result) {
-                            if (result.status().isOk()) {
-                                Device device = result.data();
-                                mSegmentationsTagsAdapter.setTags(device.getTags());
-                                mSegmentationsTagsAdapter.notifyDataSetChanged();
-                            }
+    private void updateTags() {
+        HaloManagerApi.with(Halo.instance())
+                .syncDevice()
+                .execute(new CallbackV2<Device>() {
+                    @Override
+                    public void onFinish(@NonNull HaloResultV2<Device> result) {
+                        if (result.status().isOk()) {
+                            Device device = result.data();
+                            mSegmentationsTagsAdapter.setTags(device.getTags());
+                            mSegmentationsTagsAdapter.notifyDataSetChanged();
                         }
-                    });
-        } else {
-            Device device = Halo.instance().manager().getDevice();
-            mSegmentationsTagsAdapter.setTags(device.getTags());
-            mSegmentationsTagsAdapter.notifyDataSetChanged();
-        }
+                    }
+                });
     }
 
     @Override
@@ -173,7 +165,7 @@ public class SegmentationActivity extends MobgenHaloActivity {
                                 @Override
                                 public void onFinish(@NonNull HaloResultV2<Device> result) {
                                     mTagDialog.dismiss();
-                                    updateTags(true);
+                                    updateTags();
                                 }
                             });
                 } else {
