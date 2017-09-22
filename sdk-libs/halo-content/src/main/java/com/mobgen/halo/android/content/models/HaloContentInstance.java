@@ -58,7 +58,7 @@ public class HaloContentInstance implements Parcelable {
             Map map = (Map) mapper.parse(jsonParser);
             try {
                 return new JSONObject(LoganSquare.serialize(map));
-            } catch (JSONException e) {
+            } catch (JSONException | NullPointerException e) {
                 return null;
             }
         }
@@ -76,71 +76,83 @@ public class HaloContentInstance implements Parcelable {
      * The item id.
      */
     @JsonField(name = "id")
+    @Nullable
     String mItemId;
 
     /**
      * The module name.
      */
+    @Nullable
     String mModuleName;
 
     /**
      * The external id of this middleware.
      */
     @JsonField(name = "module")
+    @Nullable
     String mModuleId;
 
     /**
      * The name of this element.
      */
     @JsonField(name = "name")
+    @Nullable
     String mName;
 
     /**
      * The values field.
      */
     @JsonField(name = "values", typeConverter = JSONObjectConverter.class)
+    @Nullable
     JSONObject mValues;
 
     /**
      * The tags of this element.
      */
     @JsonField(name = "tags")
+    @Nullable
     List<HaloSegmentationTag> mTags;
 
     /**
      * The name of the author who created this element.
      */
     @JsonField(name = "createdBy")
+    @Nullable
     String mAuthor;
 
     /**
      * Creation date of this element on the Halo.
      */
     @JsonField(name = "createdAt")
+    @Nullable
     Date mCreatedDate;
 
     /**
      * Last updated date.
      */
     @JsonField(name = "updatedAt")
+    @Nullable
     Date mLastUpdate;
 
     /**
      * Publish date for the general content instance.
      */
     @JsonField(name = "publishedAt")
+    @Nullable
     Date mPublishedAt;
 
     /**
      * Date when this element has been removed.
      */
     @JsonField(name = "removedAt")
+    @Nullable
     Date mRemovedAt;
 
     /**
      * Publish date for the general content instance.
      */
     @JsonField(name = "archivedAt")
+    @Nullable
     Date mArchived;
 
     /**
@@ -181,7 +193,11 @@ public class HaloContentInstance implements Parcelable {
      */
     @Keep
     @Api(2.2)
-    public HaloContentInstance(String itemId, String moduleName, String moduleId, String name, JSONObject values, String author, Date archivedDate, Date createdDate, Date updateDate, Date publicationDate, Date deletionDate, List<HaloSegmentationTag> tags) {
+    public HaloContentInstance(@Nullable String itemId,@Nullable String moduleName,@Nullable String moduleId,
+                               @Nullable String name, @Nullable JSONObject values,
+                               @Nullable String author, @Nullable Date archivedDate,@Nullable Date createdDate,
+                               @Nullable Date updateDate, @Nullable Date publicationDate, @Nullable Date deletionDate,
+                               @Nullable List<HaloSegmentationTag> tags) {
         mItemId = itemId;
         mModuleId = moduleId;
         mModuleName = moduleName;
@@ -243,20 +259,21 @@ public class HaloContentInstance implements Parcelable {
     }
 
     /**
-     * Provides the middleware name.
+     * Provides module name if it was set before; Otherwise it will be null
      *
      * @return The middleware name.
      */
     @Keep
     @Api(2.2)
+    @Nullable
     public String getModuleName() {
         return mModuleName;
     }
 
     /**
-     * Provides the middleware id.
+     * Provides the instance id.
      *
-     * @return The middleware id.
+     * @return The instance id.
      */
     @Keep
     @Api(2.0)
@@ -276,9 +293,9 @@ public class HaloContentInstance implements Parcelable {
     }
 
     /**
-     * Provides the name of the middleware.
+     * Provides the name of the instance.
      *
-     * @return The name of the middleware.
+     * @return The name of the instance.
      */
     @Keep
     @Api(2.0)
@@ -293,14 +310,15 @@ public class HaloContentInstance implements Parcelable {
      */
     @Keep
     @Api(2.0)
+    @Nullable
     public JSONObject getValues() {
         return mValues;
     }
 
     /**
-     * Provides the author of this middleware item.
+     * Provides the author of this instance item.
      *
-     * @return The author of this middleware item.
+     * @return The author of this instance item.
      */
     @Keep
     @Api(2.0)
@@ -311,7 +329,7 @@ public class HaloContentInstance implements Parcelable {
     /**
      * Provides the tags of this item.
      *
-     * @return The author of this middleware item.
+     * @return The author of this instance item.
      */
     @Keep
     @Api(2.2)
@@ -323,32 +341,35 @@ public class HaloContentInstance implements Parcelable {
     /**
      * Provides the archived date of this item.
      *
-     * @return The middleware item update date.
+     * @return The instance item update date.
      */
     @Keep
     @Api(2.2)
+    @Nullable
     public Date getArchivedDate() {
         return mArchived;
     }
 
     /**
-     * Provides the creation date of this middleware item.
+     * Provides the creation date of this instance item.
      *
-     * @return The middleware item creation date.
+     * @return The instance item creation date.
      */
     @Keep
     @Api(2.0)
+    @Nullable
     public Date getCreatedDate() {
         return mCreatedDate;
     }
 
     /**
-     * Provides the update date of this middleware item.
+     * Provides the update date of this instance item.
      *
-     * @return The middleware item update date.
+     * @return The instance item update date.
      */
     @Keep
     @Api(2.0)
+    @Nullable
     public Date getLastUpdate() {
         return mLastUpdate;
     }
@@ -360,6 +381,7 @@ public class HaloContentInstance implements Parcelable {
      */
     @Keep
     @Api(2.0)
+    @Nullable
     public Date getPublishedDate() {
         return mPublishedAt;
     }
@@ -371,6 +393,7 @@ public class HaloContentInstance implements Parcelable {
      */
     @Keep
     @Api(2.0)
+    @Nullable
     public Date getRemoveDate() {
         return mRemovedAt;
     }
