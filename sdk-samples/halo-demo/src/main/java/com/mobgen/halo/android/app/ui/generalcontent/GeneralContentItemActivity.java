@@ -48,7 +48,7 @@ import java.util.Map;
 /**
  * Activity that displays the content of an item from the general content module. Simply displays the json content.
  */
-public class GeneralContentItemActivity extends MobgenHaloActivity implements SwipeRefreshLayout.OnRefreshListener,HaloContentApi.HaloSyncListener {
+public class GeneralContentItemActivity extends MobgenHaloActivity implements SwipeRefreshLayout.OnRefreshListener, HaloContentApi.HaloSyncListener {
 
     /**
      * The bundle name to provide the values between activities.
@@ -61,7 +61,7 @@ public class GeneralContentItemActivity extends MobgenHaloActivity implements Sw
     private static final String BUNDLE_INSTANCE_ITEM_STATUS = "bundle_instance_status";
 
     /**
-     *  The condition to know if its creating content
+     * The condition to know if its creating content
      */
     private static final String BUNDLE_CONTENT_CREATION = "bundle_content_creation";
 
@@ -146,7 +146,7 @@ public class GeneralContentItemActivity extends MobgenHaloActivity implements Sw
         bundle.putParcelable(BUNDLE_INSTANCE_ITEM, instance);
         bundle.putParcelable(BUNDLE_INSTANCE_ITEM_STATUS, status);
         bundle.putBoolean(BUNDLE_CONTENT_CREATION, contentCreation);
-        bundle.putString(BUNDLE_ARGUMENT_MODULE_NAME,moduleName);
+        bundle.putString(BUNDLE_ARGUMENT_MODULE_NAME, moduleName);
         intent.putExtras(bundle);
         context.startActivity(intent);
     }
@@ -154,14 +154,15 @@ public class GeneralContentItemActivity extends MobgenHaloActivity implements Sw
     /**
      * Provides the deeplink for this activity.
      *
-     * @param context The context to start the activity.
-     * @param extras  The extras.
+     * @param context    The context to start the activity.
+     * @param extras     The extras.
      * @param moduleName The module name
      */
     public static PendingIntent getDeeplink(Context context, Bundle extras, String moduleName) {
         Intent intentModulesActivity = ModulesActivity.getIntent(context);
         Intent intentModuleList = GeneralContentModuleActivity.getIntent(context, moduleName);
         Intent intentItem = new Intent(context, GeneralContentItemActivity.class);
+        extras.putString(BUNDLE_ARGUMENT_MODULE_NAME, moduleName);
         intentItem.putExtras(extras);
         return TaskStackBuilder.create(context)
                 .addNextIntent(intentModulesActivity)
@@ -194,10 +195,12 @@ public class GeneralContentItemActivity extends MobgenHaloActivity implements Sw
         mRecyclerView.addItemDecoration(new DividerItemDecoration(this));
         LocalBroadcastManager.getInstance(this).registerReceiver(mRefreshReceiver, new IntentFilter("generalcontent-notification"));
 
-        mSyncSubscription = HaloContentApi.with(MobgenHaloApplication.halo()).subscribeToSync(mModuleName,this);
+        if (mModuleName != null) {
+            mSyncSubscription = HaloContentApi.with(MobgenHaloApplication.halo()).subscribeToSync(mModuleName, this);
+        }
 
         mSaveButton = (Button) findViewById(R.id.instance_save);
-        if(mContentCreation){
+        if (mContentCreation) {
             //remove swippe to refresh and show save button
             mEditable = true;
             mSaveButton.setVisibility(View.VISIBLE);
@@ -217,7 +220,7 @@ public class GeneralContentItemActivity extends MobgenHaloActivity implements Sw
                     HaloContentInstance.Builder instanceBuilder = new HaloContentInstance.Builder(mModuleName)
                             .withModuleId(mInstance.getModuleId())
                             .withPublishDate(mInstance.getPublishedDate())
-                            .withName("From Android SDK: "+ new Date().toGMTString())
+                            .withName("From Android SDK: " + new Date().toGMTString())
                             .withContentData(values);
                     HaloContentEditApi.with(MobgenHaloApplication.halo())
                             .addContent(instanceBuilder.build())
@@ -230,7 +233,7 @@ public class GeneralContentItemActivity extends MobgenHaloActivity implements Sw
                                         if (result.data() != null) {
                                             mOperationStatus = true;
                                             Toast.makeText(GeneralContentItemActivity.this, "Content added succesfully: " + result.data().getName(), Toast.LENGTH_SHORT).show();
-                                            GeneralContentModuleActivity.start(mContext,mOperationStatus);
+                                            GeneralContentModuleActivity.start(mContext, mOperationStatus, mModuleName);
                                         } else {
                                             Toast.makeText(GeneralContentItemActivity.this, "Please review the content of the fields.", Toast.LENGTH_SHORT).show();
                                         }
@@ -240,17 +243,17 @@ public class GeneralContentItemActivity extends MobgenHaloActivity implements Sw
                 }
             });
         } else {
-            if(mEditable) {
+            if (mEditable) {
                 mSaveButton.setVisibility(View.VISIBLE);
             }
             mSaveButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
-                    Map<String,Object> values = new HashMap<>();
-                    List<Pair<String, Object>> elements = ((GeneralContentItemAdapter)mRecyclerView.getAdapter()).getItems();
-                    for(int i=0;i<elements.size();i++){
-                        values.put(elements.get(i).first,elements.get(i).second);
+                    Map<String, Object> values = new HashMap<>();
+                    List<Pair<String, Object>> elements = ((GeneralContentItemAdapter) mRecyclerView.getAdapter()).getItems();
+                    for (int i = 0; i < elements.size(); i++) {
+                        values.put(elements.get(i).first, elements.get(i).second);
                     }
 
                     HaloContentInstance.Builder instanceBuilder = new HaloContentInstance.Builder(mModuleName)
@@ -264,10 +267,10 @@ public class GeneralContentItemActivity extends MobgenHaloActivity implements Sw
                             .execute(new CallbackV2<HaloContentInstance>() {
                                 @Override
                                 public void onFinish(@NonNull HaloResultV2<HaloContentInstance> result) {
-                                    if(result.status().isSecurityError()){
+                                    if (result.status().isSecurityError()) {
                                         Toast.makeText(GeneralContentItemActivity.this, "You must sigin or login to update a content.", Toast.LENGTH_SHORT).show();
                                     } else {
-                                        if(result.data()!=null) {
+                                        if (result.data() != null) {
                                             mOperationStatus = true;
                                             mInstance = result.data();
                                             Toast.makeText(GeneralContentItemActivity.this, "Congrats! Your content was updated.", Toast.LENGTH_SHORT).show();
@@ -287,7 +290,7 @@ public class GeneralContentItemActivity extends MobgenHaloActivity implements Sw
         super.onPresenterInitialized();
         if (mInstance != null) {
             //Set the adapter
-            mRecyclerView.setAdapter(new GeneralContentItemAdapter(this, mInstance,mEditable));
+            mRecyclerView.setAdapter(new GeneralContentItemAdapter(this, mInstance, mEditable));
             mSwipeRefreshLayout.setOnRefreshListener(this);
             StatusInterceptor.intercept(mStatus, mStatusBar);
         } else {
@@ -332,16 +335,16 @@ public class GeneralContentItemActivity extends MobgenHaloActivity implements Sw
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putBoolean("mEditable",mEditable);
-        outState.putParcelable("mInstance",mInstance);
-        outState.putBoolean("mContentCreation",mContentCreation);
+        outState.putBoolean("mEditable", mEditable);
+        outState.putParcelable("mInstance", mInstance);
+        outState.putBoolean("mContentCreation", mContentCreation);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         mEditable = savedInstanceState.getBoolean("mEditable");
-        if(mEditable) {
+        if (mEditable) {
             mSaveButton.setVisibility(View.VISIBLE);
         } else {
             mSaveButton.setVisibility(View.GONE);
@@ -353,7 +356,9 @@ public class GeneralContentItemActivity extends MobgenHaloActivity implements Sw
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mSyncSubscription.unsubscribe();
+        if (mSyncSubscription != null) {
+            mSyncSubscription.unsubscribe();
+        }
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mRefreshReceiver);
     }
 
@@ -384,7 +389,7 @@ public class GeneralContentItemActivity extends MobgenHaloActivity implements Sw
                             if (!data.isEmpty()) {
                                 mInstance = data.get(0);
                                 mStatus = result.status();
-                                mRecyclerView.setAdapter(new GeneralContentItemAdapter(GeneralContentItemActivity.this, mInstance,mEditable));
+                                mRecyclerView.setAdapter(new GeneralContentItemAdapter(GeneralContentItemActivity.this, mInstance, mEditable));
                                 StatusInterceptor.intercept(mStatus, mStatusBar);
                             }
                         } else {
@@ -405,7 +410,7 @@ public class GeneralContentItemActivity extends MobgenHaloActivity implements Sw
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if(!mContentCreation) {
+        if (!mContentCreation) {
             getMenuInflater().inflate(R.menu.menu_generalcontent_instance, menu);
         }
         return true;
@@ -421,13 +426,13 @@ public class GeneralContentItemActivity extends MobgenHaloActivity implements Sw
                     .execute(new CallbackV2<HaloContentInstance>() {
                         @Override
                         public void onFinish(@NonNull HaloResultV2<HaloContentInstance> result) {
-                            if(result.status().isSecurityError()){
+                            if (result.status().isSecurityError()) {
                                 Toast.makeText(GeneralContentItemActivity.this, "You must sigin or login to delete a content.", Toast.LENGTH_SHORT).show();
                             } else {
-                                if(result.data()!=null) {
+                                if (result.data() != null) {
                                     mOperationStatus = true;
                                     Toast.makeText(GeneralContentItemActivity.this, "Congrats. The content was deleted.", Toast.LENGTH_SHORT).show();
-                                    GeneralContentModuleActivity.start(mContext,mOperationStatus);
+                                    GeneralContentModuleActivity.start(mContext, mOperationStatus, mModuleName);
                                 }
                             }
                         }
@@ -435,14 +440,14 @@ public class GeneralContentItemActivity extends MobgenHaloActivity implements Sw
             return true;
         } else if (item.getItemId() == R.id.action_update_instance) {
             mEditable = !mEditable;
-            if(mEditable) {
+            if (mEditable) {
                 mSaveButton.setVisibility(View.VISIBLE);
             } else {
                 mSaveButton.setVisibility(View.GONE);
             }
             mRecyclerView.getAdapter().notifyDataSetChanged();
             mRecyclerView.setAdapter(mRecyclerView.getAdapter());
-            ((GeneralContentItemAdapter)mRecyclerView.getAdapter()).editableMode(mEditable);
+            ((GeneralContentItemAdapter) mRecyclerView.getAdapter()).editableMode(mEditable);
             return true;
         } else {
             super.onOptionsItemSelected(item);
@@ -458,12 +463,12 @@ public class GeneralContentItemActivity extends MobgenHaloActivity implements Sw
     @Override
     public void onBackPressed() {
         finish();
-        GeneralContentModuleActivity.start(mContext,mOperationStatus);
+        GeneralContentModuleActivity.start(mContext, mOperationStatus, mModuleName);
     }
 
     @Override
     public void onSyncFinished(@NonNull HaloStatus status, @Nullable HaloSyncLog log) {
-        Halog.v(GeneralContentItemActivity.class,status.toString());
+        Halog.v(GeneralContentItemActivity.class, status.toString());
     }
 
     private class RefreshBroadcastReceiver extends BroadcastReceiver {
