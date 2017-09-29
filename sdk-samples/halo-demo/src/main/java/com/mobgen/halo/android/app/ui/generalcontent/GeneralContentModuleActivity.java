@@ -296,6 +296,8 @@ public class GeneralContentModuleActivity extends MobgenHaloActivity implements 
                                         mHaloContentInstance = null;
                                     }
                                 }
+                            } else {
+                                finish();
                             }
                         }
                     });

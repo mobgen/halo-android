@@ -324,6 +324,10 @@ public class GeneralContentItemActivity extends MobgenHaloActivity implements Sw
                                     setToolbarTitle(mInstance.getName());
                                 }
                                 onPresenterInitialized();
+                            } else { //we cannot open the instance because we dont have permission
+                                Toast.makeText(GeneralContentItemActivity.this, "You don't have permission to read this instance", Toast.LENGTH_SHORT).show();
+                                finish();
+                                GeneralContentModuleActivity.start(mContext, mOperationStatus, mModuleName);
                             }
                         } else {
                             Toast.makeText(GeneralContentItemActivity.this, "This instance is not available in your current environment.", Toast.LENGTH_SHORT).show();

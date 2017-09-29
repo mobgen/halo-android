@@ -76,21 +76,26 @@ public class DeeplinkDecorator extends HaloNotificationDecorator {
                 if (moduleId.equals(NEWS_ID_INT) || moduleId.equals(NEWS_ID_STAGE)) {
                     pendingIntent = ArticleActivity.getDeeplink(mContext, bundle, moduleId);
                 } else if (!moduleId.equals(STORE_LOCATOR_INT) && !moduleId.equals(STORE_LOCATOR_STAGE)) { // It is not the station locator
-                    HaloModuleQuery haloModuleQuery = HaloModuleQuery.builder()
-                            .withFields(false)
-                            .build();
-                    HaloResultV2<List<HaloModule>> moduleList = HaloManagerApi.with(Halo.instance())
-                            .getModules(Data.NETWORK_AND_STORAGE, haloModuleQuery)
-                            .asContent()
-                            .threadPolicy(Threading.SAME_THREAD_POLICY)
-                            .executeInline();
 
                     String moduleName = null;
-                    for (HaloModule module : moduleList.data()) {
-                        if (module.getId().equals(moduleId)) {
-                            moduleName = module.getName();
+                    if (bundle.getString("moduleName") != null) {
+                        moduleName = bundle.getString("moduleName");
+                    } else { // if we cannot get module name from push we get the name with the instance id
+                        HaloModuleQuery haloModuleQuery = HaloModuleQuery.builder()
+                                .withFields(false)
+                                .build();
+                        HaloResultV2<List<HaloModule>> moduleList = HaloManagerApi.with(Halo.instance())
+                                .getModules(Data.NETWORK_AND_STORAGE, haloModuleQuery)
+                                .asContent()
+                                .threadPolicy(Threading.SAME_THREAD_POLICY)
+                                .executeInline();
+                        for (HaloModule module : moduleList.data()) {
+                            if (module.getId().equals(moduleId)) {
+                                moduleName = module.getName();
+                            }
                         }
                     }
+
                     if (moduleName != null) {
                         pendingIntent = GeneralContentItemActivity.getDeeplink(mContext, bundle, moduleName);
                     }

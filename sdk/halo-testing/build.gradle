@@ -5,19 +5,16 @@ android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
 
+    lintOptions {
+        abortOnError false
+    }
+
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode grill.CI.getCommitRevision()
         versionName "${rootProject.ext.haloVersion}"
     }
-}
-
-afterEvaluate {
-    // Remove lint tasks to avoid linting the testing project that gets stuck on build time
-    tasks.remove(tasks.lint)
-    tasks.remove(tasks.lintDebug)
-    tasks.remove(tasks.lintRelease)
 }
 
 dependencies {

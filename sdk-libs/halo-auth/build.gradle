@@ -42,6 +42,7 @@ android {
     }
 
     lintOptions {
+        abortOnError false
         disable 'InvalidPackage' //For okio https://github.com/square/okio/issues/58
     }
 }
@@ -49,7 +50,7 @@ android {
 dependencies {
     compile "com.mobgen.halo.android:halo-sdk:${rootProject.ext.haloVersion}"
     provided "com.google.android.gms:play-services-auth:${rootProject.ext.firebaseVersion}"
-    provided "com.facebook.android:facebook-android-sdk:4.13.1"
+    provided "com.facebook.android:facebook-android-sdk:${rootProject.ext.facebookSdkVersion}"
     apt "com.bluelinelabs:logansquare-compiler:${rootProject.ext.loganSquareVersion}"
 
     //Testing dependencies
