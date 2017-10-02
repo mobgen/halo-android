@@ -5,10 +5,6 @@ android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
 
-    lintOptions {
-        abortOnError false
-    }
-
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
@@ -17,12 +13,9 @@ android {
     }
 }
 
-task lintCheck() {
-    getAllTasks(true).each {
-        def lintTasks = it.value.findAll { it.name.contains("lint") }
-        lintTasks.each {
-            it.enabled = false
-        }
+tasks.whenTaskAdded { task ->
+    if (task.name.contains("lint")) {
+        task.enabled = false
     }
 }
 
