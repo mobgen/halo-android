@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="NotificationTitle">
+        <item name="android:textColor">?android:attr/textColorPrimaryInverse</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+    <style name="NotificationText">
+        <item name="android:textColor">?android:attr/textColorPrimaryInverse</item>
+    </style>
+</resources>
