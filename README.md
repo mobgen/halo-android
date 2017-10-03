@@ -13,10 +13,10 @@
 ## What is HALO? ##
 HALO is an MBaaS (Mobile Backend as a Service) that was developed to increase developer productivity and decrease an application's time-to-market by creating a highly modular CMS. A native development team will be able to hook up with HALO in a matter of minutes via the SDK which uses an open API.
 
-To find out the documentation please enter the [documentation page](mobgen.github.io/halo-android).
+To find out the documentation please enter the [documentation page](https://mobgen.github.io/halo-documentation/).
 
 ## Contributing ##
-To contribute to this repository please follow the rule specs you can find in our [documentation](https://mobgen.github.io/halo-documenation/android_contributions.html).
+To contribute to this repository please follow the rule specs you can find in our [documentation](https://mobgen.github.io/halo-documentation/android_contributions.html).
 
 ## Publish a new release ##
 Make sure you have setup the correct environment variables in your machine for the bintray username, the
