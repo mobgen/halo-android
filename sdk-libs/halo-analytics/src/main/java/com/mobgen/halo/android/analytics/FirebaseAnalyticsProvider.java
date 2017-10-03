@@ -15,7 +15,6 @@ public class FirebaseAnalyticsProvider implements AnalyticsProvider {
      * The analytics instance for firebase.
      */
     private FirebaseAnalytics mFirebaseAnalytics;
-
     /**
      * Constructor for the provider for firebase.
      * @param context The context.
