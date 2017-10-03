@@ -21,13 +21,14 @@
 
         <TextView
             android:id="@+id/tv_title"
+            style="@style/NotificationTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:maxLines="1"
-            android:textStyle="bold" />
+            android:maxLines="1" />
 
         <TextView
             android:id="@+id/tv_text"
+            style="@style/NotificationText"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:ellipsize="end"

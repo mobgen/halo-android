@@ -85,6 +85,11 @@ public class GeneralContentModuleActivity extends MobgenHaloActivity implements 
     private HaloModule mModule;
 
     /**
+     * General content module name
+     */
+    private String mModuleName;
+
+    /**
      * The recycler view to show the content.
      */
     private RecyclerView mRecyclerView;
@@ -153,21 +158,23 @@ public class GeneralContentModuleActivity extends MobgenHaloActivity implements 
     /**
      * Factory method to start new instance of this activity.
      *
-     * @param context The context to start the activity.
-     * @param perfomOperation  True if a operation was performed (create or delete content).
+     * @param context         The context to start the activity.
+     * @param perfomOperation True if a operation was performed (create or delete content).
      */
-    public static void start(Context context, boolean perfomOperation) {
+    public static void start(Context context, boolean perfomOperation, String moduleName) {
         Intent intent = new Intent(context, GeneralContentModuleActivity.class);
         Bundle extras = new Bundle();
         extras.putBoolean(BUNDLE_PERFOM_OPERATIONS, perfomOperation);
+        extras.putString(BUNDLE_ARGUMENT_MODULE_NAME, moduleName);
         intent.putExtras(extras);
         context.startActivity(intent);
     }
 
     /**
      * Factory method to start new instance of this activity.
-     * @param context The context to start the activity.
-     * @param moduleName  The module name.
+     *
+     * @param context    The context to start the activity.
+     * @param moduleName The module name.
      * @return
      */
     public static Intent getIntent(Context context, String moduleName) {
@@ -184,6 +191,7 @@ public class GeneralContentModuleActivity extends MobgenHaloActivity implements 
         if (getIntent().getExtras() != null) {
             Bundle extras = getIntent().getExtras();
             mModule = extras.getParcelable(BUNDLE_ARGUMENT_MODULE);
+            mModuleName = getIntent().getExtras().getString(BUNDLE_ARGUMENT_MODULE_NAME);
         }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.generic_recycler_refresh);
@@ -210,7 +218,7 @@ public class GeneralContentModuleActivity extends MobgenHaloActivity implements 
     }
 
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
         mContentCreation = false;
     }
@@ -218,7 +226,7 @@ public class GeneralContentModuleActivity extends MobgenHaloActivity implements 
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        if(intent.getExtras().getBoolean(BUNDLE_PERFOM_OPERATIONS)) {
+        if (intent.getExtras().getBoolean(BUNDLE_PERFOM_OPERATIONS)) {
             if (mAdapter != null) {
                 mAdapter.notifyDataSetChanged();
                 listGeneralContentModuleData(getModuleName());
@@ -262,7 +270,7 @@ public class GeneralContentModuleActivity extends MobgenHaloActivity implements 
     public void listGeneralContentModuleData(final String moduleName) {
         if (moduleName != null) {
             ViewUtils.refreshing(mSwipeRefreshLayout, true);
-            SearchQuery options = SearchQueryBuilderFactory.getPublishedItemsByName(moduleName, moduleName,mSearchQuery)
+            SearchQuery options = SearchQueryBuilderFactory.getPublishedItemsByName(moduleName, moduleName, mSearchQuery)
                     .onePage(true)
                     .segmentWithDevice()
                     .build();
@@ -282,28 +290,31 @@ public class GeneralContentModuleActivity extends MobgenHaloActivity implements 
                                         HaloContentInstance instance = result.data().data().get(0);
                                         setGenericHaloContentInstance(instance);
                                     } else {
-                                        if(mSearchQuery!=null && !mSearchQuery.isEmpty()){
+                                        if (mSearchQuery != null && !mSearchQuery.isEmpty()) {
                                             Toast.makeText(GeneralContentModuleActivity.this, "Sorry we did not find any instance with that name.", Toast.LENGTH_SHORT).show();
                                         }
                                         mHaloContentInstance = null;
                                     }
                                 }
+                            } else {
+                                finish();
                             }
                         }
                     });
         } else {
             ViewUtils.refreshing(mSwipeRefreshLayout, false);
+            finish();
         }
     }
 
     /**
      * Generates the mock HaloContentInstance to save on server
      */
-    private void launchHaloContentInstaceAlert(){
+    private void launchHaloContentInstaceAlert() {
         JSONObject valuesObject = new JSONObject();
-        if(mHaloContentInstance==null){
-            mHaloContentInstance = new HaloContentInstance(null,null, mModule.getId(), mModule.getName(), valuesObject,null, new Date(), new Date(), new Date(), new Date(), new Date(), null);
-        } else{
+        if (mHaloContentInstance == null) {
+            mHaloContentInstance = new HaloContentInstance(null, null, mModule.getId(), mModule.getName(), valuesObject, null, new Date(), new Date(), new Date(), new Date(), new Date(), null);
+        } else {
             valuesObject = mHaloContentInstance.getValues();
         }
         createAddDialog(valuesObject);
@@ -311,6 +322,7 @@ public class GeneralContentModuleActivity extends MobgenHaloActivity implements 
 
     /**
      * Creates the add values dialog.
+     *
      * @param valuesObject
      */
     public void createAddDialog(final JSONObject valuesObject) {
@@ -320,7 +332,7 @@ public class GeneralContentModuleActivity extends MobgenHaloActivity implements 
                 .setCancelable(false)
                 .setTitle(getString(R.string.addons_content_values_title))
                 .setView(customView)
-                .setNegativeButton(R.string.bt_close_content_values,null)
+                .setNegativeButton(R.string.bt_close_content_values, null)
                 .setNeutralButton(R.string.bt_more_content_values, null)
                 .setPositiveButton(R.string.bt_more_content_done, null).create();
         mTagDialog.show();
@@ -337,7 +349,7 @@ public class GeneralContentModuleActivity extends MobgenHaloActivity implements 
         mTagDialog.getButton(DialogInterface.BUTTON_NEUTRAL).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                parseContentInstanceValues(valuesObject,tagName.getText().toString(),tagValue.getText().toString());
+                parseContentInstanceValues(valuesObject, tagName.getText().toString(), tagValue.getText().toString());
                 tagName.setText("");
                 tagValue.setText("");
             }
@@ -346,10 +358,10 @@ public class GeneralContentModuleActivity extends MobgenHaloActivity implements 
         mTagDialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                parseContentInstanceValues(valuesObject,tagName.getText().toString(),tagValue.getText().toString());
+                parseContentInstanceValues(valuesObject, tagName.getText().toString(), tagValue.getText().toString());
                 mTagDialog.dismiss();
                 mContentCreation = true;
-                GeneralContentItemActivity.startActivity(mContext, mHaloContentInstance,mModule.getName(), mAdapter.getStatus() , mContentCreation);
+                GeneralContentItemActivity.startActivity(mContext, mHaloContentInstance, mModule.getName(), mAdapter.getStatus(), mContentCreation);
             }
         });
     }
@@ -358,22 +370,22 @@ public class GeneralContentModuleActivity extends MobgenHaloActivity implements 
      * Parse values to typed values.
      *
      * @param valuesObject The current values JSONObject.
-     * @param tagName The EditText with tag name.
-     * @param tagValue  The EditText with tag value.
+     * @param tagName      The EditText with tag name.
+     * @param tagValue     The EditText with tag value.
      */
-    private void parseContentInstanceValues(JSONObject valuesObject,String tagName, String tagValue) {
+    private void parseContentInstanceValues(JSONObject valuesObject, String tagName, String tagValue) {
         try {
-            try{
-                if(TextUtils.isDigitsOnly(tagValue)){
+            try {
+                if (TextUtils.isDigitsOnly(tagValue)) {
                     valuesObject.put(tagName, Integer.valueOf(tagValue));
-                } else if (TextUtils.isEmpty(tagValue)){
+                } else if (TextUtils.isEmpty(tagValue)) {
                     valuesObject.put(tagName, null);
-                } else if(tagValue.equalsIgnoreCase("true") || tagValue.equalsIgnoreCase("false")){
+                } else if (tagValue.equalsIgnoreCase("true") || tagValue.equalsIgnoreCase("false")) {
                     valuesObject.put(tagName.toString(), Boolean.valueOf(tagValue).booleanValue());
                 } else {
                     valuesObject.put(tagName, tagValue);
                 }
-            } catch (Exception e){
+            } catch (Exception e) {
                 valuesObject.put(tagName, null);
             }
             Toast.makeText(GeneralContentModuleActivity.this, "Content value added!!.", Toast.LENGTH_SHORT).show();
@@ -387,33 +399,33 @@ public class GeneralContentModuleActivity extends MobgenHaloActivity implements 
      *
      * @param contentInstance
      */
-    private void setGenericHaloContentInstance(HaloContentInstance contentInstance){
+    private void setGenericHaloContentInstance(HaloContentInstance contentInstance) {
         JSONObject valuesObject = null;
         try {
             valuesObject = new JSONObject(contentInstance.getValues().toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        HaloContentInstance defaultInstance = new HaloContentInstance(contentInstance.getItemId(),null,contentInstance.getModuleId(),contentInstance.getName(),valuesObject,contentInstance.getAuthor(),contentInstance.getArchivedDate(),contentInstance.getCreatedDate(),contentInstance.getLastUpdate(),contentInstance.getPublishedDate(),contentInstance.getRemoveDate(),null);
+        HaloContentInstance defaultInstance = new HaloContentInstance(contentInstance.getItemId(), null, contentInstance.getModuleId(), contentInstance.getName(), valuesObject, contentInstance.getAuthor(), contentInstance.getArchivedDate(), contentInstance.getCreatedDate(), contentInstance.getLastUpdate(), contentInstance.getPublishedDate(), contentInstance.getRemoveDate(), null);
         Iterator<String> iterator = defaultInstance.getValues().keys();
         String key = null;
         //set all items to non value
-        while(iterator.hasNext()){
+        while (iterator.hasNext()) {
             key = iterator.next();
             try {
                 if (defaultInstance.getValues().get(key) instanceof String) {
-                    defaultInstance.getValues().put(key,"");
-                } else if (defaultInstance.getValues().get(key)  instanceof Boolean) {
-                    defaultInstance.getValues().put(key,false);
-                } else if (defaultInstance.getValues().get(key)  instanceof Number) {
-                    defaultInstance.getValues().put(key,0);
+                    defaultInstance.getValues().put(key, "");
+                } else if (defaultInstance.getValues().get(key) instanceof Boolean) {
+                    defaultInstance.getValues().put(key, false);
+                } else if (defaultInstance.getValues().get(key) instanceof Number) {
+                    defaultInstance.getValues().put(key, 0);
                 } else {
-                    defaultInstance.getValues().put(key,"");
+                    defaultInstance.getValues().put(key, "");
                 }
             } catch (JSONException e) {
             }
         }
-        mHaloContentInstance = new HaloContentInstance(null,null,defaultInstance.getModuleId(),defaultInstance.getName(),defaultInstance.getValues(),contentInstance.getAuthor(),null,null,null,contentInstance.getPublishedDate(),contentInstance.getRemoveDate(),null);
+        mHaloContentInstance = new HaloContentInstance(null, null, defaultInstance.getModuleId(), defaultInstance.getName(), defaultInstance.getValues(), contentInstance.getAuthor(), null, null, null, contentInstance.getPublishedDate(), contentInstance.getRemoveDate(), null);
     }
 
     @Override
@@ -424,7 +436,7 @@ public class GeneralContentModuleActivity extends MobgenHaloActivity implements 
 
     @Override
     public void onModuleItemSelected(HaloContentInstance instanceSelected) {
-        GeneralContentItemActivity.startActivity(this, instanceSelected, mModule.getName(), mAdapter.getStatus(),mContentCreation);
+        GeneralContentItemActivity.startActivity(this, instanceSelected, getModuleName(), mAdapter.getStatus(), mContentCreation);
     }
 
     @Override
@@ -441,7 +453,7 @@ public class GeneralContentModuleActivity extends MobgenHaloActivity implements 
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         mHaloContentInstance = savedInstanceState.getParcelable("mHaloContentInstance");
-        mSearchQuery =  savedInstanceState.getString("mSearchView");
+        mSearchQuery = savedInstanceState.getString("mSearchView");
     }
 
     @Override
@@ -480,15 +492,16 @@ public class GeneralContentModuleActivity extends MobgenHaloActivity implements 
         MenuItemCompat.setOnActionExpandListener(searchMenuItem, new MenuItemCompat.OnActionExpandListener() {
             @Override
             public boolean onMenuItemActionCollapse(MenuItem item) {
-                if(mSearchQuery==null || mSearchQuery.isEmpty()) {
+                if (mSearchQuery == null || mSearchQuery.isEmpty()) {
                     mSearchQuery = null;
                     listGeneralContentModuleData(getModuleName());
                 }
                 return true;
             }
+
             @Override
             public boolean onMenuItemActionExpand(MenuItem item) {
-                if (mSearchQuery != null && !mSearchQuery.isEmpty() && mSearchQuery.length()> 2) {
+                if (mSearchQuery != null && !mSearchQuery.isEmpty() && mSearchQuery.length() > 2) {
                     mSearchView.post(new Runnable() {
                         @Override
                         public void run() {
@@ -504,15 +517,16 @@ public class GeneralContentModuleActivity extends MobgenHaloActivity implements 
         mSearchView.setOnQueryTextListener(new android.support.v7.widget.SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                if(query.length()>2) {
+                if (query.length() > 2) {
                     listGeneralContentModuleData(getModuleName());
                     mSearchView.clearFocus();
                 }
                 return true;
             }
+
             @Override
             public boolean onQueryTextChange(String newText) {
-                if(!newText.isEmpty() || closeButtonReset){
+                if (!newText.isEmpty() || closeButtonReset) {
                     mSearchQuery = newText;
                 }
                 closeButtonReset = false;
@@ -526,7 +540,7 @@ public class GeneralContentModuleActivity extends MobgenHaloActivity implements 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_add_instance) {
-            if(mHaloContentInstance==null ){
+            if (mHaloContentInstance == null) {
                 launchHaloContentInstaceAlert();
             } else {
                 mContentCreation = true;
@@ -547,8 +561,8 @@ public class GeneralContentModuleActivity extends MobgenHaloActivity implements 
     public String getModuleName() {
         if (mModule != null && mModule.getName() != null) {
             return mModule.getName();
-        } else if (getIntent().getExtras() != null && getIntent().getExtras().containsKey(BUNDLE_ARGUMENT_MODULE_NAME)) {
-            return getIntent().getExtras().getString(BUNDLE_ARGUMENT_MODULE_NAME);
+        } else if (mModuleName != null) {
+            return mModuleName;
         }
         return null;
     }

@@ -32,7 +32,7 @@ import com.mobgen.halo.android.translations.spec.HaloTranslationsContract;
 /**
  * The settings activity for halo.
  */
-public class SettingsActivity extends MobgenHaloActivity implements  View.OnClickListener{
+public class SettingsActivity extends MobgenHaloActivity implements View.OnClickListener {
 
     /**
      * Preferences name for this the current halo environment.
@@ -113,8 +113,8 @@ public class SettingsActivity extends MobgenHaloActivity implements  View.OnClic
                 ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(SettingsActivity.this, android.R.layout.select_dialog_singlechoice, environmentNames);
                 int selectedItem = env != null ? env : 0;
                 View headerView = getLayoutInflater().inflate(R.layout.dialog_prefrences_title, null);
-                final HaloTextView hintTextCustomUrl = (HaloTextView)headerView.findViewById(R.id.tv_custom_server_hint);
-                final EditText customUrl = (EditText)headerView.findViewById(R.id.et_custom_server);
+                final HaloTextView hintTextCustomUrl = (HaloTextView) headerView.findViewById(R.id.tv_custom_server_hint);
+                final EditText customUrl = (EditText) headerView.findViewById(R.id.et_custom_server);
                 customUrl.setText(storage.prefs().getString(PREFERENCES_HALO_ENVIRONMENT_CUSTOM_URL, customUrl.getText().toString()));
                 customUrl.setVisibility(View.GONE);
                 hintTextCustomUrl.setVisibility(View.GONE);
@@ -123,16 +123,16 @@ public class SettingsActivity extends MobgenHaloActivity implements  View.OnClic
                             @Override
                             public void onClick(DialogInterface dialog, @MobgenHaloApplication.Environment int env1) {
                                 storage.prefs().edit().clear().apply();
-                                if(hintTextCustomUrl.getVisibility()==View.GONE && env1==MobgenHaloApplication.CUSTOM){
+                                if (hintTextCustomUrl.getVisibility() == View.GONE && env1 == MobgenHaloApplication.CUSTOM) {
                                     customUrl.setVisibility(View.VISIBLE);
                                     hintTextCustomUrl.setVisibility(View.VISIBLE);
-                                    mPreviousDialog.getListView().setItemChecked(0,false);
+                                    mPreviousDialog.getListView().setItemChecked(0, false);
                                 } else {
                                     if (env1 == MobgenHaloApplication.CUSTOM) {
                                         storage.prefs().edit().putString(PREFERENCES_HALO_ENVIRONMENT_CUSTOM_URL, customUrl.getText().toString()).commit();
                                     }
 
-                                    if(hintTextCustomUrl.getVisibility()==View.GONE){
+                                    if (hintTextCustomUrl.getVisibility() == View.GONE) {
                                         customUrl.setVisibility(View.GONE);
                                         hintTextCustomUrl.setVisibility(View.GONE);
                                     }
@@ -158,7 +158,7 @@ public class SettingsActivity extends MobgenHaloActivity implements  View.OnClic
                         .setCustomTitle(headerView)
                         .setCancelable(true)
                         .show();
-                mPreviousDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE  | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
+                mPreviousDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
                 mPreviousDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
             }
         });
@@ -167,15 +167,25 @@ public class SettingsActivity extends MobgenHaloActivity implements  View.OnClic
         mViewHolder.mDeleteDatabaseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(storage!=null) {
+                if (storage != null) {
+                    int currentEnv = storage.prefs().getInteger(PREFERENCES_HALO_ENVIRONMENT, MobgenHaloApplication.PROD);
+                    String customUrl = null;
+                    if (currentEnv == MobgenHaloApplication.CUSTOM) {
+                        customUrl = storage.prefs().getString(PREFERENCES_HALO_ENVIRONMENT_CUSTOM_URL, null);
+                    }
                     storage.db().deleteDatabase();
                     storage.prefs().edit().clear().commit();
+                    //restore current environment
+                    storage.prefs().edit().putInt(PREFERENCES_HALO_ENVIRONMENT, currentEnv).commit();
+                    if (customUrl != null) {
+                        storage.prefs().edit().putString(PREFERENCES_HALO_ENVIRONMENT_CUSTOM_URL, customUrl).commit();
+                    }
                 }
-                if(storageContent!=null) {
+                if (storageContent != null) {
                     storageContent.db().deleteDatabase();
                     storageContent.prefs().edit().clear().commit();
                 }
-                if(storageTranslation!=null) {
+                if (storageTranslation != null) {
                     storageTranslation.db().deleteDatabase();
                     storageTranslation.prefs().edit().clear().commit();
                 }
@@ -190,7 +200,7 @@ public class SettingsActivity extends MobgenHaloActivity implements  View.OnClic
         Credentials credentials = Halo.core().credentials();
         mViewHolder.mClientId.setText(credentials.getUsername());
         Device device = Halo.core().manager().getDevice();
-        if(device != null) {
+        if (device != null) {
             mViewHolder.mUserAlias.setText(device.getAlias());
             mViewHolder.mNotificationToken.setText(device.getNotificationsToken());
         }
@@ -223,10 +233,10 @@ public class SettingsActivity extends MobgenHaloActivity implements  View.OnClic
 
     @Override
     public void onClick(View v) {
-        ClipboardManager cm = (ClipboardManager)mContext.getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipboardManager cm = (ClipboardManager) mContext.getSystemService(Context.CLIPBOARD_SERVICE);
         if (v.getId() == R.id.tv_gcm) {
             cm.setText(notificationToken.getText());
-        } else if(v.getId() == R.id.tv_user_alias) {
+        } else if (v.getId() == R.id.tv_user_alias) {
             cm.setText(userAlias.getText());
         }
         Toast.makeText(mContext, "Copied to clipboard", Toast.LENGTH_SHORT).show();
