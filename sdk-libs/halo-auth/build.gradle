@@ -42,8 +42,7 @@ android {
     }
 
     lintOptions {
-        abortOnError false
-        disable 'InvalidPackage' //For okio https://github.com/square/okio/issues/58
+        disable 'GradleCompatible','InvalidPackage' //For okio https://github.com/square/okio/issues/58
     }
 }
 

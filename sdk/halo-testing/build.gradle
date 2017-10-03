@@ -15,6 +15,7 @@ android {
 
 tasks.whenTaskAdded { task ->
     if (task.name.contains("lint")) {
+        // Remove lint tasks to avoid linting the testing project that gets stuck on build time
         task.enabled = false
     }
 }

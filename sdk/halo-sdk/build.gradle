@@ -33,10 +33,6 @@ android {
         }
     }
 
-    lintOptions {
-        abortOnError false
-    }
-
     testOptions {
         unitTests.all {
             jvmArgs '-noverify'
