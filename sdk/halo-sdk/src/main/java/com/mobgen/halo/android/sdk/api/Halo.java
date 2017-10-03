@@ -318,7 +318,6 @@ public class Halo {
          *
          * @param ctx The context of this installer.
          */
-        @RequiresApi(api = Build.VERSION_CODES.N)
         @Keep
         Installer(@NonNull Context ctx) {
             //Add a cache with the needed size

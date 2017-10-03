@@ -23,10 +23,14 @@ import com.mobgen.halo.android.app.ui.generalcontent.GeneralContentItemActivity;
 import com.mobgen.halo.android.app.ui.news.ArticleActivity;
 import com.mobgen.halo.android.framework.common.exceptions.HaloParsingException;
 import com.mobgen.halo.android.framework.toolbox.data.CallbackV2;
+import com.mobgen.halo.android.framework.toolbox.data.Data;
 import com.mobgen.halo.android.framework.toolbox.data.HaloResultV2;
 import com.mobgen.halo.android.framework.toolbox.threading.Threading;
 import com.mobgen.halo.android.notifications.decorator.HaloNotificationDecorator;
 import com.mobgen.halo.android.sdk.api.Halo;
+import com.mobgen.halo.android.sdk.core.management.HaloManagerApi;
+import com.mobgen.halo.android.sdk.core.management.models.HaloModule;
+import com.mobgen.halo.android.sdk.core.management.models.HaloModuleQuery;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,15 +76,37 @@ public class DeeplinkDecorator extends HaloNotificationDecorator {
                 if (moduleId.equals(NEWS_ID_INT) || moduleId.equals(NEWS_ID_STAGE)) {
                     pendingIntent = ArticleActivity.getDeeplink(mContext, bundle, moduleId);
                 } else if (!moduleId.equals(STORE_LOCATOR_INT) && !moduleId.equals(STORE_LOCATOR_STAGE)) { // It is not the station locator
-                    pendingIntent = GeneralContentItemActivity.getDeeplink(mContext, bundle, moduleId);
+
+                    String moduleName = null;
+                    if (bundle.getString("moduleName") != null) {
+                        moduleName = bundle.getString("moduleName");
+                    } else { // if we cannot get module name from push we get the name with the instance id
+                        HaloModuleQuery haloModuleQuery = HaloModuleQuery.builder()
+                                .withFields(false)
+                                .build();
+                        HaloResultV2<List<HaloModule>> moduleList = HaloManagerApi.with(Halo.instance())
+                                .getModules(Data.NETWORK_AND_STORAGE, haloModuleQuery)
+                                .asContent()
+                                .threadPolicy(Threading.SAME_THREAD_POLICY)
+                                .executeInline();
+                        for (HaloModule module : moduleList.data()) {
+                            if (module.getId().equals(moduleId)) {
+                                moduleName = module.getName();
+                            }
+                        }
+                    }
+
+                    if (moduleName != null) {
+                        pendingIntent = GeneralContentItemActivity.getDeeplink(mContext, bundle, moduleName);
+                    }
                 }
             }
-        } else if(custom != null){
+        } else if (custom != null) {
             //extract from notification bundle the data
             try {
                 ChatMessage chatMessage = ChatMessage.deserialize(custom.toString(), Halo.instance().framework().parser());
-                if(chatMessage.getAlias()!=null && chatMessage.getMessage() != null) {//this is a new message
-                    if(chatMessage.getAlias().equals(MessagesActivity.MULTIPLE_ROOM)){
+                if (chatMessage.getAlias() != null && chatMessage.getMessage() != null) {//this is a new message
+                    if (chatMessage.getAlias().equals(MessagesActivity.MULTIPLE_ROOM)) {
                         chatMessage.setIsMultiple(true);
                     } else {
                         chatMessage.setIsMultiple(false);
@@ -96,12 +122,12 @@ public class DeeplinkDecorator extends HaloNotificationDecorator {
 
                     int notificationId = chatMessage.getAlias().hashCode();
                     if (!isMessageServiceRunning(ChatMessageService.class)) {
-                        data.putInt(BUNDLE_NOTIFICATION_ID,notificationId);
+                        data.putInt(BUNDLE_NOTIFICATION_ID, notificationId);
                     }
                     pendingIntent = ChatRoomActivity.getDeeplinkMessage(mContext, data);
                     if (isMessageServiceRunning(ChatMessageService.class)) {
                         Intent newIntent = new Intent(MessagesActivity.CHAT_MESSAGE_FILTER);
-                        newIntent.putExtra(BUNDLE_NOTIFICATION_INAPP,data);
+                        newIntent.putExtra(BUNDLE_NOTIFICATION_INAPP, data);
                         newIntent.putExtra("pendingIntent", pendingIntent);
                         LocalBroadcastManager.getInstance(mContext).sendBroadcast(newIntent);
                         return null;
@@ -110,7 +136,7 @@ public class DeeplinkDecorator extends HaloNotificationDecorator {
                     }
                 } else { // save the new contact
                     QRContact qrContact = QRContact.deserialize(custom.toString(), Halo.instance().framework().parser());
-                    if(qrContact.getAlias()!=null) {
+                    if (qrContact.getAlias() != null) {
                         Bundle data = new Bundle();
                         data.putString(BUNDLE_USER_NAME, qrContact.getName());
                         data.putString(BUNDLE_USER_ALIAS, qrContact.getAlias());
@@ -133,8 +159,8 @@ public class DeeplinkDecorator extends HaloNotificationDecorator {
     /**
      * Stack notification by id.
      *
-     * @param builder The builder of the notification
-     * @param chatMessage The chat message to stack
+     * @param builder        The builder of the notification
+     * @param chatMessage    The chat message to stack
      * @param notificationId The notification id.
      */
     private void stackNotifications(@NonNull NotificationCompat.Builder builder, ChatMessage chatMessage, int notificationId) {
