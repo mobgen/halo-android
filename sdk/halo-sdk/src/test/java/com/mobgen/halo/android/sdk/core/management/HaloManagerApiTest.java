@@ -153,7 +153,7 @@ public class HaloManagerApiTest extends HaloRobolectricTest {
                 .withFields(false)
                 .build();
         ICancellable cancellable = mHalo.getCore().manager()
-                .getModules(Data.NETWORK_ONLY,haloModuleQuery)
+                .getModules(Data.NETWORK_ONLY, haloModuleQuery)
                 .asContent()
                 .execute(callback);
         assertThat(mCallbackFlag.isFlagged()).isTrue();
@@ -169,7 +169,7 @@ public class HaloManagerApiTest extends HaloRobolectricTest {
                 .withFields(false)
                 .build();
         ICancellable cancellable = mHalo.getCore().manager()
-                .getModules(Data.NETWORK_AND_STORAGE,haloModuleQuery)
+                .getModules(Data.NETWORK_AND_STORAGE, haloModuleQuery)
                 .asContent()
                 .execute(callback);
         assertThat(mCallbackFlag.isFlagged()).isTrue();
@@ -184,7 +184,7 @@ public class HaloManagerApiTest extends HaloRobolectricTest {
                 .withFields(false)
                 .build();
         ICancellable cancellable = mHalo.getCore().manager()
-                .getModules(Data.STORAGE_ONLY,haloModuleQuery)
+                .getModules(Data.STORAGE_ONLY, haloModuleQuery)
                 .asContent()
                 .execute(callback);
         assertThat(mCallbackFlag.isFlagged()).isTrue();
@@ -200,7 +200,7 @@ public class HaloManagerApiTest extends HaloRobolectricTest {
                 .withFields(false)
                 .build();
         ICancellable cancellable = mHalo.getCore().manager()
-                .getModules(Data.NETWORK_AND_STORAGE,haloModuleQuery)
+                .getModules(Data.NETWORK_AND_STORAGE, haloModuleQuery)
                 .asRaw()
                 .execute(callback);
         assertThat(mCallbackFlag.isFlagged()).isTrue();
@@ -216,7 +216,7 @@ public class HaloManagerApiTest extends HaloRobolectricTest {
                 .withFields(false)
                 .build();
         ICancellable cancellable = mHalo.getCore().manager()
-                .getModules(Data.NETWORK_AND_STORAGE,haloModuleQuery)
+                .getModules(Data.NETWORK_AND_STORAGE, haloModuleQuery)
                 .asRaw()
                 .execute(callback);
         assertThat(mCallbackFlag.isFlagged()).isTrue();
@@ -231,7 +231,7 @@ public class HaloManagerApiTest extends HaloRobolectricTest {
                 .withFields(false)
                 .build();
         ICancellable cancellable = mHalo.getCore().manager()
-                .getModules(Data.STORAGE_ONLY,haloModuleQuery)
+                .getModules(Data.STORAGE_ONLY, haloModuleQuery)
                 .asRaw()
                 .execute(callback);
         assertThat(mCallbackFlag.isFlagged()).isTrue();
@@ -418,7 +418,7 @@ public class HaloManagerApiTest extends HaloRobolectricTest {
         assertThat(mCallbackFlag.isFlagged()).isTrue();
         assertThat(cancellable).isNotNull();
     }
-  
+
     @Test
     public void thatCanSetNotificationTokenInlineResponse() throws IOException {
         enqueueServerFile(mMockServer, GET_DEVICE);
@@ -431,14 +431,14 @@ public class HaloManagerApiTest extends HaloRobolectricTest {
 
     @Test
     public void thatCanHandleExceptionWithAnInlineResponse() throws IOException {
-        enqueueServerError(mMockServer,500);
+        enqueueServerError(mMockServer, 500);
         HaloResultV2<Device> result = mHalo.manager()
                 .setNotificationsToken("mytoken")
                 .executeInline();
         assertThat(result.data()).isNull();
         assertThat(result.status().isError()).isTrue();
     }
-  
+
     @Test
     public void thatCanAddAEventTrackAnalyticData() throws IOException {
         enqueueServerFile(mMockServer, ADD_TRACK_EVET);

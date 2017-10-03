@@ -29,6 +29,45 @@ public class DeviceTest extends HaloRobolectricTest {
     }
 
     @Test
+    public void thatCanAddSameKeyAndDifferentValueTag() {
+        Device user = new Device("alias", "id", null, null, "5");
+        HaloSegmentationTag tag = new HaloSegmentationTag("wine", "rose");
+        HaloSegmentationTag tag2 = new HaloSegmentationTag("wine", "white");
+        user.addRepeatedKeyTags(new HaloSegmentationTag[]{tag, tag2});
+        assertThat(user.getTags().size()).isEqualTo(2);
+        assertThat(user.getTags().get(0).getName()).isEqualTo(user.getTags().get(1).getName());
+        assertThat(user.getTags().get(0).getValue()).isNotEqualTo(user.getTags().get(1).getValue());
+    }
+
+    @Test
+    public void thatATagWithSameKeyGetOverride() {
+        Device user = new Device("alias", "id", null, null, "5");
+        HaloSegmentationTag tag = new HaloSegmentationTag("wine", "rose");
+        HaloSegmentationTag tag2 = new HaloSegmentationTag("wine", "red");
+        HaloSegmentationTag tag3 = new HaloSegmentationTag("wine", "yellow");
+        HaloSegmentationTag tag4 = new HaloSegmentationTag("wine", "white");
+        user.addTag(tag);
+        user.addTag(tag2);
+        user.addTag(tag3);
+        user.addTag(tag4);
+        assertThat(user.getTags().size()).isEqualTo(1);
+        assertThat(user.getTags().get(0).getValue()).isEqualTo("white");
+    }
+
+    @Test
+    public void thatCanKeepOnlyOneTagAfterHaveRepeatedKeys() {
+        Device user = new Device("alias", "id", null, null, "5");
+        HaloSegmentationTag tag = new HaloSegmentationTag("wine", "rose");
+        HaloSegmentationTag tag2 = new HaloSegmentationTag("wine", "red");
+        HaloSegmentationTag tag3 = new HaloSegmentationTag("wine", "yellow");
+        HaloSegmentationTag tag4 = new HaloSegmentationTag("wine", "white");
+        user.addRepeatedKeyTags(new HaloSegmentationTag[]{tag, tag2, tag3});
+        user.addTag(tag4);
+        assertThat(user.getTags().size()).isEqualTo(1);
+        assertThat(user.getTags().get(0).getValue()).isEqualTo("white");
+    }
+
+    @Test
     public void thatAreTheSameTag() {
         Device user = new Device("alias", "id", null, null, "5");
         HaloSegmentationTag tag = new HaloSegmentationTag("example", null);
@@ -68,7 +107,7 @@ public class DeviceTest extends HaloRobolectricTest {
         List<HaloSegmentationTag> tags = new ArrayList<>();
         tags.add(new HaloSegmentationTag("example", null));
         tags.add(new HaloSegmentationTag("example2", null));
-        user.addTags(tags);
+        user.addTags(tags, true);
         assertThat(user.getTags().size()).isEqualTo(2);
         assertThat(user.getTags().get(0)).isEqualTo(new HaloSegmentationTag("example", null));
         assertThat(user.getTags().get(1)).isEqualTo(new HaloSegmentationTag("example2", null));

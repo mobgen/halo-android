@@ -383,6 +383,22 @@ public class HaloManagerApi extends HaloPluginApi {
     }
 
     /**
+     * Adds a segmentation tag to the current device or replaces the current one if there is another with the same
+     * name.
+     *
+     * @param tag              The tag that will be added.
+     * @param shouldSendDevice Provides if the device should be sent.
+     * @return The action generated.
+     */
+    @Keep
+    @Api(2.33)
+    @NonNull
+    @CheckResult(suggest = "You may want to call execute() to run the task")
+    public HaloInteractorExecutor<Device> addDeviceTag(@Nullable HaloSegmentationTag tag, boolean shouldSendDevice, boolean shouldOverrideTags) {
+        return addDeviceTags(Collections.singletonList(tag), shouldSendDevice, shouldOverrideTags);
+    }
+
+    /**
      * The segmentation tags.
      *
      * @param segmentationTags The tags.
@@ -396,7 +412,26 @@ public class HaloManagerApi extends HaloPluginApi {
     public HaloInteractorExecutor<Device> addDeviceTags(@Nullable List<HaloSegmentationTag> segmentationTags, boolean shouldSendDevice) {
         return new HaloInteractorExecutor<>(halo(),
                 "Add device tags",
-                new AddDeviceTagInteractor(mDeviceRepository, segmentationTags, shouldSendDevice)
+                new AddDeviceTagInteractor(mDeviceRepository, segmentationTags, shouldSendDevice, true)
+        );
+    }
+
+    /**
+     * The segmentation tags.
+     *
+     * @param segmentationTags The tags.
+     * @param shouldSendDevice Provides if the device should be sent.
+     * @param shouldOverrideTags True if we will override every tag to have only one; otherwise false.
+     * @return The action generated.
+     */
+    @Keep
+    @Api(2.33)
+    @NonNull
+    @CheckResult(suggest = "You may want to call execute() to run the task")
+    public HaloInteractorExecutor<Device> addDeviceTags(@Nullable List<HaloSegmentationTag> segmentationTags, boolean shouldSendDevice, boolean shouldOverrideTags) {
+        return new HaloInteractorExecutor<>(halo(),
+                "Add device tags",
+                new AddDeviceTagInteractor(mDeviceRepository, segmentationTags, shouldSendDevice, shouldOverrideTags)
         );
     }
 

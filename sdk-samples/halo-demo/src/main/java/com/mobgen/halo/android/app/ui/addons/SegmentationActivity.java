@@ -14,6 +14,7 @@ import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 
 import com.mobgen.halo.android.app.R;
@@ -105,9 +106,18 @@ public class SegmentationActivity extends MobgenHaloActivity {
      * Updates the tags in the adapter.
      */
     private void updateTags() {
-        Device device = Halo.instance().manager().getDevice();
-        mSegmentationsTagsAdapter.setTags(device.getTags());
-        mSegmentationsTagsAdapter.notifyDataSetChanged();
+        HaloManagerApi.with(Halo.instance())
+                .syncDevice()
+                .execute(new CallbackV2<Device>() {
+                    @Override
+                    public void onFinish(@NonNull HaloResultV2<Device> result) {
+                        if (result.status().isOk()) {
+                            Device device = result.data();
+                            mSegmentationsTagsAdapter.setTags(device.getTags());
+                            mSegmentationsTagsAdapter.notifyDataSetChanged();
+                        }
+                    }
+                });
     }
 
     @Override
@@ -140,6 +150,7 @@ public class SegmentationActivity extends MobgenHaloActivity {
         mTagDialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                CheckBox overrideTagKey = (CheckBox) customView.findViewById(R.id.ch_override_key);
                 EditText tagName = (EditText) customView.findViewById(R.id.et_tag_name);
                 EditText tagValue = (EditText) customView.findViewById(R.id.et_tag_value);
                 HaloSegmentationTag tag = null;
@@ -148,7 +159,7 @@ public class SegmentationActivity extends MobgenHaloActivity {
                 }
                 if (tag != null) {
                     HaloManagerApi.with(Halo.instance())
-                            .addDeviceTag(tag, true)
+                            .addDeviceTag(tag, true, overrideTagKey.isChecked())
                             .threadPolicy(Threading.POOL_QUEUE_POLICY)
                             .execute(new CallbackV2<Device>() {
                                 @Override

@@ -66,14 +66,14 @@ public class DeviceRepository {
         if (!mCachedDevice.isAnonymous()) {
             try {
                 mCachedDevice = mDeviceRemoteDatasource.getDevice(mCachedDevice);
-            }catch (HaloNotFoundException e) {
+            } catch (HaloNotFoundException e) {
                 Halog.w(getClass(), "There is a cached device that is not present in the server. Creating a new one");
                 Halog.e(getClass(), "Creating new device", e);
                 clearCachedDevice();
                 return syncDevice(tags);
             }
         }
-        mCachedDevice.addTags(tags);
+        mCachedDevice.addTags(tags, true);
         return sendDevice();
     }
 
@@ -89,7 +89,7 @@ public class DeviceRepository {
         mCachedDevice = getCachedDevice();
         try {
             mCachedDevice = mDeviceRemoteDatasource.updateDevice(mCachedDevice);
-        }catch (HaloNotFoundException e){
+        } catch (HaloNotFoundException e) {
             Halog.w(getClass(), "There is a cached device that is not present in the server. Creating a new one");
             Halog.e(getClass(), "Making the device anonymous", e);
             mCachedDevice.makeAnonymous();
@@ -140,10 +140,10 @@ public class DeviceRepository {
      *
      * @param tags The tags.
      */
-    public synchronized void addTags(@Nullable List<HaloSegmentationTag> tags) {
+    public synchronized void addTags(@Nullable List<HaloSegmentationTag> tags, boolean shouldOverrideTags) {
         mCachedDevice = getCachedDevice();
         if (tags != null) {
-            mCachedDevice.addTags(tags);
+            mCachedDevice.addTags(tags, shouldOverrideTags);
         }
     }
 
@@ -190,7 +190,7 @@ public class DeviceRepository {
     /**
      * Clears the cached device.
      */
-    private void clearCachedDevice(){
+    private void clearCachedDevice() {
         mCachedDevice = null;
         mDeviceLocalDatasource.clearCurrentDevice();
     }
