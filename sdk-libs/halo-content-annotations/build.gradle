@@ -1,8 +1,14 @@
 apply plugin: 'java'
-apply plugin: 'grill'
 apply plugin: 'jacoco'
+apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'com.jfrog.bintray'
 sourceCompatibility = JavaVersion.VERSION_1_7
 targetCompatibility = JavaVersion.VERSION_1_7
+
+//Known issue in jacoco: https://github.com/robolectric/robolectric/issues/2230
+jacoco {
+    toolVersion = "${rootProject.ext.jacocoVersion}"
+}
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
@@ -13,51 +19,85 @@ dependencies {
 group = "${rootProject.ext.haloGroup}"
 version = "${rootProject.ext.haloVersion}"
 
-task sourcesJar(type: Jar) {
+task sourcesJar(type: Jar, dependsOn: classes) {
     from sourceSets.main.java.srcDirs
     classifier = 'sources'
 }
 
-task javadocCustom(type: Javadoc) {
-    source = sourceSets.main.java.srcDirs
-}
-
-task javadocJar(type: Jar) {
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
     from javadoc.destinationDir
-    classifier = 'javadocCustom'
 }
 
-grill {
-    distribute {
-        libName 'HALO Content annotations'
-        libDescription 'Annotations to generate the code'
-        libDevId "halo-mobgen"
-        libDevName "MOBGEN"
-        libDevEmail "halo@mobgen.com"
-        libSiteUrl "https://halo.mobgen.com"
-        libGitUrl "https://github.com/mobgen/halo-android/tree/master/sdk-libs/halo-content-annotations"
-        bintrayRepoName "HALO-Content-Annotations"
-        bintrayUser "${rootProject.ext.jcenterUser}"
-        bintrayKey "${rootProject.ext.jcenterKey}"
-        bintrayMavenCentralUser "${rootProject.ext.sonatypeUser}"
-        bintrayMavenCentralPassword "${rootProject.ext.sonatypePassword}"
-        bintrayArtifactJavadoc project.tasks.getByName("javadocJar")
-        bintrayArtifactSources project.tasks.getByName("sourcesJar")
-        bintrayMavenSync project.hasProperty("sync")
+// add javadoc/source jar tasks as artifacts
+artifacts {
+    archives sourcesJar, javadocJar
+}
+
+install {
+    repositories.mavenInstaller {
+        pom.project {
+            packaging 'jar'
+            groupId group
+            artifactId 'HALO Content annotations'
+
+            name 'HALO Content annotations'
+            description 'Processor to generate compile time information that allows us to perform queries on sync'
+            url "https://halo.mobgen.com"
+
+            // Set your license
+            licenses {
+                license {
+                    name 'The Apache Software License, Version 2.0'
+                    url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                }
+            }
+            developers {
+                developer {
+                    id "halo-mobgen"
+                    name "MOBGEN"
+                    email "halo@mobgen.com"
+                }
+            }
+            scm {
+                connection "https://github.com/mobgen/halo-android/tree/master/sdk-libs/halo-content-annotations"
+                developerConnection "https://github.com/mobgen/halo-android/tree/master/sdk-libs/halo-content-annotations"
+                url "https://halo.mobgen.com"
+            }
+        }
     }
-    documentation {
-        templateDir "/../docs/template"
+}
+
+bintray {
+    user = "${rootProject.ext.jcenterUser}"
+    key = "${rootProject.ext.jcenterKey}"
+
+    configurations = ['mavenJava']
+    pkg {
+        repo = 'maven'
+        name = "HALO Content annotations"
+        desc = 'Annotations to generate the code'
+        websiteUrl = 'https://halo.mobgen.com'
+        vcsUrl = 'https://github.com/mobgen/halo-android/tree/master/sdk-libs/halo-content-annotations'
+        licenses = ["Apache-2.0"]
+        publish = project.hasProperty("sync")
+        publicDownloadNumbers = true
+        version {
+            desc = 'Annotations to generate the code'
+            gpg {
+                sign = true
+                passphrase = null
+            }
+            mavenCentralSync {
+                sync = project.hasProperty("sync")
+                user = "${rootProject.ext.sonatypeUser}"
+                password = "${rootProject.ext.sonatypePassword}"
+                close = project.hasProperty("sync") ? "1" : "0"
+            }
+        }
     }
-    coverage {
-        excludes(['**/*$JsonObjectMapper*.*'])
-    }
-    codeQuality {
-        host "${rootProject.ext.sonarHost}"
-        projectKey "halo:content-annotations"
-        projectName "Halo Content Annotations"
-        projectVersion "${rootProject.ext.sonarVersion}"
-        dbHost "${rootProject.ext.sonarDbHost}"
-        dbUser "${rootProject.ext.sonarUser}"
-        dbPassword "${rootProject.ext.sonarPassword}"
-    }
+}
+
+task distribute (dependsOn: 'bintrayUpload') {
+
 }
