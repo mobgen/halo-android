@@ -9,7 +9,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.os.Binder;
 import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -83,10 +82,6 @@ public final class HaloSchedulerService extends Service {
      */
     private ConcurrentHashMap<String, BroadcastReceiver> mReceivers;
     /**
-     * The scheduler binder.
-     */
-    private HaloSchedulerBinder mBinder;
-    /**
      * Hanlder that dispatches the messages to perform checks.
      */
     private CheckHandler mChecker;
@@ -118,6 +113,65 @@ public final class HaloSchedulerService extends Service {
      * A handler thread.
      */
     private HandlerThread mHandlerThread;
+
+    /**
+     * The scheduler binder stub.
+     */
+    private final IHaloSchedulerServiceBinder.Stub mBinder = new IHaloSchedulerServiceBinder.Stub() {
+
+        @Override
+        public IBinder asBinder() {
+            return this;
+        }
+
+        /**
+         * Schedule a new job into the service.
+         *
+         * @param job The job.
+         */
+        @Override
+        public void schedule(@NonNull Job job) {
+            addJob(job, true);
+        }
+
+        /**
+         * Cancel the job by tag.
+         *
+         * @param tag The tag.
+         */
+        @Override
+        public void cancel(String tag) {
+            removeJob(tag);
+        }
+
+        /**
+         * Removes a persisiting job.
+         *
+         * @param tag The tag.
+         */
+        @Override
+        public void removePersistJob(String tag) {
+            mChecker.removePersistJobWithTag(tag);
+        }
+
+        /**
+         * Stop the service and reset all the variables.
+         */
+        @Override
+        public void stopAndReset() {
+            cleanUpAll();
+        }
+
+        /**
+         * Sets the thread manager.
+         *
+         * @param threadManager The thread manager.
+         */
+        @Override
+        public void threadManager(@NonNull HaloThreadManager threadManager) {
+            mThreadManager = threadManager;
+        }
+    };
 
     /**
      * Creates a new intent.
@@ -178,7 +232,6 @@ public final class HaloSchedulerService extends Service {
         super.onCreate();
         mJobsSet = new ConcurrentHashMap<>();
         mReceivers = new ConcurrentHashMap<>();
-        mBinder = new HaloSchedulerBinder();
         mAlarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
         mShortDeadlineHandler = new Handler();
         mDeadlineCheck = new DeadlineCheck();
@@ -521,55 +574,6 @@ public final class HaloSchedulerService extends Service {
             mChecker.checkStatusChanged(intent.getStringExtra(STATUS_CHANGED));
         }
         return START_NOT_STICKY;
-    }
-
-    /**
-     * The scheduler binder to perform the binding with the current service.
-     */
-    public class HaloSchedulerBinder extends Binder {
-        /**
-         * Schedule a new job into the service.
-         *
-         * @param job The job.
-         */
-        void schedule(@NonNull Job job) {
-            addJob(job, true);
-        }
-
-        /**
-         * Cancel the job by tag.
-         *
-         * @param tag The tag.
-         */
-        void cancel(String tag) {
-            removeJob(tag);
-        }
-
-        /**
-         * Removes a persisiting job.
-         *
-         * @param tag The tag.
-         */
-        void removePersistJob(String tag) {
-            mChecker.removePersistJobWithTag(tag);
-        }
-
-        /**
-         * Stop the service and reset all the variables.
-         */
-        void stopAndReset() {
-            cleanUpAll();
-        }
-
-        /**
-         * Sets the thread manager.
-         *
-         * @param threadManager The thread manager.
-         */
-        void threadManager(@NonNull HaloThreadManager threadManager) {
-            mThreadManager = threadManager;
-        }
-
     }
 
     /**
