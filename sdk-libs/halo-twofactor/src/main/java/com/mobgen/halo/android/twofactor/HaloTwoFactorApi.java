@@ -129,9 +129,11 @@ public class HaloTwoFactorApi extends HaloPluginApi {
     public void release(){
         if(twoFactorNotification!=null) {
             twoFactorNotification.unsubscribe();
+            twoFactorNotification = null;
         }
         if(twoFactorSMS!=null) {
             twoFactorSMS.unsubscribe();
+            twoFactorSMS = null;
         }
     }
 

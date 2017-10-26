@@ -87,6 +87,17 @@ public class HaloTwoFactorApiTest extends HaloRobolectricTest {
     }
 
     @Test
+    public void thatCanRealeaseResourceAndUnsusbcribeFromReceiversMultipleTimes() {
+        Intent smsIntent = givenAReceivedSMSErroneousIntent();
+        HaloTwoFactorApi haloTwoFactorApi = givenAHaloTwoFactorApi(mHalo,mHaloNotificationApi);
+        haloTwoFactorApi.listenTwoFactorAttempt(givenATwoFactorAttemptListenerForNotifications(mCallbackFlag));
+        haloTwoFactorApi.release();
+        haloTwoFactorApi.release();
+        mHalo.context().sendBroadcast(smsIntent);
+        assertThat(mCallbackFlag.isFlagged()).isFalse();
+    }
+
+    @Test
     public void thatListenToPushNotificationsUpdates() throws NoSuchFieldException, IllegalAccessException {
         RemoteMessage notification = givenANotification(withTwoFactorData());
         HaloTwoFactorApi haloTwoFactorApi = givenAHaloTwoFactorApiForNotifications(mHalo,mHaloNotificationApi);
