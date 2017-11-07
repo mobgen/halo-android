@@ -101,7 +101,6 @@ public class HaloSegmentationTag implements Comparable<HaloSegmentationTag>, Par
         if(isMarket){
             mTagType = "000000000000000000000003";
             mId = HaloMarket.idFromMarket(name);
-            mValue = null;
         }
     }
 
