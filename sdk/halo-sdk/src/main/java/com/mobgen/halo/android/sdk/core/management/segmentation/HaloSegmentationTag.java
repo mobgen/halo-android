@@ -100,7 +100,7 @@ public class HaloSegmentationTag implements Comparable<HaloSegmentationTag>, Par
         }
         if(isMarket){
             mTagType = "000000000000000000000003";
-            mId = (String) value;
+            mId = HaloMarket.idFromMarket(name);
             mValue = null;
         }
     }
@@ -123,9 +123,10 @@ public class HaloSegmentationTag implements Comparable<HaloSegmentationTag>, Par
      * @param name  The name for the tag.
      * @return The segmentation tag.
      */
+    @Api(2.41)
     @NonNull
-    protected static HaloSegmentationTag segmentMarketTag(@HaloMarket.MarketDefinition String name) {
-        return new HaloSegmentationTag(name, HaloMarket.idFromMarket(name), false, true);
+    public static HaloSegmentationTag segmentMarketTag(@HaloMarket.MarketDefinition String name) {
+        return new HaloSegmentationTag(name, null, false, true);
     }
 
     /**

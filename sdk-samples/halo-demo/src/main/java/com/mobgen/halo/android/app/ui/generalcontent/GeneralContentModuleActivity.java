@@ -20,7 +20,9 @@ import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.Toast;
 
 import com.mobgen.halo.android.app.R;
@@ -37,16 +39,23 @@ import com.mobgen.halo.android.framework.toolbox.data.CallbackV2;
 import com.mobgen.halo.android.framework.toolbox.data.Data;
 import com.mobgen.halo.android.framework.toolbox.data.HaloResultV2;
 import com.mobgen.halo.android.framework.toolbox.data.HaloStatus;
+import com.mobgen.halo.android.framework.toolbox.threading.Threading;
+import com.mobgen.halo.android.sdk.api.Halo;
+import com.mobgen.halo.android.sdk.core.management.HaloManagerApi;
+import com.mobgen.halo.android.sdk.core.management.models.Device;
 import com.mobgen.halo.android.sdk.core.management.models.HaloModule;
+import com.mobgen.halo.android.sdk.core.management.segmentation.HaloMarket;
+import com.mobgen.halo.android.sdk.core.management.segmentation.HaloSegmentationTag;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+
+import static com.mobgen.halo.android.content.models.SearchQuery.TOTAL_MATCH;
 
 /**
  * Activity that displays a list of the elements of a given module.
@@ -78,6 +87,11 @@ public class GeneralContentModuleActivity extends MobgenHaloActivity implements 
      * Bundle name for perfom operations
      */
     private static final String BUNDLE_PERFOM_OPERATIONS = "bundle_perfom_operations";
+
+    /**
+     * Bundle name for market segmentation
+     */
+    private static final String BUNDLE_MARKET_SEGMENTATION = "bundle_market_segmentation";
 
     /**
      * General content module that will be displayed.
@@ -142,6 +156,17 @@ public class GeneralContentModuleActivity extends MobgenHaloActivity implements 
     private Boolean closeButtonReset = false;
 
     /**
+     * Default market to perfom operations
+     */
+    @HaloMarket.MarketDefinition
+    private String mDefaultMarket;
+
+    /**
+     * List of markets
+     */
+    List<HaloSegmentationTag> mMarkets = new ArrayList<>();
+
+    /**
      * Factory method to start this activity.
      *
      * @param context The context to start the activity.
@@ -173,6 +198,21 @@ public class GeneralContentModuleActivity extends MobgenHaloActivity implements 
     /**
      * Factory method to start new instance of this activity.
      *
+     * @param context       The context to start the activity.
+     * @param defaultMarket The default market to perform the search
+     */
+    public static void start(Context context, String moduleName, @HaloMarket.MarketDefinition String defaultMarket) {
+        Intent intent = new Intent(context, GeneralContentModuleActivity.class);
+        Bundle extras = new Bundle();
+        extras.putString(BUNDLE_MARKET_SEGMENTATION, defaultMarket);
+        extras.putString(BUNDLE_ARGUMENT_MODULE_NAME, moduleName);
+        intent.putExtras(extras);
+        context.startActivity(intent);
+    }
+
+    /**
+     * Factory method to start new instance of this activity.
+     *
      * @param context    The context to start the activity.
      * @param moduleName The module name.
      * @return
@@ -192,6 +232,8 @@ public class GeneralContentModuleActivity extends MobgenHaloActivity implements 
             Bundle extras = getIntent().getExtras();
             mModule = extras.getParcelable(BUNDLE_ARGUMENT_MODULE);
             mModuleName = getIntent().getExtras().getString(BUNDLE_ARGUMENT_MODULE_NAME);
+            mDefaultMarket = getIntent().getExtras().getString(BUNDLE_MARKET_SEGMENTATION);
+            mMarkets.add(HaloSegmentationTag.segmentMarketTag(mDefaultMarket));
         }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.generic_recycler_refresh);
@@ -270,10 +312,23 @@ public class GeneralContentModuleActivity extends MobgenHaloActivity implements 
     public void listGeneralContentModuleData(final String moduleName) {
         if (moduleName != null) {
             ViewUtils.refreshing(mSwipeRefreshLayout, true);
-            SearchQuery options = SearchQueryBuilderFactory.getPublishedItemsByName(moduleName, moduleName, mSearchQuery)
-                    .onePage(true)
-                    .segmentWithDevice()
-                    .build();
+            SearchQuery options;
+            if (mDefaultMarket != null) {
+                HaloSegmentationTag[] marketTags = new HaloSegmentationTag[mMarkets.size()];
+                for(int i=0;i<mMarkets.size();i++){
+                    marketTags[i] = mMarkets.get(i);
+                }
+                options = SearchQueryBuilderFactory.getPublishedItemsByName(moduleName, moduleName, mSearchQuery)
+                        .tags(marketTags)
+                        .onePage(true)
+                        .segmentWithDevice()
+                        .build();
+            } else {
+                options = SearchQueryBuilderFactory.getPublishedItemsByName(moduleName, moduleName, mSearchQuery)
+                        .onePage(true)
+                        .segmentWithDevice()
+                        .build();
+            }
             HaloContentApi.with(MobgenHaloApplication.halo())
                     .search(Data.NETWORK_AND_STORAGE, options)
                     .asContent()
@@ -467,72 +522,76 @@ public class GeneralContentModuleActivity extends MobgenHaloActivity implements 
 
     @Override
     public boolean onCreateOptionsMenu(final Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_generalcontent_instance_add, menu);
+        if (mDefaultMarket != null) {
+            getMenuInflater().inflate(R.menu.menu_generalcontent_instance_segmentation, menu);
+        } else {
+            getMenuInflater().inflate(R.menu.menu_generalcontent_instance_add, menu);
 
-        final MenuItem searchMenuItem = menu.findItem(R.id.action_search);
-        mSearchView = (SearchView) MenuItemCompat.getActionView(searchMenuItem);
-        mSearchView.setQueryHint(getString(R.string.search_hint));
-        //focus the SearchView
-        if (mSearchQuery != null && !mSearchQuery.isEmpty()) {
-            searchMenuItem.expandActionView();
-            mSearchView.setQuery(mSearchQuery, true);
-            mSearchView.clearFocus();
+            final MenuItem searchMenuItem = menu.findItem(R.id.action_search);
+            mSearchView = (SearchView) MenuItemCompat.getActionView(searchMenuItem);
+            mSearchView.setQueryHint(getString(R.string.search_hint));
+            //focus the SearchView
+            if (mSearchQuery != null && !mSearchQuery.isEmpty()) {
+                searchMenuItem.expandActionView();
+                mSearchView.setQuery(mSearchQuery, true);
+                mSearchView.clearFocus();
+            }
+
+            final View closeButton = mSearchView.findViewById(android.support.v7.appcompat.R.id.search_close_btn);
+            closeButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mSearchQuery = "";
+                    mSearchView.setQuery("", true);
+                    closeButtonReset = true;
+                }
+            });
+
+            MenuItemCompat.setOnActionExpandListener(searchMenuItem, new MenuItemCompat.OnActionExpandListener() {
+                @Override
+                public boolean onMenuItemActionCollapse(MenuItem item) {
+                    if (mSearchQuery == null || mSearchQuery.isEmpty()) {
+                        mSearchQuery = null;
+                        listGeneralContentModuleData(getModuleName());
+                    }
+                    return true;
+                }
+
+                @Override
+                public boolean onMenuItemActionExpand(MenuItem item) {
+                    if (mSearchQuery != null && !mSearchQuery.isEmpty() && mSearchQuery.length() > 2) {
+                        mSearchView.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                mSearchView.setQuery(mSearchQuery, false);
+                            }
+                        });
+                    }
+                    return true;
+                }
+            });
+
+
+            mSearchView.setOnQueryTextListener(new android.support.v7.widget.SearchView.OnQueryTextListener() {
+                @Override
+                public boolean onQueryTextSubmit(String query) {
+                    if (query.length() > 2) {
+                        listGeneralContentModuleData(getModuleName());
+                        mSearchView.clearFocus();
+                    }
+                    return true;
+                }
+
+                @Override
+                public boolean onQueryTextChange(String newText) {
+                    if (!newText.isEmpty() || closeButtonReset) {
+                        mSearchQuery = newText;
+                    }
+                    closeButtonReset = false;
+                    return true;
+                }
+            });
         }
-
-        final View closeButton = mSearchView.findViewById(android.support.v7.appcompat.R.id.search_close_btn);
-        closeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mSearchQuery = "";
-                mSearchView.setQuery("", true);
-                closeButtonReset = true;
-            }
-        });
-
-        MenuItemCompat.setOnActionExpandListener(searchMenuItem, new MenuItemCompat.OnActionExpandListener() {
-            @Override
-            public boolean onMenuItemActionCollapse(MenuItem item) {
-                if (mSearchQuery == null || mSearchQuery.isEmpty()) {
-                    mSearchQuery = null;
-                    listGeneralContentModuleData(getModuleName());
-                }
-                return true;
-            }
-
-            @Override
-            public boolean onMenuItemActionExpand(MenuItem item) {
-                if (mSearchQuery != null && !mSearchQuery.isEmpty() && mSearchQuery.length() > 2) {
-                    mSearchView.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            mSearchView.setQuery(mSearchQuery, false);
-                        }
-                    });
-                }
-                return true;
-            }
-        });
-
-
-        mSearchView.setOnQueryTextListener(new android.support.v7.widget.SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                if (query.length() > 2) {
-                    listGeneralContentModuleData(getModuleName());
-                    mSearchView.clearFocus();
-                }
-                return true;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                if (!newText.isEmpty() || closeButtonReset) {
-                    mSearchQuery = newText;
-                }
-                closeButtonReset = false;
-                return true;
-            }
-        });
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -547,10 +606,47 @@ public class GeneralContentModuleActivity extends MobgenHaloActivity implements 
                 GeneralContentItemActivity.startActivity(this, mHaloContentInstance, mModule.getName(), mAdapter.getStatus(), mContentCreation);
             }
             return true;
+        } else if (item.getItemId() == R.id.action_segmentation) {
+            createSegmentationMarketDialog();
         } else {
             super.onOptionsItemSelected(item);
         }
         return true;
+    }
+
+    private void createSegmentationMarketDialog() {
+        if (mTagDialog != null) mTagDialog.dismiss();
+        final View customView = getLayoutInflater().inflate(R.layout.dialog_segmentation_tag, null);
+
+        final RadioButton rb_allmarkets = (RadioButton) customView.findViewById(R.id.rb_allmarkets);
+        final RadioButton rb_us = (RadioButton) customView.findViewById(R.id.rb_us);
+        final RadioButton rb_spain = (RadioButton) customView.findViewById(R.id.rb_spain);
+        final RadioButton rb_germany = (RadioButton) customView.findViewById(R.id.rb_germany);
+        mTagDialog = new AlertDialog.Builder(this)
+                .setTitle(getString(R.string.menu_segmentation_tag))
+                .setView(customView)
+                .setPositiveButton(R.string.confirm, null).create();
+        mTagDialog.show();
+        mTagDialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //clear market and add selection
+                mMarkets.clear();
+                if (rb_allmarkets.isChecked()) {
+                    mMarkets.add(HaloSegmentationTag.segmentMarketTag(HaloMarket.UNITED_STATES));
+                    mMarkets.add(HaloSegmentationTag.segmentMarketTag(HaloMarket.SPAIN));
+                    mMarkets.add(HaloSegmentationTag.segmentMarketTag(HaloMarket.GERMANY));
+                } else if (rb_us.isChecked()) {
+                    mMarkets.add(HaloSegmentationTag.segmentMarketTag(HaloMarket.UNITED_STATES));
+                } else if (rb_spain.isChecked()) {
+                    mMarkets.add(HaloSegmentationTag.segmentMarketTag(HaloMarket.SPAIN));
+                } else if (rb_germany.isChecked()) {
+                    mMarkets.add(HaloSegmentationTag.segmentMarketTag(HaloMarket.GERMANY));
+                }
+                listGeneralContentModuleData(getModuleName());
+                mTagDialog.dismiss();
+            }
+        });
     }
 
     @Override
