@@ -628,7 +628,7 @@ public class GeneralContentModuleActivity extends MobgenHaloActivity implements 
         } else if (mMarkets.size() == 1 && mMarkets.get(0).getName().equals(HaloMarket.UNITED_STATES)) {
             rb_us.setChecked(true);
         } else if (mMarkets.size() == 1 && mMarkets.get(0).getName().equals(HaloMarket.SPAIN)) {
-            rb_germany.setChecked(true);
+            rb_spain.setChecked(true);
         } else if (mMarkets.size() == 1 && mMarkets.get(0).getName().equals(HaloMarket.GERMANY)) {
             rb_germany.setChecked(true);
         }
