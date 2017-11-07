@@ -315,7 +315,7 @@ public class GeneralContentModuleActivity extends MobgenHaloActivity implements 
             SearchQuery options;
             if (mDefaultMarket != null) {
                 HaloSegmentationTag[] marketTags = new HaloSegmentationTag[mMarkets.size()];
-                for(int i=0;i<mMarkets.size();i++){
+                for (int i = 0; i < mMarkets.size(); i++) {
                     marketTags[i] = mMarkets.get(i);
                 }
                 options = SearchQueryBuilderFactory.getPublishedItemsByName(moduleName, moduleName, mSearchQuery)
@@ -622,6 +622,17 @@ public class GeneralContentModuleActivity extends MobgenHaloActivity implements 
         final RadioButton rb_us = (RadioButton) customView.findViewById(R.id.rb_us);
         final RadioButton rb_spain = (RadioButton) customView.findViewById(R.id.rb_spain);
         final RadioButton rb_germany = (RadioButton) customView.findViewById(R.id.rb_germany);
+
+        if (mMarkets.size() > 1) {
+            rb_allmarkets.setChecked(true);
+        } else if (mMarkets.size() == 1 && mMarkets.get(0).getName().equals(HaloMarket.UNITED_STATES)) {
+            rb_us.setChecked(true);
+        } else if (mMarkets.size() == 1 && mMarkets.get(0).getName().equals(HaloMarket.SPAIN)) {
+            rb_germany.setChecked(true);
+        } else if (mMarkets.size() == 1 && mMarkets.get(0).getName().equals(HaloMarket.GERMANY)) {
+            rb_germany.setChecked(true);
+        }
+
         mTagDialog = new AlertDialog.Builder(this)
                 .setTitle(getString(R.string.menu_segmentation_tag))
                 .setView(customView)
