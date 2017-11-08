@@ -500,15 +500,19 @@ public class GeneralContentModuleActivity extends MobgenHaloActivity implements 
         outState.putParcelableArrayList(BUNDLE_SAVE_MODULE_ITEMS, (ArrayList<? extends Parcelable>) mAdapter.getModuleDataItems());
         outState.putParcelable(BUNDLE_SAVE_MODULE_ITEMS_STATUS, mAdapter.getStatus());
         outState.putParcelable("mHaloContentInstance", mHaloContentInstance);
-        mSearchQuery = mSearchView.getQuery().toString();
-        outState.putString("mSearchView", mSearchQuery);
+        if (mSearchView != null) {
+            mSearchQuery = mSearchView.getQuery().toString();
+            outState.putString("mSearchView", mSearchQuery);
+        }
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         mHaloContentInstance = savedInstanceState.getParcelable("mHaloContentInstance");
-        mSearchQuery = savedInstanceState.getString("mSearchView");
+        if (mSearchView != null) {
+            mSearchQuery = savedInstanceState.getString("mSearchView");
+        }
     }
 
     @Override
