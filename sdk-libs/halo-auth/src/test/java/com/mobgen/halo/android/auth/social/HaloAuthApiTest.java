@@ -39,6 +39,7 @@ import static com.mobgen.halo.android.auth.mock.instrumentation.HaloSocialApiIns
 import static com.mobgen.halo.android.auth.mock.instrumentation.HaloSocialApiInstrument.setFacebookSocialProviderToken;
 import static com.mobgen.halo.android.auth.mock.instrumentation.HaloSocialApiInstrument.setGooglesSocialProviderToken;
 import static com.mobgen.halo.android.auth.mock.instrumentation.HaloSocialApiMock.givenASocialApiWithAllNetworksAvailable;
+import static com.mobgen.halo.android.auth.mock.instrumentation.HaloSocialApiMock.givenASocialApiWithoutRecover;
 import static com.mobgen.halo.android.testing.CallbackFlag.newCallbackFlag;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Matchers.anyInt;
@@ -84,6 +85,20 @@ public class HaloAuthApiTest extends HaloRobolectricTest {
         givenAHaloAccount();
         mHalo.getCore().haloAuthRecover().recoverAccount();
         assertThat(mHaloAuthApi.isSocialNetworkAvailable(HaloAuthApi.SOCIAL_HALO)).isTrue();
+    }
+
+    @Test
+    public void thatCanCheckWhenAccountIsStored() throws SecurityException, IOException {
+        enqueueServerFile(mMockServer, LOGIN_SUCESS);
+        givenAHaloAccount();
+        mHalo.getCore().haloAuthRecover().recoverAccount();
+        assertThat(mHaloAuthApi.isAccountStored()).isTrue();
+    }
+
+    @Test
+    public void thatCanCheckWhenAccountIsNotStored() throws SecurityException, IOException {
+        mHaloAuthApi = givenASocialApiWithoutRecover(mHalo);
+        assertThat(mHaloAuthApi.isAccountStored()).isFalse();
     }
 
     @Test
