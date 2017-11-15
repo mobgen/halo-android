@@ -615,7 +615,7 @@ public class HaloStatus implements Parcelable {
                 builder.append("local ");
                 break;
             case STATUS_INCONSISTENT:
-                builder.append("inconsitent ");
+                builder.append("inconsistent ");
                 break;
         }
         //Error status
