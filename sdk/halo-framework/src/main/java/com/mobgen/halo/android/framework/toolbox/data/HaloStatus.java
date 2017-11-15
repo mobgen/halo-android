@@ -489,7 +489,7 @@ public class HaloStatus implements Parcelable {
          */
         @Api(2.0)
         @NonNull
-        public Builder dataInconsitent(){
+        public Builder dataInconsistent(){
             mDataStatus = STATUS_INCONSISTENT;
             return this;
         }
@@ -518,7 +518,7 @@ public class HaloStatus implements Parcelable {
             if (e != null) {
                 mException = e;
                 mErrorStatus = getStatusFromException(e);
-                dataInconsitent();
+                dataInconsistent();
                 Halog.e(getClass(), "Erroneous status reached. ErrorStatus: " + mErrorStatus + ", message: " + e.getMessage(), e);
             }
             return this;
