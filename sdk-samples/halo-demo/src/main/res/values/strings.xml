@@ -29,6 +29,7 @@
     <string name="modules">Modules</string>
     <string name="addons">Add-ons</string>
     <string name="segmentation">Segmentation</string>
+    <string name="market_segmentation">Market Segmentation</string>
     <string name="analytics_addon">Analytics</string>
     <string name="social_login_addon">Social login</string>
     <string name="app_name">Halo</string>
@@ -51,6 +52,11 @@
     <string name="add_tag_error">You have to provide a name for the tag</string>
     <string name="menu_add_segmentation_tag">Add tag</string>
     <string name="override_tag_key">Override tag key</string>
+    <string name="menu_segmentation_tag">Select your market</string>
+    <string name="all_markets">All markets</string>
+    <string name="us_market">United States</string>
+    <string name="spain_market">Spain</string>
+    <string name="germany_market">Germany</string>
 
     <!-- Icons -->
     <string name="icon_settings">{fa-cog}</string>

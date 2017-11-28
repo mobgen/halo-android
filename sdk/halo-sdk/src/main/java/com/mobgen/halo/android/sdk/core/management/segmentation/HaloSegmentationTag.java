@@ -5,6 +5,7 @@ import android.os.Parcelable;
 import android.support.annotation.Keep;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
@@ -68,7 +69,7 @@ public class HaloSegmentationTag implements Comparable<HaloSegmentationTag>, Par
      */
     @Api(1.0)
     public HaloSegmentationTag(String name, Serializable value) {
-        this(name, value, false);
+        this(name, value, false, false);
     }
 
     /**
@@ -89,12 +90,17 @@ public class HaloSegmentationTag implements Comparable<HaloSegmentationTag>, Par
      * @param name     The name of the tag.
      * @param value    The value of the tag.
      * @param isDevice True if it is a system tag.
+     * @param isMarket True if it is a market tag.
      */
-    private HaloSegmentationTag(String name, Serializable value, boolean isDevice) {
+    private HaloSegmentationTag(String name, Serializable value, boolean isDevice, boolean isMarket) {
         mTagType = isDevice ? "000000000000000000000001" : "000000000000000000000002";
         mName = name;
         if (value != null) {
             mValue = value.toString();
+        }
+        if(isMarket){
+            mTagType = "000000000000000000000003";
+            mId = HaloMarket.idFromMarket(name);
         }
     }
 
@@ -107,7 +113,19 @@ public class HaloSegmentationTag implements Comparable<HaloSegmentationTag>, Par
      */
     @NonNull
     protected static HaloSegmentationTag createDeviceTag(String name, Serializable value) {
-        return new HaloSegmentationTag(name, value, true);
+        return new HaloSegmentationTag(name, value, true, false);
+    }
+
+    /**
+     * Creates a market tag.
+     *
+     * @param name  The name for the tag.
+     * @return The segmentation tag.
+     */
+    @Api(2.41)
+    @NonNull
+    public static HaloSegmentationTag segmentMarketTag(@HaloMarket.MarketDefinition String name) {
+        return new HaloSegmentationTag(name, null, false, true);
     }
 
     /**

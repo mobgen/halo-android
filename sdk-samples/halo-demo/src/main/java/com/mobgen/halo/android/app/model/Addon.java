@@ -22,7 +22,12 @@ public class Addon {
         /**
          * Social login addon.
          */
-        SOCIAL_LOGIN(R.string.social_login_addon);
+        SOCIAL_LOGIN(R.string.social_login_addon),
+
+        /**
+         * Market Segmentation
+         */
+        MARKET_SEGMENTATION(R.string.market_segmentation);
 
         /**
          * Resource with the name of the type.
