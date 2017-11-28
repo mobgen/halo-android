@@ -39,7 +39,7 @@ Make sure to update the version of the plugin or/and the sdk in the gradle.prope
 ## LICENSE ##
 ---------------
 ```
-Copyright 2016 MOBGEN
+Open Source 2016-2017 MOBGEN
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
