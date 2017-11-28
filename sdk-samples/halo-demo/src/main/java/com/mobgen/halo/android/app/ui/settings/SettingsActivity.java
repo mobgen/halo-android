@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.mobgen.halo.android.app.BuildConfig;
 import com.mobgen.halo.android.app.R;
 import com.mobgen.halo.android.app.ui.MobgenHaloActivity;
@@ -28,6 +29,8 @@ import com.mobgen.halo.android.sdk.api.HaloApplication;
 import com.mobgen.halo.android.sdk.core.management.models.Credentials;
 import com.mobgen.halo.android.sdk.core.management.models.Device;
 import com.mobgen.halo.android.translations.spec.HaloTranslationsContract;
+
+import java.io.IOException;
 
 /**
  * The settings activity for halo.
@@ -148,6 +151,18 @@ public class SettingsActivity extends MobgenHaloActivity implements View.OnClick
                                         storageTranslation.db().deleteDatabase();
                                         storageTranslation.prefs().edit().clear().commit();
                                     }
+                                    //delete instance on firebase afte changing environment
+                                    new Thread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            try {
+                                                FirebaseInstanceId.getInstance().deleteInstanceId();
+                                            } catch (IOException e) {
+                                                e.printStackTrace();
+                                            }
+                                        }
+                                    }).start();
+                                    //uninstall halo
                                     Halo.instance().uninstall();
                                     ((HaloApplication) getApplication()).installHalo();
                                     ModulesActivity.start(SettingsActivity.this, true);
