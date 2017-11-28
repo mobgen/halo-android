@@ -213,6 +213,7 @@ public class ModulesActivity extends MobgenHaloActivity {
             @Override
             public void onTwoFactorReceived(@NonNull TwoFactorCode twoFactorCode) {
                 Toast.makeText(ModulesActivity.this, "This is the code received: " + twoFactorCode.getCode() + " from a: " + twoFactorCode.getIssuer(), Toast.LENGTH_LONG).show();
+                MobgenHaloApplication.getTwoFactorApi().release();
             }
         });
     }
