@@ -35,6 +35,14 @@ public class HaloSegmentationTagTest extends HaloRobolectricTest {
         assertThat(tag.getValue()).isEqualTo("dummyData");
     }
 
+    @Test
+    public void thatCanCreateAMarketSegmentationTag() {
+        HaloSegmentationTag tag = HaloSegmentationTag.segmentMarketTag(HaloMarket.ÅLAND_ISLANDS);
+        assertThat(tag.mTagType).isEqualTo("000000000000000000000003");
+        assertThat(tag.mName).isEqualTo("Åland Islands");
+        assertThat(tag.mId).isEqualTo(HaloMarket.idFromMarket(HaloMarket.ÅLAND_ISLANDS));
+    }
+
     private static HaloSegmentationTag givenATagFromParcelableCreator(HaloSegmentationTag tag) {
         Parcel dest = Parcel.obtain();
         tag.writeToParcel(dest, 0);

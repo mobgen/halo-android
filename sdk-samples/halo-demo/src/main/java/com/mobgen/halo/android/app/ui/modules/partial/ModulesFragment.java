@@ -50,6 +50,7 @@ import com.mobgen.halo.android.sdk.api.Halo;
 import com.mobgen.halo.android.sdk.core.management.HaloManagerApi;
 import com.mobgen.halo.android.sdk.core.management.models.HaloModule;
 import com.mobgen.halo.android.sdk.core.management.models.HaloModuleQuery;
+import com.mobgen.halo.android.sdk.core.management.segmentation.HaloMarket;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -149,6 +150,7 @@ public class ModulesFragment extends MobgenHaloFragment implements SwipeRefreshL
         List<Addon> addons = new ArrayList<>();
         addons.addAll(Arrays.asList(
                 new Addon(Addon.AddonType.SEGMENTATION),
+                new Addon(Addon.AddonType.MARKET_SEGMENTATION),
                 new Addon(Addon.AddonType.ANALYTICS),
                 new Addon(Addon.AddonType.SOCIAL_LOGIN)
         ));
@@ -236,9 +238,9 @@ public class ModulesFragment extends MobgenHaloFragment implements SwipeRefreshL
         refreshModules();
     }
 
-    private String[] getHaloModulesNames(List<HaloModule> modules){
+    private String[] getHaloModulesNames(List<HaloModule> modules) {
         String[] modulesArray = new String[modules.size()];
-        for(int i=0; i<modules.size(); i ++) {
+        for (int i = 0; i < modules.size(); i++) {
             modulesArray[i] = modules.get(i).getName();
         }
         return modulesArray;
@@ -260,7 +262,9 @@ public class ModulesFragment extends MobgenHaloFragment implements SwipeRefreshL
             TranslationsActivity.start(getContext());
         } else if (module.getName().equalsIgnoreCase("load tests")) {
             LoadTestsActivity.start(getContext(), module.getInternalId());
-        } else if (module.isSingleItemInstance()) {
+        } else if (module.getName().equalsIgnoreCase("Market Segmentation")) {
+            GeneralContentModuleActivity.start(getContext(), "Market Segmentation", HaloMarket.UNITED_STATES);
+        }else if (module.isSingleItemInstance()) {
             HaloResultV2<HaloContentInstance> instance = mSingleInstanceItemMap.get(module.getInternalId());
             if (instance != null) {
                 GeneralContentItemActivity.startActivity(getContext(), instance.data(), module.getName(), instance.status(), false);
@@ -284,6 +288,8 @@ public class ModulesFragment extends MobgenHaloFragment implements SwipeRefreshL
     public void onAddonSelected(Addon addon) {
         if (addon.getType() == Addon.AddonType.SEGMENTATION) {
             SegmentationActivity.start(getContext());
+        } else if (addon.getType() == Addon.AddonType.MARKET_SEGMENTATION) {
+            GeneralContentModuleActivity.start(getContext(), "Market Segmentation", HaloMarket.UNITED_STATES);
         } else if (addon.getType() == Addon.AddonType.ANALYTICS) {
             AnalyticsActivity.startActivity(getContext());
         } else if (addon.getType() == Addon.AddonType.SOCIAL_LOGIN) {

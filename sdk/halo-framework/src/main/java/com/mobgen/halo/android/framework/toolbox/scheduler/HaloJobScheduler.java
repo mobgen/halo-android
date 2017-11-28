@@ -33,7 +33,7 @@ public class HaloJobScheduler {
     /**
      * Binder for the service.
      */
-    private HaloSchedulerService.HaloSchedulerBinder mServiceBinder;
+    private IHaloSchedulerServiceBinder mServiceBinder;
     /**
      * The application context.
      */
@@ -143,7 +143,7 @@ public class HaloJobScheduler {
 
         @Override
         public void onServiceConnected(@NonNull ComponentName name, @NonNull IBinder service) {
-            mServiceBinder = (HaloSchedulerService.HaloSchedulerBinder) service;
+            mServiceBinder = IHaloSchedulerServiceBinder.Stub.asInterface(service);
             mServiceBinder.threadManager(mThreadManager);
             if (mStopAndResetPending) {
                 mServiceBinder.stopAndReset();
@@ -160,6 +160,7 @@ public class HaloJobScheduler {
 
         @Override
         public void onServiceDisconnected(@NonNull ComponentName name) {
+
         }
     }
 }

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="@dimen/default_padding">
+
+    <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RadioButton
+            android:id="@+id/rb_allmarkets"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="@string/all_markets" />
+
+        <RadioButton
+            android:id="@+id/rb_us"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="@string/us_market" />
+
+        <RadioButton
+            android:id="@+id/rb_spain"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="@string/spain_market" />
+
+
+        <RadioButton
+            android:id="@+id/rb_germany"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="@string/germany_market" />
+
+    </RadioGroup>
+
+</LinearLayout>
