@@ -211,17 +211,14 @@ public class HaloAuthApi extends HaloPluginApi {
     }
 
     /**
-     * Verify is a account is stored
+     * Verify if an account is stored
      */
     @Keep
     @Api(2.2)
     @NonNull
     public boolean isAccountStored() {
-        if (mAccountManagerHelper.recoverAccount() != null) {
-            return true;
-        } else {
-            return false;
-        }
+        return mAccountManagerHelper != null &&
+                mAccountManagerHelper.recoverAccount() != null;
     }
 
     /**
@@ -254,7 +251,6 @@ public class HaloAuthApi extends HaloPluginApi {
 
     /**
      * Get the current pocket api to perfom operations with the identified user data.
-     *
      */
     @Keep
     @Api(2.4)

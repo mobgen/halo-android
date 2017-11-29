@@ -35,4 +35,10 @@ public class HaloSocialApiMock {
                 .withFacebook()
                 .build();
     }
+
+    public static HaloAuthApi givenASocialApiWithoutRecover(Halo halo) {
+        return HaloAuthApi.with(halo)
+                .withHalo()
+                .build();
+    }
 }

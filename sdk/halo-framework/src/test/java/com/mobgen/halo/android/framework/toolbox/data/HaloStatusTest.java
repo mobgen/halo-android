@@ -38,7 +38,7 @@ public class HaloStatusTest extends HaloRobolectricTest {
         assertThat(statusModified.isInconsistent()).isTrue();
         assertThat(statusModified.isNetworkError()).isTrue();
         assertThat(statusModified.getExceptionMessage()).contains("server");
-        assertThat(statusModified.toString()).contains("inconsitent");
+        assertThat(statusModified.toString()).contains("inconsistent");
         assertThat(statusModified.toString()).contains("internal");
     }
 
@@ -50,7 +50,7 @@ public class HaloStatusTest extends HaloRobolectricTest {
         assertThat(status.isSecurityError()).isTrue();
         assertThat(status.isInconsistent()).isTrue();
         assertThat(status.isNetworkError()).isTrue();
-        assertThat(status.toString()).contains("inconsitent");
+        assertThat(status.toString()).contains("inconsistent");
         assertThat(status.toString()).contains("security");
     }
 
@@ -62,7 +62,7 @@ public class HaloStatusTest extends HaloRobolectricTest {
         assertThat(status.isNotFoundException()).isTrue();
         assertThat(status.isInconsistent()).isTrue();
         assertThat(status.isNetworkError()).isTrue();
-        assertThat(status.toString()).contains("inconsitent");
+        assertThat(status.toString()).contains("inconsistent");
         assertThat(status.toString()).contains("found");
     }
 
@@ -85,7 +85,7 @@ public class HaloStatusTest extends HaloRobolectricTest {
         assertThat(status.isGeneralStorageError()).isTrue();
         assertThat(status.isInconsistent()).isTrue();
         assertThat(status.isStorageError()).isTrue();
-        assertThat(status.toString()).contains("inconsitent");
+        assertThat(status.toString()).contains("inconsistent");
         assertThat(status.toString()).contains("storage");
     }
 
@@ -97,7 +97,7 @@ public class HaloStatusTest extends HaloRobolectricTest {
         assertThat(status.isNetworkParseError()).isTrue();
         assertThat(status.isInconsistent()).isTrue();
         assertThat(status.isNetworkParseError()).isTrue();
-        assertThat(status.toString()).contains("inconsitent");
+        assertThat(status.toString()).contains("inconsistent");
         assertThat(status.toString()).contains("parsing");
     }
 
@@ -109,7 +109,7 @@ public class HaloStatusTest extends HaloRobolectricTest {
         assertThat(status.isStorageParseError()).isTrue();
         assertThat(status.isInconsistent()).isTrue();
         assertThat(status.isStorageError()).isTrue();
-        assertThat(status.toString()).contains("inconsitent");
+        assertThat(status.toString()).contains("inconsistent");
         assertThat(status.toString()).contains("parsing");
     }
 
@@ -120,7 +120,7 @@ public class HaloStatusTest extends HaloRobolectricTest {
         assertThat(status.errorStatus()).isEqualTo(HaloStatus.STATUS_INTEGRATION_ERROR);
         assertThat(status.isIntegrationError()).isTrue();
         assertThat(status.isInconsistent()).isTrue();
-        assertThat(status.toString()).contains("inconsitent");
+        assertThat(status.toString()).contains("inconsistent");
         assertThat(status.toString()).contains("integration");
     }
 
@@ -131,7 +131,7 @@ public class HaloStatusTest extends HaloRobolectricTest {
         assertThat(status.errorStatus()).isEqualTo(HaloStatus.STATUS_CANCELED);
         assertThat(status.isCanceled()).isTrue();
         assertThat(status.isInconsistent()).isTrue();
-        assertThat(status.toString()).contains("inconsitent");
+        assertThat(status.toString()).contains("inconsistent");
         assertThat(status.toString()).contains("canceled");
     }
 
