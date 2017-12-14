@@ -18,9 +18,9 @@ android {
 }
 
 dependencies {
-    compile "com.mobgen.halo.android:halo-sdk:${rootProject.ext.haloVersion}"
-    compile "com.google.firebase:firebase-core:${rootProject.ext.firebaseVersion}"
-    testCompile 'junit:junit:4.12'
+    api "com.mobgen.halo.android:halo-sdk:${rootProject.ext.haloVersion}"
+    api "com.google.firebase:firebase-core:${rootProject.ext.firebaseVersion}"
+    testApi 'junit:junit:4.12'
 }
 
 
@@ -39,9 +39,22 @@ task javadoc(type: Javadoc) {
     source = android.sourceSets.main.java.srcDirs
 }
 
+tasks.withType(Javadoc) {
+    options.addStringOption('encoding', 'UTF-8')
+}
+
 task javadocJar(type: Jar, dependsOn: "documentationRelease") {
     from javadoc.destinationDir
     classifier = 'javadoc'
+}
+
+task prepareReleaseDependencies {
+    println ':halo-analytics:prepareReleaseDependencies'
+}
+
+artifacts {
+    archives sourcesJar
+    archives javadocJar
 }
 
 grill {

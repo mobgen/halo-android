@@ -1,9 +1,17 @@
 subprojects {
     repositories {
         jcenter()
+        google()
         mavenCentral()
         mavenLocal()
         maven {url "https://clojars.org/repo/"}
+    }
+}
+
+allprojects {
+    repositories {
+        jcenter()
+        google()
     }
 }
 
@@ -22,18 +30,18 @@ ext {
     ignoreTestFailures = rootProject.hasProperty("ignoreTestFailures")
 
     //Android config
-    compileSdkVersion = 25
-    buildToolsVersion = '25.0.3'
+    compileSdkVersion = 26
+    buildToolsVersion = '26.0.2'
     minSdkVersion = 15
     minLocationSdkVersion = 21
     targetSdkVersion = 25
 
     //Google
-    appcompatVersion = '25.3.1'
-    firebaseVersion = '11.0.4'
+    appcompatVersion = '27.+'
+    firebaseVersion = '11.6.2'
 
     //Facebook
-    facebookSdkVersion = '4.13.1'
+    facebookSdkVersion = '4.27.0'
 
     //Picasso
     picassoVersion = '2.5.2'
@@ -55,7 +63,7 @@ ext {
     mockWebServerVersion = '3.4.1'
     openGLTestLibrary = 'gl1.1-android-2.1_r1'
     mockitoLibrary = '1.10.19'
-    robolectricLibrary = '3.1.2'
+    robolectricLibrary = '3.5.1'
     intellijAnnotations = '5.1'
 
     //Jacoco

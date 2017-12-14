@@ -1,5 +1,4 @@
 apply plugin: 'com.android.library'
-apply plugin: 'com.neenbedankt.android-apt'
 apply plugin: 'grill'
 apply plugin: 'com.getkeepsafe.dexcount'
 apply plugin: 'jacoco'
@@ -48,14 +47,14 @@ android {
 }
 
 dependencies {
-    compile "com.mobgen.halo.android:halo-sdk:${rootProject.ext.haloVersion}"
-    compile "com.google.firebase:firebase-messaging:${rootProject.ext.firebaseVersion}"
-    provided "com.github.bumptech.glide:glide:${rootProject.ext.glideVersion}"
-    provided "com.squareup.picasso:picasso:${rootProject.ext.picassoVersion}"
-    apt "com.bluelinelabs:logansquare-compiler:${rootProject.ext.loganSquareVersion}"
+    api "com.mobgen.halo.android:halo-sdk:${rootProject.ext.haloVersion}"
+    api "com.google.firebase:firebase-messaging:${rootProject.ext.firebaseVersion}"
+    compileOnly "com.github.bumptech.glide:glide:${rootProject.ext.glideVersion}"
+    compileOnly "com.squareup.picasso:picasso:${rootProject.ext.picassoVersion}"
+    annotationProcessor "com.bluelinelabs:logansquare-compiler:${rootProject.ext.loganSquareVersion}"
 
-    testApt "com.bluelinelabs:logansquare-compiler:${rootProject.ext.loganSquareVersion}"
-    testCompile "com.mobgen.halo.android:halo-testing:${rootProject.ext.haloVersion}"
+    testAnnotationProcessor "com.bluelinelabs:logansquare-compiler:${rootProject.ext.loganSquareVersion}"
+    testApi "com.mobgen.halo.android:halo-testing:${rootProject.ext.haloVersion}"
 }
 
 /**
@@ -73,9 +72,22 @@ task javadoc(type: Javadoc) {
     source = android.sourceSets.main.java.srcDirs
 }
 
+tasks.withType(Javadoc) {
+    options.addStringOption('encoding', 'UTF-8')
+}
+
 task javadocJar(type: Jar, dependsOn: "documentationRelease") {
     from javadoc.destinationDir
     classifier = 'javadoc'
+}
+
+task prepareReleaseDependencies {
+    println ':halo-notifications:prepareReleaseDependencies'
+}
+
+artifacts {
+    archives sourcesJar
+    archives javadocJar
 }
 
 grill {

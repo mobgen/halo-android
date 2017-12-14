@@ -1,15 +1,16 @@
 repositories {
     jcenter()
+    google()
     mavenLocal()
     maven { url "https://plugins.gradle.org/m2/" }
 }
 
 dependencies {
-    classpath 'com.android.tools.build:gradle:2.3.3' //Android tools
+    classpath 'com.android.tools.build:gradle:3.0.1' //Android tools
     classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3' // Bintray to publish
     classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
     classpath 'com.github.droidpl:grillplugin:1.1.6' // Grill helper
-    classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'// Code generation
     classpath 'com.getkeepsafe.dexcount:dexcount-gradle-plugin:0.5.6'
     classpath 'ch.netzwerg:gradle-release-plugin:1.2.0' // Release plugin
+    classpath 'org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.5'
 }

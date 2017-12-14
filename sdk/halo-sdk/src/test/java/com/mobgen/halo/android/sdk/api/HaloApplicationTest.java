@@ -10,15 +10,15 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.RobolectricGradleTestRunner;
+import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
 import static com.mobgen.halo.android.sdk.mock.HaloMock.givenAHaloInstaller;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
-@RunWith(RobolectricGradleTestRunner.class)
-@Config(constants = BuildConfig.class, application = HaloApplicationMock.class, sdk = 21)
+@RunWith(RobolectricTestRunner.class)
+@Config(constants = BuildConfig.class, application = HaloApplicationMock.class, sdk = 23)
 public class HaloApplicationTest extends HaloRobolectricTest {
 
     private HaloApplicationMock mMockApplication;

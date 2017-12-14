@@ -20,13 +20,14 @@ tasks.whenTaskAdded { task ->
     }
 }
 
+
 dependencies {
-    compile "com.intellij:annotations:${rootProject.ext.intellijAnnotations}"
-    compile "junit:junit:${rootProject.ext.jUnitVersion}"
-    compile "org.robolectric:robolectric:${rootProject.ext.robolectricLibrary}"
-    compile "org.mockito:mockito-core:${rootProject.ext.mockitoLibrary}"
-    compile "org.assertj:assertj-core:${rootProject.ext.assertJVersion}"
-    compile "com.squareup.okhttp3:mockwebserver:${rootProject.ext.mockWebServerVersion}"
+    api "com.intellij:annotations:${rootProject.ext.intellijAnnotations}"
+    api "junit:junit:${rootProject.ext.jUnitVersion}"
+    api "org.robolectric:robolectric:${rootProject.ext.robolectricLibrary}"
+    api "org.mockito:mockito-core:${rootProject.ext.mockitoLibrary}"
+    api "org.assertj:assertj-core:${rootProject.ext.assertJVersion}"
+    api "com.squareup.okhttp3:mockwebserver:${rootProject.ext.mockWebServerVersion}"
 }
 
 /**
@@ -48,6 +49,10 @@ task javadoc(type: Javadoc) {
 task javadocJar(type: Jar, dependsOn: "documentationRelease") {
     from javadoc.destinationDir
     classifier = 'javadoc'
+}
+
+task prepareReleaseDependencies {
+    println ':halo-testing:prepareReleaseDependencies'
 }
 
 grill {

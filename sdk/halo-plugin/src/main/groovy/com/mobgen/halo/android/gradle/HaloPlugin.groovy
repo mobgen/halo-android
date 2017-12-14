@@ -1,6 +1,5 @@
 package com.mobgen.halo.android.gradle
 
-import com.neenbedankt.gradle.androidapt.AndroidAptPlugin
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.ProjectConfigurationException
@@ -29,10 +28,6 @@ public class HaloPlugin implements Plugin<Project> {
         this.project = project
         if (!Utils.isAndroidPlugin(project)) {
             throw new ProjectConfigurationException("You cannot apply the Halo plugin in a non android project.", null)
-        }
-
-        if (!project.plugins.hasPlugin(AndroidAptPlugin.class)) {
-            project.apply(plugin: AndroidAptPlugin)
         }
 
         //Create the configuration
