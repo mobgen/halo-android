@@ -8,13 +8,6 @@ subprojects {
     }
 }
 
-allprojects {
-    repositories {
-        jcenter()
-        google()
-    }
-}
-
 def getAppVersionForSonar() {
     if (System.env.bamboo_buildNumber != null) {
         return "BAMBOO-${System.env.bamboo_buildNumber}"
