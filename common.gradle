@@ -25,7 +25,7 @@ ext {
     //Android config
     compileSdkVersion = 26
     buildToolsVersion = '26.0.2'
-    minSdkVersion = 15
+    minSdkVersion = 21
     minLocationSdkVersion = 21
     targetSdkVersion = 25
 
