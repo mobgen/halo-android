@@ -10,7 +10,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:270833877774:android:5c2c6dfeca983a7b",
         "android_client_info": {
-          "package_name": "asd"
+          "package_name": "com.mobgen.halo.android.app"
         }
       },
       "oauth_client": [

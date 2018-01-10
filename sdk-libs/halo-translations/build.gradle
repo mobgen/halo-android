@@ -75,8 +75,10 @@ task javadocJar(type: Jar) {
     classifier = 'javadoc'
 }
 
-task prepareReleaseDependencies {
-    println ':halo-translations:prepareReleaseDependencies'
+android.variantFilter { variant ->
+    if(!project.hasProperty("prepare${variant.name.capitalize()}Dependencies")) {
+        task "prepare${variant.name.capitalize()}Dependencies"()
+    }
 }
 
 artifacts {

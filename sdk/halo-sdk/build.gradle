@@ -55,7 +55,6 @@ dependencies {
 }
 
 
-
 /**
  * Distribution script
  */
@@ -74,7 +73,6 @@ task javadoc(type: Javadoc) {
 
 tasks.withType(Javadoc) {
     options.addStringOption('encoding', 'UTF-8')
-    //options.addStringOption('X','Dignore.symbol.file')
 }
 
 task javadocJar(type: Jar, dependsOn: "documentationRelease") {
@@ -82,8 +80,15 @@ task javadocJar(type: Jar, dependsOn: "documentationRelease") {
     classifier = 'javadoc'
 }
 
-task prepareReleaseDependencies {
-    println ':halo-sdk:prepareReleaseDependencies'
+android.variantFilter { variant ->
+    if(!project.hasProperty("prepare${variant.name.capitalize()}Dependencies")) {
+        task "prepare${variant.name.capitalize()}Dependencies"()
+    }
+}
+
+artifacts {
+    archives sourcesJar
+    archives javadocJar
 }
 
 grill {
