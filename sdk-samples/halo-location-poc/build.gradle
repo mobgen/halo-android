@@ -67,16 +67,16 @@ repositories {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile "com.android.support:recyclerview-v7:${rootProject.ext.appcompatVersion}"
-    compile "com.android.support:appcompat-v7:${rootProject.ext.appcompatVersion}"
-    compile "com.android.support:design:${rootProject.ext.appcompatVersion}"
-    compile "com.google.android.gms:play-services:${rootProject.ext.firebaseVersion}"
-    compile "com.squareup.picasso:picasso:${rootProject.ext.picassoVersion}"
-    compile "com.google.maps.android:android-maps-utils:0.4+"
-    compile "com.sothree.slidinguppanel:library:3.3.1"
-    compile "com.android.support:cardview-v7:${rootProject.ext.appcompatVersion}"
-    testCompile "junit:junit:4.12"
+    api fileTree(dir: 'libs', include: ['*.jar'])
+    api "com.android.support:recyclerview-v7:${rootProject.ext.appcompatVersion}"
+    api "com.android.support:appcompat-v7:${rootProject.ext.appcompatVersion}"
+    api "com.android.support:design:${rootProject.ext.appcompatVersion}"
+    api "com.google.android.gms:play-services:${rootProject.ext.firebaseVersion}"
+    api "com.squareup.picasso:picasso:${rootProject.ext.picassoVersion}"
+    api "com.google.maps.android:android-maps-utils:0.4+"
+    api "com.sothree.slidinguppanel:library:3.3.1"
+    api "com.android.support:cardview-v7:${rootProject.ext.appcompatVersion}"
+    testApi "junit:junit:4.12"
 }
 
 halo {
@@ -90,5 +90,3 @@ halo {
         }
     }
 }
-
-apply plugin: 'com.google.gms.google-services'

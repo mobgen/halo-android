@@ -47,8 +47,8 @@ android {
 
 dependencies {
     api "com.mobgen.halo.android:halo-sdk:${rootProject.ext.haloVersion}"
-    implementation "com.google.android.gms:play-services-auth:${rootProject.ext.firebaseVersion}"
-    implementation "com.facebook.android:facebook-android-sdk:${rootProject.ext.facebookSdkVersion}"
+    api "com.google.android.gms:play-services-auth:${rootProject.ext.firebaseVersion}"
+    api "com.facebook.android:facebook-android-sdk:${rootProject.ext.facebookSdkVersion}"
     annotationProcessor "com.bluelinelabs:logansquare-compiler:${rootProject.ext.loganSquareVersion}"
 
     //Testing dependencies

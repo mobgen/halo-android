@@ -75,6 +75,7 @@ tasks.withType(Javadoc) {
     options.addStringOption('encoding', 'UTF-8')
 }
 
+
 task javadocJar(type: Jar, dependsOn: "documentationRelease") {
     from javadoc.destinationDir
     classifier = 'javadoc'
