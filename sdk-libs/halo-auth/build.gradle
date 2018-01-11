@@ -73,6 +73,7 @@ task javadoc(type: Javadoc) {
 
 tasks.withType(Javadoc) {
     options.addStringOption('encoding', 'UTF-8')
+    options.addStringOption('X','Dignore.symbol.file')
 }
 
 task javadocJar(type: Jar, dependsOn: "documentationRelease") {

@@ -66,6 +66,6 @@ public class HaloPlugin implements Plugin<Project> {
         project.repositories.add(project.getRepositories().jcenter())
 
         //Version is injected using gradle
-        project.dependencies.add("implementation", "com.mobgen.halo.android:halo-sdk:${Version.VERSION}")
+        project.dependencies.add("api", "com.mobgen.halo.android:halo-sdk:${Version.VERSION}")
     }
 }
