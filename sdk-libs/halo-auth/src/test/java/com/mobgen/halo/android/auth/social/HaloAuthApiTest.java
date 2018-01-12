@@ -5,6 +5,7 @@ import android.accounts.AccountManager;
 import android.content.Context;
 import android.content.pm.PackageManager;
 
+import com.facebook.FacebookSdk;
 import com.mobgen.halo.android.framework.common.exceptions.HaloParsingException;
 import com.mobgen.halo.android.framework.toolbox.data.CallbackV2;
 import com.mobgen.halo.android.framework.toolbox.threading.Threading;
@@ -65,6 +66,7 @@ public class HaloAuthApiTest extends HaloRobolectricTest {
         mHaloAuthApi = givenASocialApiWithAllNetworksAvailable(mHalo);
         mCallbackFlag = newCallbackFlag();
         mContext = mHalo.context();
+        FacebookSdk.setApplicationId("mockid");
         givenPermissions();
     }
 

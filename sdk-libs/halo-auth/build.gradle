@@ -1,5 +1,4 @@
 apply plugin: 'com.android.library'
-apply plugin: 'com.neenbedankt.android-apt'
 apply plugin: 'com.getkeepsafe.dexcount'
 apply plugin: 'grill'
 apply plugin: 'jacoco'
@@ -47,14 +46,14 @@ android {
 }
 
 dependencies {
-    compile "com.mobgen.halo.android:halo-sdk:${rootProject.ext.haloVersion}"
-    provided "com.google.android.gms:play-services-auth:${rootProject.ext.firebaseVersion}"
-    provided "com.facebook.android:facebook-android-sdk:${rootProject.ext.facebookSdkVersion}"
-    apt "com.bluelinelabs:logansquare-compiler:${rootProject.ext.loganSquareVersion}"
+    api "com.mobgen.halo.android:halo-sdk:${rootProject.ext.haloVersion}"
+    api "com.google.android.gms:play-services-auth:${rootProject.ext.firebaseVersion}"
+    api "com.facebook.android:facebook-android-sdk:${rootProject.ext.facebookSdkVersion}"
+    annotationProcessor "com.bluelinelabs:logansquare-compiler:${rootProject.ext.loganSquareVersion}"
 
     //Testing dependencies
-    testApt "com.bluelinelabs:logansquare-compiler:${rootProject.ext.loganSquareVersion}"
-    testCompile "com.mobgen.halo.android:halo-testing:${rootProject.ext.haloVersion}"
+    testAnnotationProcessor "com.bluelinelabs:logansquare-compiler:${rootProject.ext.loganSquareVersion}"
+    testApi "com.mobgen.halo.android:halo-testing:${rootProject.ext.haloVersion}"
 }
 
 /**
@@ -72,9 +71,25 @@ task javadoc(type: Javadoc) {
     source = android.sourceSets.main.java.srcDirs
 }
 
+tasks.withType(Javadoc) {
+    options.addStringOption('encoding', 'UTF-8')
+    options.addStringOption('X','Dignore.symbol.file')
+}
+
 task javadocJar(type: Jar, dependsOn: "documentationRelease") {
     from javadoc.destinationDir
     classifier = 'javadoc'
+}
+
+android.variantFilter { variant ->
+    if(!project.hasProperty("prepare${variant.name.capitalize()}Dependencies")) {
+        task "prepare${variant.name.capitalize()}Dependencies"()
+    }
+}
+
+artifacts {
+    archives sourcesJar
+    archives javadocJar
 }
 
 grill {

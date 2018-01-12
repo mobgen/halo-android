@@ -1,5 +1,4 @@
 apply plugin: 'com.android.library'
-apply plugin: 'com.neenbedankt.android-apt'
 apply plugin: 'grill'
 apply plugin: 'com.getkeepsafe.dexcount'
 apply plugin: 'jacoco'
@@ -45,16 +44,15 @@ android {
 }
 
 dependencies {
-    compile project(":halo-framework")
-    compile "com.bluelinelabs:logansquare:${loganSquareVersion}"
-    apt "com.bluelinelabs:logansquare-compiler:${loganSquareVersion}"
+    api project(":halo-framework")
+    api "com.bluelinelabs:logansquare:${loganSquareVersion}"
+    annotationProcessor "com.bluelinelabs:logansquare-compiler:${loganSquareVersion}"
 
     //Testing dependencies
-    testCompile project(":halo-testing")
-    testCompile "com.squareup.okhttp3:mockwebserver:${mockWebServerVersion}"
-    testApt "com.bluelinelabs:logansquare-compiler:${loganSquareVersion}"
+    testApi project(":halo-testing")
+    testApi "com.squareup.okhttp3:mockwebserver:${mockWebServerVersion}"
+    testAnnotationProcessor "com.bluelinelabs:logansquare-compiler:${loganSquareVersion}"
 }
-
 
 
 /**
@@ -73,9 +71,24 @@ task javadoc(type: Javadoc) {
     source = android.sourceSets.main.java.srcDirs
 }
 
+tasks.withType(Javadoc) {
+    options.addStringOption('encoding', 'UTF-8')
+}
+
 task javadocJar(type: Jar, dependsOn: "documentationRelease") {
     from javadoc.destinationDir
     classifier = 'javadoc'
+}
+
+android.variantFilter { variant ->
+    if(!project.hasProperty("prepare${variant.name.capitalize()}Dependencies")) {
+        task "prepare${variant.name.capitalize()}Dependencies"()
+    }
+}
+
+artifacts {
+    archives sourcesJar
+    archives javadocJar
 }
 
 grill {

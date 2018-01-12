@@ -35,9 +35,10 @@ android {
 }
 
 dependencies {
-    compile "com.squareup.okhttp3:okhttp:${rootProject.ext.okHttpVersion}"
-    compile "com.android.support:support-annotations:${rootProject.ext.appcompatVersion}"
-    testCompile project(":halo-testing")
+    api "com.squareup.okhttp3:okhttp:${rootProject.ext.okHttpVersion}"
+    api "com.android.support:support-annotations:${rootProject.ext.appcompatVersion}"
+    api 'com.google.code.findbugs:jsr305:3.0.2'
+    testApi project(":halo-testing")
 }
 
 /**
@@ -56,9 +57,24 @@ task javadoc(type: Javadoc) {
     source = android.sourceSets.main.java.srcDirs
 }
 
+tasks.withType(Javadoc) {
+    options.addStringOption('encoding', 'UTF-8')
+}
+
 task javadocJar(type: Jar, dependsOn: "documentationRelease") {
     from javadoc.destinationDir
     classifier = 'javadoc'
+}
+
+android.variantFilter { variant ->
+    if(!project.hasProperty("prepare${variant.name.capitalize()}Dependencies")) {
+        task "prepare${variant.name.capitalize()}Dependencies"()
+    }
+}
+
+artifacts {
+    archives sourcesJar
+    archives javadocJar
 }
 
 grill {

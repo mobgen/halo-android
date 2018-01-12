@@ -16,6 +16,7 @@ public class HaloAuthenticatorIntrument {
         return new Response.Builder()
                 .request(new Request.Builder().url("http://google.com").build())
                 .protocol(Protocol.HTTP_1_1)
+                .message("status_OK")
                 .code(200).build();
     }
 
@@ -23,6 +24,7 @@ public class HaloAuthenticatorIntrument {
         return new Response.Builder()
                 .request(new Request.Builder().url("http://google.com").build())
                 .protocol(Protocol.HTTP_1_1)
+                .message("status_FAIL")
                 .code(401).build();
     }
 
@@ -30,6 +32,7 @@ public class HaloAuthenticatorIntrument {
         return new Response.Builder()
                 .request(new Request.Builder().url("http://mockurl/" + TokenRemoteDatasource.URL_GET_USER_TOKEN).build())
                 .protocol(Protocol.HTTP_1_1)
+                .message("status_FAIL")
                 .code(401).build();
     }
 
@@ -38,6 +41,7 @@ public class HaloAuthenticatorIntrument {
         return new Response.Builder()
                 .request(new Request.Builder().url("http://mockurl/" + TokenRemoteDatasource.URL_GET_CLIENT_TOKEN).build())
                 .protocol(Protocol.HTTP_1_1)
+                .message("status_FAIL")
                 .code(401).build();
     }
 }

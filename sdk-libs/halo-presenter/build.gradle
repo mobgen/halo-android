@@ -46,10 +46,10 @@ android {
 }
 
 dependencies {
-    compile "com.android.support:appcompat-v7:${rootProject.ext.appcompatVersion}"
-    compile "com.mobgen.halo.android:halo-sdk:${rootProject.ext.haloVersion}"
-    testCompile "com.mobgen.halo.android:halo-testing:${rootProject.ext.haloVersion}"
-    testCompile "org.khronos:opengl-api:${rootProject.ext.openGLTestLibrary}"
+    api "com.android.support:appcompat-v7:${rootProject.ext.appcompatVersion}"
+    api "com.mobgen.halo.android:halo-sdk:${rootProject.ext.haloVersion}"
+    testApi "com.mobgen.halo.android:halo-testing:${rootProject.ext.haloVersion}"
+    testApi "org.khronos:opengl-api:${rootProject.ext.openGLTestLibrary}"
 }
 
 /**
@@ -67,9 +67,24 @@ task javadoc(type: Javadoc) {
     source = android.sourceSets.main.java.srcDirs
 }
 
+tasks.withType(Javadoc) {
+    options.addStringOption('encoding', 'UTF-8')
+}
+
 task javadocJar(type: Jar, dependsOn: "documentationRelease") {
     from javadoc.destinationDir
     classifier = 'javadoc'
+}
+
+android.variantFilter { variant ->
+    if(!project.hasProperty("prepare${variant.name.capitalize()}Dependencies")) {
+        task "prepare${variant.name.capitalize()}Dependencies"()
+    }
+}
+
+artifacts {
+    archives sourcesJar
+    archives javadocJar
 }
 
 grill {

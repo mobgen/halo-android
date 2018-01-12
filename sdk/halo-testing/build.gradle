@@ -20,13 +20,16 @@ tasks.whenTaskAdded { task ->
     }
 }
 
+
 dependencies {
-    compile "com.intellij:annotations:${rootProject.ext.intellijAnnotations}"
-    compile "junit:junit:${rootProject.ext.jUnitVersion}"
-    compile "org.robolectric:robolectric:${rootProject.ext.robolectricLibrary}"
-    compile "org.mockito:mockito-core:${rootProject.ext.mockitoLibrary}"
-    compile "org.assertj:assertj-core:${rootProject.ext.assertJVersion}"
-    compile "com.squareup.okhttp3:mockwebserver:${rootProject.ext.mockWebServerVersion}"
+    api "com.intellij:annotations:${rootProject.ext.intellijAnnotations}"
+    api "junit:junit:${rootProject.ext.jUnitVersion}"
+    api "org.robolectric:robolectric:${rootProject.ext.robolectricLibrary}"
+    api "org.mockito:mockito-core:${rootProject.ext.mockitoLibrary}"
+    api "org.assertj:assertj-core:${rootProject.ext.assertJVersion}"
+    api 'com.google.code.findbugs:jsr305:3.0.2'
+    api group: 'com.google.errorprone', name: 'error_prone_annotations', version: '2.0.2'
+    api "com.squareup.okhttp3:mockwebserver:${rootProject.ext.mockWebServerVersion}"
 }
 
 /**
@@ -45,9 +48,24 @@ task javadoc(type: Javadoc) {
     source = android.sourceSets.main.java.srcDirs
 }
 
+tasks.withType(Javadoc) {
+    options.addStringOption('encoding', 'UTF-8')
+}
+
 task javadocJar(type: Jar, dependsOn: "documentationRelease") {
     from javadoc.destinationDir
     classifier = 'javadoc'
+}
+
+android.variantFilter { variant ->
+    if(!project.hasProperty("prepare${variant.name.capitalize()}Dependencies")) {
+        task "prepare${variant.name.capitalize()}Dependencies"()
+    }
+}
+
+artifacts {
+    archives sourcesJar
+    archives javadocJar
 }
 
 grill {

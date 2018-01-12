@@ -1,7 +1,6 @@
 package com.mobgen.halo.android.gradle
 
 import com.google.gms.googleservices.GoogleServicesPlugin
-import com.neenbedankt.gradle.androidapt.AndroidAptPlugin
 import org.gradle.api.GradleException
 import org.gradle.api.Project
 import org.gradle.util.ConfigureUtil
@@ -15,7 +14,7 @@ public class HaloConfiguration {
      * Default name of the dependencies configuration container. This adds
      * the dependencies into compile.
      */
-    public static final String DEPENDENCY_CONFIGURATION = "compile"
+    public static final String DEPENDENCY_CONFIGURATION = "api"
 
     /**
      * Client id.

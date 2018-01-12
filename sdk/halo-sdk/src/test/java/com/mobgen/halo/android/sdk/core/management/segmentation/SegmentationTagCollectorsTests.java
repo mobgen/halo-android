@@ -35,6 +35,7 @@ public class SegmentationTagCollectorsTests extends HaloRobolectricTest {
 
     @Test
     public void thatLoadFromDefaultLocale() {
+        Locale.setDefault(Locale.CANADA);
         String locale = HaloLocale.fromDefaultLocale();
         assertThat(locale).isNotNull();
     }
