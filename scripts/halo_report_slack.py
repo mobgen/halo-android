@@ -2,6 +2,7 @@
 
 import argparse
 import requests
+import json
 import sys
 
 def main():
@@ -53,7 +54,7 @@ def buildTestsAttachment(testFile):
       ],
       "mrkdwn_in": ["text"],
 			"color": color,
-			"footer": "Bamboo tests"
+			"footer": "HALO Bamboo tests"
   }
 
 def parseTestFile(file):
@@ -80,7 +81,7 @@ def buildCoverageAttachment(file):
 			"fields": fields,
       "mrkdwn_in": ["text"],
 			"color": color,
-			"footer": "Bamboo coverage"
+			"footer": "HALO Bamboo coverage"
   }
 
 def parseCoverageFile(file):
@@ -102,7 +103,7 @@ def buildLinesAttachment(file):
       getFieldResult("Comments", parsedResult["comments"])
     ],
     "mrkdwn_in": ["text"],
-    "footer": "Bamboo sloc"
+    "footer": "HALO Bamboo sloc"
   }
 
 def parseLinesFile(file):
@@ -117,7 +118,8 @@ def parseLinesFile(file):
 
 # Post to slack
 def postToSlack(message, slackHook):
-  requests.post(slackHook, json=message)
+  requests.post(slackHook, data=json.dumps(message),
+    headers={'Content-Type': 'application/json'})
 
 if __name__ == "__main__":
    main()

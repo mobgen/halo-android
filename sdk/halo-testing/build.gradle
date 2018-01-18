@@ -5,6 +5,10 @@ android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
 
+    sourceSets {
+        test.java.srcDirs += 'build/generated/source/r/debug'
+    }
+
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
@@ -20,6 +24,11 @@ tasks.whenTaskAdded { task ->
     }
 }
 
+android.variantFilter { variant ->
+    if(!project.hasProperty("prepare${variant.name.capitalize()}Dependencies")) {
+        task "prepare${variant.name.capitalize()}Dependencies"()
+    }
+}
 
 dependencies {
     api "com.intellij:annotations:${rootProject.ext.intellijAnnotations}"
@@ -55,17 +64,6 @@ tasks.withType(Javadoc) {
 task javadocJar(type: Jar, dependsOn: "documentationRelease") {
     from javadoc.destinationDir
     classifier = 'javadoc'
-}
-
-android.variantFilter { variant ->
-    if(!project.hasProperty("prepare${variant.name.capitalize()}Dependencies")) {
-        task "prepare${variant.name.capitalize()}Dependencies"()
-    }
-}
-
-artifacts {
-    archives sourcesJar
-    archives javadocJar
 }
 
 grill {

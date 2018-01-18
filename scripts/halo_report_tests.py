@@ -22,9 +22,10 @@ def main(argv):
     print '--- PASSING: {0} FAILURES: {1} TESTS: {2} ---'.format(success, failures, tests)
 
 def sendReport(success, failures, tests):
+    # do not send the report since halo-dashboard is not available now
     # Send the report
-    binary = "test_results,platform=android passed={0},failed={1},total={2}".format(success, failures, tests)
-    requests.post("http://halo-dashboard.aws.mobgen.com:8086/write?db=halo", data=binary, headers={'Content-Type': 'application/octet-stream'})
+    #binary = "test_results,platform=android passed={0},failed={1},total={2}".format(success, failures, tests)
+    #requests.post("http://halo-dashboard.aws.mobgen.com:8086/write?db=halo", data=binary, headers={'Content-Type': 'application/octet-stream'})
 
     # Save the report
     filename = "../reports/tests.report"

@@ -4,22 +4,18 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
-import com.mobgen.halo.android.presenter.BuildConfig;
 import com.mobgen.halo.android.presenter.ConnectionBroadcastReceiver;
+import com.mobgen.halo.android.testing.HaloRobolectricTest;
 
 import junit.framework.Assert;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.robolectric.RobolectricGradleTestRunner;
-import org.robolectric.annotation.Config;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-@RunWith(RobolectricGradleTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = 21)
-public class NetworkBroadcastReceiverTest {
+
+public class NetworkBroadcastReceiverTest extends HaloRobolectricTest {
 
     @Test
     public void broadcastNotificationTest() {
