@@ -43,6 +43,7 @@ tasks.withType(Javadoc) {
     options.addStringOption('encoding', 'UTF-8')
 }
 
+
 task javadocJar(type: Jar, dependsOn: "documentationRelease") {
     from javadoc.destinationDir
     classifier = 'javadoc'
@@ -52,11 +53,6 @@ android.variantFilter { variant ->
     if(!project.hasProperty("prepare${variant.name.capitalize()}Dependencies")) {
         task "prepare${variant.name.capitalize()}Dependencies"()
     }
-}
-
-artifacts {
-    archives sourcesJar
-    archives javadocJar
 }
 
 grill {

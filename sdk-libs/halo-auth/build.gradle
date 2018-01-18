@@ -19,6 +19,10 @@ android {
         versionName "${rootProject.ext.haloVersion}"
     }
 
+    sourceSets {
+        test.java.srcDirs += 'build/generated/source/r/debug'
+    }
+
     buildTypes {
         debug {
             minifyEnabled false
@@ -31,6 +35,9 @@ android {
     }
 
     testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
         unitTests.all {
             jvmArgs '-noverify'
             jacoco {
@@ -85,11 +92,6 @@ android.variantFilter { variant ->
     if(!project.hasProperty("prepare${variant.name.capitalize()}Dependencies")) {
         task "prepare${variant.name.capitalize()}Dependencies"()
     }
-}
-
-artifacts {
-    archives sourcesJar
-    archives javadocJar
 }
 
 grill {

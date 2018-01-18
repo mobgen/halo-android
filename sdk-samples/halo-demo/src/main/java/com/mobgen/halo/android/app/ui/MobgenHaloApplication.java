@@ -107,9 +107,6 @@ public class MobgenHaloApplication extends HaloApplication {
 
         super.onCreate();
 
-        //Leak canary
-        LeakCanary.install(this);
-
         //Icons
         Iconify.with(new FontAwesomeModule());
 
