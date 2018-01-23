@@ -2,7 +2,6 @@ package com.mobgen.halo.android.notifications.events;
 
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.support.annotation.NonNull;
 
 import com.mobgen.halo.android.framework.common.utils.HaloUtils;
 import com.mobgen.halo.android.notifications.HaloNotificationsApi;

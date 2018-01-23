@@ -5,6 +5,8 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.widget.Toast;
 
 import com.crittercism.app.Crittercism;
 import com.facebook.stetho.Stetho;
@@ -23,6 +25,8 @@ import com.mobgen.halo.android.framework.common.exceptions.HaloParsingException;
 import com.mobgen.halo.android.framework.common.helpers.logger.PrintLog;
 import com.mobgen.halo.android.framework.common.helpers.subscription.ISubscription;
 import com.mobgen.halo.android.notifications.HaloNotificationsApi;
+import com.mobgen.halo.android.notifications.callbacks.HaloNotificationEventListener;
+import com.mobgen.halo.android.notifications.models.HaloPushEvent;
 import com.mobgen.halo.android.notifications.services.NotificationIdGenerator;
 import com.mobgen.halo.android.sdk.api.Halo;
 import com.mobgen.halo.android.sdk.api.HaloApplication;
@@ -198,7 +202,7 @@ public class MobgenHaloApplication extends HaloApplication {
 
     @NonNull
     @Override
-    public Halo onHaloCreated(@NonNull Halo halo) {
+    public Halo onHaloCreated(@NonNull final Halo halo) {
         //translations
         if (mTranslationsApi != null) {
             mTranslationsApi.cancel();
@@ -235,6 +239,14 @@ public class MobgenHaloApplication extends HaloApplication {
             mSilentHaloNotificationListener = null;
         }
         mNotificationsApi = HaloNotificationsApi.with(halo);
+        mNotificationsApi.enablePushEvents(new HaloNotificationEventListener() {
+            @Override
+            public void onEventReceived(@Nullable HaloPushEvent haloPushEvent) {
+                if (haloPushEvent != null) {
+                    Toast.makeText(halo.context(), haloPushEvent.getAction(), Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
         mSilentHaloNotificationListener = mNotificationsApi.listenSilentNotifications(new SilentNotificationDispatcher());
         mNotificationsApi.setNotificationDecorator(new DeeplinkDecorator(this));
         mNotificationsApi.customIdGenerator(new NotificationIdGenerator() {
