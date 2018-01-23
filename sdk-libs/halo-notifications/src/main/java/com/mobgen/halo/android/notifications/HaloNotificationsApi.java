@@ -12,8 +12,13 @@ import com.mobgen.halo.android.framework.common.helpers.subscription.ISubscripti
 import com.mobgen.halo.android.framework.common.utils.AssertionUtils;
 import com.mobgen.halo.android.framework.toolbox.bus.Event;
 import com.mobgen.halo.android.framework.toolbox.bus.Subscriber;
+import com.mobgen.halo.android.notifications.callbacks.HaloNotificationEventListener;
 import com.mobgen.halo.android.notifications.callbacks.HaloNotificationListener;
 import com.mobgen.halo.android.notifications.decorator.HaloNotificationDecorator;
+import com.mobgen.halo.android.notifications.events.NotificationEventInteractor;
+import com.mobgen.halo.android.notifications.events.NotificationEventRemoteDatasource;
+import com.mobgen.halo.android.notifications.events.NotificationEventRepository;
+import com.mobgen.halo.android.notifications.models.HaloPushEvent;
 import com.mobgen.halo.android.notifications.services.NotificationIdGenerator;
 import com.mobgen.halo.android.notifications.services.HaloNotificationIdGenerator;
 import com.mobgen.halo.android.notifications.services.InstanceIDService;
@@ -21,6 +26,7 @@ import com.mobgen.halo.android.notifications.services.NotificationEmitter;
 import com.mobgen.halo.android.notifications.services.NotificationService;
 import com.mobgen.halo.android.sdk.api.Halo;
 import com.mobgen.halo.android.sdk.api.HaloPluginApi;
+import com.mobgen.halo.android.sdk.core.threading.HaloInteractorExecutor;
 
 /**
  * The notifications API is a wrapper library that allows you
@@ -95,6 +101,11 @@ public class HaloNotificationsApi extends HaloPluginApi {
     private FirebaseInstanceId mFirebaseInstanceId;
 
     /**
+     * Subscription added to stay in touch when an action push event was receipt.
+     */
+    private ISubscription mActionEventSubscription;
+
+    /**
      * Constructor for the push notifications API.
      *
      * @param halo The halo instance.
@@ -131,6 +142,45 @@ public class HaloNotificationsApi extends HaloPluginApi {
     @Api(2.0)
     public static HaloNotificationsApi with(@NonNull Halo halo) {
         return new HaloNotificationsApi(halo, FirebaseInstanceId.getInstance());
+    }
+
+    /**
+     * Enable the push events to track
+     */
+    @Keep
+    @NonNull
+    @Api(2.4)
+    public void enablePushEvents() {
+        mActionEventSubscription = NotificationEmitter.createNotificationEventSubscription(context(),null);
+        NotificationService.enablePushEvents();
+    }
+
+    /**
+     * Enable the push events to track
+     * @param listener The listener to receive the actions.
+     */
+    @Keep
+    @NonNull
+    @Api(2.4)
+    public void enablePushEvents(@NonNull HaloNotificationEventListener listener) {
+        mActionEventSubscription = NotificationEmitter.createNotificationEventSubscription(context(),listener);
+        NotificationService.enablePushEvents();
+    }
+
+    /**
+     * Notify a action event on the push notification.
+     *
+     * @param haloPushEvent The HALO push notification action event.
+     * @return
+     */
+    @Keep
+    @NonNull
+    @Api(2.4)
+    public HaloInteractorExecutor<HaloPushEvent> notifyPushEvent(@NonNull HaloPushEvent haloPushEvent) {
+        return new HaloInteractorExecutor<>(halo(),
+                "Push notify event action",
+                new NotificationEventInteractor(new NotificationEventRepository(new NotificationEventRemoteDatasource(halo().framework().network())), haloPushEvent)
+        );
     }
 
     /**
@@ -195,6 +245,7 @@ public class HaloNotificationsApi extends HaloPluginApi {
         AssertionUtils.notNull(listener, "listener");
         return NotificationEmitter.createSilentNotificationSubscription(context(), listener);
     }
+
     /**
      * Sets a notification listener that listens for two factor authentication code notifications received from HALO.
      * You can attach as many listeners as you want, but make
@@ -281,6 +332,9 @@ public class HaloNotificationsApi extends HaloPluginApi {
     public void release() {
         mRefreshSubscription.unsubscribe();
         mDeviceSyncSubscription.unsubscribe();
+        if (mActionEventSubscription != null) {
+            mActionEventSubscription.unsubscribe();
+        }
     }
 
     /**
@@ -306,7 +360,7 @@ public class HaloNotificationsApi extends HaloPluginApi {
      */
     private void updateToken() {
         String token = token();
-        if(token != null) {
+        if (token != null) {
             halo().manager().setNotificationsToken(token).execute();
         }
     }

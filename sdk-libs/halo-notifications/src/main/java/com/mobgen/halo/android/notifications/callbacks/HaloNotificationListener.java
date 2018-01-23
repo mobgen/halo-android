@@ -7,7 +7,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.mobgen.halo.android.framework.common.annotations.Api;
-
+/**
+ * Created by f.souto.gonzalez on 23/01/2018.
+ */
 /**
  * Provides a callback to make some operation over every notification item.
  */

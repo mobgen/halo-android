@@ -7,10 +7,15 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.mobgen.halo.android.framework.common.helpers.subscription.ISubscription;
 import com.mobgen.halo.android.framework.common.utils.HaloUtils;
+import com.mobgen.halo.android.notifications.callbacks.HaloNotificationEventListener;
 import com.mobgen.halo.android.notifications.callbacks.HaloNotificationListener;
+import com.mobgen.halo.android.notifications.events.NotificationEventSubscription;
+import com.mobgen.halo.android.notifications.events.NotificationEventsActions;
+import com.mobgen.halo.android.sdk.api.Halo;
 
 /**
  * @hide Emitter that allows Halo and the items related to it to listen for notifications
@@ -39,6 +44,10 @@ public final class NotificationEmitter {
      */
     private static final String NOTIFICATION_REFRESH_TOKEN = ":halo:notifications:refresh_gcm_token";
     /**
+     * Intent filter to refresh the token.
+     */
+    public static final String NOTIFICATION_EVENT = ":halo:notifications:event:";
+    /**
      * Extras bundle name.
      */
     private static final String EXTRAS_BUNDLE = "extra";
@@ -48,7 +57,7 @@ public final class NotificationEmitter {
     private static final String FROM_BUNDLE = "halo:notification:from";
 
     /**
-     *
+     * Constructor for the emitter.
      */
     private NotificationEmitter() {
 
@@ -147,6 +156,7 @@ public final class NotificationEmitter {
 
     /**
      * Emit a broadcast for the notification provided.
+     *
      * @param context The context.
      * @param from    The source of the notification.
      * @param data    The data created.
@@ -201,6 +211,32 @@ public final class NotificationEmitter {
     public static void emitRefreshToken(@NonNull Context context) {
         Intent intent = new Intent(HaloUtils.getEventName(context, NOTIFICATION_REFRESH_TOKEN));
         context.sendBroadcast(intent);
+    }
+
+    /**
+     * Listens for push action events.
+     *
+     * @param context  The context.
+     * @param listener The listener.
+     * @return The subscription.
+     */
+    @NonNull
+    @CheckResult(suggest = "Keep a reference to unsubscribe.")
+    public static ISubscription createNotificationEventSubscription(@NonNull Context context, @Nullable HaloNotificationEventListener listener) {
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(HaloUtils.getEventName(context, NOTIFICATION_EVENT) + NotificationEventsActions.PUSH_RECEIPT);
+        intentFilter.addAction(HaloUtils.getEventName(context, NOTIFICATION_EVENT) + NotificationEventsActions.PUSH_DISMISS);
+        intentFilter.addAction(HaloUtils.getEventName(context, NOTIFICATION_EVENT) + NotificationEventsActions.PUSH_OPEN);
+        return new NotificationEventSubscription(context, listener, intentFilter);
+    }
+
+    /**
+     * Emits a intent of notification action event.
+     * @param context The context
+     * @param intentToBroadcast The intent to broadcast.
+     */
+    public static void emitNotificationEventAction(@NonNull Context context, @NonNull Intent intentToBroadcast) {
+        context.sendBroadcast(intentToBroadcast);
     }
 
     /**
