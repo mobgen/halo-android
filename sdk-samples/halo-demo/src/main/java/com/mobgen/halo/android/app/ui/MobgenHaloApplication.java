@@ -243,7 +243,7 @@ public class MobgenHaloApplication extends HaloApplication {
             @Override
             public void onEventReceived(@Nullable HaloPushEvent haloPushEvent) {
                 if (haloPushEvent != null) {
-                    Toast.makeText(halo.context(), haloPushEvent.getAction(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(halo.context(), "The push notification action was: " + haloPushEvent.getAction(), Toast.LENGTH_SHORT).show();
                 }
             }
         });
