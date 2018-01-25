@@ -54,6 +54,7 @@ public class NotificationEventRemoteDatasource {
                         .add("device", haloPushEvent.getDevice())
                         .add("schedule", haloPushEvent.getSchedule())
                         .add("action", haloPushEvent.getAction())
+                        .add("platform", haloPushEvent.getPlatform())
                         .build())
                 .build().execute(HaloPushEvent.class);
     }

@@ -42,6 +42,12 @@ public class HaloPushEvent implements Parcelable {
     String action;
 
     /**
+     * The platform
+     */
+    @JsonField(name = "platform")
+    String platform;
+
+    /**
      * Constructor
      *
      * @param device   The device alias
@@ -52,6 +58,7 @@ public class HaloPushEvent implements Parcelable {
         this.device = device;
         this.schedule = schedule;
         this.action = action;
+        this.platform = "android";
     }
 
 
@@ -64,6 +71,7 @@ public class HaloPushEvent implements Parcelable {
         this.device = builder.device;
         this.schedule = builder.schedule;
         this.action = builder.action;
+        this.platform = "android";
     }
 
     /**
@@ -103,16 +111,40 @@ public class HaloPushEvent implements Parcelable {
         dest.writeString(action);
     }
 
+    /**
+     * Get the device alias.
+     *
+     * @return The alias
+     */
     public String getDevice() {
         return device;
     }
 
+    /**
+     * Get the schedule id of the push.
+     *
+     * @return The schedule id.
+     */
     public String getSchedule() {
         return schedule;
     }
 
+    /**
+     * Get the action type.
+     *
+     * @return The action type.
+     */
     public String getAction() {
         return action;
+    }
+
+    /**
+     * Get the platform.
+     *
+     * @return The platform.
+     */
+    public String getPlatform() {
+        return platform;
     }
 
 

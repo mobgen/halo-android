@@ -1,15 +1,1 @@
-<manifest package="com.mobgen.halo.android.notifications" xmlns:android="http://schemas.android.com/apk/res/android"/>
-
-
-<!--
-    <application>
-        <receiver android:name=".eveNotificationEventSubscriptioniver">
-            <intent-filter>
-                <action android:name="com.mobgen.halo.android.notifications.events.PUSH_DISMISS" />
-                <action android:name="com.mobgen.halo.android.notifications.events.PUSH_OPEN" />
-
-            </intent-filter>
-        </receiver>
-
-    </application>
-</manifest> -->
+<manifest package="com.mobgen.halo.android.notifications" />
