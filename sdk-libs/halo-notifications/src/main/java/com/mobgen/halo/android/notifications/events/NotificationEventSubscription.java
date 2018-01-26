@@ -67,7 +67,7 @@ public class NotificationEventSubscription extends BroadcastReceiver implements 
         if(Halo.instance().manager().getDevice()!=null) {
 
             HaloPushEvent receiptPush = new HaloPushEvent.Builder(Halo.instance().manager().getDevice().getAlias())
-                    .withAction(NotificationEventsActions.PUSH_RECEIPT)
+                    .withAction(action)
                     .withSchedule(scheduleId)
                     .build();
 
