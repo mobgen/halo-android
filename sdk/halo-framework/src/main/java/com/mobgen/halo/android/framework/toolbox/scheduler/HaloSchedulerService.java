@@ -3,6 +3,8 @@ package com.mobgen.halo.android.framework.toolbox.scheduler;
 import android.Manifest;
 import android.app.AlarmManager;
 import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
@@ -237,8 +239,8 @@ public final class HaloSchedulerService extends Service {
     public void onCreate() {
         super.onCreate();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            Halog.v(HaloSchedulerService.class,">>>>>>The on create called");
-            Notification notification = new Notification.Builder(getApplicationContext(),"My channe is the channel")
+            //TODO fixme the creation of the notification. We are notifiying to a random channel id to prevfent show notification.
+            Notification notification = new Notification.Builder(getApplicationContext(), "halo_hotfix_android_O_26")
                     .setWhen(System.currentTimeMillis())
                     .build();
             startForeground(FOREGROUND_NOTIFICATION_ID, notification);

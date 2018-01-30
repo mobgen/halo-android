@@ -5,8 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 
-import com.mobgen.halo.android.framework.common.helpers.logger.Halog;
-
 /**
  * If you want persist your jobs after device rebooting,
  * enable this by declare this class in you AndroidManifest.xml
@@ -25,7 +23,6 @@ public class PersistReceiver extends BroadcastReceiver {
                     break;
                 }
             case Intent.ACTION_BOOT_COMPLETED:
-                Halog.v(PersistReceiver.class,">>>>>>The on create called");
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     context.startForegroundService(HaloSchedulerService.deviceOn(context));
                 } else {
