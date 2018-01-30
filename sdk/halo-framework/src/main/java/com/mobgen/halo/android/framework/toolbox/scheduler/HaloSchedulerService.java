@@ -2,6 +2,7 @@ package com.mobgen.halo.android.framework.toolbox.scheduler;
 
 import android.Manifest;
 import android.app.AlarmManager;
+import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
@@ -55,6 +56,11 @@ public final class HaloSchedulerService extends Service {
      * Protocol magic code.
      */
     static final int PROTOCOL_CODE = 0x991;
+
+    /**
+     * The notification id for android sdk targe 26 +
+     */
+    static final int FOREGROUND_NOTIFICATION_ID = 0x091;
 
     /**
      * Tag for the logger.
@@ -230,6 +236,13 @@ public final class HaloSchedulerService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            Halog.v(HaloSchedulerService.class,">>>>>>The on create called");
+            Notification notification = new Notification.Builder(getApplicationContext(),"My channe is the channel")
+                    .setWhen(System.currentTimeMillis())
+                    .build();
+            startForeground(FOREGROUND_NOTIFICATION_ID, notification);
+        }
         mJobsSet = new ConcurrentHashMap<>();
         mReceivers = new ConcurrentHashMap<>();
         mAlarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
