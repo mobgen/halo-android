@@ -31,6 +31,7 @@ import com.mobgen.halo.android.sdk.core.management.segmentation.DefaultCollector
 import com.mobgen.halo.android.sdk.core.management.segmentation.TagCollector;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -155,6 +156,11 @@ public class Halo {
     @Api(1.3)
     public void uninstall() {
         if (isInitialized()) {
+            try {
+                sHalo.mFramework.network().client().ok().cache().close();
+            } catch (IOException e) {
+                Halog.v(Halo.class,"Could not close the cache of the network client");
+            }
             sHalo = null;
             mCore = null;
             mReadyChecker = null;
