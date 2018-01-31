@@ -137,7 +137,7 @@ public class Halo {
                 " /*           _\\/\\\\\\_______\\/\\\\\\__\\/\\\\\\_______\\/\\\\\\__\\/\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\_____\\///\\\\\\\\\\/_____ */\n" +
                 " /*            _\\///________\\///___\\///________\\///___\\///////////////________\\/////_______*/\n" +
                 " /******************************************************************************************/\n";
-        Halog.d(getClass(),footprint);
+        Halog.d(getClass(), footprint);
     }
 
     /**
@@ -156,11 +156,7 @@ public class Halo {
     @Api(1.3)
     public void uninstall() {
         if (isInitialized()) {
-            try {
-                sHalo.mFramework.network().client().ok().cache().close();
-            } catch (IOException e) {
-                Halog.v(Halo.class,"Could not close the cache of the network client");
-            }
+            sHalo.framework().network().client().closeCache();
             sHalo = null;
             mCore = null;
             mReadyChecker = null;
@@ -385,6 +381,7 @@ public class Halo {
 
         /**
          * Set the print to file policy.
+         *
          * @param printToFilePolicy The policy to store files.
          * @return The current installer.
          */
@@ -467,11 +464,12 @@ public class Halo {
 
         /**
          * Disables the ssl pinning in the HALO SDK.
+         *
          * @return The current installer.
          */
         @Api(2.0)
         @NonNull
-        public Installer disablePinning(){
+        public Installer disablePinning() {
             mDisablePinning = true;
             return this;
         }
@@ -484,7 +482,7 @@ public class Halo {
         @Api(1.0)
         @NonNull
         public Halo install() {
-            if(mDisablePinning){
+            if (mDisablePinning) {
                 mEndpoint.disablePinning();
             }
 
