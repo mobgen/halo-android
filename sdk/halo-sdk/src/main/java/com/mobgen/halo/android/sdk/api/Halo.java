@@ -2,11 +2,9 @@ package com.mobgen.halo.android.sdk.api;
 
 import android.app.ActivityManager;
 import android.content.Context;
-import android.os.Build;
 import android.support.annotation.Keep;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
 
 import com.mobgen.halo.android.framework.api.HaloConfig;
 import com.mobgen.halo.android.framework.api.HaloFramework;
@@ -31,7 +29,6 @@ import com.mobgen.halo.android.sdk.core.management.segmentation.DefaultCollector
 import com.mobgen.halo.android.sdk.core.management.segmentation.TagCollector;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
