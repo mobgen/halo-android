@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.mobgen.halo.android.framework.common.annotations.Api;
+import com.mobgen.halo.android.framework.common.helpers.logger.Halog;
 import com.mobgen.halo.android.framework.common.utils.AssertionUtils;
 import com.mobgen.halo.android.framework.common.utils.HaloUtils;
 import com.mobgen.halo.android.framework.network.client.endpoint.HaloEndpointCluster;
@@ -45,7 +46,7 @@ public class HaloNetClient {
      *
      * @param context       The application context.
      * @param clientBuilder The client to copy.
-     * @param endpoints      The endpoint cluster with the different endpoints and the cert pinning.
+     * @param endpoints     The endpoint cluster with the different endpoints and the cert pinning.
      */
     public HaloNetClient(@NonNull Context context, @NonNull OkHttpClient.Builder clientBuilder, @NonNull HaloEndpointCluster endpoints) {
         AssertionUtils.notNull(context, "context");
@@ -176,5 +177,20 @@ public class HaloNetClient {
     @Api(2.0)
     public Context context() {
         return mContext;
+    }
+
+    /**
+     * Close cache. This should be called just before uninstall halo.
+     */
+    @NonNull
+    @Api(2.4)
+    public void closeCache() {
+        if (mClient.cache() != null && !mClient.cache().isClosed()) {
+            try {
+                mClient.cache().close();
+            } catch (IOException e) {
+                Halog.v(HaloNetClient.class, "Could not close cache");
+            }
+        }
     }
 }

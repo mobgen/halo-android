@@ -37,6 +37,9 @@ public class Cursor2MapTranslationConverter implements ISelectorConverter<Map<St
                     map.put(key, value);
                 } while (cursor.moveToNext());
             }
+            if (!cursor.isClosed()) {
+                cursor.close();
+            }
         }
         return new HaloResultV2<>(result.status(), map);
     }
