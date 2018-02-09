@@ -41,7 +41,7 @@ public class ContentCursor2ClassConverter<T> implements ISelectorConverter<List<
         Cursor cursor = cursorResult.data();
         List<T> parsedData = null;
         if (cursor != null) {
-            parsedData = HaloContentHelper.createList(cursor, false, mClazz, mParser);
+            parsedData = HaloContentHelper.createList(cursor, true, mClazz, mParser);
         }
         return new HaloResultV2<>(cursorResult.status(), parsedData);
     }
