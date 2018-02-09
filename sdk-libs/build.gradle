@@ -1,5 +1,12 @@
 buildscript {
+    ext.kotlin_version = '1.2.21'
     apply from: "../common-buildscript.gradle", to: buildscript
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
 }
 
 ext {
