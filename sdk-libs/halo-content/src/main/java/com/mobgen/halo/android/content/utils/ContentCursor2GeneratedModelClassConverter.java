@@ -42,6 +42,9 @@ public class ContentCursor2GeneratedModelClassConverter<T> implements ISelectorC
         List<T> parsedData = null;
         if (cursor != null) {
             parsedData = HaloContentHelper.createList(cursor, mClazz);
+            if (!cursor.isClosed()) {
+                cursor.close();
+            }
         }
         return new HaloResultV2<>(cursorResult.status(), parsedData);
     }

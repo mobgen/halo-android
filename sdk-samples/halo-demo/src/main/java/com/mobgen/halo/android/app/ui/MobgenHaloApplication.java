@@ -3,6 +3,7 @@ package com.mobgen.halo.android.app.ui;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -116,6 +117,13 @@ public class MobgenHaloApplication extends HaloApplication {
 
         //Icons
         Iconify.with(new FontAwesomeModule());
+
+        //strict vm policy
+        StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
+                .detectAll()
+                .penaltyLog()
+                .penaltyDeath()
+                .build());
 
         if (BuildConfig.BUILD_TYPE.contains("debug")) {
             //Facebook stetho

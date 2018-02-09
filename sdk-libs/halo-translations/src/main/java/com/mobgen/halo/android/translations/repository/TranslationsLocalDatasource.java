@@ -133,6 +133,10 @@ public class TranslationsLocalDatasource {
         if (lastDate != 0L) {
             mTranslationsStorageApi.prefs().edit().putLong(getSyncNameForPrefs(moduleName), lastDate).commit();
         }
+
+        if (cursor != null && !cursor.isClosed()) {
+            cursor.close();
+        }
     }
 
     /**
