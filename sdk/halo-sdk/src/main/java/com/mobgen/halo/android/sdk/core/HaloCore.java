@@ -1,6 +1,7 @@
 package com.mobgen.halo.android.sdk.core;
 
 import android.content.Context;
+import android.net.TrafficStats;
 import android.support.annotation.Keep;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -37,6 +38,11 @@ import okhttp3.OkHttpClient;
  */
 @Keep
 public class HaloCore {
+
+    /**
+     * Tag to track traffic interceptor
+     */
+    private static int TRAFFIC_STATS = 8410;
 
     /**
      * The framework instance.
@@ -89,6 +95,8 @@ public class HaloCore {
         mServerVersionMatch = HaloServerVersion.NOT_CHECKED;
         mFramework = framework;
         mManagerApi = managerApi;
+
+        TrafficStats.setThreadStatsTag(TRAFFIC_STATS);
 
         //Setup authentication
         mAuthenticator = new HaloAuthenticator(mFramework, mManagerApi, sessionManager, configureCredentials(credentials));
