@@ -15,10 +15,6 @@ import com.mobgen.halo.android.framework.toolbox.bus.Subscriber;
 import com.mobgen.halo.android.notifications.callbacks.HaloNotificationEventListener;
 import com.mobgen.halo.android.notifications.callbacks.HaloNotificationListener;
 import com.mobgen.halo.android.notifications.decorator.HaloNotificationDecorator;
-import com.mobgen.halo.android.notifications.events.NotificationEventInteractor;
-import com.mobgen.halo.android.notifications.events.NotificationEventRemoteDatasource;
-import com.mobgen.halo.android.notifications.events.NotificationEventRepository;
-import com.mobgen.halo.android.notifications.models.HaloPushEvent;
 import com.mobgen.halo.android.notifications.services.NotificationIdGenerator;
 import com.mobgen.halo.android.notifications.services.HaloNotificationIdGenerator;
 import com.mobgen.halo.android.notifications.services.InstanceIDService;
@@ -26,7 +22,6 @@ import com.mobgen.halo.android.notifications.services.NotificationEmitter;
 import com.mobgen.halo.android.notifications.services.NotificationService;
 import com.mobgen.halo.android.sdk.api.Halo;
 import com.mobgen.halo.android.sdk.api.HaloPluginApi;
-import com.mobgen.halo.android.sdk.core.threading.HaloInteractorExecutor;
 
 /**
  * The notifications API is a wrapper library that allows you
@@ -151,36 +146,34 @@ public class HaloNotificationsApi extends HaloPluginApi {
     @NonNull
     @Api(2.4)
     public void enablePushEvents() {
-        mActionEventSubscription = NotificationEmitter.createNotificationEventSubscription(context(),null);
+        mActionEventSubscription = NotificationEmitter.createNotificationEventSubscription(context(), null);
         NotificationService.enablePushEvents();
     }
 
     /**
      * Enable the push events to track
+     *
      * @param listener The listener to receive the actions.
      */
     @Keep
     @NonNull
     @Api(2.4)
     public void enablePushEvents(@NonNull HaloNotificationEventListener listener) {
-        mActionEventSubscription = NotificationEmitter.createNotificationEventSubscription(context(),listener);
+        mActionEventSubscription = NotificationEmitter.createNotificationEventSubscription(context(), listener);
         NotificationService.enablePushEvents();
     }
 
     /**
-     * Notify a action event on the push notification.
-     *
-     * @param haloPushEvent The HALO push notification action event.
-     * @return
+     * Disable the push events to track
      */
     @Keep
     @NonNull
     @Api(2.4)
-    public HaloInteractorExecutor<HaloPushEvent> notifyPushEvent(@NonNull HaloPushEvent haloPushEvent) {
-        return new HaloInteractorExecutor<>(halo(),
-                "Push notify event action",
-                new NotificationEventInteractor(new NotificationEventRepository(new NotificationEventRemoteDatasource(halo().framework().network())), haloPushEvent)
-        );
+    public void disablePushEvent() {
+        if (mActionEventSubscription != null) {//release subscriptions
+            mActionEventSubscription.unsubscribe();
+        }
+        NotificationService.disbalePushEvents();
     }
 
     /**

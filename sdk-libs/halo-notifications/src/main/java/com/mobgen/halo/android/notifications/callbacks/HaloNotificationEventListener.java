@@ -1,7 +1,7 @@
 package com.mobgen.halo.android.notifications.callbacks;
 
 import android.support.annotation.Keep;
-import android.support.annotation.Nullable;
+import android.support.annotation.NonNull;
 
 import com.mobgen.halo.android.framework.common.annotations.Api;
 import com.mobgen.halo.android.notifications.models.HaloPushEvent;
@@ -23,5 +23,5 @@ public interface HaloNotificationEventListener {
      */
     @Keep
     @Api(2.0)
-    void onEventReceived(@Nullable HaloPushEvent haloPushEvent);
+    void onEventReceived(@NonNull HaloPushEvent haloPushEvent);
 }

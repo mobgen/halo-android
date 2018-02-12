@@ -24,10 +24,7 @@ import com.mobgen.halo.android.sdk.api.Halo;
 /**
  * Subscription to handle notification event actions.
  */
-@Keep
 public class NotificationEventSubscription extends BroadcastReceiver implements ISubscription {
-
-    private static final String TAG = "NotificationEven";
 
     /**
      * The context.
@@ -64,30 +61,23 @@ public class NotificationEventSubscription extends BroadcastReceiver implements 
         String action = intent.getExtras().getString("action");
         String scheduleId = intent.getExtras().getString("scheduleId");
 
-        if(Halo.instance().manager().getDevice()!=null) {
+        HaloPushEvent receiptPush = new HaloPushEvent.Builder(Halo.instance().manager().getDevice().getAlias())
+                .withAction(action)
+                .withSchedule(scheduleId)
+                .build();
 
-            HaloPushEvent receiptPush = new HaloPushEvent.Builder(Halo.instance().manager().getDevice().getAlias())
-                    .withAction(action)
-                    .withSchedule(scheduleId)
-                    .build();
-
-            HaloNotificationsApi.with(Halo.instance())
-                    .notifyPushEvent(receiptPush)
-                    .threadPolicy(Threading.POOL_QUEUE_POLICY)
-                    .execute(new CallbackV2<HaloPushEvent>() {
-                        @Override
-                        public void onFinish(@NonNull HaloResultV2<HaloPushEvent> haloResultV2) {
-                            if (haloResultV2.status().isOk()) {
-                                if (mListener != null) {
-                                    mListener.onEventReceived(haloResultV2.data());
-                                }
+        HaloPushEventsApi.with(Halo.instance())
+                .notifyPushEvent(receiptPush)
+                .threadPolicy(Threading.POOL_QUEUE_POLICY)
+                .execute(new CallbackV2<HaloPushEvent>() {
+                    @Override
+                    public void onFinish(@NonNull HaloResultV2<HaloPushEvent> haloResultV2) {
+                        if (haloResultV2.status().isOk()) {
+                            if (mListener != null) {
+                                mListener.onEventReceived(haloResultV2.data());
                             }
                         }
-                    });
-        } else {
-            if (mListener != null) {
-                mListener.onEventReceived(null);
-            }
-        }
+                    }
+                });
     }
 }

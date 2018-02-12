@@ -16,8 +16,6 @@ import com.google.firebase.messaging.RemoteMessage;
 import com.mobgen.halo.android.framework.common.helpers.logger.Halog;
 import com.mobgen.halo.android.framework.common.utils.AssertionUtils;
 import com.mobgen.halo.android.framework.common.utils.HaloUtils;
-import com.mobgen.halo.android.framework.toolbox.threading.Threading;
-import com.mobgen.halo.android.notifications.HaloNotificationsApi;
 import com.mobgen.halo.android.notifications.decorator.HaloNotificationDecorator;
 import com.mobgen.halo.android.notifications.decorator.NotificationActionDecorator;
 import com.mobgen.halo.android.notifications.decorator.NotificationBadgeDecorator;
@@ -28,8 +26,8 @@ import com.mobgen.halo.android.notifications.decorator.NotificationLedDecorator;
 import com.mobgen.halo.android.notifications.decorator.NotificationMessageDecorator;
 import com.mobgen.halo.android.notifications.decorator.NotificationSoundDecorator;
 import com.mobgen.halo.android.notifications.decorator.NotificationTitleDecorator;
+import com.mobgen.halo.android.notifications.events.EventIntentFactory;
 import com.mobgen.halo.android.notifications.events.NotificationEventsActions;
-import com.mobgen.halo.android.notifications.models.HaloPushEvent;
 import com.mobgen.halo.android.sdk.api.Halo;
 
 import org.json.JSONException;
@@ -46,6 +44,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Keep
 @SuppressLint("Registered")
 public class NotificationService extends FirebaseMessagingService {
+
+    private static int DISMISS_INTENT_CODE = 0;
+
+    private static int OPEN_INTENT_CODE = 1;
 
     /**
      * The atomic identifier to display every notification in a different view.
@@ -138,12 +140,9 @@ public class NotificationService extends FirebaseMessagingService {
         Bundle dataBundle = messageToBundle(message);
 
         //notify that push was received correctly
-        if (mActionEvents && Halo.instance().manager().getDevice() != null) {
-            Intent receiptIntent = new Intent();
-            receiptIntent.setAction(HaloUtils.getEventName(Halo.instance().context(), NotificationEmitter.NOTIFICATION_EVENT) + NotificationEventsActions.PUSH_RECEIPT);
-            receiptIntent.putExtra("action", NotificationEventsActions.PUSH_RECEIPT);
-            receiptIntent.putExtra("scheduleId", dataBundle.getString("scheduleId"));
-            NotificationEmitter.emitNotificationEventAction(this, receiptIntent);
+        if (mActionEvents) {
+            NotificationEmitter.emitNotificationEventAction(this, EventIntentFactory.pushEventIntent(NotificationEventsActions.PUSH_RECEIPT,
+                    dataBundle.getString("scheduleId")));
         }
 
         String from = message.getFrom();
@@ -162,19 +161,15 @@ public class NotificationService extends FirebaseMessagingService {
             //We should not crash
             if (builder != null) {
                 if (mActionEvents) {
-                    Intent deleteIntent = new Intent();
-                    deleteIntent.setAction(HaloUtils.getEventName(Halo.instance().context(), NotificationEmitter.NOTIFICATION_EVENT) + NotificationEventsActions.PUSH_DISMISS);
-                    deleteIntent.putExtra("action", NotificationEventsActions.PUSH_DISMISS);
-                    deleteIntent.putExtra("scheduleId", dataBundle.getString("scheduleId"));
-                    builder.setDeleteIntent(PendingIntent.getBroadcast(this, 0,
-                            deleteIntent, PendingIntent.FLAG_UPDATE_CURRENT));
+                    Intent dismissIntent = EventIntentFactory.pushEventIntent(NotificationEventsActions.PUSH_DISMISS,
+                            dataBundle.getString("scheduleId"));
+                    builder.setDeleteIntent(PendingIntent.getBroadcast(this, DISMISS_INTENT_CODE,
+                            dismissIntent, PendingIntent.FLAG_UPDATE_CURRENT));
 
-                    Intent opentIntent = new Intent();
-                    opentIntent.setAction(HaloUtils.getEventName(Halo.instance().context(), NotificationEmitter.NOTIFICATION_EVENT) + NotificationEventsActions.PUSH_OPEN);
-                    deleteIntent.setAction(NotificationEventsActions.PUSH_OPEN);
-                    opentIntent.putExtra("action", NotificationEventsActions.PUSH_OPEN);
-                    opentIntent.putExtra("scheduleId", dataBundle.getString("scheduleId"));
-                    builder.setContentIntent(PendingIntent.getBroadcast(this, 1,
+                    Intent opentIntent = EventIntentFactory.pushEventIntent(NotificationEventsActions.PUSH_OPEN,
+                            dataBundle.getString("scheduleId"));
+                    dismissIntent.setAction(NotificationEventsActions.PUSH_OPEN);
+                    builder.setContentIntent(PendingIntent.getBroadcast(this, OPEN_INTENT_CODE,
                             opentIntent, PendingIntent.FLAG_UPDATE_CURRENT));
                 }
 
@@ -280,5 +275,12 @@ public class NotificationService extends FirebaseMessagingService {
      */
     public static void enablePushEvents() {
         mActionEvents = true;
+    }
+
+    /**
+     * Disable push action event notifications.
+     */
+    public static void disbalePushEvents() {
+        mActionEvents = false;
     }
 }
