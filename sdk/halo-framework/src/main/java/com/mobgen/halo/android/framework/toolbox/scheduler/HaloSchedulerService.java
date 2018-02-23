@@ -13,6 +13,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Icon;
 import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -24,6 +26,7 @@ import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.mobgen.halo.android.framework.R;
 import com.mobgen.halo.android.framework.common.helpers.logger.Halog;
 import com.mobgen.halo.android.framework.storage.preference.HaloPreferencesStorage;
 import com.mobgen.halo.android.framework.toolbox.threading.HaloThreadManager;
@@ -31,12 +34,12 @@ import com.mobgen.halo.android.framework.toolbox.threading.HaloThreadManager;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static com.mobgen.halo.android.framework.api.HaloConfig.SERVICE_NOTIFICATION_CHANNEL;
+import static com.mobgen.halo.android.framework.api.HaloConfig.SERVICE_NOTIFICATION_ICON;
 import static com.mobgen.halo.android.framework.api.StorageConfig.DEFAULT_STORAGE_NAME;
 
 /**
@@ -132,11 +135,6 @@ public final class HaloSchedulerService extends Service {
      * A handler thread.
      */
     private HandlerThread mHandlerThread;
-
-    /**
-     * Handle when a service come from boot
-     */
-    private boolean shouldHideNotification = true;
 
     /**
      * The scheduler binder stub.
@@ -578,31 +576,29 @@ public final class HaloSchedulerService extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
-
         return mBinder;
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        boolean hideNotification = true;
         if (intent == null) {
-            hideForegroundNotification();
             return START_NOT_STICKY;
         }
         if (!intent.hasExtra(PROTOCOL_KEY) || intent.getIntExtra(PROTOCOL_KEY, -1) != PROTOCOL_CODE) {
-            hideForegroundNotification();
             throw new IllegalAccessError("HaloSchedulerService won't receive user command.");
         }
         if (intent.hasExtra(CONDITION_DATA)) {
-            hideForegroundNotification();
             TriggerDesc condition = intent.getParcelableExtra(CONDITION_DATA);
             Halog.d(getClass(), "Trigger received: " + condition.toString());
             mChecker.checkSatisfy(condition);
         } else if (intent.hasExtra(BOOT_DEVICE_KEY)) {
+            hideNotification = false;
             mChecker.checkDeviceBootCompleted();
         } else if (intent.hasExtra(STATUS_CHANGED)) {
-            hideForegroundNotification();
             mChecker.checkStatusChanged(intent.getStringExtra(STATUS_CHANGED));
         }
+        hideForegroundNotification(hideNotification);
         return START_NOT_STICKY;
     }
 
@@ -613,6 +609,7 @@ public final class HaloSchedulerService extends Service {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             HaloPreferencesStorage preferences = new HaloPreferencesStorage(this, DEFAULT_STORAGE_NAME);
             String channelNotificationName = preferences.getString(SERVICE_NOTIFICATION_CHANNEL, "HALO foreground");
+            int notificationIcon = preferences.getInteger(SERVICE_NOTIFICATION_ICON, R.drawable.ic_service_notification);
 
             NotificationChannel channel = new NotificationChannel(FOREGROUND_CHANNEL_NOTIFICATION_ID, channelNotificationName,
                     NotificationManager.IMPORTANCE_DEFAULT);
@@ -620,6 +617,7 @@ public final class HaloSchedulerService extends Service {
             notificationManager.createNotificationChannel(channel);
 
             Notification notification = new Notification.Builder(getApplicationContext(), FOREGROUND_CHANNEL_NOTIFICATION_ID)
+                    .setSmallIcon(notificationIcon)
                     .setWhen(System.currentTimeMillis())
                     .setChannelId(FOREGROUND_CHANNEL_NOTIFICATION_ID)
                     .build();
@@ -629,9 +627,12 @@ public final class HaloSchedulerService extends Service {
 
     /**
      * Hide the foreground notification because the service is not on background anymore.
+     *
+     * @param hideNotification True if he have to hide the notification; Otherwise false.
      */
-    private void hideForegroundNotification() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && isServiceRunningInForeground(getApplicationContext(), HaloSchedulerService.class)) {
+    private void hideForegroundNotification(boolean hideNotification) {
+        if (hideNotification && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
+                && isServiceRunningInForeground(getApplicationContext(), HaloSchedulerService.class)) {
             stopForeground(true);
         }
     }

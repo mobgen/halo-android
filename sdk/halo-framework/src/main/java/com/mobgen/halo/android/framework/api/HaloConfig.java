@@ -4,6 +4,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -32,7 +33,15 @@ import static com.mobgen.halo.android.framework.api.StorageConfig.DEFAULT_STORAG
  */
 public class HaloConfig {
 
+    /**
+     *  Name to store the channel notification service.
+     */
     public static String SERVICE_NOTIFICATION_CHANNEL = "SERVICE_NOTIFICATION_CHANNEL";
+
+    /**
+     *  Name to store the icon of the notificaion when service startup
+     */
+    public static String SERVICE_NOTIFICATION_ICON = "SERVICE_NOTIFICATION_ICON";
 
     /**
      * The builder for the configuration.
@@ -227,6 +236,12 @@ public class HaloConfig {
         private String notificationChannelName = "Foreground service";
 
         /**
+         * The notification icon.
+         */
+        @DrawableRes
+        private Integer notificationIcon;
+
+        /**
          * Constructor for the builder that takes the context.
          *
          * @param context The context.
@@ -348,37 +363,41 @@ public class HaloConfig {
          */
         @Api(2.4)
         @NonNull
-        public Builder channelNotificationName(@NonNull String channelName) {
+        public Builder channelServiceNotification(@NonNull String channelName, @DrawableRes int icon) {
             notificationChannelName = channelName;
+            notificationIcon = icon;
             return this;
         }
 
 
         /**
-         * This method disables the Broadcast Boot Receiver registered in the AndroidManifest file.
+         * This method disables/enable the Broadcast Boot Receiver registered in the AndroidManifest file.
+         *
+         * @param state The state of the component service
          */
-        private void disableServiceOnBoot() {
+        private void serviceManifestComponentState(boolean state) {
             ComponentName receiver = new ComponentName(mContext, PersistReceiver.class);
             PackageManager pm = mContext.getPackageManager();
-
-            pm.setComponentEnabledSetting(receiver,
-                    PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+            int newState = (state ?
+                    PackageManager.COMPONENT_ENABLED_STATE_ENABLED :
+                    PackageManager.COMPONENT_ENABLED_STATE_DISABLED);
+            pm.setComponentEnabledSetting(receiver, newState,
                     PackageManager.DONT_KILL_APP);
-
         }
 
         @NonNull
         @Override
         public HaloConfig build() {
             //disable service on boot
-            if (!shouldLaunchService) {
-                disableServiceOnBoot();
-            }
+            serviceManifestComponentState(shouldLaunchService);
 
             //save notification service channel
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 HaloPreferencesStorage preferences = new HaloPreferencesStorage(mContext, DEFAULT_STORAGE_NAME);
                 preferences.edit().putString(SERVICE_NOTIFICATION_CHANNEL, notificationChannelName).commit();
+                if (notificationIcon != null) {
+                    preferences.edit().putInt(SERVICE_NOTIFICATION_ICON, notificationIcon).commit();
+                }
             }
 
             //Networking

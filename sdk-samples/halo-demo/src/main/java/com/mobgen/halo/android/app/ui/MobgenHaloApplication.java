@@ -12,6 +12,7 @@ import com.facebook.stetho.Stetho;
 import com.joanzapata.iconify.Iconify;
 import com.joanzapata.iconify.fonts.FontAwesomeModule;
 import com.mobgen.halo.android.app.BuildConfig;
+import com.mobgen.halo.android.app.R;
 import com.mobgen.halo.android.app.generated.GeneratedDatabaseFromModel;
 import com.mobgen.halo.android.app.model.chat.ChatMessage;
 import com.mobgen.halo.android.app.module.ConfigurationModule;
@@ -30,7 +31,6 @@ import com.mobgen.halo.android.sdk.api.HaloApplication;
 import com.mobgen.halo.android.sdk.core.internal.storage.HaloManagerContract;
 import com.mobgen.halo.android.sdk.core.management.segmentation.HaloLocale;
 import com.mobgen.halo.android.translations.HaloTranslationsApi;
-import com.squareup.leakcanary.LeakCanary;
 import com.mobgen.halo.android.twofactor.HaloTwoFactorApi;
 
 import java.lang.annotation.Retention;
@@ -112,11 +112,11 @@ public class MobgenHaloApplication extends HaloApplication {
         Iconify.with(new FontAwesomeModule());
 
         //strict vm policy
-//        StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
-//                .detectAll()
-//                .penaltyLog()
-//                .penaltyDeath()
-//                .build());
+        StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
+                .detectAll()
+                .penaltyLog()
+                .penaltyDeath()
+                .build());
 
         if (BuildConfig.BUILD_TYPE.contains("debug")) {
             //Facebook stetho
@@ -201,7 +201,7 @@ public class MobgenHaloApplication extends HaloApplication {
                 .debug(BuildConfig.DEBUG)
                 .printLogToFile(PrintLog.SINGLE_FILE_POLICY)
                 .enableServiceOnBoot()
-                .channelNotificationName("My awesome name")
+                .channelNotificationName("My awesome name", R.drawable.myicon)
                 .enableDefaultTags(BuildConfig.BUILD_TYPE.equals("debug"))
                 .endProcesses(new ConfigurationModule());
     }

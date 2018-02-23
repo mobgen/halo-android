@@ -2,6 +2,7 @@ package com.mobgen.halo.android.sdk.api;
 
 import android.app.ActivityManager;
 import android.content.Context;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.Keep;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -409,8 +410,8 @@ public class Halo {
          */
         @Api(2.4)
         @NonNull
-        public Installer channelNotificationName(@NonNull String channelName) {
-            mConfigurationBuilder.channelNotificationName(channelName);
+        public Installer channelServiceNotification(@NonNull String channelName, @DrawableRes int icon) {
+            mConfigurationBuilder.channelServiceNotification(channelName, icon);
             return this;
         }
 
