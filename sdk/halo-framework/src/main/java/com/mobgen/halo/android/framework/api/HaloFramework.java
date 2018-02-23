@@ -1,6 +1,8 @@
 package com.mobgen.halo.android.framework.api;
 
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -12,6 +14,7 @@ import com.mobgen.halo.android.framework.network.client.response.Parser;
 import com.mobgen.halo.android.framework.toolbox.bus.Event;
 import com.mobgen.halo.android.framework.toolbox.bus.EventId;
 import com.mobgen.halo.android.framework.toolbox.bus.Subscriber;
+import com.mobgen.halo.android.framework.toolbox.scheduler.PersistReceiver;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -66,6 +69,33 @@ public class HaloFramework {
         mNetworkApi = HaloNetworkApi.newNetworkApi(this, configuration);
         mSyncApi = HaloToolboxApi.newSyncApi(this, configuration);
         mStorages = new HashMap<>(1);
+    }
+
+
+    /**
+     * This method enables the Broadcast receiver registered in the AndroidManifest file.
+     */
+    public void enableBroadcastReceiver() {
+        ComponentName receiver = new ComponentName(mContext, PersistReceiver.class);
+        PackageManager pm = mContext.getPackageManager();
+
+        pm.setComponentEnabledSetting(receiver,
+                PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+                PackageManager.DONT_KILL_APP);
+
+    }
+
+    /**
+     * This method disables the Broadcast receiver registered in the AndroidManifest file.
+     */
+    public void disableBroadcastReceiver() {
+        ComponentName receiver = new ComponentName(mContext, PersistReceiver.class);
+        PackageManager pm = mContext.getPackageManager();
+
+        pm.setComponentEnabledSetting(receiver,
+                PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+                PackageManager.DONT_KILL_APP);
+
     }
 
     /**
@@ -209,7 +239,7 @@ public class HaloFramework {
      * @param printPolicy The print to file policy
      */
     @Api(2.2)
-    public void setPrintLogToFilePolicy(int printPolicy){
+    public void setPrintLogToFilePolicy(int printPolicy) {
         mPrintPolicy = printPolicy;
     }
 
@@ -219,7 +249,7 @@ public class HaloFramework {
      * @return The print to file policy
      */
     @Api(2.2)
-    public int printToFilePolicy(){
+    public int printToFilePolicy() {
         return mPrintPolicy;
     }
 

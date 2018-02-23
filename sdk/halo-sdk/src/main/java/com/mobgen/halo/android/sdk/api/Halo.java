@@ -390,6 +390,31 @@ public class Halo {
         }
 
         /**
+         * Enable the service startup on boot
+         *
+         * @return The builder.
+         */
+        @Api(2.4)
+        @NonNull
+        public Installer enableServiceOnBoot() {
+            mConfigurationBuilder.enableServiceOnBoot();
+            return this;
+        }
+
+        /**
+         * Set the notification channel name.
+         *
+         * @param channelName The channel name
+         * @return The builder.
+         */
+        @Api(2.4)
+        @NonNull
+        public Installer channelNotificationName(@NonNull String channelName) {
+            mConfigurationBuilder.channelNotificationName(channelName);
+            return this;
+        }
+
+        /**
          * Sets the processes that will be executed before any other action related to
          * HALO.
          *

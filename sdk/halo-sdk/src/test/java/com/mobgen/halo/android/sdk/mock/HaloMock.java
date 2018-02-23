@@ -61,7 +61,7 @@ public class HaloMock {
     }
 
     public static Halo.Installer createInstaller() {
-        return Halo.installer(RuntimeEnvironment.application);
+        return Halo.installer(RuntimeEnvironment.application).channelNotificationName("my channel").enableServiceOnBoot();
     }
 
     public static Halo create(HaloConfig.Builder configurationBuilder, HaloSessionManager sessionManager,
@@ -89,6 +89,8 @@ public class HaloMock {
 
     public static Halo givenACustomHalo(HaloConfig.Builder builder) {
         return Halo.installer(RuntimeEnvironment.application)
+                .channelNotificationName("my channel")
+                .enableServiceOnBoot()
                 .install(builder,
                         new HaloSessionManager(),
                         Credentials.createClient("mockClient", "mockPassword"),
@@ -99,6 +101,8 @@ public class HaloMock {
 
     public static Halo givenACustomHalo(HaloConfig.Builder builder, List<TagCollector> collectors) {
         return Halo.installer(RuntimeEnvironment.application)
+                .channelNotificationName("my channel")
+                .enableServiceOnBoot()
                 .install(builder,
                         new HaloSessionManager(),
                         Credentials.createClient("mockClient", "mockPassword"),

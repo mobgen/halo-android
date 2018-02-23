@@ -1,8 +1,11 @@
 package com.mobgen.halo.android.framework.toolbox.scheduler;
 
 import android.Manifest;
+import android.app.ActivityManager;
 import android.app.AlarmManager;
 import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
@@ -22,14 +25,19 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.mobgen.halo.android.framework.common.helpers.logger.Halog;
+import com.mobgen.halo.android.framework.storage.preference.HaloPreferencesStorage;
 import com.mobgen.halo.android.framework.toolbox.threading.HaloThreadManager;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import static com.mobgen.halo.android.framework.api.HaloConfig.SERVICE_NOTIFICATION_CHANNEL;
+import static com.mobgen.halo.android.framework.api.StorageConfig.DEFAULT_STORAGE_NAME;
 
 /**
  * HaloJobScheduler loop, all jobs finally get in here and be managed, checked and executed.
@@ -58,9 +66,14 @@ public final class HaloSchedulerService extends Service {
     static final int PROTOCOL_CODE = 0x991;
 
     /**
-     * The notification id for android sdk targe 26 +
+     * The notification id for android sdk target 26 +
      */
     static final int FOREGROUND_NOTIFICATION_ID = 0x091;
+
+    /**
+     * The notification channel id for android sdk target 26 +
+     */
+    static final String FOREGROUND_CHANNEL_NOTIFICATION_ID = "halo_hotfix_android_O_26";
 
     /**
      * Tag for the logger.
@@ -119,6 +132,11 @@ public final class HaloSchedulerService extends Service {
      * A handler thread.
      */
     private HandlerThread mHandlerThread;
+
+    /**
+     * Handle when a service come from boot
+     */
+    private boolean shouldHideNotification = true;
 
     /**
      * The scheduler binder stub.
@@ -236,13 +254,7 @@ public final class HaloSchedulerService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            //TODO fixme the creation of the notification. We are notifiying to a random channel id to prevfent show notification.
-            Notification notification = new Notification.Builder(getApplicationContext(), "halo_hotfix_android_O_26")
-                    .setWhen(System.currentTimeMillis())
-                    .build();
-            startForeground(FOREGROUND_NOTIFICATION_ID, notification);
-        }
+        foregroundNotification();
         mJobsSet = new ConcurrentHashMap<>();
         mReceivers = new ConcurrentHashMap<>();
         mAlarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
@@ -566,27 +578,79 @@ public final class HaloSchedulerService extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
+
         return mBinder;
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent == null) {
+            hideForegroundNotification();
             return START_NOT_STICKY;
         }
         if (!intent.hasExtra(PROTOCOL_KEY) || intent.getIntExtra(PROTOCOL_KEY, -1) != PROTOCOL_CODE) {
+            hideForegroundNotification();
             throw new IllegalAccessError("HaloSchedulerService won't receive user command.");
         }
         if (intent.hasExtra(CONDITION_DATA)) {
+            hideForegroundNotification();
             TriggerDesc condition = intent.getParcelableExtra(CONDITION_DATA);
             Halog.d(getClass(), "Trigger received: " + condition.toString());
             mChecker.checkSatisfy(condition);
         } else if (intent.hasExtra(BOOT_DEVICE_KEY)) {
             mChecker.checkDeviceBootCompleted();
         } else if (intent.hasExtra(STATUS_CHANGED)) {
+            hideForegroundNotification();
             mChecker.checkStatusChanged(intent.getStringExtra(STATUS_CHANGED));
         }
         return START_NOT_STICKY;
+    }
+
+    /**
+     * Show a foreground service notification when a device has an api version 26+
+     */
+    private void foregroundNotification() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            HaloPreferencesStorage preferences = new HaloPreferencesStorage(this, DEFAULT_STORAGE_NAME);
+            String channelNotificationName = preferences.getString(SERVICE_NOTIFICATION_CHANNEL, "HALO foreground");
+
+            NotificationChannel channel = new NotificationChannel(FOREGROUND_CHANNEL_NOTIFICATION_ID, channelNotificationName,
+                    NotificationManager.IMPORTANCE_DEFAULT);
+            NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+            notificationManager.createNotificationChannel(channel);
+
+            Notification notification = new Notification.Builder(getApplicationContext(), FOREGROUND_CHANNEL_NOTIFICATION_ID)
+                    .setWhen(System.currentTimeMillis())
+                    .setChannelId(FOREGROUND_CHANNEL_NOTIFICATION_ID)
+                    .build();
+            startForeground(FOREGROUND_NOTIFICATION_ID, notification);
+        }
+    }
+
+    /**
+     * Hide the foreground notification because the service is not on background anymore.
+     */
+    private void hideForegroundNotification() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && isServiceRunningInForeground(getApplicationContext(), HaloSchedulerService.class)) {
+            stopForeground(true);
+        }
+    }
+
+    /**
+     * Check if a service is running in foreground
+     *
+     * @param context      The context
+     * @param serviceClass The service class
+     * @return True if its in foreground; False otherwise
+     */
+    private boolean isServiceRunningInForeground(Context context, Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return service.foreground;
+            }
+        }
+        return false;
     }
 
     /**

@@ -38,7 +38,7 @@ public class MobgenHaloApplication extends HaloApplication {
      */
     @NonNull
     public static Halo.Installer createHaloInstaller(Context context) {
-        String environmentUrl = "https://halo-new-int.mobgen.com";
+        String environmentUrl = "https://halo-int.mobgen.com";
         return Halo.installer(context).environment(environmentUrl);
     }
 

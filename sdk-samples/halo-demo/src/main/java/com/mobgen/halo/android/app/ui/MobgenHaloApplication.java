@@ -112,11 +112,11 @@ public class MobgenHaloApplication extends HaloApplication {
         Iconify.with(new FontAwesomeModule());
 
         //strict vm policy
-        StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
-                .detectAll()
-                .penaltyLog()
-                .penaltyDeath()
-                .build());
+//        StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
+//                .detectAll()
+//                .penaltyLog()
+//                .penaltyDeath()
+//                .build());
 
         if (BuildConfig.BUILD_TYPE.contains("debug")) {
             //Facebook stetho
@@ -145,7 +145,7 @@ public class MobgenHaloApplication extends HaloApplication {
         switch (environment) {
             case CUSTOM:
                 SharedPreferences preferences = context.getSharedPreferences(HaloManagerContract.HALO_MANAGER_STORAGE, MODE_PRIVATE);
-                environmentUrl = preferences.getString(SettingsActivity.PREFERENCES_HALO_ENVIRONMENT_CUSTOM_URL, "https://halo-new-int.mobgen.com");
+                environmentUrl = preferences.getString(SettingsActivity.PREFERENCES_HALO_ENVIRONMENT_CUSTOM_URL, "https://halo-int.mobgen.com");
                 break;
             case LOCAL:
                 environmentUrl = "http://halo-local.mobgen.com";
@@ -154,7 +154,7 @@ public class MobgenHaloApplication extends HaloApplication {
                 environmentUrl = "https://halo-stage.mobgen.com";
                 break;
             case INT:
-                environmentUrl = "https://halo-new-int.mobgen.com";
+                environmentUrl = "https://halo-int.mobgen.com";
                 break;
             case QA:
                 environmentUrl = "https://halo-qa.mobgen.com";
@@ -200,6 +200,8 @@ public class MobgenHaloApplication extends HaloApplication {
         return installer
                 .debug(BuildConfig.DEBUG)
                 .printLogToFile(PrintLog.SINGLE_FILE_POLICY)
+                .enableServiceOnBoot()
+                .channelNotificationName("My awesome name")
                 .enableDefaultTags(BuildConfig.BUILD_TYPE.equals("debug"))
                 .endProcesses(new ConfigurationModule());
     }
@@ -207,6 +209,7 @@ public class MobgenHaloApplication extends HaloApplication {
     @NonNull
     @Override
     public Halo onHaloCreated(@NonNull Halo halo) {
+
         //translations
         if (mTranslationsApi != null) {
             mTranslationsApi.cancel();
