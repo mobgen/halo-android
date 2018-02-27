@@ -1,10 +1,15 @@
 package com.mobgen.halo.android.notifications;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.CheckResult;
 import android.support.annotation.Keep;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.mobgen.halo.android.framework.common.annotations.Api;
@@ -73,6 +78,13 @@ import com.mobgen.halo.android.sdk.api.HaloPluginApi;
 @Keep
 public class HaloNotificationsApi extends HaloPluginApi {
 
+    public static String NOTIFICATION_CHANNEL_ID = "NOTIFICATION_CHANNEL_ID";
+
+    /**
+     * The channel name
+     */
+    private static String channelName = "Notifications";
+
     /**
      * Subscription added to stay in touch when the token is being
      * refreshed by firebase.
@@ -116,7 +128,19 @@ public class HaloNotificationsApi extends HaloPluginApi {
             }
         });
 
+        createNotificationChannel();
+
         NotificationService.setIdGenerator(new HaloNotificationIdGenerator());
+    }
+
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, channelName,
+                    NotificationManager.IMPORTANCE_DEFAULT);
+            NotificationManager notificationManager = (NotificationManager) halo().context().getSystemService(Context.NOTIFICATION_SERVICE);
+            notificationManager.createNotificationChannel(channel);
+            NotificationService.setNotificationChannelId(channel.getId());
+        }
     }
 
     /**
@@ -129,6 +153,7 @@ public class HaloNotificationsApi extends HaloPluginApi {
     @Keep
     @NonNull
     @Api(2.0)
+    @CheckResult(suggest = "You should override the notification channel on android 8+")
     public static HaloNotificationsApi with(@NonNull Halo halo) {
         return new HaloNotificationsApi(halo, FirebaseInstanceId.getInstance());
     }
@@ -143,6 +168,23 @@ public class HaloNotificationsApi extends HaloPluginApi {
     public void customIdGenerator(@NonNull NotificationIdGenerator customIdGenerator) {
         AssertionUtils.notNull(customIdGenerator, "customIdGenerator");
         NotificationService.setIdGenerator(customIdGenerator);
+    }
+
+    /**
+     * Set a channel for android 8+ notifications.
+     *
+     * @param channel The channel
+     */
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    @Keep
+    @Api(2.4)
+    public HaloNotificationsApi notificationChannel(@NonNull NotificationChannel channel) {
+        AssertionUtils.notNull(channel, "channel");
+        NotificationManager notificationManager = (NotificationManager) halo().context().getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.deleteNotificationChannel(NOTIFICATION_CHANNEL_ID);
+        notificationManager.createNotificationChannel(channel);
+        NotificationService.setNotificationChannelId(channel.getId());
+        return this;
     }
 
     /**
@@ -195,6 +237,7 @@ public class HaloNotificationsApi extends HaloPluginApi {
         AssertionUtils.notNull(listener, "listener");
         return NotificationEmitter.createSilentNotificationSubscription(context(), listener);
     }
+
     /**
      * Sets a notification listener that listens for two factor authentication code notifications received from HALO.
      * You can attach as many listeners as you want, but make
@@ -306,7 +349,7 @@ public class HaloNotificationsApi extends HaloPluginApi {
      */
     private void updateToken() {
         String token = token();
-        if(token != null) {
+        if (token != null) {
             halo().manager().setNotificationsToken(token).execute();
         }
     }

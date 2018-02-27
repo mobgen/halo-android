@@ -11,7 +11,6 @@ import android.support.v4.app.NotificationCompat;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
-import com.mobgen.halo.android.framework.common.annotations.Api;
 import com.mobgen.halo.android.framework.common.helpers.logger.Halog;
 import com.mobgen.halo.android.framework.common.utils.AssertionUtils;
 import com.mobgen.halo.android.notifications.decorator.HaloNotificationDecorator;
@@ -39,6 +38,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Keep
 @SuppressLint("Registered")
 public class NotificationService extends FirebaseMessagingService {
+    /**
+     * The channel name
+     */
+    private static String mChannelId;
 
     /**
      * The atomic identifier to display every notification in a different view.
@@ -136,12 +139,12 @@ public class NotificationService extends FirebaseMessagingService {
             //set the notification id
             int notificationId = mIdGenerator.getNextNotificationId(dataBundle, mNotificationId.getAndIncrement());
             //Build notification based on decorators
-            NotificationCompat.Builder builder = createNotificationDecorator().decorate(new NotificationCompat.Builder(this), dataBundle);
+            NotificationCompat.Builder builder = createNotificationDecorator().decorate(new NotificationCompat.Builder(this, mChannelId), dataBundle);
             //Notify if available and the decorator provides a builder. If a custom decorator provides a null builder
             //We should not crash
             if (builder != null) {
-                NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                 //Just notify
+                NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                 notificationManager.notify(notificationId, builder.build());
                 dataBundle.putString(NOTIFICATION_ID, String.valueOf(notificationId));
             }
@@ -187,10 +190,20 @@ public class NotificationService extends FirebaseMessagingService {
                                         new NotificationColorDecorator(
                                                 new NotificationLedDecorator(
                                                         new NotificationImageDecorator(this,
-                                                            new NotificationMessageDecorator(
-                                                                    new NotificationTitleDecorator(
-                                                                            mDecorator
-                                                                    )))))))));
+                                                                new NotificationMessageDecorator(
+                                                                        new NotificationTitleDecorator(
+                                                                                mDecorator
+                                                                        )))))))));
+    }
+
+    /**
+     * Set the notification channel name.
+     *
+     * @param channelName The channel name.
+     */
+    public static void setNotificationChannelId(@NonNull String channelName) {
+        AssertionUtils.notNull(channelName, "channelName");
+        mChannelId = channelName;
     }
 
     /**

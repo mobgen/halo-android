@@ -1,5 +1,7 @@
 package com.mobgen.halo.android.app.ui;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -112,11 +114,11 @@ public class MobgenHaloApplication extends HaloApplication {
         Iconify.with(new FontAwesomeModule());
 
         //strict vm policy
-        StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
-                .detectAll()
-                .penaltyLog()
-                .penaltyDeath()
-                .build());
+//        StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
+//                .detectAll()
+//                .penaltyLog()
+//                .penaltyDeath()
+//                .build());
 
         if (BuildConfig.BUILD_TYPE.contains("debug")) {
             //Facebook stetho
@@ -145,7 +147,7 @@ public class MobgenHaloApplication extends HaloApplication {
         switch (environment) {
             case CUSTOM:
                 SharedPreferences preferences = context.getSharedPreferences(HaloManagerContract.HALO_MANAGER_STORAGE, MODE_PRIVATE);
-                environmentUrl = preferences.getString(SettingsActivity.PREFERENCES_HALO_ENVIRONMENT_CUSTOM_URL, "https://halo-new-int.mobgen.com");
+                environmentUrl = preferences.getString(SettingsActivity.PREFERENCES_HALO_ENVIRONMENT_CUSTOM_URL, "https://halo-int.mobgen.com");
                 break;
             case LOCAL:
                 environmentUrl = "http://halo-local.mobgen.com";
@@ -154,7 +156,7 @@ public class MobgenHaloApplication extends HaloApplication {
                 environmentUrl = "https://halo-stage.mobgen.com";
                 break;
             case INT:
-                environmentUrl = "https://halo-new-int.mobgen.com";
+                environmentUrl = "https://halo-int.mobgen.com";
                 break;
             case QA:
                 environmentUrl = "https://halo-qa.mobgen.com";
@@ -242,7 +244,17 @@ public class MobgenHaloApplication extends HaloApplication {
             mSilentHaloNotificationListener.unsubscribe();
             mSilentHaloNotificationListener = null;
         }
-        mNotificationsApi = HaloNotificationsApi.with(halo);
+
+        NotificationChannel channel = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            channel = new NotificationChannel("NOTIFICATION_CHANNEL_ID", "My awesome channel",
+                    NotificationManager.IMPORTANCE_DEFAULT);
+            channel.setShowBadge(false);
+            mNotificationsApi = HaloNotificationsApi.with(halo).notificationChannel(channel);
+        } else {
+            mNotificationsApi = HaloNotificationsApi.with(halo);
+        }
+
         mSilentHaloNotificationListener = mNotificationsApi.listenSilentNotifications(new SilentNotificationDispatcher());
         mNotificationsApi.setNotificationDecorator(new DeeplinkDecorator(this));
         mNotificationsApi.customIdGenerator(new NotificationIdGenerator() {

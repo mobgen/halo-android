@@ -1,5 +1,7 @@
 package com.mobgen.halo.android.notifications.mock.instrumentation;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.support.annotation.NonNull;
 
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -16,7 +18,7 @@ public class HaloNotificationsApiMock {
 
     public static final String TOKEN = "hardcoded_token";
 
-    public static HaloNotificationsApi givenAContentApi(@NonNull Halo halo) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+    public static HaloNotificationsApi givenANotificationApi(@NonNull Halo halo) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
         Constructor<HaloNotificationsApi> mockCreationMethod = HaloNotificationsApi.class.getDeclaredConstructor(Halo.class, FirebaseInstanceId.class);
         mockCreationMethod.setAccessible(true);
         HaloNotificationsApi api = mockCreationMethod.newInstance(halo, givenAMockedInstanceId());
@@ -28,5 +30,11 @@ public class HaloNotificationsApiMock {
         FirebaseInstanceId firebaseInstanceId = mock(FirebaseInstanceId.class);
         when(firebaseInstanceId.getToken()).thenReturn(TOKEN);
         return firebaseInstanceId;
+    }
+
+    public static NotificationChannel givenANotificationChannel(){
+        NotificationChannel channel = new NotificationChannel("NOTIFICATION_CHANNEL_ID_CUSTOM", "My awesome channel",
+                NotificationManager.IMPORTANCE_DEFAULT);
+        return channel;
     }
 }

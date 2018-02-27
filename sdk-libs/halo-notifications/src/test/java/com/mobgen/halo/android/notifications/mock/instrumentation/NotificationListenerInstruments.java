@@ -4,9 +4,11 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.NotificationCompat;
 
 import com.mobgen.halo.android.notifications.HaloNotificationsApi;
 import com.mobgen.halo.android.notifications.callbacks.HaloNotificationListener;
+import com.mobgen.halo.android.notifications.decorator.HaloNotificationDecorator;
 import com.mobgen.halo.android.notifications.models.PushImage;
 import com.mobgen.halo.android.testing.CallbackFlag;
 
@@ -14,6 +16,8 @@ import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.lang.reflect.Field;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
@@ -94,6 +98,27 @@ public class NotificationListenerInstruments {
                 assertThat(from).isNotNull();
                 assertThat(data.getBoolean("modifyBundle")).isTrue();
                 assertThat(data.getString("halo_ui_notification_id")).isEqualTo(notificationId);
+            }
+        };
+    }
+
+    public static HaloNotificationDecorator givenANotificationDecoratorWithAChannel(@NonNull final CallbackFlag flag, final String channelId) {
+        return new HaloNotificationDecorator() {
+            @Override
+            public NotificationCompat.Builder decorate(@NonNull NotificationCompat.Builder builder, @NonNull Bundle bundle) {
+                flag.flagExecuted();
+                assertThat(bundle).isNotNull();
+                String channelIdReceived = null;
+                Field field = null;
+                try {
+                    field = builder.getClass().getDeclaredField("mChannelId");
+                    field.setAccessible(true);
+                    channelIdReceived = (String) field.get(builder);
+                    assertThat(channelIdReceived).isEqualTo(channelId);
+                } catch (NoSuchFieldException noSuchFieldException) {
+                } catch (IllegalAccessException illegalAccessException) {
+                }
+                return null;
             }
         };
     }
