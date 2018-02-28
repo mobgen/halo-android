@@ -8,7 +8,6 @@ import android.os.Build;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
 
 import com.mobgen.halo.android.framework.common.annotations.Api;
 import com.mobgen.halo.android.framework.common.helpers.builder.IBuilder;

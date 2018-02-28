@@ -1,5 +1,6 @@
 package com.mobgen.halo.android.sdk.api;
 
+import android.annotation.TargetApi;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.support.annotation.DrawableRes;
@@ -397,6 +398,7 @@ public class Halo {
          */
         @Api(2.4)
         @NonNull
+        @TargetApi(26)
         public Installer enableServiceOnBoot() {
             mConfigurationBuilder.enableServiceOnBoot();
             return this;
@@ -410,6 +412,7 @@ public class Halo {
          */
         @Api(2.4)
         @NonNull
+        @TargetApi(26)
         public Installer channelServiceNotification(@NonNull String channelName, @DrawableRes int icon) {
             mConfigurationBuilder.channelServiceNotification(channelName, icon);
             return this;

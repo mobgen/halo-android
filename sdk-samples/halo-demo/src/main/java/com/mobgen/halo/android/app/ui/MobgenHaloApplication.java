@@ -196,7 +196,6 @@ public class MobgenHaloApplication extends HaloApplication {
      */
     @NonNull
     @Override
-    @TargetApi(26)
     public Halo.Installer beforeInstallHalo(@NonNull Halo.Installer installer) {
         //TODO silent notifications
         return installer
