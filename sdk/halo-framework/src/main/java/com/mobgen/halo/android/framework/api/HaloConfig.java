@@ -1,5 +1,6 @@
 package com.mobgen.halo.android.framework.api;
 
+import android.annotation.TargetApi;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -7,6 +8,7 @@ import android.os.Build;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 
 import com.mobgen.halo.android.framework.common.annotations.Api;
 import com.mobgen.halo.android.framework.common.helpers.builder.IBuilder;
@@ -350,6 +352,7 @@ public class HaloConfig {
          */
         @Api(2.4)
         @NonNull
+        @TargetApi(26)
         public Builder enableServiceOnBoot() {
             shouldLaunchService = true;
             return this;
@@ -363,6 +366,7 @@ public class HaloConfig {
          */
         @Api(2.4)
         @NonNull
+        @TargetApi(26)
         public Builder channelServiceNotification(@NonNull String channelName, @DrawableRes int icon) {
             notificationChannelName = channelName;
             notificationIcon = icon;
@@ -388,11 +392,11 @@ public class HaloConfig {
         @NonNull
         @Override
         public HaloConfig build() {
-            //disable service on boot
-            serviceManifestComponentState(shouldLaunchService);
-
-            //save notification service channel
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                //disable service on boot
+                serviceManifestComponentState(shouldLaunchService);
+
+                //save notification service channel
                 HaloPreferencesStorage preferences = new HaloPreferencesStorage(mContext, DEFAULT_STORAGE_NAME);
                 preferences.edit().putString(SERVICE_NOTIFICATION_CHANNEL, notificationChannelName).commit();
                 if (notificationIcon != null) {

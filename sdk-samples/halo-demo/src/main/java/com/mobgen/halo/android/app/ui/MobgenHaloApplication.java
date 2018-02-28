@@ -1,5 +1,6 @@
 package com.mobgen.halo.android.app.ui;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -195,6 +196,7 @@ public class MobgenHaloApplication extends HaloApplication {
      */
     @NonNull
     @Override
+    @TargetApi(26)
     public Halo.Installer beforeInstallHalo(@NonNull Halo.Installer installer) {
         //TODO silent notifications
         return installer
