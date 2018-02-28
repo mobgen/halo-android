@@ -133,6 +133,10 @@ public class HaloNotificationsApi extends HaloPluginApi {
         NotificationService.setIdGenerator(new HaloNotificationIdGenerator());
     }
 
+    /**
+     * Create the default notification channel
+     *
+     */
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, channelName,
