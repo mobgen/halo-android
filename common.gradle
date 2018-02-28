@@ -23,11 +23,11 @@ ext {
     ignoreTestFailures = rootProject.hasProperty("ignoreTestFailures")
 
     //Android config
-    compileSdkVersion = 26
+    compileSdkVersion = 27
     buildToolsVersion = '27.0.2'
     minSdkVersion = 21
     minLocationSdkVersion = 21
-    targetSdkVersion = 26
+    targetSdkVersion = 27
 
     //Google
     appcompatVersion = '27.0.2'

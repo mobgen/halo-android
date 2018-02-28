@@ -114,11 +114,11 @@ public class MobgenHaloApplication extends HaloApplication {
         Iconify.with(new FontAwesomeModule());
 
         //strict vm policy
-//        StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
-//                .detectAll()
-//                .penaltyLog()
-//                .penaltyDeath()
-//                .build());
+        StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
+                .detectAll()
+                .penaltyLog()
+                .penaltyDeath()
+                .build());
 
         if (BuildConfig.BUILD_TYPE.contains("debug")) {
             //Facebook stetho
