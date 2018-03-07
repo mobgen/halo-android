@@ -3,6 +3,7 @@ package com.mobgen.halo.android.framework.toolbox.scheduler;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 
 /**
  * If you want persist your jobs after device rebooting,
@@ -22,7 +23,11 @@ public class PersistReceiver extends BroadcastReceiver {
                     break;
                 }
             case Intent.ACTION_BOOT_COMPLETED:
-                context.startService(HaloSchedulerService.deviceOn(context));
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    context.startForegroundService(HaloSchedulerService.deviceOn(context));
+                } else {
+                    context.startService(HaloSchedulerService.deviceOn(context));
+                }
                 break;
             default:
                 break;
