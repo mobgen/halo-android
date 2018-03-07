@@ -23,7 +23,7 @@ public class PushImageTest extends HaloRobolectricTest {
 
     @Override
     public void onStart() throws IOException, HaloParsingException {
-        mHalo = givenADefaultHalo();
+        mHalo = givenADefaultHalo("urlEndpoint");
     }
 
     @Override
