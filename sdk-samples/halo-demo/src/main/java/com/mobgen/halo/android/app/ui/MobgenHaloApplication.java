@@ -121,7 +121,11 @@ public class MobgenHaloApplication extends HaloApplication {
 
         //strict vm policy
         StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
-                .detectAll()
+                .detectLeakedClosableObjects()
+                .detectFileUriExposure()
+                .detectLeakedSqlLiteObjects()
+                .detectActivityLeaks()
+                .detectLeakedRegistrationObjects()
                 .penaltyLog()
                 .penaltyDeath()
                 .build());
