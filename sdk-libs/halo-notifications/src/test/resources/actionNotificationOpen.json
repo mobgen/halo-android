@@ -1,0 +1,5 @@
+{
+  "device": "myalias",
+  "schedule": "mypushId",
+  "action": "open"
+}

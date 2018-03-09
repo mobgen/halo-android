@@ -2,7 +2,9 @@ package com.mobgen.halo.android.notifications.services;
 
 import android.annotation.SuppressLint;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Keep;
 import android.support.annotation.NonNull;
@@ -13,6 +15,7 @@ import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.mobgen.halo.android.framework.common.helpers.logger.Halog;
 import com.mobgen.halo.android.framework.common.utils.AssertionUtils;
+import com.mobgen.halo.android.framework.common.utils.HaloUtils;
 import com.mobgen.halo.android.notifications.decorator.HaloNotificationDecorator;
 import com.mobgen.halo.android.notifications.decorator.NotificationActionDecorator;
 import com.mobgen.halo.android.notifications.decorator.NotificationBadgeDecorator;
@@ -23,6 +26,9 @@ import com.mobgen.halo.android.notifications.decorator.NotificationLedDecorator;
 import com.mobgen.halo.android.notifications.decorator.NotificationMessageDecorator;
 import com.mobgen.halo.android.notifications.decorator.NotificationSoundDecorator;
 import com.mobgen.halo.android.notifications.decorator.NotificationTitleDecorator;
+import com.mobgen.halo.android.notifications.events.EventIntentFactory;
+import com.mobgen.halo.android.notifications.events.NotificationEventsActions;
+import com.mobgen.halo.android.sdk.api.Halo;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -42,6 +48,10 @@ public class NotificationService extends FirebaseMessagingService {
      * The channel name
      */
     private static String mChannelId;
+
+    private static int DISMISS_INTENT_CODE = 0;
+
+    private static int OPEN_INTENT_CODE = 1;
 
     /**
      * The atomic identifier to display every notification in a different view.
@@ -75,6 +85,11 @@ public class NotificationService extends FirebaseMessagingService {
      * The notification id that is visible.
      */
     private static final String NOTIFICATION_ID = "halo_ui_notification_id";
+
+    /**
+     * True if the action event api is enable; Otherwise false.
+     */
+    private static boolean mActionEvents = false;
 
     /**
      * Parse a RemoteMessage into a bundle
@@ -126,9 +141,15 @@ public class NotificationService extends FirebaseMessagingService {
     public void onMessageReceived(@NonNull RemoteMessage message) {
         super.onMessageReceived(message);
 
-        String from = message.getFrom();
-
         Bundle dataBundle = messageToBundle(message);
+
+        //notify that push was received correctly
+        if (mActionEvents) {
+            NotificationEmitter.emitNotificationEventAction(this, EventIntentFactory.pushEventIntent(NotificationEventsActions.PUSH_RECEIPT,
+                    dataBundle.getString("scheduleId")));
+        }
+
+        String from = message.getFrom();
         if (isTwoFactor(dataBundle)) {
             //Let the two factor handle it
             NotificationEmitter.emitTwoFactor(this, from, dataBundle);
@@ -143,6 +164,18 @@ public class NotificationService extends FirebaseMessagingService {
             //Notify if available and the decorator provides a builder. If a custom decorator provides a null builder
             //We should not crash
             if (builder != null) {
+                if (mActionEvents) {
+                    Intent dismissIntent = EventIntentFactory.pushEventIntent(NotificationEventsActions.PUSH_DISMISS,
+                            dataBundle.getString("scheduleId"));
+                    builder.setDeleteIntent(PendingIntent.getBroadcast(this, DISMISS_INTENT_CODE,
+                            dismissIntent, PendingIntent.FLAG_UPDATE_CURRENT));
+
+                    Intent opentIntent = EventIntentFactory.pushEventIntent(NotificationEventsActions.PUSH_OPEN,
+                            dataBundle.getString("scheduleId"));
+                    dismissIntent.setAction(NotificationEventsActions.PUSH_OPEN);
+                    builder.setContentIntent(PendingIntent.getBroadcast(this, OPEN_INTENT_CODE,
+                            opentIntent, PendingIntent.FLAG_UPDATE_CURRENT));
+                }
                 //Just notify
                 NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                 notificationManager.notify(notificationId, builder.build());
@@ -248,5 +281,19 @@ public class NotificationService extends FirebaseMessagingService {
             notificationId = bundle.getInt(NOTIFICATION_ID);
         }
         return notificationId;
+    }
+
+    /**
+     * Enable push action event notifications.
+     */
+    public static void enablePushEvents() {
+        mActionEvents = true;
+    }
+
+    /**
+     * Disable push action event notifications.
+     */
+    public static void disbalePushEvents() {
+        mActionEvents = false;
     }
 }

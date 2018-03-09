@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.mobgen.halo.android.notifications.HaloNotificationsApi;
+import com.mobgen.halo.android.notifications.events.HaloPushEventsApi;
 import com.mobgen.halo.android.sdk.api.Halo;
 
 import java.lang.reflect.Constructor;
@@ -32,9 +33,17 @@ public class HaloNotificationsApiMock {
         return firebaseInstanceId;
     }
 
-    public static NotificationChannel givenANotificationChannel(){
+    public static NotificationChannel givenANotificationChannel() {
         NotificationChannel channel = new NotificationChannel("NOTIFICATION_CHANNEL_ID_CUSTOM", "My awesome channel",
                 NotificationManager.IMPORTANCE_DEFAULT);
         return channel;
+    }
+
+    public static HaloPushEventsApi givenANotificationEventApi(@NonNull Halo halo) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+        Constructor<HaloPushEventsApi> mockCreationMethod = HaloPushEventsApi.class.getDeclaredConstructor(Halo.class);
+        mockCreationMethod.setAccessible(true);
+        HaloPushEventsApi api = mockCreationMethod.newInstance(halo);
+        mockCreationMethod.setAccessible(false);
+        return api;
     }
 }

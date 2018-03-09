@@ -7,13 +7,14 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 
 import com.mobgen.halo.android.notifications.HaloNotificationsApi;
+import com.mobgen.halo.android.notifications.callbacks.HaloNotificationEventListener;
 import com.mobgen.halo.android.notifications.callbacks.HaloNotificationListener;
 import com.mobgen.halo.android.notifications.decorator.HaloNotificationDecorator;
-import com.mobgen.halo.android.notifications.models.PushImage;
+import com.mobgen.halo.android.notifications.events.NotificationEventsActions;
+import com.mobgen.halo.android.notifications.models.HaloPushEvent;
 import com.mobgen.halo.android.testing.CallbackFlag;
 
 import org.jetbrains.annotations.NotNull;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -34,12 +35,12 @@ public class NotificationListenerInstruments {
                 } else {
                     assertThat(api.getNotificationId(data)).isNotNull();
                 }
-                if(data.getString("extra")!=null){
+                if (data.getString("extra") != null) {
 
-                    try{
+                    try {
                         JSONObject jsonExtra = new JSONObject(data.getString("extra"));
                         assertThat(data.getString("instanceId")).isEqualTo("58594e203bb27211009ccc58");
-                    } catch (JSONException jsonException){
+                    } catch (JSONException jsonException) {
                         assertThat(data.getString("extra")).isEqualTo("myextradata");
                     }
                 }
@@ -122,4 +123,16 @@ public class NotificationListenerInstruments {
             }
         };
     }
+
+    public static HaloNotificationEventListener givenANotificationEventActionListenerWithAction(@NonNull final CallbackFlag flag, @NotificationEventsActions.EventType final String actionType) {
+        return new HaloNotificationEventListener() {
+            @Override
+            public void onEventReceived(@NonNull HaloPushEvent haloPushEvent) {
+                flag.flagExecuted();
+                assertThat(haloPushEvent.getAction()).isEqualTo(actionType);
+
+            }
+        };
+    }
+
 }

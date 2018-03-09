@@ -9,6 +9,7 @@ import com.google.firebase.messaging.RemoteMessage;
 import com.mobgen.halo.android.framework.common.helpers.subscription.ISubscription;
 import com.mobgen.halo.android.notifications.HaloNotificationsApi;
 import com.mobgen.halo.android.notifications.decorator.HaloNotificationDecorator;
+import com.mobgen.halo.android.notifications.mock.instrumentation.HaloManagerApiShadow;
 import com.mobgen.halo.android.notifications.services.NotificationIdGenerator;
 import com.mobgen.halo.android.notifications.services.InstanceIDService;
 import com.mobgen.halo.android.notifications.services.NotificationEmitter;
@@ -16,10 +17,12 @@ import com.mobgen.halo.android.notifications.services.NotificationService;
 import com.mobgen.halo.android.sdk.api.Halo;
 import com.mobgen.halo.android.testing.CallbackFlag;
 import com.mobgen.halo.android.testing.HaloRobolectricTest;
+import com.mobgen.halo.android.testing.MockServer;
 import com.mobgen.halo.android.testing.TestUtils;
 
 import org.junit.Test;
 import org.robolectric.RuntimeEnvironment;
+import org.robolectric.annotation.Config;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -52,18 +55,21 @@ import static com.mobgen.halo.android.notifications.mock.instrumentation.Notific
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
+@Config(shadows = {HaloManagerApiShadow.class})
 public class NotificationServiceTest extends HaloRobolectricTest {
 
     private CallbackFlag mCallbackFlag;
     private Halo mHalo;
     private HaloNotificationsApi mNotificationsApi;
     private NotificationService mNotificationService;
+    private MockServer mMockServer;
 
     @Override
     public void onStart() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, IOException, InstantiationException {
         initFirebase(RuntimeEnvironment.application);
+        mMockServer = MockServer.create();
         mCallbackFlag = new CallbackFlag();
-        mHalo = givenADefaultHalo();
+        mHalo = givenADefaultHalo(mMockServer.start());
         mNotificationsApi = givenANotificationApi(mHalo);
         mNotificationService = givenANotificationService(RuntimeEnvironment.application);
     }
@@ -74,6 +80,7 @@ public class NotificationServiceTest extends HaloRobolectricTest {
         mNotificationsApi.release();
         mNotificationsApi.setNotificationDecorator(null);
         mNotificationsApi = null;
+        mMockServer.shutdown();
     }
 
     @Test
