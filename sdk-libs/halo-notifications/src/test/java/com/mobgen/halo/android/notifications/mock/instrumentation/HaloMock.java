@@ -29,8 +29,8 @@ import static org.mockito.Mockito.mock;
 
 public class HaloMock {
 
-    public static Halo givenADefaultHalo() {
-        return givenACustomHalo(givenASingleThreadedConfig());
+    public static Halo givenADefaultHalo(String url) {
+        return givenACustomHalo(givenASingleThreadedConfig(url));
     }
 
     public static Halo givenACustomHalo(HaloConfig.Builder builder) {
@@ -44,9 +44,9 @@ public class HaloMock {
     }
 
     @NonNull
-    public static HaloConfig.Builder givenASingleThreadedConfig() {
+    public static HaloConfig.Builder givenASingleThreadedConfig(String url) {
         return givenASingleThreadedWithParserConfig(
-                null,
+                url,
                 LoganSquareParserFactory.create());
     }
 

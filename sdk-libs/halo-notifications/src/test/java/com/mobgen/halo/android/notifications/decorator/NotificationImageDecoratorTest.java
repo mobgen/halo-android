@@ -30,7 +30,7 @@ public class NotificationImageDecoratorTest extends BaseNotificationDecoratorTes
 
     @Override
     public void onStart() throws IOException, HaloParsingException {
-        mHalo = givenADefaultHalo();
+        mHalo = givenADefaultHalo("urlEndpoint");
     }
 
     @Override
