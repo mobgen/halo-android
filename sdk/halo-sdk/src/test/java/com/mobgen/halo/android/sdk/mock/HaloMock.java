@@ -61,7 +61,7 @@ public class HaloMock {
     }
 
     public static Halo.Installer createInstaller() {
-        return Halo.installer(RuntimeEnvironment.application).channelServiceNotification("my channel", com.mobgen.halo.android.framework.R.drawable.ic_service_notification).enableServiceOnBoot();
+        return Halo.installer(RuntimeEnvironment.application).enableServiceOnBoot("my channel", com.mobgen.halo.android.framework.R.drawable.ic_service_notification);
     }
 
     public static Halo create(HaloConfig.Builder configurationBuilder, HaloSessionManager sessionManager,
@@ -89,8 +89,7 @@ public class HaloMock {
 
     public static Halo givenACustomHalo(HaloConfig.Builder builder) {
         return Halo.installer(RuntimeEnvironment.application)
-                .channelServiceNotification("my channel", com.mobgen.halo.android.framework.R.drawable.ic_service_notification)
-                .enableServiceOnBoot()
+                .enableServiceOnBoot("my channel", com.mobgen.halo.android.framework.R.drawable.ic_service_notification)
                 .install(builder,
                         new HaloSessionManager(),
                         Credentials.createClient("mockClient", "mockPassword"),
@@ -101,8 +100,7 @@ public class HaloMock {
 
     public static Halo givenACustomHalo(HaloConfig.Builder builder, List<TagCollector> collectors) {
         return Halo.installer(RuntimeEnvironment.application)
-                .channelServiceNotification("my channel", com.mobgen.halo.android.framework.R.drawable.ic_service_notification)
-                .enableServiceOnBoot()
+                .enableServiceOnBoot("my channel", com.mobgen.halo.android.framework.R.drawable.ic_service_notification)
                 .install(builder,
                         new HaloSessionManager(),
                         Credentials.createClient("mockClient", "mockPassword"),

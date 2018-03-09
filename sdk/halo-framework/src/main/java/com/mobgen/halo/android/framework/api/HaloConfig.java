@@ -347,9 +347,10 @@ public class HaloConfig {
         /**
          * Enable the service startup on boot
          *
+         *
          * @return The builder.
          */
-        @Api(2.4)
+        @Api(2.5)
         @NonNull
         @TargetApi(26)
         public Builder enableServiceOnBoot() {
@@ -358,20 +359,22 @@ public class HaloConfig {
         }
 
         /**
-         * Set the notification channel name.
+         * Enable the service startup on boot
          *
          * @param channelName The channel name
+         * @param icon The channel name icon
+         *
          * @return The builder.
          */
-        @Api(2.4)
+        @Api(2.5)
         @NonNull
         @TargetApi(26)
-        public Builder channelServiceNotification(@NonNull String channelName, @DrawableRes int icon) {
+        public Builder enableServiceOnBoot(@NonNull String channelName, @DrawableRes int icon) {
+            shouldLaunchService = true;
             notificationChannelName = channelName;
             notificationIcon = icon;
             return this;
         }
-
 
         /**
          * This method disables/enable the Broadcast Boot Receiver registered in the AndroidManifest file.
