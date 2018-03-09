@@ -143,8 +143,8 @@ public class HaloNotificationsApi extends HaloPluginApi {
                     NotificationManager.IMPORTANCE_DEFAULT);
             NotificationManager notificationManager = (NotificationManager) halo().context().getSystemService(Context.NOTIFICATION_SERVICE);
             notificationManager.createNotificationChannel(channel);
-            NotificationService.setNotificationChannelId(channel.getId());
         }
+        NotificationService.setNotificationChannelId(NOTIFICATION_CHANNEL_ID);
     }
 
     /**
@@ -157,7 +157,6 @@ public class HaloNotificationsApi extends HaloPluginApi {
     @Keep
     @NonNull
     @Api(2.0)
-    @CheckResult(suggest = "You should override the notification channel on android 8+")
     public static HaloNotificationsApi with(@NonNull Halo halo) {
         return new HaloNotificationsApi(halo, FirebaseInstanceId.getInstance());
     }
@@ -181,7 +180,7 @@ public class HaloNotificationsApi extends HaloPluginApi {
      */
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Keep
-    @Api(2.4)
+    @Api(2.5)
     public HaloNotificationsApi notificationChannel(@NonNull NotificationChannel channel) {
         AssertionUtils.notNull(channel, "channel");
         NotificationManager notificationManager = (NotificationManager) halo().context().getSystemService(Context.NOTIFICATION_SERVICE);
