@@ -212,7 +212,8 @@ public class MobgenHaloApplication extends HaloApplication {
         return installer
                 .debug(BuildConfig.DEBUG)
                 .printLogToFile(PrintLog.SINGLE_FILE_POLICY)
-                .enableServiceOnBoot("My awesome name", R.drawable.myicon)
+               // .enableServiceOnBoot()
+                //.channelServiceNotification("My awesome name", R.drawable.myicon)
                 .enableDefaultTags(BuildConfig.BUILD_TYPE.equals("debug"))
                 .endProcesses(new ConfigurationModule());
     }

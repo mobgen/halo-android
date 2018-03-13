@@ -574,12 +574,12 @@ public final class HaloSchedulerService extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
+        hideForegroundNotification();
         return mBinder;
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        boolean hideNotification = true;
         if (intent == null) {
             return START_NOT_STICKY;
         }
@@ -591,12 +591,10 @@ public final class HaloSchedulerService extends Service {
             Halog.d(getClass(), "Trigger received: " + condition.toString());
             mChecker.checkSatisfy(condition);
         } else if (intent.hasExtra(BOOT_DEVICE_KEY)) {
-            hideNotification = false;
             mChecker.checkDeviceBootCompleted();
         } else if (intent.hasExtra(STATUS_CHANGED)) {
             mChecker.checkStatusChanged(intent.getStringExtra(STATUS_CHANGED));
         }
-        hideForegroundNotification(hideNotification);
         return START_NOT_STICKY;
     }
 
@@ -626,10 +624,9 @@ public final class HaloSchedulerService extends Service {
     /**
      * Hide the foreground notification because the service is not on background anymore.
      *
-     * @param hideNotification True if he have to hide the notification; Otherwise false.
      */
-    private void hideForegroundNotification(boolean hideNotification) {
-        if (hideNotification && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
+    private void hideForegroundNotification() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
                 && isServiceRunningInForeground(getApplicationContext(), HaloSchedulerService.class)) {
             stopForeground(true);
         }

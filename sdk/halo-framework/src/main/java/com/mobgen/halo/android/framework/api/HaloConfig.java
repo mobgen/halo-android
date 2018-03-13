@@ -35,12 +35,12 @@ import static com.mobgen.halo.android.framework.api.StorageConfig.DEFAULT_STORAG
 public class HaloConfig {
 
     /**
-     *  Name to store the channel notification service.
+     * Name to store the channel notification service.
      */
     public static String SERVICE_NOTIFICATION_CHANNEL = "SERVICE_NOTIFICATION_CHANNEL";
 
     /**
-     *  Name to store the icon of the notificaion when service startup
+     * Name to store the icon of the notificaion when service startup
      */
     public static String SERVICE_NOTIFICATION_ICON = "SERVICE_NOTIFICATION_ICON";
 
@@ -347,7 +347,6 @@ public class HaloConfig {
         /**
          * Enable the service startup on boot
          *
-         *
          * @return The builder.
          */
         @Api(2.5)
@@ -359,18 +358,16 @@ public class HaloConfig {
         }
 
         /**
-         * Enable the service startup on boot
+         * Set the notification channel name.
          *
          * @param channelName The channel name
-         * @param icon The channel name icon
-         *
+         * @param icon        The channel name icon
          * @return The builder.
          */
         @Api(2.5)
         @NonNull
         @TargetApi(26)
-        public Builder enableServiceOnBoot(@NonNull String channelName, @DrawableRes int icon) {
-            shouldLaunchService = true;
+        public Builder channelServiceNotification(@NonNull String channelName, @DrawableRes int icon) {
             notificationChannelName = channelName;
             notificationIcon = icon;
             return this;
