@@ -55,7 +55,10 @@ android {
 
 dependencies {
     api "com.mobgen.halo.android:halo-sdk:${rootProject.ext.haloVersion}"
-    api "com.google.firebase:firebase-messaging:${rootProject.ext.firebaseVersion}"
+    api ("com.google.firebase:firebase-messaging:${rootProject.ext.firebaseVersion}",  {
+        exclude group: 'com.android.support'
+    })
+    implementation "com.android.support:appcompat-v7:${rootProject.ext.appcompatVersion}"
     compileOnly "com.github.bumptech.glide:glide:${rootProject.ext.glideVersion}"
     compileOnly "com.squareup.picasso:picasso:${rootProject.ext.picassoVersion}"
     annotationProcessor "com.bluelinelabs:logansquare-compiler:${rootProject.ext.loganSquareVersion}"
@@ -90,7 +93,7 @@ task javadocJar(type: Jar, dependsOn: "documentationRelease") {
 }
 
 android.variantFilter { variant ->
-    if(!project.hasProperty("prepare${variant.name.capitalize()}Dependencies")) {
+    if (!project.hasProperty("prepare${variant.name.capitalize()}Dependencies")) {
         task "prepare${variant.name.capitalize()}Dependencies"()
     }
 }

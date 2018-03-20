@@ -26,7 +26,7 @@ import static com.mobgen.halo.android.notifications.fixtures.ServerFixtures.OPEN
 import static com.mobgen.halo.android.notifications.fixtures.ServerFixtures.RECEIPT;
 import static com.mobgen.halo.android.notifications.fixtures.ServerFixtures.enqueueServerFile;
 import static com.mobgen.halo.android.notifications.mock.instrumentation.HaloMock.givenADefaultHalo;
-import static com.mobgen.halo.android.notifications.mock.instrumentation.HaloNotificationsApiMock.givenAContentApi;
+import static com.mobgen.halo.android.notifications.mock.instrumentation.HaloNotificationsApiMock.givenANotificationApi;
 import static com.mobgen.halo.android.notifications.mock.instrumentation.NotificationActionIntentInstruments.givenAEventActionIntent;
 import static com.mobgen.halo.android.notifications.mock.instrumentation.NotificationListenerInstruments.givenANotificationEventActionListenerWithAction;
 import static com.mobgen.halo.android.notifications.mock.instrumentation.NotificationServiceInstruments.givenANotificationService;
@@ -52,7 +52,7 @@ public class NotificationEventSubscriptionTest extends HaloRobolectricTest {
         mMockServer = MockServer.create();
         mCallbackFlag = new CallbackFlag();
         mHalo = givenADefaultHalo(mMockServer.start());
-        mNotificationsApi = givenAContentApi(mHalo);
+        mNotificationsApi = givenANotificationApi(mHalo);
         mNotificationService = givenANotificationService(RuntimeEnvironment.application);
     }
 

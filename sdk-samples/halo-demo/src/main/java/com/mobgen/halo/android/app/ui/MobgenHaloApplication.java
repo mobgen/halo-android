@@ -1,6 +1,8 @@
 package com.mobgen.halo.android.app.ui;
 
 import android.annotation.TargetApi;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -256,7 +258,15 @@ public class MobgenHaloApplication extends HaloApplication {
             mSilentHaloNotificationListener.unsubscribe();
             mSilentHaloNotificationListener = null;
         }
-        mNotificationsApi = HaloNotificationsApi.with(halo);
+        NotificationChannel channel = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            channel = new NotificationChannel("NOTIFICATION_CHANNEL_ID", "My awesome channel",
+                    NotificationManager.IMPORTANCE_DEFAULT);
+            channel.setShowBadge(false);
+            mNotificationsApi = HaloNotificationsApi.with(halo).notificationChannel(channel);
+        } else {
+            mNotificationsApi = HaloNotificationsApi.with(halo);
+        }
         mNotificationsApi.enablePushEvents(new HaloNotificationEventListener() {
             @Override
             public void onEventReceived(@Nullable HaloPushEvent haloPushEvent) {
