@@ -1,7 +1,11 @@
 package com.mobgen.halo.android.framework.api;
 
+import android.annotation.TargetApi;
+import android.content.ComponentName;
 import android.content.Context;
-import android.support.annotation.IntDef;
+import android.content.pm.PackageManager;
+import android.os.Build;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -13,18 +17,32 @@ import com.mobgen.halo.android.framework.common.utils.AssertionUtils;
 import com.mobgen.halo.android.framework.network.client.endpoint.HaloEndpoint;
 import com.mobgen.halo.android.framework.network.client.endpoint.HaloEndpointCluster;
 import com.mobgen.halo.android.framework.network.client.response.Parser;
+import com.mobgen.halo.android.framework.storage.preference.HaloPreferencesStorage;
 import com.mobgen.halo.android.framework.toolbox.bus.EventBus;
 import com.mobgen.halo.android.framework.toolbox.bus.HaloEventBus;
+import com.mobgen.halo.android.framework.toolbox.scheduler.PersistReceiver;
 import com.mobgen.halo.android.framework.toolbox.threading.DefaultThreadManager;
 import com.mobgen.halo.android.framework.toolbox.threading.HaloThreadManager;
 import com.mobgen.halo.android.framework.toolbox.scheduler.HaloJobScheduler;
 
 import okhttp3.OkHttpClient;
 
+import static com.mobgen.halo.android.framework.api.StorageConfig.DEFAULT_STORAGE_NAME;
+
 /**
  * HALO Framework configuration.
  */
 public class HaloConfig {
+
+    /**
+     * Name to store the channel notification service.
+     */
+    public static String SERVICE_NOTIFICATION_CHANNEL = "SERVICE_NOTIFICATION_CHANNEL";
+
+    /**
+     * Name to store the icon of the notificaion when service startup
+     */
+    public static String SERVICE_NOTIFICATION_ICON = "SERVICE_NOTIFICATION_ICON";
 
     /**
      * The builder for the configuration.
@@ -130,11 +148,23 @@ public class HaloConfig {
 
     /**
      * Provides the print log to file policy.
+     *
      * @return The policy value.
      */
     @Api(2.2)
     public int printToFilePolicy() {
         return mBuilder.mPrintPolicy;
+    }
+
+    /**
+     * Get the channel notification name.
+     *
+     * @return The channel name.
+     */
+    @NonNull
+    @Api(2.4)
+    public String notificationChannelName() {
+        return mBuilder.notificationChannelName;
     }
 
     /**
@@ -195,6 +225,22 @@ public class HaloConfig {
          * The ok http client builder for the framework.
          */
         private OkHttpClient.Builder mOkHttpClientBuilder;
+
+        /**
+         * Handle if a service should launchg after device boot
+         */
+        private boolean shouldLaunchService = false;
+
+        /**
+         * Channel notification name for foreground services.
+         */
+        private String notificationChannelName = "Foreground service";
+
+        /**
+         * The notification icon.
+         */
+        @DrawableRes
+        private Integer notificationIcon;
 
         /**
          * Constructor for the builder that takes the context.
@@ -298,9 +344,65 @@ public class HaloConfig {
             return this;
         }
 
+        /**
+         * Enable the service startup on boot
+         *
+         * @return The builder.
+         */
+        @Api(2.5)
+        @NonNull
+        @TargetApi(26)
+        public Builder enableServiceOnBoot() {
+            shouldLaunchService = true;
+            return this;
+        }
+
+        /**
+         * Set the notification channel name.
+         *
+         * @param channelName The channel name
+         * @param icon        The channel name icon
+         * @return The builder.
+         */
+        @Api(2.5)
+        @NonNull
+        @TargetApi(26)
+        public Builder channelServiceNotification(@NonNull String channelName, @DrawableRes int icon) {
+            notificationChannelName = channelName;
+            notificationIcon = icon;
+            return this;
+        }
+
+        /**
+         * This method disables/enable the Broadcast Boot Receiver registered in the AndroidManifest file.
+         *
+         * @param state The state of the component service
+         */
+        private void serviceManifestComponentState(boolean state) {
+            ComponentName receiver = new ComponentName(mContext, PersistReceiver.class);
+            PackageManager pm = mContext.getPackageManager();
+            int newState = (state ?
+                    PackageManager.COMPONENT_ENABLED_STATE_ENABLED :
+                    PackageManager.COMPONENT_ENABLED_STATE_DISABLED);
+            pm.setComponentEnabledSetting(receiver, newState,
+                    PackageManager.DONT_KILL_APP);
+        }
+
         @NonNull
         @Override
         public HaloConfig build() {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                //disable service on boot
+                serviceManifestComponentState(shouldLaunchService);
+
+                //save notification service channel
+                HaloPreferencesStorage preferences = new HaloPreferencesStorage(mContext, DEFAULT_STORAGE_NAME);
+                preferences.edit().putString(SERVICE_NOTIFICATION_CHANNEL, notificationChannelName).commit();
+                if (notificationIcon != null) {
+                    preferences.edit().putInt(SERVICE_NOTIFICATION_ICON, notificationIcon).commit();
+                }
+            }
+
             //Networking
             if (mOkHttpClientBuilder == null) {
                 mOkHttpClientBuilder = new OkHttpClient.Builder();

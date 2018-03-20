@@ -17,6 +17,11 @@ import com.mobgen.halo.android.framework.storage.database.HaloDatabaseVersionMan
 public class StorageConfig {
 
     /**
+     * Default storage name
+     */
+    public static String  DEFAULT_STORAGE_NAME = "halo-storage";
+
+    /**
      * Builder config.
      */
     private Builder mBuilder;
@@ -187,7 +192,7 @@ public class StorageConfig {
         @Override
         public StorageConfig build() {
             if (mStorageName == null) {
-                mStorageName = "halo-storage";
+                mStorageName = DEFAULT_STORAGE_NAME;
             }
             if (mDatabaseVersion <= 0) {
                 throw new HaloConfigurationException("Error configuring the database" + mStorageName + ". The version must be greater than 0");

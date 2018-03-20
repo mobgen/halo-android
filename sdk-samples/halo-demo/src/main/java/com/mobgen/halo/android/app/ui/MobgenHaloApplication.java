@@ -1,5 +1,6 @@
 package com.mobgen.halo.android.app.ui;
 
+import android.annotation.TargetApi;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
@@ -16,6 +17,7 @@ import com.facebook.stetho.Stetho;
 import com.joanzapata.iconify.Iconify;
 import com.joanzapata.iconify.fonts.FontAwesomeModule;
 import com.mobgen.halo.android.app.BuildConfig;
+import com.mobgen.halo.android.app.R;
 import com.mobgen.halo.android.app.generated.GeneratedDatabaseFromModel;
 import com.mobgen.halo.android.app.model.chat.ChatMessage;
 import com.mobgen.halo.android.app.module.ConfigurationModule;
@@ -39,7 +41,6 @@ import com.mobgen.halo.android.sdk.api.HaloApplication;
 import com.mobgen.halo.android.sdk.core.internal.storage.HaloManagerContract;
 import com.mobgen.halo.android.sdk.core.management.segmentation.HaloLocale;
 import com.mobgen.halo.android.translations.HaloTranslationsApi;
-import com.squareup.leakcanary.LeakCanary;
 import com.mobgen.halo.android.twofactor.HaloTwoFactorApi;
 
 import java.lang.annotation.Retention;
@@ -213,6 +214,8 @@ public class MobgenHaloApplication extends HaloApplication {
         return installer
                 .debug(BuildConfig.DEBUG)
                 .printLogToFile(PrintLog.SINGLE_FILE_POLICY)
+                .enableServiceOnBoot()
+                .channelServiceNotification("My awesome name", R.drawable.myicon)
                 .enableDefaultTags(BuildConfig.BUILD_TYPE.equals("debug"))
                 .endProcesses(new ConfigurationModule());
     }
