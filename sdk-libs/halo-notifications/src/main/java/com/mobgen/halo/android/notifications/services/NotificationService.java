@@ -44,6 +44,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Keep
 @SuppressLint("Registered")
 public class NotificationService extends FirebaseMessagingService {
+    /**
+     * The channel name
+     */
+    private static String mChannelId;
 
     private static int DISMISS_INTENT_CODE = 0;
 
@@ -156,7 +160,7 @@ public class NotificationService extends FirebaseMessagingService {
             //set the notification id
             int notificationId = mIdGenerator.getNextNotificationId(dataBundle, mNotificationId.getAndIncrement());
             //Build notification based on decorators
-            NotificationCompat.Builder builder = createNotificationDecorator().decorate(new NotificationCompat.Builder(this), dataBundle);
+            NotificationCompat.Builder builder = createNotificationDecorator().decorate(new NotificationCompat.Builder(this, mChannelId), dataBundle);
             //Notify if available and the decorator provides a builder. If a custom decorator provides a null builder
             //We should not crash
             if (builder != null) {
@@ -172,9 +176,8 @@ public class NotificationService extends FirebaseMessagingService {
                     builder.setContentIntent(PendingIntent.getBroadcast(this, OPEN_INTENT_CODE,
                             opentIntent, PendingIntent.FLAG_UPDATE_CURRENT));
                 }
-
-                NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                 //Just notify
+                NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                 notificationManager.notify(notificationId, builder.build());
                 dataBundle.putString(NOTIFICATION_ID, String.valueOf(notificationId));
             }
@@ -224,6 +227,16 @@ public class NotificationService extends FirebaseMessagingService {
                                                                         new NotificationTitleDecorator(
                                                                                 mDecorator
                                                                         )))))))));
+    }
+
+    /**
+     * Set the notification channel name.
+     *
+     * @param channelName The channel name.
+     */
+    public static void setNotificationChannelId(@NonNull String channelName) {
+        AssertionUtils.notNull(channelName, "channelName");
+        mChannelId = channelName;
     }
 
     /**

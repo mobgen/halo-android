@@ -10,7 +10,7 @@ import org.robolectric.annotation.Config;
  * The base test that contains the configuration for the tests.
  */
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = 25)
+@Config(constants = BuildConfig.class, sdk = 27)
 public abstract class HaloRobolectricTest {
 
     @Before

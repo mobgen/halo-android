@@ -1,5 +1,6 @@
 package com.mobgen.halo.android.notifications.service;
 
+import android.app.NotificationChannel;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
@@ -26,8 +27,10 @@ import org.robolectric.annotation.Config;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
+import static com.mobgen.halo.android.notifications.HaloNotificationsApi.NOTIFICATION_CHANNEL_ID;
 import static com.mobgen.halo.android.notifications.mock.instrumentation.HaloMock.givenADefaultHalo;
-import static com.mobgen.halo.android.notifications.mock.instrumentation.HaloNotificationsApiMock.givenAContentApi;
+import static com.mobgen.halo.android.notifications.mock.instrumentation.HaloNotificationsApiMock.givenANotificationApi;
+import static com.mobgen.halo.android.notifications.mock.instrumentation.HaloNotificationsApiMock.givenANotificationChannel;
 import static com.mobgen.halo.android.notifications.mock.instrumentation.NotificationDecoratorInstruments.givenADefaultNotificationDecorator;
 import static com.mobgen.halo.android.notifications.mock.instrumentation.NotificationDecoratorInstruments.givenANullReturningDecorator;
 import static com.mobgen.halo.android.notifications.mock.instrumentation.NotificationInstruments.givenANotification;
@@ -40,6 +43,7 @@ import static com.mobgen.halo.android.notifications.mock.instrumentation.Notific
 import static com.mobgen.halo.android.notifications.mock.instrumentation.NotificationInstruments.withSilentNotification;
 import static com.mobgen.halo.android.notifications.mock.instrumentation.NotificationInstruments.withTwoFactor;
 import static com.mobgen.halo.android.notifications.mock.instrumentation.NotificationListenerInstruments.givenANotificationListener;
+import static com.mobgen.halo.android.notifications.mock.instrumentation.NotificationListenerInstruments.givenANotificationDecoratorWithAChannel;
 import static com.mobgen.halo.android.notifications.mock.instrumentation.NotificationListenerInstruments.givenANotificationWithImageListener;
 import static com.mobgen.halo.android.notifications.mock.instrumentation.NotificationListenerInstruments.givenATwoFactorListener;
 import static com.mobgen.halo.android.notifications.mock.instrumentation.NotificationListenerInstruments.givenAnAllNotificationListener;
@@ -66,7 +70,7 @@ public class NotificationServiceTest extends HaloRobolectricTest {
         mMockServer = MockServer.create();
         mCallbackFlag = new CallbackFlag();
         mHalo = givenADefaultHalo(mMockServer.start());
-        mNotificationsApi = givenAContentApi(mHalo);
+        mNotificationsApi = givenANotificationApi(mHalo);
         mNotificationService = givenANotificationService(RuntimeEnvironment.application);
     }
 
@@ -74,6 +78,8 @@ public class NotificationServiceTest extends HaloRobolectricTest {
     public void onDestroy() throws Exception {
         mHalo.uninstall();
         mNotificationsApi.release();
+        mNotificationsApi.setNotificationDecorator(null);
+        mNotificationsApi = null;
         mMockServer.shutdown();
     }
 
@@ -291,9 +297,32 @@ public class NotificationServiceTest extends HaloRobolectricTest {
     @Test
     public void thatCanListenToHaloNotificationIdGenerator() throws NoSuchFieldException, IllegalAccessException, NoSuchMethodException, InstantiationException, InvocationTargetException {
         RemoteMessage notification = givenANotification(withAnySourceNotification());
-        final int customID = 6;//default halo first id
-        HaloNotificationsApi notificationApi = givenAContentApi(mHalo);
-        ISubscription subscription = notificationApi.listenAllNotifications(givenAnNotificationListenerWithHaloNotificationId(mCallbackFlag, String.valueOf(customID)));
+        final int customID = 7;//default halo first id
+        ISubscription subscription = mNotificationsApi.listenAllNotifications(givenAnNotificationListenerWithHaloNotificationId(mCallbackFlag, String.valueOf(customID)));
+        mNotificationService.onMessageReceived(notification);
+
+        assertThat(mCallbackFlag.isFlagged()).isTrue();
+    }
+
+
+    @Test
+    public void thatCanHandleADefaultNotificationChannel() throws NoSuchFieldException, IllegalAccessException, NoSuchMethodException, InstantiationException, InvocationTargetException {
+        RemoteMessage notification = givenANotification(withAnySourceNotification());
+
+        mNotificationsApi.setNotificationDecorator(givenANotificationDecoratorWithAChannel(mCallbackFlag, NOTIFICATION_CHANNEL_ID));
+        mNotificationService.onMessageReceived(notification);
+
+        assertThat(mCallbackFlag.isFlagged()).isTrue();
+    }
+
+
+    @Test
+    public void thatCanCreateANotificationChannel() throws NoSuchFieldException, IllegalAccessException, NoSuchMethodException, InstantiationException, InvocationTargetException {
+        RemoteMessage notification = givenANotification(withAnySourceNotification());
+        NotificationChannel channel = givenANotificationChannel();
+
+        mNotificationsApi.notificationChannel(channel);
+        mNotificationsApi.setNotificationDecorator(givenANotificationDecoratorWithAChannel(mCallbackFlag, "NOTIFICATION_CHANNEL_ID_CUSTOM"));
         mNotificationService.onMessageReceived(notification);
 
         assertThat(mCallbackFlag.isFlagged()).isTrue();
