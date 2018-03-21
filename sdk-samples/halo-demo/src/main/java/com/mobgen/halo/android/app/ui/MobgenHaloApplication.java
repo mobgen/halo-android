@@ -1,6 +1,5 @@
 package com.mobgen.halo.android.app.ui;
 
-import android.annotation.TargetApi;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
@@ -29,9 +28,6 @@ import com.mobgen.halo.android.content.HaloContentApi;
 import com.mobgen.halo.android.framework.common.exceptions.HaloParsingException;
 import com.mobgen.halo.android.framework.common.helpers.logger.PrintLog;
 import com.mobgen.halo.android.framework.common.helpers.subscription.ISubscription;
-import com.mobgen.halo.android.framework.toolbox.data.CallbackV2;
-import com.mobgen.halo.android.framework.toolbox.data.HaloResultV2;
-import com.mobgen.halo.android.framework.toolbox.threading.Threading;
 import com.mobgen.halo.android.notifications.HaloNotificationsApi;
 import com.mobgen.halo.android.notifications.callbacks.HaloNotificationEventListener;
 import com.mobgen.halo.android.notifications.models.HaloPushEvent;

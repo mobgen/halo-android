@@ -19,7 +19,7 @@ android {
 
     defaultConfig {
         applicationId "com.mobgen.halo.android.app"
-        minSdkVersion rootProject.ext.minSdkVersion
+        minSdkVersion rootProject.ext.minDemoAppVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode grill.CI.getCommitRevision()
         versionName "${rootProject.ext.haloVersion}-demo"
