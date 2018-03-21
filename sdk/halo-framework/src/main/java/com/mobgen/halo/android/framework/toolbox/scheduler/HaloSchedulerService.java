@@ -608,8 +608,11 @@ public final class HaloSchedulerService extends Service {
             int notificationIcon = preferences.getInteger(SERVICE_NOTIFICATION_ICON, R.drawable.ic_service_notification);
 
             NotificationChannel channel = new NotificationChannel(FOREGROUND_CHANNEL_NOTIFICATION_ID, channelNotificationName,
-                    NotificationManager.IMPORTANCE_DEFAULT);
+                    NotificationManager.IMPORTANCE_NONE);
             NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+            channel.setVibrationPattern(null);
+            channel.enableVibration(false);
+            channel.enableLights(false);
             notificationManager.createNotificationChannel(channel);
 
             Notification notification = new Notification.Builder(getApplicationContext(), FOREGROUND_CHANNEL_NOTIFICATION_ID)
