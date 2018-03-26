@@ -9,6 +9,8 @@ import android.net.NetworkInfo;
 import android.os.Build;
 import android.support.annotation.NonNull;
 
+import com.mobgen.halo.android.framework.common.utils.HaloUtils;
+
 /**
  * Listening device network status changing
  */
@@ -84,7 +86,15 @@ final class StatusNetworkController implements StatusController {
         @Override
         public void onReceive(Context context, Intent intent) {
             updateStatus();
-            context.startService(HaloSchedulerService.deviceStatusChanged(context, Job.STATUS_NETWORK_TYPE_KEY));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                if (HaloUtils.isServiceRunning(context, HaloSchedulerService.class)) {
+                    context.startService(HaloSchedulerService.deviceStatusChanged(context, Job.STATUS_NETWORK_TYPE_KEY, false));
+                } else {
+                    context.startForegroundService(HaloSchedulerService.deviceStatusChanged(context, Job.STATUS_NETWORK_TYPE_KEY, true));
+                }
+            } else {
+                context.startService(HaloSchedulerService.deviceStatusChanged(context, Job.STATUS_NETWORK_TYPE_KEY, false));
+            }
         }
     }
 }

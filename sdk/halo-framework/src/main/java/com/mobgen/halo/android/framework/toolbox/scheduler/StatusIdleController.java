@@ -12,6 +12,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.mobgen.halo.android.framework.common.helpers.logger.Halog;
+import com.mobgen.halo.android.framework.common.utils.HaloUtils;
 
 /**
  * Idle status monitor
@@ -68,7 +69,15 @@ final class StatusIdleController implements StatusController {
      */
     private void reportNewIdleState(boolean idle) {
         StatusDevice.IDLE_CONSTRAINT_SATISFIED.set(idle);
-        mContext.startService(HaloSchedulerService.deviceStatusChanged(mContext, Job.STATUS_IDLE_DEVICE_KEY));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (HaloUtils.isServiceRunning(mContext, HaloSchedulerService.class)) {
+                mContext.startService(HaloSchedulerService.deviceStatusChanged(mContext, Job.STATUS_IDLE_DEVICE_KEY, false));
+            } else {
+                mContext.startForegroundService(HaloSchedulerService.deviceStatusChanged(mContext, Job.STATUS_IDLE_DEVICE_KEY, true));
+            }
+        } else {
+            mContext.startService(HaloSchedulerService.deviceStatusChanged(mContext, Job.STATUS_IDLE_DEVICE_KEY, false));
+        }
     }
 
     /**

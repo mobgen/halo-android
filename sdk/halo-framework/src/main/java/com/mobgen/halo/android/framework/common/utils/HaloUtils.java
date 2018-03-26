@@ -2,6 +2,7 @@ package com.mobgen.halo.android.framework.common.utils;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -274,5 +275,24 @@ public final class HaloUtils {
                     + Character.digit(data.charAt(i + 1), 16));
         }
         return dataArray;
+    }
+
+
+    /**
+     * Check if a service is running
+     *
+     * @param context      The context
+     * @param serviceClass The service class
+     * @return True if its running; false otherwise
+     */
+    @Api(2.5)
+    public static boolean isServiceRunning(Context context, Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return service.clientCount > 0 && service.started;
+            }
+        }
+        return false;
     }
 }

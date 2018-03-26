@@ -62,6 +62,10 @@ public final class HaloSchedulerService extends Service {
      */
     static final String STATUS_CHANGED = "status_changed";
     /**
+     * The status of the service in foreground
+     */
+    static final String SERVICE_FOREGROUND = "service_foreground";
+    /**
      * Protocol magic code.
      */
     static final int PROTOCOL_CODE = 0x991;
@@ -241,9 +245,10 @@ public final class HaloSchedulerService extends Service {
      * @return The intent created.
      */
     @NonNull
-    static Intent deviceStatusChanged(Context context, String which) {
+    static Intent deviceStatusChanged(Context context, String which, boolean isServiceForeground) {
         Intent data = newIntent(context);
         data.putExtra(STATUS_CHANGED, which);
+        data.putExtra(SERVICE_FOREGROUND, isServiceForeground);
         return data;
     }
 
@@ -356,15 +361,6 @@ public final class HaloSchedulerService extends Service {
         job.info().tryDelete(dir);
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        mDeviceStatus.onDestroy();
-        mHandlerThread.quit();
-        mThreadManager = null;
-        unregisterReceiver(mDeadlineCheck);
-    }
-
     /**
      * Tries to get the wakelock. Only available if the permission is there.
      */
@@ -378,7 +374,7 @@ public final class HaloSchedulerService extends Service {
      * Tries to release the wakelock. Only available if the permission is there.
      */
     private void tryReleaseLock() {
-        if (mWakeLock != null) {
+        if (mWakeLock != null && mWakeLock.isHeld()) {
             mWakeLock.release();
         }
     }
@@ -573,6 +569,24 @@ public final class HaloSchedulerService extends Service {
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        tryReleaseLock();
+        mDeviceStatus.onDestroy();
+        mHandlerThread.quit();
+        mThreadManager = null;
+        unregisterReceiver(mDeadlineCheck);
+    }
+
+
+    @Override
+    public boolean onUnbind(Intent intent) {
+        stopSelf();
+        return super.onUnbind(intent);
+    }
+
+
+    @Override
     public IBinder onBind(Intent intent) {
         hideForegroundNotification();
         return mBinder;
@@ -582,6 +596,9 @@ public final class HaloSchedulerService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent == null) {
             return START_NOT_STICKY;
+        }
+        if (intent.getBooleanExtra(SERVICE_FOREGROUND, false)) {
+            foregroundNotification();
         }
         if (!intent.hasExtra(PROTOCOL_KEY) || intent.getIntExtra(PROTOCOL_KEY, -1) != PROTOCOL_CODE) {
             throw new IllegalAccessError("HaloSchedulerService won't receive user command.");
@@ -594,6 +611,9 @@ public final class HaloSchedulerService extends Service {
             mChecker.checkDeviceBootCompleted();
         } else if (intent.hasExtra(STATUS_CHANGED)) {
             mChecker.checkStatusChanged(intent.getStringExtra(STATUS_CHANGED));
+        }
+        if (intent.getBooleanExtra(SERVICE_FOREGROUND, false)) {
+            hideForegroundNotification();
         }
         return START_NOT_STICKY;
     }
@@ -626,12 +646,10 @@ public final class HaloSchedulerService extends Service {
 
     /**
      * Hide the foreground notification because the service is not on background anymore.
-     *
      */
     private void hideForegroundNotification() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
-                && isServiceRunningInForeground(getApplicationContext(), HaloSchedulerService.class)) {
-            stopForeground(true);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            stopForeground(isServiceRunningInForeground(getApplicationContext(), HaloSchedulerService.class));
         }
     }
 
