@@ -8,6 +8,9 @@ import android.os.BatteryManager;
 import android.os.Build;
 import android.support.annotation.NonNull;
 
+import com.mobgen.halo.android.framework.common.utils.HaloUtils;
+
+
 /**
  * Listening device charge status changing
  */
@@ -64,7 +67,15 @@ final class StatusChargingController implements StatusController {
         @Override
         public void onReceive(Context context, Intent intent) {
             updateStatus();
-            context.startService(HaloSchedulerService.deviceStatusChanged(context, Job.STATUS_CHARGING_KEY));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                if (HaloUtils.isServiceRunning(context, HaloSchedulerService.class)) {
+                    context.startService(HaloSchedulerService.deviceStatusChanged(context, Job.STATUS_CHARGING_KEY, false));
+                } else {
+                    context.startForegroundService(HaloSchedulerService.deviceStatusChanged(context, Job.STATUS_CHARGING_KEY, true));
+                }
+            } else {
+                context.startService(HaloSchedulerService.deviceStatusChanged(context, Job.STATUS_CHARGING_KEY, false));
+            }
         }
     }
 }

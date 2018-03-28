@@ -2,8 +2,11 @@ package com.mobgen.halo.android.framework.toolbox.scheduler;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+
+import com.mobgen.halo.android.framework.common.utils.HaloUtils;
 
 /**
  * Users should use this to make own conditions for job by extending this class.
@@ -37,7 +40,16 @@ public abstract class Trigger implements Receiver {
         TriggerDesc condition = new TriggerDesc(getIdentify());
         condition.satisfy(satisfy(context, intent));
         Intent data = HaloSchedulerService.newIntent(context, condition);
-        context.startService(data);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (HaloUtils.isServiceRunning(context, HaloSchedulerService.class)) {
+                context.startService(data.putExtra(HaloSchedulerService.SERVICE_FOREGROUND, false));
+            } else {
+                context.startForegroundService(data.putExtra(HaloSchedulerService.SERVICE_FOREGROUND, true));
+            }
+        } else {
+            context.startService(data.putExtra(HaloSchedulerService.SERVICE_FOREGROUND, false));
+        }
+
     }
 
     /**
