@@ -81,6 +81,11 @@ public final class HaloSchedulerService extends Service {
     static final String FOREGROUND_CHANNEL_NOTIFICATION_ID = "halo_hotfix_android_O_26";
 
     /**
+     * The default channel name
+     */
+    static final String DEFAULT_NOTIFICATION_CHANNEL_NAME = "Background service";
+
+    /**
      * Tag for the logger.
      */
     private static final String TAG = "HaloSchedulerService";
@@ -624,7 +629,7 @@ public final class HaloSchedulerService extends Service {
     private void foregroundNotification() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             HaloPreferencesStorage preferences = new HaloPreferencesStorage(this, DEFAULT_STORAGE_NAME);
-            String channelNotificationName = preferences.getString(SERVICE_NOTIFICATION_CHANNEL, "HALO foreground");
+            String channelNotificationName = preferences.getString(SERVICE_NOTIFICATION_CHANNEL, DEFAULT_NOTIFICATION_CHANNEL_NAME);
             int notificationIcon = preferences.getInteger(SERVICE_NOTIFICATION_ICON, R.drawable.ic_service_notification);
 
             NotificationChannel channel = new NotificationChannel(FOREGROUND_CHANNEL_NOTIFICATION_ID, channelNotificationName,
@@ -633,6 +638,7 @@ public final class HaloSchedulerService extends Service {
             channel.setVibrationPattern(null);
             channel.enableVibration(false);
             channel.enableLights(false);
+            channel.setShowBadge(false);
             notificationManager.createNotificationChannel(channel);
 
             Notification notification = new Notification.Builder(getApplicationContext(), FOREGROUND_CHANNEL_NOTIFICATION_ID)
