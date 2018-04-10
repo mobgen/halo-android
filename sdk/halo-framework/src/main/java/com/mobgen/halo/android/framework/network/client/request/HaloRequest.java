@@ -1,12 +1,18 @@
 package com.mobgen.halo.android.framework.network.client.request;
 
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringDef;
 
+import com.mobgen.halo.android.framework.BuildConfig;
 import com.mobgen.halo.android.framework.api.HaloNetworkApi;
 import com.mobgen.halo.android.framework.common.annotations.Api;
 import com.mobgen.halo.android.framework.common.helpers.builder.IBuilder;
+import com.mobgen.halo.android.framework.common.helpers.logger.Halog;
 import com.mobgen.halo.android.framework.common.utils.AssertionUtils;
 import com.mobgen.halo.android.framework.network.client.HaloNetClient;
 import com.mobgen.halo.android.framework.network.client.response.Parser;
@@ -19,11 +25,17 @@ import java.util.Map;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import okhttp3.internal.Version;
 
 /**
  * Request wrapper to be executed.
  */
 public class HaloRequest {
+
+    /**
+     * User Agent header
+     */
+    public static final String USER_AGENT_HEADER = "User-Agent";
 
     /**
      * Cache header.
@@ -394,7 +406,48 @@ public class HaloRequest {
             if (mSession != null) {
                 mRequestBuilder.addHeader("Authorization", mSession.getSessionAuthentication());
             }
+
+            mRequestBuilder.addHeader(USER_AGENT_HEADER, getUserAgent());
             return new HaloRequest(this);
+        }
+
+        /**
+         * Provides a userAgent in order to use it like an identifier header of every requests.
+         *
+         * @return The User-Agent header content.
+         */
+        private String getUserAgent() {
+            ApplicationInfo applicationInfo = mNetworkApi.context().getApplicationInfo();
+            String packageName = applicationInfo.packageName;
+            StringBuilder userAgent = new StringBuilder("");
+
+            if (applicationInfo.labelRes != 0) {
+                String applicationName = mNetworkApi.context().getString(applicationInfo.labelRes);
+                userAgent.append(applicationName.replace(" ", ""));
+
+                try {
+                    PackageInfo packageInfo = mNetworkApi.context().getPackageManager().getPackageInfo(packageName, 0);
+                    userAgent.append("/");
+                    userAgent.append(packageInfo.versionName);
+                } catch (PackageManager.NameNotFoundException e) {
+                    Halog.e(getClass(), "The application version could not be collected for this execution.");
+                }
+
+                userAgent.append(" ");
+            } else {
+                userAgent.append("UnknownApplication ");
+            }
+
+            userAgent.append("Android/");
+            userAgent.append(Build.VERSION.RELEASE);
+            userAgent.append(" ");
+            userAgent.append("OkHttp/");
+            userAgent.append(Version.userAgent());
+            userAgent.append(" ");
+            userAgent.append("HaloAndroidSDK/");
+            userAgent.append(BuildConfig.VERSION_NAME);
+
+            return userAgent.toString();
         }
     }
 }
