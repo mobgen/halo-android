@@ -120,4 +120,15 @@ public class HaloRequestTest extends HaloRobolectricTest {
         assertThat(response.isSuccessful()).isTrue();
         assertThat(request.buildOkRequest().header("cache-control")).isEqualTo("no-cache");
     }
+
+    @Test
+    public void thatCustomUserAgentIsSentOnRequest() throws IOException {
+        enqueueServerFile(mMockServer, GET_TEST_ITEM);
+        HaloNetworkApi networkApi = givenAHaloNetWorkApi(mFramework, mEndpointURL);
+        HaloRequest request = givenAGetRequestWithCache(networkApi);
+        Response response = request.execute();
+        assertThat(response).isNotNull();
+        assertThat(response.isSuccessful()).isTrue();
+        assertThat(request.buildOkRequest().header("User-Agent")).isNotNull();
+    }
 }
