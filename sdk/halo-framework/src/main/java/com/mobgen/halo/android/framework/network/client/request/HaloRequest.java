@@ -33,11 +33,6 @@ import okhttp3.internal.Version;
 public class HaloRequest {
 
     /**
-     * User Agent header
-     */
-    public static final String USER_AGENT_HEADER = "User-Agent";
-
-    /**
      * Cache header.
      */
     public static final String SERVER_CACHE_HEADER = "to-cache";
@@ -51,6 +46,11 @@ public class HaloRequest {
      * No cache.
      */
     public static final String NO_CACHE = "no-cache";
+
+    /**
+     * User Agent header
+     */
+    public static final String USER_AGENT_HEADER = "User-Agent";
 
     /**
      * Request created.
@@ -403,11 +403,13 @@ public class HaloRequest {
             } else if (mRequestBody != null) { //Default it is a post request
                 mRequestBuilder.post(mRequestBody);
             }
+
             if (mSession != null) {
                 mRequestBuilder.addHeader("Authorization", mSession.getSessionAuthentication());
             }
 
             mRequestBuilder.addHeader(USER_AGENT_HEADER, getUserAgent());
+
             return new HaloRequest(this);
         }
 
