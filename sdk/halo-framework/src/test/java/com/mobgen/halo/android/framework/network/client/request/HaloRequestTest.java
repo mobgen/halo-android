@@ -26,6 +26,7 @@ import static com.mobgen.halo.android.framework.mock.instrumentation.HaloNetInst
 import static com.mobgen.halo.android.framework.mock.instrumentation.HaloNetInstrument.givenAGetRequestWithCache;
 import static com.mobgen.halo.android.framework.mock.instrumentation.HaloNetInstrument.givenAGetRequestWithParams;
 import static com.mobgen.halo.android.framework.mock.instrumentation.HaloNetInstrument.givenAGetRequestWithParamsAndSession;
+import static com.mobgen.halo.android.framework.mock.instrumentation.HaloNetInstrument.givenAGetRequest;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
 public class HaloRequestTest extends HaloRobolectricTest {
@@ -119,5 +120,17 @@ public class HaloRequestTest extends HaloRobolectricTest {
         assertThat(response).isNotNull();
         assertThat(response.isSuccessful()).isTrue();
         assertThat(request.buildOkRequest().header("cache-control")).isEqualTo("no-cache");
+    }
+
+    @Test
+    public void thatCustomUserAgentIsSentOnRequest() throws IOException {
+        enqueueServerFile(mMockServer, GET_TEST_ITEM);
+        HaloNetworkApi networkApi = givenAHaloNetWorkApi(mFramework, mEndpointURL);
+        HaloRequest request = givenAGetRequest(networkApi);
+        Response response = request.execute();
+        assertThat(response).isNotNull();
+        assertThat(response.isSuccessful()).isTrue();
+        assertThat(request.buildOkRequest().header("User-Agent")).isNotNull();
+        assertThat(request.buildOkRequest().header("User-Agent")).isNotEmpty();
     }
 }
