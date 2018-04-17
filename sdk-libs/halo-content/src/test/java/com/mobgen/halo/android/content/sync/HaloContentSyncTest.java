@@ -159,8 +159,8 @@ public class HaloContentSyncTest extends HaloRobolectricTest {
     @Test
     public void thatCanSyncWithDiffertentServerCache() throws IOException {
         enqueueServerFile(mMockServer, SYNC_CREATE_MODULE);
-        SyncQuery QUERY_CACHE = SyncQuery.create(MODULE_NAME_FAKE, Threading.SAME_THREAD_POLICY, 15);
         mHalo.framework().network().client().overrideOk(givenAOkClientWithCustomInterceptor(mHalo.framework().network().client(), "15"));
+        SyncQuery QUERY_CACHE = SyncQuery.create(MODULE_NAME_FAKE, Threading.SAME_THREAD_POLICY, 15);
         mHaloContentApi.sync(QUERY_CACHE, true);
     }
 }

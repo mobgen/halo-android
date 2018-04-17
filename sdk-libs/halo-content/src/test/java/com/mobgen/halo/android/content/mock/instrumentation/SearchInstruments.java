@@ -166,7 +166,7 @@ public class SearchInstruments {
                     public Response intercept(Chain chain) throws IOException {
                         Request request = chain.request();
                         Headers headers = request.headers();
-                        if (headers.size() > 0) {
+                        if (headers.get("to-cache") != null) {
                             assertThat(headers.get("to-cache")).isEqualTo(cacheTime);
                         }
                         return chain.proceed(request);
