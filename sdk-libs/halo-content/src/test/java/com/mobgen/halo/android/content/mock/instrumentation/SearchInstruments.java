@@ -162,13 +162,19 @@ public class SearchInstruments {
     public static OkHttpClient.Builder givenAOkClientWithCustomInterceptor(HaloNetClient netClient, final String cacheTime) {
         return netClient.ok().newBuilder()
                 .addInterceptor(new Interceptor() {
+                    boolean isFirstSyncExecution;
+
                     @Override
                     public Response intercept(Chain chain) throws IOException {
                         Request request = chain.request();
                         Headers headers = request.headers();
-                        if (headers.get("to-cache") != null) {
-                            assertThat(headers.get("to-cache")).isEqualTo(cacheTime);
+                        if(isFirstSyncExecution) {
+                            if (headers.get("to-cache") != null) {
+                                assertThat(headers.get("to-cache")).isEqualTo(cacheTime);
+                                isFirstSyncExecution = false;
+                            }
                         }
+
                         return chain.proceed(request);
                     }
                 });
