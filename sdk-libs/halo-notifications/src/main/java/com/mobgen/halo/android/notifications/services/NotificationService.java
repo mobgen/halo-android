@@ -25,7 +25,9 @@ import com.mobgen.halo.android.notifications.decorator.NotificationImageDecorato
 import com.mobgen.halo.android.notifications.decorator.NotificationLedDecorator;
 import com.mobgen.halo.android.notifications.decorator.NotificationMessageDecorator;
 import com.mobgen.halo.android.notifications.decorator.NotificationSoundDecorator;
+import com.mobgen.halo.android.notifications.decorator.NotificationTemplateNameDecorator;
 import com.mobgen.halo.android.notifications.decorator.NotificationTitleDecorator;
+import com.mobgen.halo.android.notifications.decorator.NotificationTypeDecorator;
 import com.mobgen.halo.android.notifications.events.EventIntentFactory;
 import com.mobgen.halo.android.notifications.events.NotificationEventsActions;
 import com.mobgen.halo.android.sdk.api.Halo;
@@ -224,9 +226,11 @@ public class NotificationService extends FirebaseMessagingService {
                                                 new NotificationLedDecorator(
                                                         new NotificationImageDecorator(this,
                                                                 new NotificationMessageDecorator(
-                                                                        new NotificationTitleDecorator(
-                                                                                mDecorator
-                                                                        )))))))));
+                                                                        new NotificationTemplateNameDecorator(
+                                                                                new NotificationTypeDecorator(
+                                                                                    new NotificationTitleDecorator(
+                                                                                        mDecorator
+                                                                                    )))))))))));
     }
 
     /**
