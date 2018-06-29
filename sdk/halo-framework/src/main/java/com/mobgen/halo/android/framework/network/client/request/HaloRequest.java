@@ -437,7 +437,13 @@ public class HaloRequest {
 
                 userAgent.append(" ");
             } else {
-                userAgent.append("UnknownApplication ");
+                PackageManager packageManager = mNetworkApi.context().getPackageManager();
+                if(packageManager != null) {
+                    userAgent.append(packageManager.getApplicationLabel(applicationInfo));
+                    userAgent.append(" ");
+                } else {
+                    userAgent.append("UnknownApplication ");
+                }
             }
 
             userAgent.append("Android/");
