@@ -32,6 +32,11 @@ public final class HaloNetworkConstants {
      */
     @Api(2.1)
     public static final String HALO_SHA_PINNING_CERT2017 = "sha256/HcHXoIBbE2vePMjx3LVYxkaJ6zsanFWq3ABXzEHm0z0=";
+    /**
+     * New certificate for the 2018 certificate of MOBGEN.
+     */
+    @Api(2.6)
+    public static final String HALO_SHA_PINNING_CERT2018 = "sha256/4973NGEUVzxEnad03PaQItAaK0TgZMUPxAU6XWCjtGY=";
 
     /**
      * Private empty constructor.
