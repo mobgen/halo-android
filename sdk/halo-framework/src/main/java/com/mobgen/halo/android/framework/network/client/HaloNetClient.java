@@ -85,7 +85,7 @@ public class HaloNetClient {
             trustManagerFactory.init((KeyStore) null);
             TrustManager[] trustManagers = trustManagerFactory.getTrustManagers();
 
-            if (trustManagers.length != 1 || !(trustManagers[0] instanceof X509TrustManager)) {
+            if (trustManagers.length == 0 || !(trustManagers[0] instanceof X509TrustManager)) {
                 okBuilder.sslSocketFactory(new SSLSocketFactoryCompat(trustManagers));
             } else {
                 okBuilder.sslSocketFactory(new SSLSocketFactoryCompat(trustManagers), (X509TrustManager) trustManagers[0]);
