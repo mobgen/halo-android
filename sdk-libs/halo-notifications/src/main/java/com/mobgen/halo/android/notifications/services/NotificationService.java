@@ -15,7 +15,6 @@ import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.mobgen.halo.android.framework.common.helpers.logger.Halog;
 import com.mobgen.halo.android.framework.common.utils.AssertionUtils;
-import com.mobgen.halo.android.framework.common.utils.HaloUtils;
 import com.mobgen.halo.android.notifications.decorator.HaloNotificationDecorator;
 import com.mobgen.halo.android.notifications.decorator.NotificationActionDecorator;
 import com.mobgen.halo.android.notifications.decorator.NotificationBadgeDecorator;
@@ -28,7 +27,6 @@ import com.mobgen.halo.android.notifications.decorator.NotificationSoundDecorato
 import com.mobgen.halo.android.notifications.decorator.NotificationTitleDecorator;
 import com.mobgen.halo.android.notifications.events.EventIntentFactory;
 import com.mobgen.halo.android.notifications.events.NotificationEventsActions;
-import com.mobgen.halo.android.sdk.api.Halo;
 
 import org.json.JSONException;
 import org.json.JSONObject;
