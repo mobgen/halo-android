@@ -222,9 +222,9 @@ public class NotificationService extends FirebaseMessagingService {
                                                 new NotificationLedDecorator(
                                                         new NotificationImageDecorator(this,
                                                                 new NotificationMessageDecorator(
-                                                                                    new NotificationTitleDecorator(
-                                                                                        mDecorator
-                                                                                    )))))))));
+                                                                        new NotificationTitleDecorator(
+                                                                                mDecorator
+                                                                        )))))))));
     }
 
     /**
