@@ -38,10 +38,11 @@ public class SSLSocketFactoryCompat extends SSLSocketFactory {
                 // - enable all supported protocols (enables TLSv1.1 and TLSv1.2 on Android <5.0)
                 // - remove all SSL versions (especially SSLv3) because they're insecure now
                 List<String> protocols = new LinkedList<>();
-                for (String protocol : socket.getSupportedProtocols())
-                    if(protocol.toUpperCase(Locale.US).contains("2")) {
+                for (String protocol : socket.getSupportedProtocols()) {
+                    if(protocol.equalsIgnoreCase("TLSv1.2")) {
                         protocols.add(protocol);
                     }
+                }
 
                 Log.d("SSLSocketFactoryCompat","Setting allowed TLS protocols: " + TextUtils.join(", ", protocols));
                 SSLSocketFactoryCompat.protocols = protocols.toArray(new String[protocols.size()]);
