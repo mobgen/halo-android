@@ -9,6 +9,7 @@ import android.os.StrictMode;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.multidex.MultiDex;
 import android.widget.Toast;
 
 import com.crittercism.app.Crittercism;
@@ -108,6 +109,12 @@ public class MobgenHaloApplication extends HaloApplication {
      * Two factor authentication api
      */
     private static HaloTwoFactorApi mTwoFactorApi;
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
+    }
 
     @Override
     public void onCreate() {
@@ -245,6 +252,7 @@ public class MobgenHaloApplication extends HaloApplication {
                 .withFacebook()
                 .withGoogle()
                 .build();
+
         //Generated content api
         HaloContentApi.with(MobgenHaloApplication.halo(), null, new GeneratedDatabaseFromModel());
         //notifications

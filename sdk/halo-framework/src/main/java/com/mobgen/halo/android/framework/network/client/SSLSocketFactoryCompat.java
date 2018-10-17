@@ -38,9 +38,12 @@ public class SSLSocketFactoryCompat extends SSLSocketFactory {
                 // - enable all supported protocols (enables TLSv1.1 and TLSv1.2 on Android <5.0)
                 // - remove all SSL versions (especially SSLv3) because they're insecure now
                 List<String> protocols = new LinkedList<>();
-                for (String protocol : socket.getSupportedProtocols())
-                    if (!protocol.toUpperCase(Locale.US).contains("SSL"))
+                for (String protocol : socket.getSupportedProtocols()) {
+                    if(protocol.equalsIgnoreCase("TLSv1.2")) {
                         protocols.add(protocol);
+                    }
+                }
+
                 Log.d("SSLSocketFactoryCompat","Setting allowed TLS protocols: " + TextUtils.join(", ", protocols));
                 SSLSocketFactoryCompat.protocols = protocols.toArray(new String[protocols.size()]);
 
@@ -48,23 +51,10 @@ public class SSLSocketFactoryCompat extends SSLSocketFactory {
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
                     // choose known secure cipher suites
                     List<String> allowedCiphers = Arrays.asList(
-                            // TLS 1.2
-                            "TLS_RSA_WITH_AES_256_GCM_SHA384",
-                            "TLS_RSA_WITH_AES_128_GCM_SHA256",
-                            "TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256",
-                            "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256",
-                            "TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384",
-                            "TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256",
-                            "TLS_ECHDE_RSA_WITH_AES_128_GCM_SHA256",
-                            // maximum interoperability
-                            "TLS_RSA_WITH_3DES_EDE_CBC_SHA",
-                            "TLS_RSA_WITH_AES_128_CBC_SHA",
-                            // additionally
-                            "TLS_RSA_WITH_AES_256_CBC_SHA",
-                            "TLS_ECDHE_ECDSA_WITH_3DES_EDE_CBC_SHA",
-                            "TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA",
-                            "TLS_ECDHE_RSA_WITH_3DES_EDE_CBC_SHA",
-                            "TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA");
+                            "TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384",
+                            "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256",
+                            "TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384",
+                            "TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA");
                     List<String> availableCiphers = Arrays.asList(socket.getSupportedCipherSuites());
                     Log.d("SSLSocketFactoryCompat","Available cipher suites: " + TextUtils.join(", ", availableCiphers));
                     Log.d("SSLSocketFactoryCompat","Cipher suites enabled by default: " + TextUtils.join(", ", socket.getEnabledCipherSuites()));
