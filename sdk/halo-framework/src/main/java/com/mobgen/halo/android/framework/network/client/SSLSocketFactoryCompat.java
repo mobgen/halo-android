@@ -39,7 +39,7 @@ public class SSLSocketFactoryCompat extends SSLSocketFactory {
                 // - remove all SSL versions (especially SSLv3) because they're insecure now
                 List<String> protocols = new LinkedList<>();
                 for (String protocol : socket.getSupportedProtocols()) {
-                    if(protocol.equalsIgnoreCase("TLSv1.2")) {
+                    if(protocol.equalsIgnoreCase("TLSv1.2") || protocol.equalsIgnoreCase("TLSv1.3")) {
                         protocols.add(protocol);
                     }
                 }
