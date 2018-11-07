@@ -1,6 +1,7 @@
 package com.mobgen.halo.android.framework.network.client;
 
 import android.content.Context;
+import android.os.Build;
 import android.support.annotation.NonNull;
 
 import com.mobgen.halo.android.framework.common.annotations.Api;
@@ -14,11 +15,16 @@ import com.mobgen.halo.android.framework.network.exceptions.HaloNetException;
 import com.mobgen.halo.android.framework.network.exceptions.HaloNetParseException;
 import com.mobgen.halo.android.framework.network.exceptions.HaloNetworkExceptionResolver;
 
+import java.io.ByteArrayInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.security.KeyManagementException;
+import java.io.InputStream;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
 
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
@@ -83,8 +89,8 @@ public class HaloNetClient {
         try {
             TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
             trustManagerFactory.init((KeyStore) null);
-            TrustManager[] trustManagers = trustManagerFactory.getTrustManagers();
 
+            TrustManager[] trustManagers = trustManagerFactory.getTrustManagers();
             if (trustManagers.length == 0 || !(trustManagers[0] instanceof X509TrustManager)) {
                 okBuilder.sslSocketFactory(new SSLSocketFactoryCompat(trustManagers));
             } else {
