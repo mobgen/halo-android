@@ -3,7 +3,9 @@ package com.mobgen.halo.android.framework.network.client;
 import android.content.Context;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
+import com.mobgen.halo.android.framework.R;
 import com.mobgen.halo.android.framework.common.annotations.Api;
 import com.mobgen.halo.android.framework.common.helpers.logger.Halog;
 import com.mobgen.halo.android.framework.common.utils.AssertionUtils;
@@ -15,17 +17,23 @@ import com.mobgen.halo.android.framework.network.exceptions.HaloNetException;
 import com.mobgen.halo.android.framework.network.exceptions.HaloNetParseException;
 import com.mobgen.halo.android.framework.network.exceptions.HaloNetworkExceptionResolver;
 
-import java.io.ByteArrayInputStream;
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.KeyManagementException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.util.Arrays;
 
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
@@ -81,25 +89,46 @@ public class HaloNetClient {
     @Api(2.0)
     public OkHttpClient.Builder buildCertificates(@NonNull OkHttpClient.Builder okBuilder) {
         CertificatePinner pinner = mEndpoints.buildCertificatePinner();
+
         if (pinner != null) {
             //The certificate pinning SHA if available
             okBuilder.certificatePinner(pinner);
         }
 
         try {
-            TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-            trustManagerFactory.init((KeyStore) null);
-
-            TrustManager[] trustManagers = trustManagerFactory.getTrustManagers();
-            if (trustManagers.length == 0 || !(trustManagers[0] instanceof X509TrustManager)) {
-                okBuilder.sslSocketFactory(new SSLSocketFactoryCompat(trustManagers));
-            } else {
-                okBuilder.sslSocketFactory(new SSLSocketFactoryCompat(trustManagers), (X509TrustManager) trustManagers[0]);
+            CertificateFactory cf = CertificateFactory.getInstance("X.509");
+            InputStream caInput = mContext.getResources().openRawResource(R.raw.inverted_cert);
+            Certificate ca;
+            try {
+                ca = cf.generateCertificate(caInput);
+                System.out.println("ca=" + ((X509Certificate) ca).getSubjectDN());
+            } finally {
+                caInput.close();
             }
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (KeyStoreException e) {
-            e.printStackTrace();
+
+            // Create a KeyStore containing our trusted CAs
+            String keyStoreType = KeyStore.getDefaultType();
+            KeyStore keyStore = KeyStore.getInstance(keyStoreType);
+            keyStore.load(null, null);
+            keyStore.setCertificateEntry("ca", ca);
+
+            TrustManager[] trustManagers = X509HaloTrustManager.getTrustManagers(keyStore);
+            SSLSocketFactoryCompat socketFactoryCompat = new SSLSocketFactoryCompat(trustManagers);
+            if(trustManagers[0] instanceof X509TrustManager) {
+                okBuilder.sslSocketFactory(socketFactoryCompat, (X509TrustManager) trustManagers[0]);
+            } else {
+                okBuilder.sslSocketFactory(socketFactoryCompat);
+            }
+        } catch (CertificateException ce) {
+            ce.printStackTrace();
+        } catch (FileNotFoundException fe) {
+            fe.printStackTrace();
+        } catch (IOException io) {
+            io.printStackTrace();
+        } catch (KeyStoreException ke) {
+            ke.printStackTrace();
+        } catch (NoSuchAlgorithmException ne) {
+            ne.printStackTrace();
         }
 
         return okBuilder;
