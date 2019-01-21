@@ -101,7 +101,6 @@ public class HaloNetClient {
             Certificate ca;
             try {
                 ca = cf.generateCertificate(caInput);
-                System.out.println("ca=" + ((X509Certificate) ca).getSubjectDN());
             } finally {
                 caInput.close();
             }

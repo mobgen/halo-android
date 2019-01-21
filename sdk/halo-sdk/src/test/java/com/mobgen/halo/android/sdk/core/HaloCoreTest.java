@@ -11,18 +11,20 @@ import com.mobgen.halo.android.sdk.core.management.segmentation.DeviceManufactur
 import com.mobgen.halo.android.sdk.core.management.segmentation.DeviceModelCollector;
 import com.mobgen.halo.android.sdk.core.management.segmentation.TagCollector;
 import com.mobgen.halo.android.sdk.mock.HaloMock;
+import com.mobgen.halo.android.testing.HaloGetRawShadow;
 import com.mobgen.halo.android.testing.HaloRobolectricTest;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.robolectric.annotation.Config;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
-
+@Config(shadows = {HaloGetRawShadow.class})
 public class HaloCoreTest extends HaloRobolectricTest {
 
     private Halo mHalo;

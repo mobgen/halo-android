@@ -2,7 +2,6 @@ package com.mobgen.halo.android.sdk.core.management;
 
 import android.database.Cursor;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.mobgen.halo.android.framework.common.exceptions.HaloParsingException;
 import com.mobgen.halo.android.framework.common.helpers.subscription.ISubscription;
@@ -25,12 +24,14 @@ import com.mobgen.halo.android.sdk.core.management.segmentation.HaloSegmentation
 import com.mobgen.halo.android.sdk.core.threading.ICancellable;
 import com.mobgen.halo.android.sdk.mock.HaloMock;
 import com.mobgen.halo.android.testing.CallbackFlag;
+import com.mobgen.halo.android.testing.HaloGetRawShadow;
 import com.mobgen.halo.android.testing.HaloRobolectricTest;
 import com.mobgen.halo.android.testing.MockServer;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.robolectric.annotation.Config;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -66,7 +67,7 @@ import static com.mobgen.halo.android.sdk.mock.instrumentation.HaloManagerApiIns
 import static com.mobgen.halo.android.testing.CallbackFlag.newCallbackFlag;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
-
+@Config(shadows = {HaloGetRawShadow.class})
 public class HaloManagerApiTest extends HaloRobolectricTest {
 
     private Halo mHalo;
