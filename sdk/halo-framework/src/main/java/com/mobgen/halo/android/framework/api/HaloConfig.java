@@ -149,11 +149,11 @@ public class HaloConfig {
     /**
      * Provides the KitKat certificate enabling flag.
      *
-     * @return True if wants to enable, false otherwise.
+     * @return True if wants to disable, false otherwise.
      */
     @Api(2.7)
-    public boolean getEnableKitKatCertificate() {
-        return mBuilder.mEnableKitKatCertificate;
+    public boolean getDisableKitKatCertificate() {
+        return mBuilder.mDisableKitKatCertificate;
     }
 
     /**
@@ -206,7 +206,7 @@ public class HaloConfig {
         /**
          * Sets the KitKat certificate addition flag on the framework.
          */
-        private boolean mEnableKitKatCertificate;
+        private boolean mDisableKitKatCertificate;
         /**
          * The print log to file policy
          */
@@ -283,13 +283,13 @@ public class HaloConfig {
         /**
          * Sets the KitKat certificate flag.
          *
-         * @param certificate The certificate flag.
+         * @param disableCertificate The certificate flag.
          * @return The current builder.
          */
         @Api(2.7)
         @NonNull
-        public Builder setEnableKitKatCertificate(boolean certificate) {
-            mEnableKitKatCertificate = certificate;
+        public Builder setDisableKitKatCertificate(boolean disableCertificate) {
+            mDisableKitKatCertificate = disableCertificate;
             return this;
         }
 

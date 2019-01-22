@@ -220,7 +220,6 @@ public class MobgenHaloApplication extends HaloApplication {
                 .enableServiceOnBoot()
                 .channelServiceNotification("My awesome name", R.drawable.myicon)
                 .enableDefaultTags(BuildConfig.BUILD_TYPE.equals("debug"))
-                .enableKitKatCertificate()
                 .endProcesses(new ConfigurationModule());
     }
 

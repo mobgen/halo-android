@@ -48,7 +48,7 @@ public class HaloNetInstrument {
         return new HaloNetClient(RuntimeEnvironment.application, builder, endpointCluster, false);
     }
 
-    public static HaloNetClient givenNetClientWithKitKatCertificate(){
+    public static HaloNetClient givenNetClientWithoutKitKatCertificate(){
         OkHttpClient.Builder builder = new OkHttpClient.Builder().build().newBuilder();
         HaloEndpoint endpoint = new HaloEndpoint("1","HaloNetClientTest","sha256/1234");
         HaloEndpointCluster endpointCluster = new HaloEndpointCluster(endpoint);

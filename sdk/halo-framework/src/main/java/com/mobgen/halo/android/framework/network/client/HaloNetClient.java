@@ -59,9 +59,9 @@ public class HaloNetClient {
     private final HaloEndpointCluster mEndpoints;
 
     /**
-     * The flag for Kit Kat certificate enabling.
+     * The flag for Kit Kat certificate disabling.
      */
-    protected final boolean mEnableKitKatCertificate;
+    protected final boolean mDisableKitKatCertificate;
 
     /**
      * The client instance of the okHttp wrapper.
@@ -74,14 +74,15 @@ public class HaloNetClient {
      * @param context       The application context.
      * @param clientBuilder The client to copy.
      * @param endpoints     The endpoint cluster with the different endpoints and the cert pinning.
+     * @param disableKitKatCertificate     The flag to give kitkat support with a custom certificate.
      */
-    public HaloNetClient(@NonNull Context context, @NonNull OkHttpClient.Builder clientBuilder, @NonNull HaloEndpointCluster endpoints, boolean enableKitKatCertificate) {
+    public HaloNetClient(@NonNull Context context, @NonNull OkHttpClient.Builder clientBuilder, @NonNull HaloEndpointCluster endpoints, boolean disableKitKatCertificate) {
         AssertionUtils.notNull(context, "context");
         AssertionUtils.notNull(clientBuilder, "client");
         AssertionUtils.notNull(endpoints, "endpoints");
         mContext = context;
         mEndpoints = endpoints;
-        mEnableKitKatCertificate = enableKitKatCertificate;
+        mDisableKitKatCertificate = disableKitKatCertificate;
         mClient = buildCertificates(clientBuilder).build();
     }
 
@@ -117,8 +118,7 @@ public class HaloNetClient {
             io.printStackTrace();
         }
 
-        if(mEnableKitKatCertificate) {
-            Halog.d(getClass(), "WITH KIT KAT CERTIFICATE!!");
+        if(!mDisableKitKatCertificate) {
             try {
                 CertificateFactory cf = CertificateFactory.getInstance("X.509");
                 InputStream caInput = mContext.getResources().openRawResource(R.raw.inverted_cert);
@@ -139,8 +139,6 @@ public class HaloNetClient {
             } catch (KeyStoreException ke) {
                 ke.printStackTrace();
             }
-        } else {
-            Halog.d(getClass(), "WITHOUT KIT KAT CERTIFICATE!!");
         }
 
         TrustManager[] trustManagers = X509HaloTrustManager.getTrustManagers(keyStore);

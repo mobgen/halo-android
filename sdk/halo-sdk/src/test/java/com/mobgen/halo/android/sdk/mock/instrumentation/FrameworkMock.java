@@ -29,6 +29,7 @@ public class FrameworkMock {
     @NonNull
     public static HaloConfig.Builder createSameThreadMockConfig(Parser.Factory factory) {
         return HaloConfig.builder(RuntimeEnvironment.application).threadManager(new TestThreadManager())
+                .setDisableKitKatCertificate(true)
                 .setParser(factory)
                 .jobScheduler(mock(HaloJobScheduler.class));
     }

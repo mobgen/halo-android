@@ -317,7 +317,7 @@ public class Halo {
         /**
          * Disables certificate for KitKat support.
          */
-        private boolean mEnableKitKatCertificate;
+        private boolean mDisableKitKatCertificate;
 
         /**
          * Constructor for the installer.
@@ -516,8 +516,8 @@ public class Halo {
          */
         @Api(2.7)
         @NonNull
-        public Installer enableKitKatCertificate() {
-            mEnableKitKatCertificate = true;
+        public Installer disableKitKatCertificate() {
+            mDisableKitKatCertificate = true;
             return this;
         }
 
@@ -535,7 +535,7 @@ public class Halo {
 
             //Add the final endpoint to halo
             mConfigurationBuilder.addEndpoint(mEndpoint);
-            mConfigurationBuilder.setEnableKitKatCertificate(mEnableKitKatCertificate);
+            mConfigurationBuilder.setDisableKitKatCertificate(mDisableKitKatCertificate);
 
             //Create the startup processes
             StartupProcess[] processes = new StartupProcess[]{
