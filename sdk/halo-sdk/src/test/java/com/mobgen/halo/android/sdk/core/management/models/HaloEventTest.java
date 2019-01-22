@@ -3,20 +3,17 @@ package com.mobgen.halo.android.sdk.core.management.models;
 import com.mobgen.halo.android.framework.common.exceptions.HaloParsingException;
 import com.mobgen.halo.android.sdk.api.Halo;
 import com.mobgen.halo.android.sdk.mock.HaloMock;
-import com.mobgen.halo.android.testing.HaloGetRawShadow;
 import com.mobgen.halo.android.testing.HaloRobolectricTest;
 import com.mobgen.halo.android.testing.TestUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Test;
-import org.robolectric.annotation.Config;
 
 import java.io.IOException;
 
 import static com.mobgen.halo.android.sdk.mock.instrumentation.HaloManagerApiInstrument.givenAHaloEvent;
 import static org.assertj.core.api.Java6Assertions.assertThat;
-@Config(shadows = {HaloGetRawShadow.class})
 public class HaloEventTest extends HaloRobolectricTest {
 
     private static Halo mHalo;

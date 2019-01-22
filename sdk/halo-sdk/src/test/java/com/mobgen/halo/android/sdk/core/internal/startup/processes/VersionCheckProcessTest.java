@@ -5,14 +5,12 @@ import com.mobgen.halo.android.sdk.api.Halo;
 import com.mobgen.halo.android.sdk.core.management.models.HaloServerVersion;
 import com.mobgen.halo.android.sdk.mock.HaloMock;
 import com.mobgen.halo.android.testing.CallbackFlag;
-import com.mobgen.halo.android.testing.HaloGetRawShadow;
 import com.mobgen.halo.android.testing.HaloRobolectricTest;
 import com.mobgen.halo.android.testing.MockServer;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.robolectric.annotation.Config;
 
 import java.io.IOException;
 
@@ -24,7 +22,6 @@ import static com.mobgen.halo.android.sdk.mock.instrumentation.StartupManagerIns
 import static com.mobgen.halo.android.testing.CallbackFlag.newCallbackFlag;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
-@Config(shadows = {HaloGetRawShadow.class})
 public class VersionCheckProcessTest extends HaloRobolectricTest {
 
     private Halo mHalo;

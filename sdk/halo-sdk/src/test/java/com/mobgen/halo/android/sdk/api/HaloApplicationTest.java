@@ -4,7 +4,6 @@ package com.mobgen.halo.android.sdk.api;
 import com.mobgen.halo.android.framework.common.exceptions.HaloConfigurationException;
 import com.mobgen.halo.android.sdk.BuildConfig;
 import com.mobgen.halo.android.sdk.mock.HaloApplicationMock;
-import com.mobgen.halo.android.testing.HaloGetRawShadow;
 import com.mobgen.halo.android.testing.HaloRobolectricTest;
 
 import org.junit.After;
@@ -19,7 +18,7 @@ import static com.mobgen.halo.android.sdk.mock.HaloMock.givenAHaloInstaller;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(shadows = {HaloGetRawShadow.class},constants = BuildConfig.class, application = HaloApplicationMock.class, sdk = 23)
+@Config(constants = BuildConfig.class, application = HaloApplicationMock.class, sdk = 23)
 public class HaloApplicationTest extends HaloRobolectricTest {
 
     private HaloApplicationMock mMockApplication;

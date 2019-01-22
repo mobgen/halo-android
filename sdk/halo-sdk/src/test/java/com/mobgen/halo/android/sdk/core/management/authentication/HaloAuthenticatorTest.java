@@ -8,7 +8,6 @@ import com.mobgen.halo.android.sdk.core.management.models.Session;
 import com.mobgen.halo.android.sdk.core.management.models.Token;
 import com.mobgen.halo.android.sdk.mock.HaloMock;
 import com.mobgen.halo.android.testing.CallbackFlag;
-import com.mobgen.halo.android.testing.HaloGetRawShadow;
 import com.mobgen.halo.android.testing.HaloRobolectricTest;
 import com.mobgen.halo.android.testing.MockServer;
 
@@ -17,7 +16,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.robolectric.annotation.Config;
 
 import java.io.IOException;
 
@@ -42,7 +40,6 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-@Config(shadows = {HaloGetRawShadow.class})
 public class HaloAuthenticatorTest extends HaloRobolectricTest {
 
     private HaloSessionManager mSessionManager;

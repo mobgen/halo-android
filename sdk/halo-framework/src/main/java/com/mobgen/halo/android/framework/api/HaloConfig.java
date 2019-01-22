@@ -147,6 +147,16 @@ public class HaloConfig {
     }
 
     /**
+     * Provides the KitKat certificate enabling flag.
+     *
+     * @return True if wants to enable, false otherwise.
+     */
+    @Api(2.7)
+    public boolean getEnableKitKatCertificate() {
+        return mBuilder.mEnableKitKatCertificate;
+    }
+
+    /**
      * Provides the print log to file policy.
      *
      * @return The policy value.
@@ -193,6 +203,10 @@ public class HaloConfig {
          * Sets the debug flag on the framework.
          */
         private boolean mIsDebug;
+        /**
+         * Sets the KitKat certificate addition flag on the framework.
+         */
+        private boolean mEnableKitKatCertificate;
         /**
          * The print log to file policy
          */
@@ -263,6 +277,19 @@ public class HaloConfig {
         @NonNull
         public Builder setDebug(boolean debug) {
             mIsDebug = debug;
+            return this;
+        }
+
+        /**
+         * Sets the KitKat certificate flag.
+         *
+         * @param certificate The certificate flag.
+         * @return The current builder.
+         */
+        @Api(2.7)
+        @NonNull
+        public Builder setEnableKitKatCertificate(boolean certificate) {
+            mEnableKitKatCertificate = certificate;
             return this;
         }
 
