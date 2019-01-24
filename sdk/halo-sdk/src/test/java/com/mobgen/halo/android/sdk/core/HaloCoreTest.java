@@ -22,7 +22,6 @@ import java.util.List;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
-
 public class HaloCoreTest extends HaloRobolectricTest {
 
     private Halo mHalo;

@@ -36,7 +36,7 @@ public class HaloNetInstrument {
         endpointCluster.buildCertificatePinner();
         endpointCluster.registerEndpoint(endpointCluster.getEndpoint("1"));
 
-        return new HaloNetClient(RuntimeEnvironment.application, builder, endpointCluster);
+        return new HaloNetClient(RuntimeEnvironment.application, builder, endpointCluster, false);
     }
 
     public static HaloNetClient givenNetClientWithoutPinning(){
@@ -45,7 +45,16 @@ public class HaloNetInstrument {
         HaloEndpointCluster endpointCluster = new HaloEndpointCluster(endpoint);
         endpointCluster.registerEndpoint(endpointCluster.getEndpoint("1"));
 
-        return new HaloNetClient(RuntimeEnvironment.application, builder, endpointCluster);
+        return new HaloNetClient(RuntimeEnvironment.application, builder, endpointCluster, false);
+    }
+
+    public static HaloNetClient givenNetClientWithoutKitKatCertificate(){
+        OkHttpClient.Builder builder = new OkHttpClient.Builder().build().newBuilder();
+        HaloEndpoint endpoint = new HaloEndpoint("1","HaloNetClientTest","sha256/1234");
+        HaloEndpointCluster endpointCluster = new HaloEndpointCluster(endpoint);
+        endpointCluster.registerEndpoint(endpointCluster.getEndpoint("1"));
+
+        return new HaloNetClient(RuntimeEnvironment.application, builder, endpointCluster, true);
     }
 
     public static HaloRequest givenAGetRequestWithParams(HaloNetworkApi networkApi){

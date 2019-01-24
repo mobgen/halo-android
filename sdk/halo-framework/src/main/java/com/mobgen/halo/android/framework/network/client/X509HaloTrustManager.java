@@ -1,5 +1,7 @@
 package com.mobgen.halo.android.framework.network.client;
 
+import android.support.annotation.Nullable;
+
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -21,10 +23,13 @@ public class X509HaloTrustManager implements X509TrustManager {
         this.trustManagers = Collections.unmodifiableList(trustManagers);
     }
 
-    public X509HaloTrustManager(KeyStore keystore) {
+    public X509HaloTrustManager(@Nullable KeyStore keystore) {
         List<X509TrustManager> trustManagers = new ArrayList<>();
         trustManagers.add(getDefaultTrustManager());
-        trustManagers.add(getTrustManager(keystore));
+        if(keystore != null) {
+            trustManagers.add(getTrustManager(keystore));
+        }
+
         this.trustManagers = Collections.unmodifiableList(trustManagers);
     }
 

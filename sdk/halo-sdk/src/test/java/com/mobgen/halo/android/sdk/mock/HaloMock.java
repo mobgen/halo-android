@@ -122,6 +122,7 @@ public class HaloMock {
                 .addEndpoint(new HaloEndpoint(HaloNetworkConstants.HALO_ENDPOINT_ID, urlEndpoint))
                 .threadManager(new TestThreadManager())
                 .setParser(parser)
+                .setDisableKitKatCertificate(true)
                 .jobScheduler(givenAMockedScheduler());
     }
 
@@ -151,6 +152,7 @@ public class HaloMock {
                 .enableDefaultTags(true);
 
         installer.config().addEndpoint(new HaloEndpoint(HaloNetworkConstants.HALO_ENDPOINT_ID, "https://halourl.com"))
+                .setDisableKitKatCertificate(true)
                 .threadManager(new TestThreadManager())
                 .setParser(LoganSquareParserFactory.create())
                 .jobScheduler(givenAMockedScheduler());

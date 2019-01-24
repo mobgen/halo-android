@@ -24,7 +24,6 @@ import static com.mobgen.halo.android.testing.CallbackFlag.newCallbackFlag;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
-
 public class HaloMiddlewareRequestTest extends HaloRobolectricTest {
 
     private MockServer mMockServer;

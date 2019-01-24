@@ -59,6 +59,11 @@ public class HaloNetClient {
     private final HaloEndpointCluster mEndpoints;
 
     /**
+     * The flag for Kit Kat certificate disabling.
+     */
+    protected final boolean mDisableKitKatCertificate;
+
+    /**
      * The client instance of the okHttp wrapper.
      */
     private OkHttpClient mClient;
@@ -69,13 +74,15 @@ public class HaloNetClient {
      * @param context       The application context.
      * @param clientBuilder The client to copy.
      * @param endpoints     The endpoint cluster with the different endpoints and the cert pinning.
+     * @param disableKitKatCertificate     The flag to give kitkat support with a custom certificate.
      */
-    public HaloNetClient(@NonNull Context context, @NonNull OkHttpClient.Builder clientBuilder, @NonNull HaloEndpointCluster endpoints) {
+    public HaloNetClient(@NonNull Context context, @NonNull OkHttpClient.Builder clientBuilder, @NonNull HaloEndpointCluster endpoints, boolean disableKitKatCertificate) {
         AssertionUtils.notNull(context, "context");
         AssertionUtils.notNull(clientBuilder, "client");
         AssertionUtils.notNull(endpoints, "endpoints");
         mContext = context;
         mEndpoints = endpoints;
+        mDisableKitKatCertificate = disableKitKatCertificate;
         mClient = buildCertificates(clientBuilder).build();
     }
 
@@ -95,40 +102,51 @@ public class HaloNetClient {
             okBuilder.certificatePinner(pinner);
         }
 
+        // Create a KeyStore containing our trusted CAs
+        KeyStore keyStore = null;
         try {
-            CertificateFactory cf = CertificateFactory.getInstance("X.509");
-            InputStream caInput = mContext.getResources().openRawResource(R.raw.inverted_cert);
-            Certificate ca;
-            try {
-                ca = cf.generateCertificate(caInput);
-                System.out.println("ca=" + ((X509Certificate) ca).getSubjectDN());
-            } finally {
-                caInput.close();
-            }
-
-            // Create a KeyStore containing our trusted CAs
             String keyStoreType = KeyStore.getDefaultType();
-            KeyStore keyStore = KeyStore.getInstance(keyStoreType);
+            keyStore = KeyStore.getInstance(keyStoreType);
             keyStore.load(null, null);
-            keyStore.setCertificateEntry("ca", ca);
-
-            TrustManager[] trustManagers = X509HaloTrustManager.getTrustManagers(keyStore);
-            SSLSocketFactoryCompat socketFactoryCompat = new SSLSocketFactoryCompat(trustManagers);
-            if(trustManagers[0] instanceof X509TrustManager) {
-                okBuilder.sslSocketFactory(socketFactoryCompat, (X509TrustManager) trustManagers[0]);
-            } else {
-                okBuilder.sslSocketFactory(socketFactoryCompat);
-            }
-        } catch (CertificateException ce) {
-            ce.printStackTrace();
-        } catch (FileNotFoundException fe) {
-            fe.printStackTrace();
-        } catch (IOException io) {
-            io.printStackTrace();
         } catch (KeyStoreException ke) {
             ke.printStackTrace();
         } catch (NoSuchAlgorithmException ne) {
             ne.printStackTrace();
+        } catch (CertificateException ce) {
+            ce.printStackTrace();
+        } catch (IOException io) {
+            io.printStackTrace();
+        }
+
+        if(!mDisableKitKatCertificate) {
+            try {
+                CertificateFactory cf = CertificateFactory.getInstance("X.509");
+                InputStream caInput = mContext.getResources().openRawResource(R.raw.inverted_cert);
+                Certificate ca;
+                try {
+                    ca = cf.generateCertificate(caInput);
+                } finally {
+                    caInput.close();
+                }
+
+                if(keyStore != null) {
+                    keyStore.setCertificateEntry("ca", ca);
+                }
+            } catch (CertificateException ce) {
+                ce.printStackTrace();
+            } catch (IOException io) {
+                io.printStackTrace();
+            } catch (KeyStoreException ke) {
+                ke.printStackTrace();
+            }
+        }
+
+        TrustManager[] trustManagers = X509HaloTrustManager.getTrustManagers(keyStore);
+        SSLSocketFactoryCompat socketFactoryCompat = new SSLSocketFactoryCompat(trustManagers);
+        if(trustManagers[0] instanceof X509TrustManager) {
+            okBuilder.sslSocketFactory(socketFactoryCompat, (X509TrustManager) trustManagers[0]);
+        } else {
+            okBuilder.sslSocketFactory(socketFactoryCompat);
         }
 
         return okBuilder;
