@@ -41,3 +41,4 @@
 -keep class com.mobgen.halo.android.sdk.content.storage.HaloContentContract$* {*;}
 -keep class com.mobgen.halo.android.translations.api.HaloTranslationsContract$* {*;}
 -keep class com.mobgen.halo.android.framework.storage.database.dsl.annotations.* {*;}
+-keep class android.support.v7.widget.SearchView { *; }

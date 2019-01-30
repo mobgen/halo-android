@@ -42,7 +42,7 @@ public class HaloNetworkApi {
     @Api(1.3)
     @NonNull
     public static HaloNetworkApi newNetworkApi(@NonNull HaloFramework framework, @NonNull HaloConfig configuration) {
-        HaloNetClient client = new HaloNetClient(configuration.getContext(), configuration.getOkHttpBuilder(), configuration.getEndpointCluster());
+        HaloNetClient client = new HaloNetClient(configuration.getContext(), configuration.getOkHttpBuilder(), configuration.getEndpointCluster(), configuration.getDisableKitKatCertificate());
         return new HaloNetworkApi(framework, client);
     }
 

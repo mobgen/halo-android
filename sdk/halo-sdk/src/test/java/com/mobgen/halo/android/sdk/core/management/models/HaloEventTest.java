@@ -2,7 +2,6 @@ package com.mobgen.halo.android.sdk.core.management.models;
 
 import com.mobgen.halo.android.framework.common.exceptions.HaloParsingException;
 import com.mobgen.halo.android.sdk.api.Halo;
-import com.mobgen.halo.android.sdk.core.management.segmentation.HaloSegmentationTag;
 import com.mobgen.halo.android.sdk.mock.HaloMock;
 import com.mobgen.halo.android.testing.HaloRobolectricTest;
 import com.mobgen.halo.android.testing.TestUtils;
@@ -12,13 +11,9 @@ import org.json.JSONObject;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 import static com.mobgen.halo.android.sdk.mock.instrumentation.HaloManagerApiInstrument.givenAHaloEvent;
 import static org.assertj.core.api.Java6Assertions.assertThat;
-
 public class HaloEventTest extends HaloRobolectricTest {
 
     private static Halo mHalo;

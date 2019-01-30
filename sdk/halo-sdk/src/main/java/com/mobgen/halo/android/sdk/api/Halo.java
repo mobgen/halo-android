@@ -315,6 +315,11 @@ public class Halo {
         private boolean mDisablePinning;
 
         /**
+         * Disables certificate for KitKat support.
+         */
+        private boolean mDisableKitKatCertificate;
+
+        /**
          * Constructor for the installer.
          *
          * @param ctx The context of this installer.
@@ -505,6 +510,18 @@ public class Halo {
         }
 
         /**
+         * Enables the certificate manual addition for KitKat support in the HALO SDK.
+         *
+         * @return The current installer.
+         */
+        @Api(2.7)
+        @NonNull
+        public Installer disableKitKatCertificate() {
+            mDisableKitKatCertificate = true;
+            return this;
+        }
+
+        /**
          * Builds the instance of HALO.
          *
          * @return The instance of HALO.
@@ -518,6 +535,7 @@ public class Halo {
 
             //Add the final endpoint to halo
             mConfigurationBuilder.addEndpoint(mEndpoint);
+            mConfigurationBuilder.setDisableKitKatCertificate(mDisableKitKatCertificate);
 
             //Create the startup processes
             StartupProcess[] processes = new StartupProcess[]{

@@ -2,6 +2,7 @@ package com.mobgen.halo.android.framework.api;
 
 import com.mobgen.halo.android.framework.mock.FrameworkMock;
 import static com.mobgen.halo.android.framework.mock.instrumentation.HaloNetInstrument.givenNetClient;
+import static com.mobgen.halo.android.framework.mock.instrumentation.HaloNetInstrument.givenNetClientWithoutKitKatCertificate;
 import static com.mobgen.halo.android.framework.mock.instrumentation.HaloNetInstrument.givenNetClientWithoutPinning;
 import com.mobgen.halo.android.framework.network.client.endpoint.HaloEndpoint;
 import com.mobgen.halo.android.framework.network.client.endpoint.HaloEndpointCluster;
@@ -45,6 +46,13 @@ public class HaloNetworkApiTest extends HaloRobolectricTest {
     public void thatRequestUrlWithoutPinningSHA(){
         mNetworkApi = new HaloNetworkApi(mFramework,givenNetClientWithoutPinning());
         assertThat(mNetworkApi.requestUrl("1","get")).contains("HaloNetClientTest");
+        assertThat(mNetworkApi.requestUrl("1","get")).contains("get");
+    }
+
+    @Test
+    public void thatRequestUrlWithoutKitKatCertificate(){
+        mNetworkApi = new HaloNetworkApi(mFramework, givenNetClientWithoutKitKatCertificate());
+        assertThat(mNetworkApi.requestUrl("1", "get")).contains("HaloNetClientTest");
         assertThat(mNetworkApi.requestUrl("1","get")).contains("get");
     }
 

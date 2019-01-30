@@ -2,7 +2,6 @@ package com.mobgen.halo.android.sdk.core.management;
 
 import android.database.Cursor;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.mobgen.halo.android.framework.common.exceptions.HaloParsingException;
 import com.mobgen.halo.android.framework.common.helpers.subscription.ISubscription;
@@ -65,7 +64,6 @@ import static com.mobgen.halo.android.sdk.mock.instrumentation.HaloManagerApiIns
 import static com.mobgen.halo.android.sdk.mock.instrumentation.HaloManagerApiInstrument.givenCallbackWithSyncDevice;
 import static com.mobgen.halo.android.testing.CallbackFlag.newCallbackFlag;
 import static org.assertj.core.api.Java6Assertions.assertThat;
-
 
 public class HaloManagerApiTest extends HaloRobolectricTest {
 

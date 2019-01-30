@@ -18,7 +18,6 @@ import static com.mobgen.halo.android.sdk.mock.instrumentation.StartupManagerIns
 import static com.mobgen.halo.android.testing.CallbackFlag.newCallbackFlag;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
-
 public class StartupManagerTest extends HaloRobolectricTest {
 
     private StartupManager mManager;
