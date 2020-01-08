@@ -477,6 +477,10 @@ public class Halo {
         @Api(2.0)
         public Installer environment(@NonNull String endpoint) {
             environment(endpoint,
+                    HaloNetworkConstants.HALO_SHA_PINNING_CERT_AWS_ROOT_CA_1,
+                    HaloNetworkConstants.HALO_SHA_PINNING_CERT_AWS_ROOT_CA_2,
+                    HaloNetworkConstants.HALO_SHA_PINNING_CERT_AWS_ROOT_CA_3,
+                    HaloNetworkConstants.HALO_SHA_PINNING_CERT_AWS_ROOT_CA_0,        
                     HaloNetworkConstants.HALO_SHA_PINNING_CERT2018,
                     HaloNetworkConstants.HALO_SHA_PINNING,
                     HaloNetworkConstants.HALO_SHA_PINNING_CERT2017);

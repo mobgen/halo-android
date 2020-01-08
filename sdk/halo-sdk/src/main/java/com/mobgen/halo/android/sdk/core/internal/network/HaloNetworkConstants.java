@@ -20,7 +20,7 @@ public final class HaloNetworkConstants {
      * The production url for the SDK.
      */
     @Api(1.0)
-    public static final String HALO_PROD_ENDPOINT_URL = "https://halo.mobgen.com";
+    public static final String HALO_PROD_ENDPOINT_URL = "https://halo-db.com";
 
     /**
      * Pinning sha for the https protocol.
@@ -37,6 +37,26 @@ public final class HaloNetworkConstants {
      */
     @Api(2.6)
     public static final String HALO_SHA_PINNING_CERT2018 = "sha256/4973NGEUVzxEnad03PaQItAaK0TgZMUPxAU6XWCjtGY=";
+    /**
+     * Certificate for the aws root ca 1.
+     */
+    @Api(2.8)
+    public static final String HALO_SHA_PINNING_CERT_AWS_ROOT_CA_1 = "sha256/++MBgDH5WGvL9Bcn5Be30cRcL0f5O+NyoXuWtQdX1aI=";
+    /**
+     * Certificate for the aws root ca 2.
+     */
+    @Api(2.8)
+    public static final String HALO_SHA_PINNING_CERT_AWS_ROOT_CA_2 = "sha256/f0KW/FtqTjs108NpYj42SrGvOB2PpxIVM8nWxjPqJGE=";
+    /**
+     * Certificate for the aws root ca 3.
+     */
+    @Api(2.8)
+    public static final String HALO_SHA_PINNING_CERT_AWS_ROOT_CA_3 = "sha256/47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=";
+    /**
+     * Certificate for the aws root ca 0.
+     */
+    @Api(2.8)
+    public static final String HALO_SHA_PINNING_CERT_AWS_ROOT_CA_0 = "sha256/KwccWaCgrnaw6tsrrSO61FgLacNgG2MMLq8GE6+oP5I=";
 
     /**
      * Private empty constructor.
