@@ -32,6 +32,7 @@ android {
             includeAndroidResources = true
         }
         unitTests.all {
+            systemProperty 'robolectric.invokedynamic.enable', 'false'
             jvmArgs '-noverify'
             jacoco {
                 includeNoLocationClasses = true
