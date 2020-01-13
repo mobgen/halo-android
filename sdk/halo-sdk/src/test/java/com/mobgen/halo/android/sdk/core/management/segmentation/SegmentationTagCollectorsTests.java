@@ -122,7 +122,7 @@ public class SegmentationTagCollectorsTests extends HaloRobolectricTest {
     @Test
     public void thatDeviceModelTagIsOk() {
         DeviceModelCollector model = new DeviceModelCollector();
-        assertThat(model.collect(mock(Context.class)).getValue()).isEqualTo("unknown");
+        assertThat(model.collect(mock(Context.class)).getValue()).isEqualTo("robolectric");
     }
 
     @Test

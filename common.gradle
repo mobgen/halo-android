@@ -1,5 +1,6 @@
 subprojects {
     repositories {
+        google()
         jcenter()
         mavenCentral()
         mavenLocal()
@@ -57,7 +58,7 @@ ext {
     mockWebServerVersion = '3.9.1'
     openGLTestLibrary = 'gl1.1-android-2.1_r1'
     mockitoLibrary = '2.10.0'
-    robolectricLibrary = '3.6.1'
+    robolectricLibrary = '3.8'
     intellijAnnotations = '12.0'
 
     //Jacoco
