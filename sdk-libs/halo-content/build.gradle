@@ -59,8 +59,8 @@ dependencies {
 
     testAnnotationProcessor "com.bluelinelabs:logansquare-compiler:${rootProject.ext.loganSquareVersion}"
     testAnnotationProcessor project(':halo-content-processor')
-    testApi project(':halo-content-annotations')
-    testApi "com.mobgen.halo.android:halo-testing:${rootProject.ext.haloVersion}"
+    testImplementation project(':halo-content-annotations')
+    testImplementation "com.mobgen.halo.android:halo-testing:${rootProject.ext.haloVersion}"
 }
 
 /**

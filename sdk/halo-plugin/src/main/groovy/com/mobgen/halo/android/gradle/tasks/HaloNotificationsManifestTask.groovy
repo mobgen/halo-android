@@ -13,7 +13,7 @@ public class HaloNotificationsManifestTask extends DefaultTask {
     BaseVariant androidVariant
 
     @TaskAction
-    public onProcessManifests() {
+    onProcessManifests() {
         String manifestLocation = getManifestLocation()
         def xml = new XmlParser().parse(manifestLocation)
         appendPermissions(xml)
