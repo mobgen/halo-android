@@ -20,7 +20,7 @@ android {
 dependencies {
     api "com.mobgen.halo.android:halo-sdk:${rootProject.ext.haloVersion}"
     api "com.google.firebase:firebase-core:${rootProject.ext.firebaseVersion}"
-    testApi 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.12'
 }
 
 
