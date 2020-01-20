@@ -53,8 +53,8 @@ dependencies {
     annotationProcessor "com.bluelinelabs:logansquare-compiler:${loganSquareVersion}"
 
     //Testing dependencies
-    testApi project(":halo-testing")
-    testApi "com.squareup.okhttp3:mockwebserver:${mockWebServerVersion}"
+    testImplementation project(":halo-testing")
+    testImplementation "com.squareup.okhttp3:mockwebserver:${mockWebServerVersion}"
     testAnnotationProcessor "com.bluelinelabs:logansquare-compiler:${loganSquareVersion}"
 }
 

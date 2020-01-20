@@ -60,7 +60,7 @@ dependencies {
 
     //Testing dependencies
     testAnnotationProcessor "com.bluelinelabs:logansquare-compiler:${rootProject.ext.loganSquareVersion}"
-    testApi "com.mobgen.halo.android:halo-testing:${rootProject.ext.haloVersion}"
+    testImplementation "com.mobgen.halo.android:halo-testing:${rootProject.ext.haloVersion}"
 }
 
 /**
