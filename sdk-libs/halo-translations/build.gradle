@@ -54,8 +54,8 @@ android {
 
 dependencies {
     api project(':halo-content')
-    testApi "com.mobgen.halo.android:halo-testing:${rootProject.ext.haloVersion}"
-    testApi "org.khronos:opengl-api:${rootProject.ext.openGLTestLibrary}"
+    testImplementation "com.mobgen.halo.android:halo-testing:${rootProject.ext.haloVersion}"
+    testImplementation "org.khronos:opengl-api:${rootProject.ext.openGLTestLibrary}"
 }
 
 /**
