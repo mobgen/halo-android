@@ -29,7 +29,7 @@ public class HaloSMSManifestTask extends DefaultTask {
         if (androidVariant.getFlavorName() != null) {
             manifestLocation += "/${androidVariant.getFlavorName()}"
         }
-        manifestLocation += "${androidVariant.getBuildType().getName()}/AndroidManifest.xml"
+        manifestLocation += "${androidVariant.getBuildType().getName().capitalize()}/AndroidManifest.xml"
         return manifestLocation
     }
 
