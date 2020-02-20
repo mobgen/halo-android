@@ -5,6 +5,8 @@ import groovy.xml.Namespace
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
+import java.util.logging.Logger
+
 /**
  * Task to write the halo configuration file to the system.
  */
@@ -26,10 +28,16 @@ public class HaloSMSManifestTask extends DefaultTask {
 
     private String getManifestLocation() {
         def manifestLocation = "${getProject().getBuildDir()}/intermediates/merged_manifests"
-        if (androidVariant.getFlavorName() != null) {
+
+        if (!androidVariant.getFlavorName().isEmpty()) {
             manifestLocation += "/${androidVariant.getFlavorName()}"
+            manifestLocation += "${androidVariant.getBuildType().getName().capitalize()}"
+        } else {
+            manifestLocation += "/${androidVariant.getBuildType().getName()}"
         }
-        manifestLocation += "${androidVariant.getBuildType().getName().capitalize()}/AndroidManifest.xml"
+        
+        manifestLocation += "/AndroidManifest.xml"
+
         return manifestLocation
     }
 
