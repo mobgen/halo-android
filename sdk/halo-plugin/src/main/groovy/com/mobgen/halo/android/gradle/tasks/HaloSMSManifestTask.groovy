@@ -25,11 +25,11 @@ public class HaloSMSManifestTask extends DefaultTask {
     }
 
     private String getManifestLocation() {
-        def manifestLocation = "${getProject().getBuildDir()}/intermediates/manifests/full"
+        def manifestLocation = "${getProject().getBuildDir()}/intermediates/merged_manifests"
         if (androidVariant.getFlavorName() != null) {
             manifestLocation += "/${androidVariant.getFlavorName()}"
         }
-        manifestLocation += "/${androidVariant.getBuildType().getName()}/AndroidManifest.xml"
+        manifestLocation += "${androidVariant.getBuildType().getName()}/AndroidManifest.xml"
         return manifestLocation
     }
 
