@@ -123,7 +123,8 @@ public class HaloExtensionV2 {
                     description = "Process the manifest to inject the push information for Halo"
                 })
                 //Inject the task
-                task.dependsOn project.tasks.getByName("process${variant.getName().capitalize()}Manifest")
+                project.tasks.getByName("process${variant.getName().capitalize()}Manifest").finalizedBy(task)
+
             }
         }
     }
@@ -140,7 +141,7 @@ public class HaloExtensionV2 {
                 })
 
                 //Inject the task
-                task.dependsOn project.tasks.getByName("process${variant.getName().capitalize()}Manifest")
+                project.tasks.getByName("process${variant.getName().capitalize()}Manifest").finalizedBy(task)
             }
         }
     }
