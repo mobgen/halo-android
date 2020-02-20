@@ -27,10 +27,16 @@ public class HaloNotificationsManifestTask extends DefaultTask {
 
     private String getManifestLocation() {
         def manifestLocation = "${getProject().getBuildDir()}/intermediates/merged_manifests"
+
         if (androidVariant.getFlavorName() != null) {
             manifestLocation += "/${androidVariant.getFlavorName()}"
+            manifestLocation += "${androidVariant.getBuildType().getName().capitalize()}"
+        } else {
+            manifestLocation += "${androidVariant.getBuildType().getName()}"
         }
-        manifestLocation += "${androidVariant.getBuildType().getName().capitalize()}/AndroidManifest.xml"
+
+        manifestLocation += "/AndroidManifest.xml"
+
         return manifestLocation
     }
 
