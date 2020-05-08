@@ -68,11 +68,7 @@ final class StatusChargingController implements StatusController {
         public void onReceive(Context context, Intent intent) {
             updateStatus();
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                if (HaloUtils.isServiceRunning(context, HaloSchedulerService.class)) {
-                    context.startService(HaloSchedulerService.deviceStatusChanged(context, Job.STATUS_CHARGING_KEY, false));
-                } else {
-                    context.startForegroundService(HaloSchedulerService.deviceStatusChanged(context, Job.STATUS_CHARGING_KEY, true));
-                }
+                context.startForegroundService(HaloSchedulerService.deviceStatusChanged(context, Job.STATUS_CHARGING_KEY, true));
             } else {
                 context.startService(HaloSchedulerService.deviceStatusChanged(context, Job.STATUS_CHARGING_KEY, false));
             }
